@@ -1,4 +1,5 @@
 #include "SampleScene.h"
+#include "PlayerComponent.h"
 #include <GatesEngine/Header\GameFramework\Component\SampleComponent.h>
 #include <GatesEngine/Header\GameFramework\Component\SphereCollider.h>
 #include <GatesEngine/Header\GameFramework\Component\BoxCollider.h>
@@ -20,7 +21,7 @@ SampleScene::SampleScene(const std::string& sceneName)
 		testObject->GetTransform()->position = { 1050,0,0 };
 		testObject->SetDrawAxisEnabled(true);
 		auto* sampleCollider = testObject->AddComponent < GE::SphereCollider >();
-		auto* sampleComponent = testObject->AddComponent<GE::SampleComponent>();
+		auto* sampleComponent = testObject->AddComponent<PlayerComponent>();
 		sampleCollider->SetCenter({ 0,0,0 });
 		sampleCollider->SetSize({ 2 });
 		col1 = sampleCollider;
