@@ -4,6 +4,8 @@
 #include <GatesEngine/Header\GameFramework\Component\SphereCollider.h>
 #include <GatesEngine/Header\GameFramework\Component\BoxCollider.h>
 #include <GatesEngine/Header\GameFramework\Collision\CollisionManager.h>
+#include <GatesEngine/Header/Application/Application.h>
+
 
 SampleScene::SampleScene()
 	: SampleScene("SampleScene")
@@ -17,9 +19,7 @@ SampleScene::SampleScene(const std::string& sceneName)
 {
 	{
 		auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject());
-		testObject->SetName("test1");
-		testObject->GetTransform()->position = { 1050,0,0 };
-		testObject->SetDrawAxisEnabled(true);
+		testObject->SetName("Player");
 		auto* sampleCollider = testObject->AddComponent < GE::SphereCollider >();
 		auto* sampleComponent = testObject->AddComponent<PlayerComponent>();
 		sampleCollider->SetCenter({ 0,0,0 });

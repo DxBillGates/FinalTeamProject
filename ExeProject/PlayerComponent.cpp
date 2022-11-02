@@ -22,50 +22,63 @@ void PlayerComponent::Start()
 	GE::Utility::Printf("PlayerComponent Start()\n");
 	inputDevice = GE::InputDevice::GetInstance();
 	random = { GE::RandomMaker::GetFloat(-1,1),GE::RandomMaker::GetFloat(-1,1),GE::RandomMaker::GetFloat(-1,1) };
-	speed = 1;
-}
+	speed = 1000;
+	transform->position = { 0,-10,100 };
+	transform->scale = { 4,2,2 };
+	move = { 0,0,-0 };
 
+	gravity = { 0,0.5,0 };
+
+}
 void PlayerComponent::Update(float deltaTime)
 {
+
 	const GE::Math::Axis& axis = transform->GetMatrix().GetAxis();
-	if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::SPACE))
+	if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::RIGHT))
 	{
-		transform->position += axis.y;
+		move.y += 0.01;
+		move.z > -0.3 ? move.z -= 0.005 : 0;
+
+	}
+	else if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::LEFT))
+	{
+		move.y -= 0.01;
+		move.z < 0.3 ? move.z += 0.005 : 0;
+	}
+	else
+	{
+		move.z == 0.0 ? 0 : move.z > 0.0 ? move.z -= 0.005 : move.z += 0.005;
+	}
+	if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::UP))
+	{
+		move.x > -1.57 ? move.x -= 0.005 : 0;
+	}
+	else if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::DOWN))
+	{
+		move.x < 1.57 ? move.x += 0.005 : 0;
+	}
+	else
+	{
+		move.x == 0.0 ? 0 : move.x > 0.0 ? move.x -= 0.01 : move.x += 0.01;
 	}
 
-	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE))
-	{
-		GE::Utility::Printf("PlayerComponent Update() : press space key\n");
-	}
+	transform->rotation =
+		GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), move.y)
+		* GE::Math::Quaternion(GE::Math::Vector3(0, 0, 1), move.z)
+		*GE::Math::Quaternion(GE::Math::Vector3(1, 0, 0), move.x);
 
-	if (inputDevice->GetMouse()->GetCheckPressTrigger(GE::MouseButtons::LEFT_CLICK))
-	{
-		GE::Utility::Printf("PlayerComponent Update() : press left click\n");
-	}
-
-	if (inputDevice->GetXCtrler()->CheckHitButtonTrigger(GE::XInputControllerButton::XINPUT_B))
-	{
-		GE::Utility::Printf("PlayerComponent Update() : press b button\n");
-	}
-
-	GE::Joycon* joycon = inputDevice->GetJoyconL();
-	if (joycon == nullptr)return;
-	GE::Vector3Int16 gyroData = joycon->GetGyroscope();
-	gyro = { (float)gyroData.y,(float)-gyroData.z,(float)-gyroData.x };
-
-	transform->rotation *= GE::Math::Quaternion(gyro.Normalize(), GE::Math::ConvertToRadian(gyro.Length() * 1.f / 60.f));
-	//transform->rotation = Math::Quaternion::Euler(Math::Vector3(45, 0, 0));
+	transform->position += axis.z * speed * deltaTime - gravity;
 }
 
 void PlayerComponent::Draw()
 {
-	const float DRAW_SIZE = 100;
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
 	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
 
 	graphicsDevice->SetShader("DefaultMeshShader");
 
-	transform->scale = DRAW_SIZE;
+	transform->scale = { 200,50,50 };
+
 	GE::Math::Matrix4x4 modelMatrix = transform->GetMatrix();
 	GE::Material material;
 	material.color = GE::Color::White();

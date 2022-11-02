@@ -9,6 +9,13 @@
 		GE::Math::Vector3 random;
 		float speed;
 		GE::Math::Vector3 gyro;
+
+		GE::Math::Vector3 gravity;
+		GE::Math::Vector3 move;
+
+		float moveHoldCount;
+
+		
 	public:
 		PlayerComponent();
 
@@ -20,4 +27,6 @@
 		void OnCollision(GE::GameObject* other) override;
 		void OnCollision(GE::ICollider* hitCollider) override;
 		void OnGui() override;
+	private:
+		
 	};
