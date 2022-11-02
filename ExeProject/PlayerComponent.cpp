@@ -29,45 +29,20 @@ void PlayerComponent::Start()
 
 	gravity = { 0,0.5,0 };
 
+	stop_move = false;
 }
 void PlayerComponent::Update(float deltaTime)
 {
 
 	const GE::Math::Axis& axis = transform->GetMatrix().GetAxis();
-	if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::RIGHT))
-	{
-		move.y += 0.01;
-		move.z > -0.3 ? move.z -= 0.005 : 0;
+	//‘€ì
+	Control();
 
-	}
-	else if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::LEFT))
+	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::D0))
 	{
-		move.y -= 0.01;
-		move.z < 0.3 ? move.z += 0.005 : 0;
+		stop_move == true ? stop_move = false : stop_move = true;
 	}
-	else
-	{
-		move.z == 0.0 ? 0 : move.z > 0.0 ? move.z -= 0.005 : move.z += 0.005;
-	}
-	if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::UP))
-	{
-		move.x > -1.57 ? move.x -= 0.005 : 0;
-	}
-	else if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::DOWN))
-	{
-		move.x < 1.57 ? move.x += 0.005 : 0;
-	}
-	else
-	{
-		move.x == 0.0 ? 0 : move.x > 0.0 ? move.x -= 0.01 : move.x += 0.01;
-	}
-
-	transform->rotation =
-		GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), move.y)
-		* GE::Math::Quaternion(GE::Math::Vector3(0, 0, 1), move.z)
-		*GE::Math::Quaternion(GE::Math::Vector3(1, 0, 0), move.x);
-
-	transform->position += axis.z * speed * deltaTime - gravity;
+	if (!stop_move)transform->position += axis.z * speed * deltaTime - gravity;
 }
 
 void PlayerComponent::Draw()
@@ -132,4 +107,40 @@ void PlayerComponent::OnGui()
 	ImGui::DragFloat("Speed", &speed, dragSpeed, 0, maxValue);
 	ImGui::DragFloat3("RandomVector", random.value, dragSpeed, -1, 1);
 	ImGui::DragFloat3("GyroVector", gyro.value, dragSpeed, -1, 1);
+}
+
+void PlayerComponent::Control()
+{
+	if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::RIGHT))
+	{
+		move.y += 0.01;
+		move.z > -0.3 ? move.z -= 0.005 : 0;
+
+	}
+	else if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::LEFT))
+	{
+		move.y -= 0.01;
+		move.z < 0.3 ? move.z += 0.005 : 0;
+	}
+	else
+	{
+		move.z == 0.0 ? 0 : move.z > 0.0 ? move.z -= 0.005 : move.z += 0.005;
+	}
+	if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::UP))
+	{
+		move.x > -1.57 ? move.x -= 0.005 : 0;
+	}
+	else if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::DOWN))
+	{
+		move.x < 1.57 ? move.x += 0.005 : 0;
+	}
+	else
+	{
+		move.x == 0.0 ? 0 : move.x > 0.0 ? move.x -= 0.01 : move.x += 0.01;
+	}
+
+	transform->rotation =
+		GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), move.y)
+		* GE::Math::Quaternion(GE::Math::Vector3(0, 0, 1), move.z)
+		* GE::Math::Quaternion(GE::Math::Vector3(1, 0, 0), move.x);
 }

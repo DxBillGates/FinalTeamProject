@@ -15,6 +15,8 @@
 
 		float moveHoldCount;
 
+		bool stop_move;//滑空の停止と再生＊デバッグ用
+
 		
 	public:
 		PlayerComponent();
@@ -28,5 +30,5 @@
 		void OnCollision(GE::ICollider* hitCollider) override;
 		void OnGui() override;
 	private:
-		
+		void Control();
 	};
