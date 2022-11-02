@@ -15,8 +15,9 @@
 
 		float moveHoldCount;
 
-		bool stop_move;//滑空の停止と再生＊デバッグ用
-
+		bool stop_move;	//滑空の停止と再生＊デバッグ用
+		float dir;		//追従するカメラの角度
+		float cameraDistance;//カメラとPlayerの距離
 		
 	public:
 		PlayerComponent();

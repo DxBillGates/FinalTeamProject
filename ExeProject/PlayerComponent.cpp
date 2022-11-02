@@ -3,6 +3,7 @@
 #include <GatesEngine/Header/Util/Random.h           >
 #include <GatesEngine/Header/Graphics\Window.h       >
 #include <GatesEngine/Header/GUI\GUIManager.h        >
+#include <GatesEngine/Header/Graphics/Camera3DDebug.h>
 
 #include"PlayerComponent.h"
 
@@ -25,19 +26,36 @@ void PlayerComponent::Start()
 	speed = 1000;
 	transform->position = { 0,-10,100 };
 	transform->scale = { 4,2,2 };
+	
 	move = { 0,0,-0 };
-
 	gravity = { 0,0.5,0 };
-
+	cameraDistance = 500;
+	dir = 0.0;
 	stop_move = false;
 }
 void PlayerComponent::Update(float deltaTime)
 {
 
 	const GE::Math::Axis& axis = transform->GetMatrix().GetAxis();
+	auto camera = dynamic_cast<GE::Camera3DDebug*>(graphicsDevice->GetMainCamera());
 	//操作
 	Control();
+	//Player--Camera 方向
+	GE::Math::Vector3 direction = { transform->position.x - camera->GetCameraInfo().cameraPos.x,
+		transform->position.y - camera->GetCameraInfo().cameraPos.y,
+		transform->position.z - camera->GetCameraInfo().cameraPos.z };
+	direction = direction.Normalize();
 
+	//axis.z.yが1になるとaxis.z.xと.z.zがおかしくなるのを止めるため
+	if (axis.z.x)
+	{
+		dir = atan2f(axis.z.x, axis.z.z);
+	}
+	//カメラ制御
+	camera->SetDirection(direction);
+	camera->SetPosition(transform->position + GE::Math::Vector3(sin(dir + 3.14) * cameraDistance, 100, cos(dir + 3.14) * cameraDistance));
+
+	//D0押したら移動停止＊デバッグ用
 	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::D0))
 	{
 		stop_move == true ? stop_move = false : stop_move = true;

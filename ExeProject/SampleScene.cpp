@@ -39,6 +39,7 @@ SampleScene::SampleScene(const std::string& sceneName)
 		sampleCollider->SetType(GE::ColliderType::OBB);
 		col2 = sampleCollider;
 	}
+	
 }
 
 SampleScene::~SampleScene()

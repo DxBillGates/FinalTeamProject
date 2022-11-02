@@ -74,12 +74,12 @@ bool Game::Draw()
 		renderQueue->AddSetConstantBufferInfo({ 3,cbufferAllocater->BindAndAttachData(3, &directionalLight, sizeof(GE::DirectionalLightInfo)) });
 		graphicsDevice.DrawMesh("Sphere");
 
-		graphicsDevice.SetShader("DefaultMeshWithTextureShader");
+		/*graphicsDevice.SetShader("DefaultMeshWithTextureShader");
 		modelMatrix = GE::Math::Matrix4x4::Identity();
 		modelMatrix *= GE::Math::Matrix4x4::Scale({ 50 });
 		renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
 		renderQueue->AddSetShaderResource({ 4,graphicsDevice.GetTextureManager()->Get("texture_null")->GetSRVNumber() });
-		graphicsDevice.DrawMesh("Skydome");
+		graphicsDevice.DrawMesh("Skydome");*/
 
 
 		graphicsDevice.SetShader("DefaultLineShader");
