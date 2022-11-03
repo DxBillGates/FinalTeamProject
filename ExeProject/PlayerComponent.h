@@ -4,20 +4,31 @@
 
 	class PlayerComponent : public GE::Component
 	{
+		enum class PlayerState
+		{
+			STOP_DEBUG,
+			MOVE,
+			DASH,
+			STAY_LAND,
+		};
 	private:
 		GE::InputDevice* inputDevice;
 		GE::Math::Vector3 random;
-		float speed;
 		GE::Math::Vector3 gyro;
 
-		GE::Math::Vector3 gravity;
-		GE::Math::Vector3 move;
+		GE::Math::Vector3 body_direction;//体の向き計算用
+		float dashEasingCount;			//スピード遷移のカウント
+		PlayerState state;				//Playerの状態
+		
+		GE::Math::Vector3 gravity;	//重力
+		float dir;					//追従するカメラのPlayerから見た角度
+		float current_cameraDistance;//カメラとPlayerの距離
+		float normal_cameraDistance;//通常時カメラとPlayerの距離
+		float dash_cameraDistance;	//ダッシュ時カメラとPlayerの距離
+		float current_speed;		//現在のスピード
+		float normal_speed;			//通常時のスピード
+		float dash_speed;			//ダッシュ時のスピード
 
-		float moveHoldCount;
-
-		bool stop_move;	//滑空の停止と再生＊デバッグ用
-		float dir;		//追従するカメラの角度
-		float cameraDistance;//カメラとPlayerの距離
 		
 	public:
 		PlayerComponent();
@@ -31,5 +42,7 @@
 		void OnCollision(GE::ICollider* hitCollider) override;
 		void OnGui() override;
 	private:
-		void Control();
+		void Control(float deltaTime);
+		//EaseIn関係がよくわからなかったから一時的に追加
+		const float easeIn(const float start, const float end, float time);
 	};

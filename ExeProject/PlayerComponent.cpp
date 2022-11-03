@@ -23,15 +23,22 @@ void PlayerComponent::Start()
 	GE::Utility::Printf("PlayerComponent Start()\n");
 	inputDevice = GE::InputDevice::GetInstance();
 	random = { GE::RandomMaker::GetFloat(-1,1),GE::RandomMaker::GetFloat(-1,1),GE::RandomMaker::GetFloat(-1,1) };
-	speed = 1000;
-	transform->position = { 0,-10,100 };
+	transform->position = { 0,10,0 };
 	transform->scale = { 4,2,2 };
-	
-	move = { 0,0,-0 };
+
+	body_direction = { 0,0,0 };
+	dashEasingCount = 0.0;
+	state = PlayerState::MOVE;
+
+	normal_speed = 1000;
+	dash_speed = 10000;
+	current_speed = normal_speed;
 	gravity = { 0,0.5,0 };
-	cameraDistance = 500;
+	normal_cameraDistance = 500;
+	dash_cameraDistance = 700;
+	current_cameraDistance = normal_cameraDistance;
 	dir = 0.0;
-	stop_move = false;
+
 }
 void PlayerComponent::Update(float deltaTime)
 {
@@ -39,28 +46,28 @@ void PlayerComponent::Update(float deltaTime)
 	const GE::Math::Axis& axis = transform->GetMatrix().GetAxis();
 	auto camera = dynamic_cast<GE::Camera3DDebug*>(graphicsDevice->GetMainCamera());
 	//操作
-	Control();
+	Control(1);
 	//Player--Camera 方向
 	GE::Math::Vector3 direction = { transform->position.x - camera->GetCameraInfo().cameraPos.x,
 		transform->position.y - camera->GetCameraInfo().cameraPos.y,
 		transform->position.z - camera->GetCameraInfo().cameraPos.z };
 	direction = direction.Normalize();
 
-	//axis.z.yが1になるとaxis.z.xと.z.zがおかしくなるのを止めるため
-	if (axis.z.x)
+	//axis.z.yがMAXになってz.xとz.zが0になるのを防ぐ
+	if (abs(axis.z.y) < 0.999)
 	{
 		dir = atan2f(axis.z.x, axis.z.z);
 	}
 	//カメラ制御
 	camera->SetDirection(direction);
-	camera->SetPosition(transform->position + GE::Math::Vector3(sin(dir + 3.14) * cameraDistance, 100, cos(dir + 3.14) * cameraDistance));
+	camera->SetPosition(transform->position + GE::Math::Vector3(sin(dir + 3.14) * current_cameraDistance, 100, cos(dir + 3.14) * current_cameraDistance));
 
 	//D0押したら移動停止＊デバッグ用
 	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::D0))
 	{
-		stop_move == true ? stop_move = false : stop_move = true;
+		state != PlayerState::STOP_DEBUG ? state = PlayerState::STOP_DEBUG : state = PlayerState::MOVE;
 	}
-	if (!stop_move)transform->position += axis.z * speed * deltaTime - gravity;
+	if (state != PlayerState::STOP_DEBUG)transform->position += axis.z * current_speed * deltaTime - gravity;
 }
 
 void PlayerComponent::Draw()
@@ -122,43 +129,76 @@ void PlayerComponent::OnGui()
 {
 	float dragSpeed = 0.1f;
 	float maxValue = 100;
-	ImGui::DragFloat("Speed", &speed, dragSpeed, 0, maxValue);
+	ImGui::DragFloat("Speed", &current_speed, dragSpeed, 0, maxValue);
 	ImGui::DragFloat3("RandomVector", random.value, dragSpeed, -1, 1);
 	ImGui::DragFloat3("GyroVector", gyro.value, dragSpeed, -1, 1);
 }
 
-void PlayerComponent::Control()
+void PlayerComponent::Control(float deltaTime)
 {
 	if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::RIGHT))
 	{
-		move.y += 0.01;
-		move.z > -0.3 ? move.z -= 0.005 : 0;
+		body_direction.y += 0.01 * deltaTime;
+		body_direction.z > -0.3 ? body_direction.z -= 0.005 * deltaTime : 0;
 
 	}
 	else if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::LEFT))
 	{
-		move.y -= 0.01;
-		move.z < 0.3 ? move.z += 0.005 : 0;
+		body_direction.y -= 0.01 * deltaTime;
+		body_direction.z < 0.3 ? body_direction.z += 0.005 * deltaTime : 0;
 	}
 	else
 	{
-		move.z == 0.0 ? 0 : move.z > 0.0 ? move.z -= 0.005 : move.z += 0.005;
+		abs(body_direction.z) < 0.005 ? body_direction.z = 0 : body_direction.z > 0.0 ? body_direction.z -= 0.005 * deltaTime : body_direction.z += 0.005 * deltaTime;
 	}
 	if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::UP))
 	{
-		move.x > -1.57 ? move.x -= 0.005 : 0;
+		body_direction.x > -1.57 ? body_direction.x -= 0.005 * deltaTime : 0;
 	}
 	else if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::DOWN))
 	{
-		move.x < 1.57 ? move.x += 0.005 : 0;
+		body_direction.x < 1.57 ? body_direction.x += 0.005 * deltaTime : 0;
 	}
 	else
 	{
-		move.x == 0.0 ? 0 : move.x > 0.0 ? move.x -= 0.01 : move.x += 0.01;
+		abs(body_direction.x) < 0.01 ? body_direction.x = 0 : body_direction.x > 0.0 ? body_direction.x -= 0.01 * deltaTime : body_direction.x += 0.01 * deltaTime;
 	}
+	float dash_time = 100;
+	switch (state)
+	{
+	case PlayerComponent::PlayerState::STOP_DEBUG:
+		break;
+	case PlayerComponent::PlayerState::MOVE:
+		//Key押したらPlayerState::DASHに変わる
+		if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE))
+		{
+			state = PlayerState::DASH;
+		}
+		break;
+	case PlayerComponent::PlayerState::DASH:
+		//スピードの遷移
+		//current_speed = GE::Math::Easing::Lerp(dash_speed, normal_speed, speedEasingCount / time);
+		current_speed = easeIn(dash_speed, normal_speed, dashEasingCount / dash_time);
+		//カメラの距離遷移、遷移で離れて遷移で元に戻る
+		current_cameraDistance = easeIn(normal_cameraDistance, dash_cameraDistance,
+			sin(GE::Math::Easing::Lerp(0, 3.14, dashEasingCount / dash_time)));
 
+		if (dashEasingCount < dash_time) { dashEasingCount++; }
+		else { state = PlayerState::MOVE; dashEasingCount = 0.0f; }
+
+		break;
+	case PlayerComponent::PlayerState::STAY_LAND:
+		break;
+	default:
+		break;
+	}
 	transform->rotation =
-		GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), move.y)
-		* GE::Math::Quaternion(GE::Math::Vector3(0, 0, 1), move.z)
-		* GE::Math::Quaternion(GE::Math::Vector3(1, 0, 0), move.x);
+		GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), body_direction.y)
+		* GE::Math::Quaternion(GE::Math::Vector3(0, 0, 1), body_direction.z)
+		* GE::Math::Quaternion(GE::Math::Vector3(1, 0, 0), body_direction.x);
+}
+//EaseIn関係がよくわからなかったから一時的に追加
+const float PlayerComponent::easeIn(const float start, const float end, float time)
+{
+	return start * (1.0f - time * time) + end * time * time;
 }

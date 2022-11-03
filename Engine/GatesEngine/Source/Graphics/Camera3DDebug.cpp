@@ -70,7 +70,7 @@ void GE::Camera3DDebug::Update()
 	moveSpeed = keyboard->CheckHitKey(Keys::LSHIFT) ? 10.0f : 1.0f;
 
 	moveVector = moveVector.Normalize();
-	moveVector += wheelValue * axis.z.Normalize();
+	moveVector += wheelValue * axis.z.Normalize(); 
 	info.cameraPos += moveVector * moveSpeed;
 
 	info.projMatrix = Math::Matrix4x4::GetPerspectiveMatrix(90, aspect, 1, 20000);
