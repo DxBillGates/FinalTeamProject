@@ -17,6 +17,7 @@ public:
 	void SetDir(float value) { dir = value; }								//向き
 	void SetGraphicsDevice(GE::IGraphicsDeviceDx12* graphicsDevice);		//取得
 	void SetPosition(GE::Math::Vector3& pos);								//カメラを向ける相手
+	void SetOtherAxis(GE::Math::Axis axis);
 
 	void Direction(GE::Math::Vector3& target);								//方向計算
 	void DashCam(float dashEasingCount, float dash_time = 100);				//ダッシュ中計算
@@ -30,6 +31,7 @@ private:
 	GE::Math::Vector3 direction;	//方向
 	GE::Math::Vector3 position;		//カメラ位置
 	GE::Math::Vector3 other;		//相手
+	GE::Math::Axis otherAxis;		//相手のAxis
 
 	float dir;					//追従するカメラのPlayerから見た角度
 	float current_cameraDistance;//カメラとPlayerの距離

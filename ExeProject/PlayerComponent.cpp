@@ -48,16 +48,11 @@ void PlayerComponent::Update(float deltaTime)
 {
 
 	const GE::Math::Axis& axis = transform->GetMatrix().GetAxis();
-	//auto camera = dynamic_cast<GE::Camera3DDebug*>(graphicsDevice->GetMainCamera());
 	//操作
 	Control(1);
-	//Player--Camera 方向
-	//GE::Math::Vector3 direction = { transform->position.x - camera->GetCameraInfo().cameraPos.x,
-	//	transform->position.y - camera->GetCameraInfo().cameraPos.y,
-	//	transform->position.z - camera->GetCameraInfo().cameraPos.z };
-	//direction = direction.Normalize();
 
 	cameraC->Direction(transform->position);
+	cameraC->SetOtherAxis(transform->GetMatrix().GetAxis());
 
 	cameraC->SetPosition(transform->position);
 	//axis.z.yがMAXになってz.xとz.zが0になるのを防ぐ
@@ -66,9 +61,6 @@ void PlayerComponent::Update(float deltaTime)
 		dir = atan2f(axis.z.x, axis.z.z);
 	}
 	cameraC->SetDir(dir);
-	//カメラ制御
-	//camera->SetDirection(direction);
-	//camera->SetPosition(transform->position + GE::Math::Vector3(sin(dir + 3.14) * current_cameraDistance, 100, cos(dir + 3.14) * current_cameraDistance));
 	cameraC->Update();
 
 	//D0押したら移動停止＊デバッグ用

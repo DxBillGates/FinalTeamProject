@@ -7,6 +7,7 @@
 //	return &instance;
 //}
 
+
 void CameraControl::Create()
 {
 }
@@ -21,12 +22,13 @@ void CameraControl::Initialize()
 
 void CameraControl::Update()
 {
+
 	auto camera = dynamic_cast<GE::Camera3DDebug*>(graphicsDevice->GetMainCamera());
 
 	camera->SetDirection(direction);
 	camera->SetPosition(other + GE::Math::Vector3(sin(dir + 3.14) * current_cameraDistance, 100, cos(dir + 3.14) * current_cameraDistance));
-
-	//更新した位置取得
+	//camera->SetPosition(other - otherAxis.z * current_cameraDistance);
+		//更新した位置取得
 	position.x = graphicsDevice->GetMainCamera()->GetCameraInfo().cameraPos.x;
 	position.y = graphicsDevice->GetMainCamera()->GetCameraInfo().cameraPos.y;
 	position.z = graphicsDevice->GetMainCamera()->GetCameraInfo().cameraPos.z;
@@ -64,4 +66,9 @@ void CameraControl::SetGraphicsDevice(GE::IGraphicsDeviceDx12* graphicsDevice)
 void CameraControl::SetPosition(GE::Math::Vector3& pos)
 {
 	other = pos;
+}
+
+void CameraControl::SetOtherAxis(GE::Math::Axis axis)
+{
+	otherAxis = axis;
 }
