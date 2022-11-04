@@ -22,8 +22,12 @@ void CameraControl::Initialize()
 
 void CameraControl::Update()
 {
-
 	auto camera = dynamic_cast<GE::Camera3DDebug*>(graphicsDevice->GetMainCamera());
+	GE::Math::Vector3 beforeCameraPosition = {
+		camera->GetCameraInfo().cameraPos.x,
+		camera->GetCameraInfo().cameraPos.y,
+		camera->GetCameraInfo().cameraPos.z,
+	};
 
 	camera->SetDirection(direction);
 	camera->SetPosition(other + GE::Math::Vector3(sin(dir + 3.14) * current_cameraDistance, 100, cos(dir + 3.14) * current_cameraDistance));
