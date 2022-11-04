@@ -16,7 +16,7 @@ public:
 	void Distance_dash(float value) { dash_cameraDistance = value; }		//ダッシュ時の距離
 	void SetDir(float value) { dir = value; }								//向き
 	void SetGraphicsDevice(GE::IGraphicsDeviceDx12* graphicsDevice);		//取得
-	void SetPosition(GE::Math::Vector3& pos);								//カメラを向ける相手
+	void SetOtherPos(GE::Math::Vector3& pos);								//カメラを向ける相手
 	void SetOtherAxis(GE::Math::Axis axis);
 
 	void Direction(GE::Math::Vector3& target);								//方向計算

@@ -28,14 +28,14 @@ void CameraControl::Update()
 		camera->GetCameraInfo().cameraPos.y,
 		camera->GetCameraInfo().cameraPos.z,
 	};
+	auto newCameraPosition = other + GE::Math::Vector3(sin(dir + 3.14) * current_cameraDistance, 100, cos(dir + 3.14) * current_cameraDistance);
 
 	camera->SetDirection(direction);
-	camera->SetPosition(other + GE::Math::Vector3(sin(dir + 3.14) * current_cameraDistance, 100, cos(dir + 3.14) * current_cameraDistance));
-	//camera->SetPosition(other - otherAxis.z * current_cameraDistance);
-		//XV‚µ‚½ˆÊ’uŽæ“¾
-	position.x = graphicsDevice->GetMainCamera()->GetCameraInfo().cameraPos.x;
-	position.y = graphicsDevice->GetMainCamera()->GetCameraInfo().cameraPos.y;
-	position.z = graphicsDevice->GetMainCamera()->GetCameraInfo().cameraPos.z;
+
+	const float LERP_VALUE = 0.05f;
+	position = GE::Math::Vector3::Lerp(beforeCameraPosition, newCameraPosition, LERP_VALUE);
+
+	camera->SetPosition(position);
 }
 
 void CameraControl::Direction(GE::Math::Vector3& target)
@@ -67,7 +67,7 @@ void CameraControl::SetGraphicsDevice(GE::IGraphicsDeviceDx12* graphicsDevice)
 	position.z = graphicsDevice->GetMainCamera()->GetCameraInfo().cameraPos.z;
 }
 
-void CameraControl::SetPosition(GE::Math::Vector3& pos)
+void CameraControl::SetOtherPos(GE::Math::Vector3& pos)
 {
 	other = pos;
 }

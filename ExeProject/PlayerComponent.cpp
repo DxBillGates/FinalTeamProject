@@ -42,7 +42,7 @@ void PlayerComponent::Start()
 	cameraC = new CameraControl();
 	cameraC->Initialize();
 	cameraC->SetGraphicsDevice(graphicsDevice);
-	cameraC->SetPosition(transform->position);
+	cameraC->SetOtherPos(transform->position);
 }
 void PlayerComponent::Update(float deltaTime)
 {
@@ -54,7 +54,7 @@ void PlayerComponent::Update(float deltaTime)
 	cameraC->Direction(transform->position);
 	cameraC->SetOtherAxis(transform->GetMatrix().GetAxis());
 
-	cameraC->SetPosition(transform->position);
+	cameraC->SetOtherPos(transform->position);
 	//axis.z.y‚ªMAX‚É‚È‚Á‚Äz.x‚Æz.z‚ª0‚É‚È‚é‚Ì‚ð–h‚®
 	if (abs(axis.z.y) < 0.999)
 	{
