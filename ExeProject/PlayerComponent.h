@@ -1,6 +1,7 @@
 #pragma once
 #include <GatesEngine/Header/GameFramework/Component/Component.h>
 #include <GatesEngine/Header/Input/InputDevice.h>
+#include"CameraControl.h"
 
 	class PlayerComponent : public GE::Component
 	{
@@ -29,7 +30,7 @@
 		float normal_speed;			//通常時のスピード
 		float dash_speed;			//ダッシュ時のスピード
 
-		
+		CameraControl* cameraC = nullptr;	//カメラ制御
 	public:
 		PlayerComponent();
 

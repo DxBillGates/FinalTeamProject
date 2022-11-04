@@ -39,28 +39,37 @@ void PlayerComponent::Start()
 	current_cameraDistance = normal_cameraDistance;
 	dir = 0.0;
 
+	cameraC = new CameraControl();
+	cameraC->Initialize();
+	cameraC->SetGraphicsDevice(graphicsDevice);
+	cameraC->SetPosition(transform->position);
 }
 void PlayerComponent::Update(float deltaTime)
 {
 
 	const GE::Math::Axis& axis = transform->GetMatrix().GetAxis();
-	auto camera = dynamic_cast<GE::Camera3DDebug*>(graphicsDevice->GetMainCamera());
+	//auto camera = dynamic_cast<GE::Camera3DDebug*>(graphicsDevice->GetMainCamera());
 	//‘€ì
 	Control(1);
 	//Player--Camera •ûŒü
-	GE::Math::Vector3 direction = { transform->position.x - camera->GetCameraInfo().cameraPos.x,
-		transform->position.y - camera->GetCameraInfo().cameraPos.y,
-		transform->position.z - camera->GetCameraInfo().cameraPos.z };
-	direction = direction.Normalize();
+	//GE::Math::Vector3 direction = { transform->position.x - camera->GetCameraInfo().cameraPos.x,
+	//	transform->position.y - camera->GetCameraInfo().cameraPos.y,
+	//	transform->position.z - camera->GetCameraInfo().cameraPos.z };
+	//direction = direction.Normalize();
 
+	cameraC->Direction(transform->position);
+
+	cameraC->SetPosition(transform->position);
 	//axis.z.y‚ªMAX‚É‚È‚Á‚Äz.x‚Æz.z‚ª0‚É‚È‚é‚Ì‚ð–h‚®
 	if (abs(axis.z.y) < 0.999)
 	{
 		dir = atan2f(axis.z.x, axis.z.z);
 	}
+	cameraC->SetDir(dir);
 	//ƒJƒƒ‰§Œä
-	camera->SetDirection(direction);
-	camera->SetPosition(transform->position + GE::Math::Vector3(sin(dir + 3.14) * current_cameraDistance, 100, cos(dir + 3.14) * current_cameraDistance));
+	//camera->SetDirection(direction);
+	//camera->SetPosition(transform->position + GE::Math::Vector3(sin(dir + 3.14) * current_cameraDistance, 100, cos(dir + 3.14) * current_cameraDistance));
+	cameraC->Update();
 
 	//D0‰Ÿ‚µ‚½‚çˆÚ“®’âŽ~–ƒfƒoƒbƒO—p
 	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::D0))
@@ -180,8 +189,9 @@ void PlayerComponent::Control(float deltaTime)
 		//current_speed = GE::Math::Easing::Lerp(dash_speed, normal_speed, speedEasingCount / time);
 		current_speed = easeIn(dash_speed, normal_speed, dashEasingCount / dash_time);
 		//ƒJƒƒ‰‚Ì‹——£‘JˆÚA‘JˆÚ‚Å—£‚ê‚Ä‘JˆÚ‚ÅŒ³‚É–ß‚é
-		current_cameraDistance = easeIn(normal_cameraDistance, dash_cameraDistance,
-			sin(GE::Math::Easing::Lerp(0, 3.14, dashEasingCount / dash_time)));
+		//current_cameraDistance = easeIn(normal_cameraDistance, dash_cameraDistance,
+		//	sin(GE::Math::Easing::Lerp(0, 3.14, dashEasingCount / dash_time)));
+		cameraC->DashCam(dashEasingCount, dash_time);
 
 		if (dashEasingCount < dash_time) { dashEasingCount++; }
 		else { state = PlayerState::MOVE; dashEasingCount = 0.0f; }
