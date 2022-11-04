@@ -1,6 +1,8 @@
 #pragma once
 #include"NormalEnemy.h"
 #include <GatesEngine/Header/GameFramework/GameObject/GameObjectManager.h> 
+#include <GatesEngine/Header/Util/Random.h>
+
 
 class EnemyManager
 {

@@ -13,12 +13,11 @@ EnemyManager* EnemyManager::GetInstance()
 
 void EnemyManager::Start(int count)
 {
-    for (int i = 0; i < count; i++)
+    for (int i = 0; i < count; ++i)
     {
         auto* testObject = gameObjectManager->AddGameObject(new GE::GameObject());
         testObject->SetName("Enemy");
         auto* sampleComponent = testObject->AddComponent<NormalEnemy>();
-
     }
 }
 

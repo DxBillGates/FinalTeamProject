@@ -20,8 +20,8 @@ void NormalEnemy::Awake()
 void NormalEnemy::Start()
 {
 	GE::Utility::Printf("NormalEnemy Start()\n");
-	random = { GE::RandomMaker::GetFloat(-1,1),GE::RandomMaker::GetFloat(-1,1),GE::RandomMaker::GetFloat(-1,1) };
-	transform->position = { 0,10,0 };
+	random = { GE::RandomMaker::GetFloat(-100,100),GE::RandomMaker::GetFloat(-100,100),GE::RandomMaker::GetFloat(-100,100) };
+	transform->position = random;
 	transform->scale = { 100,100,100 };
 	speed = 10;
 }
