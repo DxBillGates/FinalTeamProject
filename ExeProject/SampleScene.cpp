@@ -1,5 +1,6 @@
 #include "SampleScene.h"
 #include "PlayerComponent.h"
+#include"EnemyManager.h"
 #include <GatesEngine/Header\GameFramework\Component\SampleComponent.h>
 #include <GatesEngine/Header\GameFramework\Component\SphereCollider.h>
 #include <GatesEngine/Header\GameFramework\Component\BoxCollider.h>
@@ -38,6 +39,11 @@ SampleScene::SampleScene(const std::string& sceneName)
 		sampleCollider->SetSize({ 2 });
 		sampleCollider->SetType(GE::ColliderType::OBB);
 		col2 = sampleCollider;
+	}
+
+	{
+		EnemyManager::GetInstance()->SetGameObjectManager(&gameObjectManager);
+		EnemyManager::GetInstance()->Start(3);
 	}
 	
 }
