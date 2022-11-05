@@ -1,21 +1,16 @@
 #include "EnemyManager.h"
 #include <GatesEngine/Header/GameFramework/Component/SphereCollider.h>
 
-EnemyManager* EnemyManager::instance;
 EnemyManager* EnemyManager::GetInstance()
 {
-	if (instance == nullptr)
-	{
-		instance = new EnemyManager();
-	}
-
-	return instance;
+	static EnemyManager instance;
+	return &instance;
 }
 
-void EnemyManager::Start(const int count)
+void EnemyManager::Start(const int count, GE::GameObjectManager* gameObjectManager)
 {
 	this->count = count;
-	for (int i = 0; i < this->count; ++i)
+	for (int i = 0; i < count; ++i)
 	{
 		auto* enemy = gameObjectManager->AddGameObject(new GE::GameObject());
 		enemy->SetName("Enemy");

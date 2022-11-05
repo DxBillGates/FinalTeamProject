@@ -7,7 +7,6 @@
 class EnemyManager
 {
 private:
-	static EnemyManager* instance;
 	GE::GameObjectManager* gameObjectManager = nullptr;
 
 	unsigned int count;
@@ -17,7 +16,6 @@ public:
 	~EnemyManager() = default;
 	void operator=(const EnemyManager& obj) = delete;
 	EnemyManager(const EnemyManager& obj) = delete;
-	void Start(const int count);
-	void SetGameObjectManager(GE::GameObjectManager* gameObjectManager_) { gameObjectManager = gameObjectManager_; }
+	void Start(const int count, GE::GameObjectManager* gameObjectManager);
 };
 

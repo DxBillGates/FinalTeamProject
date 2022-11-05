@@ -29,8 +29,6 @@
 		float current_speed;		//現在のスピード
 		float normal_speed;			//通常時のスピード
 		float dash_speed;			//ダッシュ時のスピード
-
-		CameraControl* cameraC = nullptr;	//カメラ制御
 	public:
 		PlayerComponent();
 

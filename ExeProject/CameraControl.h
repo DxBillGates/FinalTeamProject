@@ -6,7 +6,14 @@
 class CameraControl
 {
 public:
-	//static CameraControl* GetInstance();
+	static CameraControl* GetInstance();
+	CameraControl() = default;
+	~CameraControl() = default;
+
+	// 代入、コピーの禁止
+	void operator=(const CameraControl& obj) = delete;
+	CameraControl(const CameraControl& obj) = delete;
+
 	void Create();
 	void Initialize();	//初期化
 	void Update();		//更新

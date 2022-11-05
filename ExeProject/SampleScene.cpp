@@ -41,10 +41,7 @@ SampleScene::SampleScene(const std::string& sceneName)
 		col2 = sampleCollider;
 	}
 
-	{
-		EnemyManager::GetInstance()->SetGameObjectManager(&gameObjectManager);
-		EnemyManager::GetInstance()->Start(10);
-	}
+	EnemyManager::GetInstance()->Start(10,&gameObjectManager);
 	
 }
 

@@ -1,11 +1,11 @@
 #include "CameraControl.h"
 
 
-//CameraControl* CameraControl::GetInstance()
-//{
-//	static CameraControl instance;
-//	return &instance;
-//}
+CameraControl* CameraControl::GetInstance()
+{
+	static CameraControl instance;
+	return &instance;
+}
 
 
 void CameraControl::Create()

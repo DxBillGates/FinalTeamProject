@@ -39,10 +39,9 @@ void PlayerComponent::Start()
 	current_cameraDistance = normal_cameraDistance;
 	dir = 0.0;
 
-	cameraC = new CameraControl();
-	cameraC->Initialize();
-	cameraC->SetGraphicsDevice(graphicsDevice);
-	cameraC->SetOtherPos(transform->position);
+	CameraControl::GetInstance()->Initialize();
+	CameraControl::GetInstance()->SetGraphicsDevice(graphicsDevice);
+	CameraControl::GetInstance()->SetOtherPos(transform->position);
 }
 void PlayerComponent::Update(float deltaTime)
 {
@@ -51,17 +50,17 @@ void PlayerComponent::Update(float deltaTime)
 	//‘€ì
 	Control(1);
 
-	cameraC->Direction(transform->position);
-	cameraC->SetOtherAxis(transform->GetMatrix().GetAxis());
+	CameraControl::GetInstance()->Direction(transform->position);
+	CameraControl::GetInstance()->SetOtherAxis(transform->GetMatrix().GetAxis());
 
-	cameraC->SetOtherPos(transform->position);
+	CameraControl::GetInstance()->SetOtherPos(transform->position);
 	//axis.z.y‚ªMAX‚É‚È‚Á‚Äz.x‚Æz.z‚ª0‚É‚È‚é‚Ì‚ð–h‚®
 	if (abs(axis.z.y) < 0.999)
 	{
 		dir = atan2f(axis.z.x, axis.z.z);
 	}
-	cameraC->SetDir(dir);
-	cameraC->Update();
+	CameraControl::GetInstance()->SetDir(dir);
+	CameraControl::GetInstance()->Update();
 
 	//D0‰Ÿ‚µ‚½‚çˆÚ“®’âŽ~–ƒfƒoƒbƒO—p
 	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::D0))
@@ -183,7 +182,7 @@ void PlayerComponent::Control(float deltaTime)
 		//ƒJƒƒ‰‚Ì‹——£‘JˆÚA‘JˆÚ‚Å—£‚ê‚Ä‘JˆÚ‚ÅŒ³‚É–ß‚é
 		//current_cameraDistance = easeIn(normal_cameraDistance, dash_cameraDistance,
 		//	sin(GE::Math::Easing::Lerp(0, 3.14, dashEasingCount / dash_time)));
-		cameraC->DashCam(dashEasingCount, dash_time);
+		CameraControl::GetInstance()->DashCam(dashEasingCount, dash_time);
 
 		if (dashEasingCount < dash_time) { dashEasingCount++; }
 		else { state = PlayerState::MOVE; dashEasingCount = 0.0f; }
