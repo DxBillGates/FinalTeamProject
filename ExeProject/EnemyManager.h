@@ -15,7 +15,7 @@ public:
 	~EnemyManager() = default;
 	void operator=(const EnemyManager& obj) = delete;
 	EnemyManager(const EnemyManager& obj) = delete;
-	void Start(int count);
+	void Start(const int& count);
 	void SetGameObjectManager(GE::GameObjectManager* gameObjectManager_) { gameObjectManager = gameObjectManager_; }
 };
 

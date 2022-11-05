@@ -11,7 +11,7 @@ EnemyManager* EnemyManager::GetInstance()
     return instance;
 }
 
-void EnemyManager::Start(int count)
+void EnemyManager::Start(const int& count)
 {
     for (int i = 0; i < count; ++i)
     {

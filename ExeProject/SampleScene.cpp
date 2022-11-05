@@ -43,7 +43,7 @@ SampleScene::SampleScene(const std::string& sceneName)
 
 	{
 		EnemyManager::GetInstance()->SetGameObjectManager(&gameObjectManager);
-		EnemyManager::GetInstance()->Start(3);
+		EnemyManager::GetInstance()->Start(10);
 	}
 	
 }
