@@ -1,4 +1,5 @@
 #include "CollisionDetection.h"
+#include "PlayerComponent.h"
 #include <GatesEngine/Header/GameFramework/Collision/CollisionManager.h>
 
 

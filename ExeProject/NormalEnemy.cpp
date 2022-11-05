@@ -24,6 +24,7 @@ void NormalEnemy::Start()
 	transform->position = random;//ˆÊ’u‚ðƒ‰ƒ“ƒ_ƒ€‰»
 	transform->scale = { 100.0f,100.0f,100.0f };
 	speed = 10;
+	statas = Statas::ALIVE;
 }
 void NormalEnemy::Update(float deltaTime)
 {
@@ -35,6 +36,8 @@ void NormalEnemy::Update(float deltaTime)
 
 void NormalEnemy::Draw()
 {
+	if (statas == Statas::DEAD) { return; }
+
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
 	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
 
@@ -81,6 +84,10 @@ void NormalEnemy::LateDraw()
 void NormalEnemy::OnCollision(GE::GameObject* other)
 {
 	GE::Utility::Printf("NormalEnemy OnCollision(GameObject* other) : hit\n");
+	if (statas == Statas::ALIVE)
+	{
+		statas = Statas::DEAD;
+	}
 }
 
 void NormalEnemy::OnCollision(GE::ICollider* hitCollider)
