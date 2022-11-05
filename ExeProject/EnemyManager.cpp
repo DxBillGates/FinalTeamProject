@@ -1,23 +1,28 @@
 #include "EnemyManager.h"
+#include <GatesEngine/Header/GameFramework/Component/SphereCollider.h>
 
 EnemyManager* EnemyManager::instance;
 EnemyManager* EnemyManager::GetInstance()
 {
-    if (instance == nullptr)
-    {
-        instance = new EnemyManager();
-    }
+	if (instance == nullptr)
+	{
+		instance = new EnemyManager();
+	}
 
-    return instance;
+	return instance;
 }
 
-void EnemyManager::Start(const int& count)
+void EnemyManager::Start(const int count)
 {
-    for (int i = 0; i < count; ++i)
-    {
-        auto* testObject = gameObjectManager->AddGameObject(new GE::GameObject());
-        testObject->SetName("Enemy");
-        auto* sampleComponent = testObject->AddComponent<NormalEnemy>();
-    }
+	this->count = count;
+	for (int i = 0; i < this->count; ++i)
+	{
+		auto* enemy = gameObjectManager->AddGameObject(new GE::GameObject());
+		enemy->SetName("Enemy");
+		auto* sampleComponent = enemy->AddComponent<NormalEnemy>();
+		auto* normalEnemyCollider = enemy->AddComponent<GE::SphereCollider>();
+		normalEnemyCollider->SetCenter({ 0,0,0 });
+		normalEnemyCollider->SetSize({ 1 });
+	}
 }
 
