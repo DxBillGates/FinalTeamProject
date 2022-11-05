@@ -6,6 +6,7 @@
 
 class EnemyManager
 {
+	
 private:
 	GE::GameObjectManager* gameObjectManager = nullptr;
 

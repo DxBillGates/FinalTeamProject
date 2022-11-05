@@ -1,6 +1,7 @@
 #include "SampleScene.h"
 #include "PlayerComponent.h"
 #include"EnemyManager.h"
+#include"CollisionDetection.h"
 #include <GatesEngine/Header\GameFramework\Component\SampleComponent.h>
 #include <GatesEngine/Header\GameFramework\Component\SphereCollider.h>
 #include <GatesEngine/Header\GameFramework\Component\BoxCollider.h>
@@ -21,11 +22,12 @@ SampleScene::SampleScene(const std::string& sceneName)
 	{
 		auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject());
 		testObject->SetName("Player");
-		auto* sampleCollider = testObject->AddComponent < GE::SphereCollider >();
+		auto* playerCollider = testObject->AddComponent < GE::SphereCollider >();
 		auto* sampleComponent = testObject->AddComponent<PlayerComponent>();
-		sampleCollider->SetCenter({ 0,0,0 });
-		sampleCollider->SetSize({ 2 });
-		col1 = sampleCollider;
+		playerCollider->SetCenter({ 0,0,0 });
+		playerCollider->SetSize({ 2 });
+		col1 = playerCollider;
+		CollisionDetection::GetInstance()->SetPlayer(testObject, playerCollider);
 	}
 
 	{
@@ -59,11 +61,12 @@ void SampleScene::Update(float deltaTime)
 {
 	gameObjectManager.Update(deltaTime);
 
-	if (GE::CollisionManager::CheckHit(col1, col2))
+	CollisionDetection::GetInstance()->Update(deltaTime);
+	/*if (GE::CollisionManager::CheckHit(col1, col2))
 	{
 		col1->Hit(col2, nullptr);
 		col2->Hit(col1, nullptr);
-	}
+	}*/
 }
 
 void SampleScene::Draw()

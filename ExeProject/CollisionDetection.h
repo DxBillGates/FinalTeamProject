@@ -1,8 +1,7 @@
 #pragma once
-#include <GatesEngine/Header/GameFramework/GameObject/GameObjectManager.h> 
-#include <GatesEngine/Header/Util/Random.h>
+#include <GatesEngine/Header/GameFramework/GameObject/GameObject.h> 
 
-struct CollisionInfo
+struct CollisionObjectData
 {
 	GE::GameObject* object;
 	GE::ICollider* collider;
@@ -11,15 +10,17 @@ struct CollisionInfo
 class CollisionDetection
 {
 private:
-	static CollisionDetection* instance;
-
-	//coll
+	CollisionObjectData player;
+	std::vector<CollisionObjectData> nEnemies;
 public:
 	static CollisionDetection* GetInstance();
 	CollisionDetection() = default;
 	~CollisionDetection() = default;
 	void operator=(const CollisionDetection& obj) = delete;
 	CollisionDetection(const CollisionDetection& obj) = delete;
-	void Start();
+	void Update(float deltaTime);
+
+	void SetPlayer(GE::GameObject* p, GE::ICollider* coll);
+	void SetNormalEnemies(GE::GameObject* ne, GE::ICollider* coll);
 };
 
