@@ -5,8 +5,8 @@ class NormalEnemy : public GE::Component
 {
 private:
 	GE::Math::Vector3 random;
-	float speed;
-	float angle;
+	float speed = 0.0f;
+	float angle = 0.0f;
 public:
 	NormalEnemy();
 

@@ -20,9 +20,9 @@ void NormalEnemy::Awake()
 void NormalEnemy::Start()
 {
 	GE::Utility::Printf("NormalEnemy Start()\n");
-	random = { GE::RandomMaker::GetFloat(-1000,1000),GE::RandomMaker::GetFloat(0,1000),GE::RandomMaker::GetFloat(-500,500) };//敵の位置のランダム変数
+	random = { GE::RandomMaker::GetFloat(-1000.0f,1000.0f),GE::RandomMaker::GetFloat(0.0f,1000.0f),GE::RandomMaker::GetFloat(-500.0f,500.0f) };//敵の位置のランダム変数
 	transform->position = random;//位置をランダム化
-	transform->scale = { 100,100,100 };
+	transform->scale = { 100.0f,100.0f,100.0f };
 	speed = 10;
 }
 void NormalEnemy::Update(float deltaTime)
