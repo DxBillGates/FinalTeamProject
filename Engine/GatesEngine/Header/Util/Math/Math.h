@@ -47,5 +47,16 @@ namespace GE
 		float GaussFilter(const GE::Math::Vector2& pos, float value);
 		// 参照ピクセルへの情報とガウシアンフィルタの重みを計算してセットする関数
 		void SetGaussFilterData(const GE::Math::Vector2& size, GE::Math::Vector2& dir, float gaussValue, GaussFilterData* data, int dataSize);
+
+		/// <summary>
+		/// スクリーンの一点から伸びるレイ情報を取得
+		/// </summary>
+		/// <param name="pos">スクリーン座標　例)マウス座標など</param>
+		/// <param name="outPos">レイの始点を参照渡しで取得</param>
+		/// <param name="outDir">レイの方向を参照渡しで取得</param>
+		/// <param name="view">ビュー行列</param>
+		/// <param name="proj">プロジェクション行列</param>
+		/// <param name="viewPort">ビューポート行列</param>
+		void GetScreenToRay(const Vector2& pos,Vector3* outPos, Vector3* outDir,const Matrix4x4& view,const Matrix4x4& proj,const Matrix4x4& viewPort);
 	}
 }

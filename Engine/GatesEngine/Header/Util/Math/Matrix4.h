@@ -188,6 +188,8 @@ namespace GE
 			/// <param name="farClip">ファークリップ</param>
 			/// <returns></returns>
 			static Matrix4x4 GetOrthographMatrix(const Vector2& size, float nearClip, float farClip);
+
+			static Matrix4x4 GetViewportMatrix(const Vector2& size);
 		};
 		Matrix4x4& operator*=(Matrix4x4& m1, const Matrix4x4& m2);
 		Matrix4x4 operator*(const Matrix4x4& m1, const Matrix4x4& m2);

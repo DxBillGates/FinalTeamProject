@@ -54,3 +54,21 @@ void GE::Math::SetGaussFilterData(const GE::Math::Vector2& size, GE::Math::Vecto
 		data->data[i].z = data->data[i - 7].z;
 	}
 }
+
+void GE::Math::GetScreenToRay(const Vector2& pos, Vector3* outPos, Vector3* outDir, const Matrix4x4& view, const Matrix4x4& proj, const Matrix4x4& viewPort)
+{
+	// レイの始点と終点(レイに終点はないが)を算出
+	Vector3 nearPos = { pos.x,pos.y,0 };
+	Vector3 farPos = { pos.x,pos.y,1 };
+
+	Matrix4x4 inverse = Matrix4x4::Inverse(viewPort) * Matrix4x4::Inverse(proj) * Matrix4x4::Inverse(view);
+	nearPos = Matrix4x4::Transform(nearPos, inverse);
+	farPos = Matrix4x4::Transform(nearPos, inverse);
+
+	if (outPos == nullptr)return;
+	if (outDir == nullptr)return;
+	// レイの方向を算出
+	*outPos = nearPos;
+	*outDir = farPos - *outPos;
+	*outDir = Vector3::Normalize(*outDir);
+}

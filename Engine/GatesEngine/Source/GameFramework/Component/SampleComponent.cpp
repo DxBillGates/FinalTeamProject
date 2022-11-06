@@ -51,6 +51,9 @@ void GE::SampleComponent::Update(float deltaTime)
 		Utility::Printf("SampleComponent Update() : press b button\n");
 	}
 
+	const auto& cameraInfo = graphicsDevice->GetMainCamera()->GetCameraInfo();
+	Math::GetScreenToRay(inputDevice->GetMouse()->GetMousePos(), &rayPos, &rayDir, cameraInfo.viewMatrix, cameraInfo.projMatrix, Math::Matrix4x4::GetViewportMatrix(Window::GetWindowSize()));
+
 	Joycon* joycon = inputDevice->GetJoyconL();
 	if (joycon == nullptr)return;
 	Vector3Int16 gyroData = joycon->GetGyroscope();
@@ -83,7 +86,7 @@ void GE::SampleComponent::Draw()
 
 void GE::SampleComponent::LateDraw()
 {
-	const float SPRITE_SIZE = 100;
+	const float SPRITE_SIZE = 100/3;
 
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
 	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
@@ -125,4 +128,6 @@ void GE::SampleComponent::OnGui()
 	ImGui::DragFloat("Speed", &speed, dragSpeed, 0, maxValue);
 	ImGui::DragFloat3("RandomVector", random.value, dragSpeed, -1, 1);
 	ImGui::DragFloat3("GyroVector", gyro.value, dragSpeed, -1, 1);
+	ImGui::InputFloat3("rayPos", rayPos.value);
+	ImGui::InputFloat3("rayDir", rayDir.value);
 }
