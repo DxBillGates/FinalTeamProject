@@ -63,6 +63,7 @@ void GE::GameObjectManager::LateDraw()
 GE::GameObject* GE::GameObjectManager::AddGameObject(GameObject* newGameObject)
 {
 	gameObjects.push_back(newGameObject);
+	newGameObject->SetGameObjectManager(this);
 	return newGameObject;
 }
 

@@ -9,9 +9,12 @@ namespace GE
 {
 	class Component;
 	class ICollider;
+	class GameObjectManager;
 	class GameObject
 	{
 	private:
+		GameObjectManager* gameObjectManager;
+
 		GameObject* parent;
 		std::vector<Component*> components;
 		Transform transform;
@@ -38,6 +41,7 @@ namespace GE
 		const std::string& GetName();
 		const std::string& GetTag();
 
+		void SetGameObjectManager(GameObjectManager* manager);
 		void SetParent(GameObject* object);
 		void SetName(const std::string& name);
 		void SetTag(const std::string & tag);
@@ -49,6 +53,7 @@ namespace GE
 		template<typename T>
 		T* AddComponent();
 
+		GameObjectManager* GetGameObjectManager();
 		std::vector<Component*>* GetComponents();
 	};
 

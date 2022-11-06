@@ -25,5 +25,6 @@ namespace GE
 		GameObject* AddGameObject(GameObject* newGameObject);
 		GameObject* FindGameObject(const std::string& name);
 		GameObject* FindGameObjectWithTag(const std::string& name, const std::string& tag);
+		bool Raycast(const Math::Vector3& pos, const Math::Vector3& dir);
 	};
 }

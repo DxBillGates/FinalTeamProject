@@ -123,6 +123,11 @@ const std::string& GE::GameObject::GetTag()
 	return tag;
 }
 
+void GE::GameObject::SetGameObjectManager(GameObjectManager* manager)
+{
+	gameObjectManager = manager;
+}
+
 void GE::GameObject::SetParent(GameObject* object)
 {
 	parent = object;
@@ -156,6 +161,11 @@ void GE::GameObject::SetGraphicsDevice(IGraphicsDeviceDx12* gDevice)
 bool GE::GameObject::IsSetGraphicsDevice()
 {
 	return (graphicsDevice) ? true : false;
+}
+
+GE::GameObjectManager* GE::GameObject::GetGameObjectManager()
+{
+	return gameObjectManager;
 }
 
 std::vector<GE::Component*>* GE::GameObject::GetComponents()

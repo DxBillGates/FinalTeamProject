@@ -4,6 +4,7 @@
 #include "..\..\..\Header\Util\Random.h"
 #include "..\..\..\Header\Graphics\Window.h"
 #include "..\..\..\Header\GUI\GUIManager.h"
+#include "..\..\..\Header\GameFramework\GameObject\GameObjectManager.h"
 
 GE::SampleComponent::SampleComponent()
 	: inputDevice(nullptr)
@@ -57,6 +58,9 @@ void GE::SampleComponent::Update(float deltaTime)
 
 	transform->rotation *= Math::Quaternion(gyro.Normalize(), Math::ConvertToRadian(gyro.Length() * 1.f / 60.f));
 	//transform->rotation = Math::Quaternion::Euler(Math::Vector3(45, 0, 0));
+
+	auto manager = gameObject->GetGameObjectManager();
+	manager->FindGameObject("");
 }
 
 void GE::SampleComponent::Draw()
