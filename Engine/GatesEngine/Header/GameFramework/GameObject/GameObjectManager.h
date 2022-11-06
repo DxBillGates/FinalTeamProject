@@ -3,13 +3,15 @@
 #include "..\..\GUI\Hierarchy.h"
 #include "..\..\GUI\Inspector.h"
 #include <vector>
+#include <map>
 
 namespace GE
 {
 	class GameObjectManager
 	{
 	private:
-		std::vector<GameObject*> gameObjects;
+		// key : É^ÉO
+		std::map<std::string, std::vector<GameObject*>> gameObjects;
 
 		GUI::Hierarchy hierarchyGui;
 		GUI::Inspector inspectorGui;

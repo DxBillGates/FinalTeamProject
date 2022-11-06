@@ -6,39 +6,51 @@ GE::GameObjectManager::GameObjectManager()
 
 GE::GameObjectManager::~GameObjectManager()
 {
-	for (auto& object : gameObjects)
+	for (auto& objects : gameObjects)
 	{
-		delete object;
+		for (auto& object : objects.second)
+		{
+			delete object;
+		}
 	}
 	gameObjects.clear();
 }
 
 void GE::GameObjectManager::Awake()
 {
-	for (auto& object : gameObjects)
+	for (auto& objects : gameObjects)
 	{
-		object->Awake();
+		for (auto& object : objects.second)
+		{
+			object->Awake();
+		}
 	}
 }
 
 void GE::GameObjectManager::Start()
 {
-	for (auto& object : gameObjects)
+	for (auto& objects : gameObjects)
 	{
-		object->Start();
+		for (auto& object : objects.second)
+		{
+			object->Start();
+		}
 	}
 }
 
 void GE::GameObjectManager::Update(float deltaTime)
 {
-	for (auto& object : gameObjects)
+	for (auto& objects : gameObjects)
 	{
-		object->Update(deltaTime);
-
-		// Hierarchy‚ÌGameObject‚ð‘I‘ð‚µ‚½‚çInspector‚É‚»‚ÌGameObject‚ð“o˜^
-		if (hierarchyGui.OnGui(object))
+		for (auto& object : objects.second)
 		{
-			inspectorGui.SetCurrentSelectGameObject(object);
+			object->Update(deltaTime);
+
+			// Hierarchy‚ÌGameObject‚ð‘I‘ð‚µ‚½‚çInspector‚É‚»‚ÌGameObject‚ð“o˜^
+			if (hierarchyGui.OnGui(object))
+			{
+				inspectorGui.SetCurrentSelectGameObject(object);
+			}
 		}
 	}
 	inspectorGui.OnGui();
@@ -46,50 +58,80 @@ void GE::GameObjectManager::Update(float deltaTime)
 
 void GE::GameObjectManager::Draw()
 {
-	for (auto& object : gameObjects)
+	for (auto& objects : gameObjects)
 	{
-		object->Draw();
+		for (auto& object : objects.second)
+		{
+			object->Draw();
+		}
 	}
 }
 
 void GE::GameObjectManager::LateDraw()
 {
-	for (auto& object : gameObjects)
+	for (auto& objects : gameObjects)
 	{
-		object->LateDraw();
+		for (auto& object : objects.second)
+		{
+			object->LateDraw();
+		}
 	}
 }
 
 GE::GameObject* GE::GameObjectManager::AddGameObject(GameObject* newGameObject)
 {
-	gameObjects.push_back(newGameObject);
+	const std::string& tag = newGameObject->GetTag();
+
+	for (auto& objects : gameObjects)
+	{
+		if (objects.first == tag)
+		{
+			objects.second.push_back(newGameObject);
+			newGameObject->SetGameObjectManager(this);
+			return newGameObject;
+		}
+	}
+
+	gameObjects.insert(std::make_pair(tag,std::vector<GameObject*>()));
+	gameObjects[tag].push_back(newGameObject);
 	newGameObject->SetGameObjectManager(this);
+
 	return newGameObject;
 }
 
 GE::GameObject* GE::GameObjectManager::FindGameObject(const std::string& name)
 {
 	GameObject* returnObject = nullptr;
-	for (auto& object : gameObjects)
-	{
-		if (object->GetName() != name)continue;
 
-		returnObject = object;
-		break;
+	for (auto& objects : gameObjects)
+	{
+		for (auto& object : objects.second)
+		{
+			if (object->GetName() != name)continue;
+
+			returnObject = object;
+			break;
+		}
 	}
+
 	return returnObject;
 }
 
 GE::GameObject* GE::GameObjectManager::FindGameObjectWithTag(const std::string& name, const std::string& tag)
 {
 	GameObject* returnObject = nullptr;
-	for (auto& object : gameObjects)
-	{
-		if (object->GetName() != name)continue;
-		if (object->GetTag() != tag)continue;
 
-		returnObject = object;
-		break;
+	for (auto& objects : gameObjects)
+	{
+		for (auto& object : objects.second)
+		{
+			if (object->GetName() != name)continue;
+			if (object->GetTag() != tag)continue;
+
+			returnObject = object;
+			break;
+		}
 	}
+
 	return returnObject;
 }

@@ -63,7 +63,7 @@ void GE::SampleComponent::Update(float deltaTime)
 	//transform->rotation = Math::Quaternion::Euler(Math::Vector3(45, 0, 0));
 
 	auto manager = gameObject->GetGameObjectManager();
-	manager->FindGameObject("");
+	//auto object = manager->FindGameObject("test2");
 }
 
 void GE::SampleComponent::Draw()
