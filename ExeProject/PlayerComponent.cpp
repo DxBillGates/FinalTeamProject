@@ -24,7 +24,7 @@ void PlayerComponent::Start()
 	inputDevice = GE::InputDevice::GetInstance();
 	random = { GE::RandomMaker::GetFloat(-1,1),GE::RandomMaker::GetFloat(-1,1),GE::RandomMaker::GetFloat(-1,1) };
 	transform->position = { 0,10,0 };
-	transform->scale = { 4,2,2 };
+	transform->scale = { 50,50,50 };
 
 	body_direction = { 0,0,0 };
 	dashEasingCount = 0.0;
@@ -55,7 +55,7 @@ void PlayerComponent::Update(float deltaTime)
 
 	CameraControl::GetInstance()->SetOtherPos(transform->position);
 	//axis.z.y‚ªMAX‚É‚È‚Á‚Äz.x‚Æz.z‚ª0‚É‚È‚é‚Ì‚ð–h‚®
-	if (abs(axis.z.y) < 0.999)
+	if (abs(axis.z.y) < 0.6)
 	{
 		dir = atan2f(axis.z.x, axis.z.z);
 	}
@@ -77,15 +77,13 @@ void PlayerComponent::Draw()
 
 	graphicsDevice->SetShader("DefaultMeshShader");
 
-	transform->scale = { 200,50,50 };
-
 	GE::Math::Matrix4x4 modelMatrix = transform->GetMatrix();
 	GE::Material material;
 	material.color = GE::Color::White();
 
 	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
-	graphicsDevice->DrawMesh("Cube");
+	graphicsDevice->DrawMesh("Bird1");
 }
 
 void PlayerComponent::LateDraw()

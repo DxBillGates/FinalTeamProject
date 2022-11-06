@@ -172,6 +172,12 @@ bool GE::Application::LoadContents()
 	mesh = new Mesh();
 	mesh->Create(device, cmdList, modelDataTorus);
 	meshManager->Add(mesh, "Torus");
+	
+	MeshData<Vertex_UV_Normal> modelDataBird1;
+	MeshCreater::LoadObjModelData("Resources/Model/bird1", modelDataBird1);
+	mesh = new Mesh();
+	mesh->Create(device, cmdList, modelDataBird1);
+	meshManager->Add(mesh, "Bird1");
 
 	// texture load
 	auto* textureManager = graphicsDevice.GetTextureManager();
