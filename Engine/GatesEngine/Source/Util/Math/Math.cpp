@@ -69,6 +69,6 @@ void GE::Math::GetScreenToRay(const Vector2& pos, Vector3* outPos, Vector3* outD
 	if (outDir == nullptr)return;
 	// ƒŒƒC‚Ì•ûŒü‚ğZo
 	*outPos = nearPos;
-	*outDir = farPos - *outPos;
+	*outDir = *outPos - farPos;
 	*outDir = Vector3::Normalize(*outDir);
 }

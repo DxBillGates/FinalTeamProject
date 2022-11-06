@@ -52,7 +52,7 @@ void GE::SampleComponent::Update(float deltaTime)
 	}
 
 	const auto& cameraInfo = graphicsDevice->GetMainCamera()->GetCameraInfo();
-	Math::GetScreenToRay(inputDevice->GetMouse()->GetMousePos(), &rayPos, &rayDir, cameraInfo.viewMatrix, cameraInfo.projMatrix, Math::Matrix4x4::GetViewportMatrix(Window::GetWindowSize()));
+	Math::GetScreenToRay(inputDevice->GetMouse()->GetClientMousePos(), &rayPos, &rayDir, cameraInfo.viewMatrix, cameraInfo.projMatrix, Math::Matrix4x4::GetViewportMatrix(Window::GetWindowSize()));
 
 	Joycon* joycon = inputDevice->GetJoyconL();
 	if (joycon == nullptr)return;

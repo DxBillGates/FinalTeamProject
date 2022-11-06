@@ -11,6 +11,7 @@ GE::GameObject::GameObject(const std::string& name, const std::string& tag)
 	, drawAxisEnabled(false)
 	, name(name)
 	, tag(tag)
+	, gameObjectManager(nullptr)
 {
 }
 
