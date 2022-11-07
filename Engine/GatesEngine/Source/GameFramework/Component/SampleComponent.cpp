@@ -4,6 +4,7 @@
 #include "..\..\..\Header\Util\Random.h"
 #include "..\..\..\Header\Graphics\Window.h"
 #include "..\..\..\Header\GUI\GUIManager.h"
+#include "..\..\..\Header\GameFramework\GameObject\GameObjectManager.h"
 
 GE::SampleComponent::SampleComponent()
 	: inputDevice(nullptr)
@@ -29,34 +30,42 @@ void GE::SampleComponent::Start()
 
 void GE::SampleComponent::Update(float deltaTime)
 {
-	const Math::Axis& axis = transform->GetMatrix().GetAxis();
-	if (inputDevice->GetKeyboard()->CheckHitKey(Keys::SPACE))
-	{
-		transform->position += axis.y;
-	}
+	//const Math::Axis& axis = transform->GetMatrix().GetAxis();
+	//if (inputDevice->GetKeyboard()->CheckHitKey(Keys::SPACE))
+	//{
+	//	transform->position += axis.y;
+	//}
 
-	if (inputDevice->GetKeyboard()->CheckPressTrigger(Keys::SPACE))
-	{
-		Utility::Printf("SampleComponent Update() : press space key\n");
-	}
+	//if (inputDevice->GetKeyboard()->CheckPressTrigger(Keys::SPACE))
+	//{
+	//	Utility::Printf("SampleComponent Update() : press space key\n");
+	//}
 
-	if (inputDevice->GetMouse()->GetCheckPressTrigger(MouseButtons::LEFT_CLICK))
-	{
-		Utility::Printf("SampleComponent Update() : press left click\n");
-	}
+	//if (inputDevice->GetMouse()->GetCheckPressTrigger(MouseButtons::LEFT_CLICK))
+	//{
+	//	Utility::Printf("SampleComponent Update() : press left click\n");
+	//}
 
-	if (inputDevice->GetXCtrler()->CheckHitButtonTrigger(XInputControllerButton::XINPUT_B))
-	{
-		Utility::Printf("SampleComponent Update() : press b button\n");
-	}
+	//if (inputDevice->GetXCtrler()->CheckHitButtonTrigger(XInputControllerButton::XINPUT_B))
+	//{
+	//	Utility::Printf("SampleComponent Update() : press b button\n");
+	//}
 
-	Joycon* joycon = inputDevice->GetJoyconL();
-	if (joycon == nullptr)return;
-	Vector3Int16 gyroData = joycon->GetGyroscope();
-	gyro = { (float)gyroData.y,(float)-gyroData.z,(float)-gyroData.x };
+	//Joycon* joycon = inputDevice->GetJoyconL();
+	//if (joycon == nullptr)return;
+	//Vector3Int16 gyroData = joycon->GetGyroscope();
+	//gyro = { (float)gyroData.y,(float)-gyroData.z,(float)-gyroData.x };
 
-	transform->rotation *= Math::Quaternion(gyro.Normalize(), Math::ConvertToRadian(gyro.Length() * 1.f / 60.f));
-	//transform->rotation = Math::Quaternion::Euler(Math::Vector3(45, 0, 0));
+	//transform->rotation *= Math::Quaternion(gyro.Normalize(), Math::ConvertToRadian(gyro.Length() * 1.f / 60.f));
+	////transform->rotation = Math::Quaternion::Euler(Math::Vector3(45, 0, 0));
+
+
+	const auto& cameraInfo = graphicsDevice->GetMainCamera()->GetCameraInfo();
+	Math::GetScreenToRay(inputDevice->GetMouse()->GetClientMousePos(), &rayPos, &rayDir, cameraInfo.viewMatrix, cameraInfo.projMatrix, Math::Matrix4x4::GetViewportMatrix(Window::GetWindowSize()));
+	auto manager = gameObject->GetGameObjectManager();
+	manager->Raycast(rayPos, rayDir, "none");
+
+	//auto object = manager->FindGameObject("test2");
 }
 
 void GE::SampleComponent::Draw()
@@ -79,7 +88,7 @@ void GE::SampleComponent::Draw()
 
 void GE::SampleComponent::LateDraw()
 {
-	const float SPRITE_SIZE = 100;
+	const float SPRITE_SIZE = 100/3;
 
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
 	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
@@ -121,4 +130,6 @@ void GE::SampleComponent::OnGui()
 	ImGui::DragFloat("Speed", &speed, dragSpeed, 0, maxValue);
 	ImGui::DragFloat3("RandomVector", random.value, dragSpeed, -1, 1);
 	ImGui::DragFloat3("GyroVector", gyro.value, dragSpeed, -1, 1);
+	ImGui::InputFloat3("rayPos", rayPos.value);
+	ImGui::InputFloat3("rayDir", rayDir.value);
 }

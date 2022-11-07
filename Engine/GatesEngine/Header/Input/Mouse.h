@@ -8,7 +8,7 @@ namespace GE
 {
 	class Mouse
 	{
-		using Vector2 = GE::Math::Vector2;
+		using Vector2 = GE::Math::Vector2; 
 	private:
 		HWND hwnd;
 		IDirectInputDevice8* device;

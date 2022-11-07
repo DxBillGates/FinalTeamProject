@@ -90,3 +90,9 @@ void GE::Collider::Hit(ICollider* hitCollider, GameObject* other)
 	hitFlagController.SetTime(0);
 	hitFlagController.SetFlag(true);
 }
+
+void GE::Collider::Hit()
+{
+	hitFlagController.SetTime(0);
+	hitFlagController.SetFlag(true);
+}

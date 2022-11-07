@@ -283,6 +283,19 @@ GE::Math::Matrix4x4 GE::Math::Matrix4x4::GetOrthographMatrix(const Vector2& size
 	return result;
 }
 
+GE::Math::Matrix4x4 GE::Math::Matrix4x4::GetViewportMatrix(const Vector2& size)
+{
+	Matrix4x4 result;
+	result =
+	{
+		size.x / 2,          0,0,0,
+		         0,-size.y / 2,0,0,
+		         0,          0,1,0,
+		size.x / 2, size.y / 2,0,1
+	};
+	return result;
+}
+
 GE::Math::Matrix4x4 & GE::Math::operator*=(Matrix4x4 & m1, const Matrix4x4 & m2)
 {
 	Matrix4x4 result;
