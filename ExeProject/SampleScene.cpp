@@ -20,8 +20,7 @@ SampleScene::SampleScene(const std::string& sceneName)
 	, col2(nullptr)
 {
 	{
-		auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject());
-		testObject->SetName("Player");
+		auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject("Player","player"));
 		auto* sampleComponent = testObject->AddComponent<PlayerComponent>();
 
 		auto* playerCollider = testObject->AddComponent < GE::SphereCollider >();
