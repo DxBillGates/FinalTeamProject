@@ -48,7 +48,12 @@ public:
 	void Direction(GE::Math::Vector3& target);								//方向計算
 	void DashCam(float dashEasingCount, float dash_time = 100);				//ダッシュ中計算
 
-	void ShakeStart(GE::Math::Vector2 range, int flame);					//カメラシェイク設定
+	/// <summary>
+	/// カメラシェイク開始時設定
+	/// </summary>
+	/// <param name="range">揺らす範囲</param>
+	/// <param name="flame">揺らすフレーム数</param>
+	void ShakeStart(GE::Math::Vector2 range = { 10,10 }, int flame = 5);
 private:
 	void Shake();
 	//EaseIn関係がよくわからなかったから一時的に追加

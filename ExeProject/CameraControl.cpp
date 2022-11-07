@@ -1,4 +1,5 @@
 #include "CameraControl.h"
+#include <GatesEngine/Header/Util/Random.h           >
 
 
 CameraControl* CameraControl::GetInstance()
@@ -80,6 +81,12 @@ void CameraControl::Shake()
 			{
 				position = { position.x - range.x,position.y - range.y,position.z };
 			}
+
+			//GE::Math::Vector2 random;
+			//random = { GE::RandomMaker::GetFloat(-range.x,range.x),
+			//	GE::RandomMaker::GetFloat(-range.y,range.y) };//ˆÚ“®•
+			//position = { position.x + random.x,position.y + random.y,position.z };
+
 			count++;
 		}
 		else
@@ -94,6 +101,14 @@ void CameraControl::ShakeStart(GE::Math::Vector2 range, int flame)
 {
 	isShake = true;
 	this->range = range;
+	if (range.x < 0)
+	{
+		this->range.x *= -1;
+	}
+	if (range.y < 0)
+	{
+		this->range.y *= -1;
+	}
 	shakeFlame = flame;
 }
 
