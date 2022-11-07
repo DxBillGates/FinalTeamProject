@@ -28,6 +28,12 @@ void CollisionDetection::SetPlayer(GE::GameObject* p, GE::ICollider* coll)
 	player.collider = coll;
 }
 
+void CollisionDetection::SetLockOn(GE::GameObject* p, GE::ICollider* coll)
+{
+	lockon.object = p;
+	lockon.collider = coll;
+}
+
 void CollisionDetection::SetNormalEnemies(GE::GameObject* ne, GE::ICollider* coll)
 {
 	nEnemies.push_back({ ne,coll });

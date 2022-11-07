@@ -22,12 +22,21 @@ SampleScene::SampleScene(const std::string& sceneName)
 	{
 		auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject());
 		testObject->SetName("Player");
-		auto* playerCollider = testObject->AddComponent < GE::SphereCollider >();
 		auto* sampleComponent = testObject->AddComponent<PlayerComponent>();
+
+		auto* playerCollider = testObject->AddComponent < GE::SphereCollider >();
 		playerCollider->SetCenter({ 0,0,0 });
 		playerCollider->SetSize({ 2 });
 		col1 = playerCollider;
+
+		////ƒƒbƒNƒIƒ“‚Ì”ÍˆÍ‚ÌCollider
+		//auto* lockOnCollider = testObject->AddComponent < GE::SphereCollider >();
+		//lockOnCollider->SetCenter({ 0,0,0 });
+		//lockOnCollider->SetSize(200);
+		//lockOnCollider->DrawEnabled(false);
+
 		CollisionDetection::GetInstance()->SetPlayer(testObject, playerCollider);
+		//CollisionDetection::GetInstance()->SetLockOn(testObject, lockOnCollider);
 	}
 
 	{
@@ -43,8 +52,8 @@ SampleScene::SampleScene(const std::string& sceneName)
 		col2 = sampleCollider;
 	}
 
-	EnemyManager::GetInstance()->Start(10,&gameObjectManager);
-	
+	EnemyManager::GetInstance()->Start(10, &gameObjectManager);
+
 }
 
 SampleScene::~SampleScene()
@@ -60,7 +69,6 @@ void SampleScene::Initialize()
 void SampleScene::Update(float deltaTime)
 {
 	gameObjectManager.Update(deltaTime);
-
 	CollisionDetection::GetInstance()->Update(deltaTime);
 	/*if (GE::CollisionManager::CheckHit(col1, col2))
 	{

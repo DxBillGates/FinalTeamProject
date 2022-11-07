@@ -6,6 +6,7 @@
 #include <GatesEngine/Header/Graphics/Camera3DDebug.h>
 
 #include"PlayerComponent.h"
+#include"EnemyManager.h"
 
 PlayerComponent::PlayerComponent()
 	: inputDevice(nullptr)
@@ -62,6 +63,7 @@ void PlayerComponent::Update(float deltaTime)
 	CameraControl::GetInstance()->SetDir(dir);
 	CameraControl::GetInstance()->Update();
 
+	//printf("%f\n", GE::Math::Vector3::Dot({ 1,0,1 }, { 1,0,1 }));
 	//D0押したら移動停止＊デバッグ用
 	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::D0))
 	{
@@ -195,6 +197,23 @@ void PlayerComponent::Control(float deltaTime)
 		GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), body_direction.y)
 		* GE::Math::Quaternion(GE::Math::Vector3(0, 0, 1), body_direction.z)
 		* GE::Math::Quaternion(GE::Math::Vector3(1, 0, 0), body_direction.x);
+}
+bool PlayerComponent::LockOn()
+{
+	std::vector<GE::GameObject*> enemies = EnemyManager::GetInstance()->GetNormalEnemies();
+	float result = 100000;
+	int a = 0;
+	for (int i = 0; i < enemies.size(); i++)
+	{
+		float distance = abs(GE::Math::Vector3::Distance(transform->position, enemies[i]->GetTransform()->position));
+		if (result > distance)
+		{
+			result = distance;
+			a = i;
+		}
+	}
+	//GE::Math::Vector3::Dot(transform->GetForward(),)
+	return 0;
 }
 //EaseIn関係がよくわからなかったから一時的に追加
 const float PlayerComponent::easeIn(const float start, const float end, float time)

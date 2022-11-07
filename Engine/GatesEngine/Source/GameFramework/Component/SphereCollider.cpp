@@ -16,7 +16,8 @@ GE::SphereCollider::~SphereCollider()
 void GE::SphereCollider::Awake()
 {
 	type = ColliderType::SPHERE;
-	SetSize(2);
+	//シーンのコンストラクタの後に呼ばれてて書き換えられなかったから消しました。
+	//SetSize(2);
 	bounds.center = (isSetCenter) ? bounds.center : Math::Vector3(0,0,0);
 }
 
@@ -32,7 +33,6 @@ void GE::SphereCollider::Draw()
 	Math::Matrix4x4 rotateMatrix = Math::Matrix4x4::Identity();
 	Math::Matrix4x4 translateMatrix = Math::Matrix4x4::Translate(bounds.center);
 	Math::Matrix4x4 worldMatrix;
-
 
 	//graphicsDevice->SetDefaultRenderTarget();
 	graphicsDevice->SetShader("DefaultLineShader");

@@ -11,6 +11,7 @@ class CollisionDetection
 {
 private:
 	CollisionObjectData player;
+	CollisionObjectData lockon;
 	std::vector<CollisionObjectData> nEnemies;
 public:
 	static CollisionDetection* GetInstance();
@@ -21,6 +22,7 @@ public:
 	void Update(float deltaTime);
 
 	void SetPlayer(GE::GameObject* p, GE::ICollider* coll);
+	void SetLockOn(GE::GameObject* p, GE::ICollider* coll);
 	void SetNormalEnemies(GE::GameObject* ne, GE::ICollider* coll);
 };
 

@@ -29,7 +29,6 @@ void CameraControl::Update()
 		camera->GetCameraInfo().cameraPos.z,
 	};
 	auto newCameraPosition = other + GE::Math::Vector3(sin(dir + 3.14) * current_cameraDistance, 100, cos(dir + 3.14) * current_cameraDistance);
-	printf("%f\n", newCameraPosition.x);
 	camera->SetDirection(direction);
 
 	const float LERP_VALUE = 0.05f;

@@ -18,9 +18,9 @@ void EnemyManager::Start(const int count, GE::GameObjectManager* gameObjectManag
 		auto* sampleComponent = enemy->AddComponent<NormalEnemy>();
 		auto* normalEnemyCollider = enemy->AddComponent<GE::SphereCollider>();
 		normalEnemyCollider->SetCenter({ 0,0,0 });
-		normalEnemyCollider->SetSize({ 1 });
+		normalEnemyCollider->SetSize({ 2 });
+		nEnemies.push_back(enemy);
 		CollisionDetection::GetInstance()->SetNormalEnemies(enemy, normalEnemyCollider);
-
 	}
 }
 
