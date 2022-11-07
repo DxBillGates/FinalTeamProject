@@ -12,6 +12,7 @@ private:
 	GE::Math::Vector3 random;
 	float speed = 0.0f;
 	float angle = 0.0f;
+	float angleSpeed = 0.0f;
 	Statas statas;
 public:
 	NormalEnemy();

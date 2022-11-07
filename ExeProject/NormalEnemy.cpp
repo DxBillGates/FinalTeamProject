@@ -24,13 +24,15 @@ void NormalEnemy::Start()
 	transform->position = random;//位置をランダム化
 	transform->scale = { 100.0f,100.0f,100.0f };
 	speed = 10;
+	angle = GE::RandomMaker::GetFloat(0.0f, 20.0f);//敵の始動位置の調整
+	angleSpeed = 0.02f;//上下に動く速さ
 	statas = Statas::ALIVE;
 }
 void NormalEnemy::Update(float deltaTime)
 {
 	const GE::Math::Axis& axis = transform->GetMatrix().GetAxis();
 	float range = 1.0f;//ホバリングの幅
-	angle += 0.01f;//ホバリングの速さ
+	angle += angleSpeed;//ホバリングの速さ
 	transform->position = (transform->position + GE::Math::Vector3(0.0f, sinf(angle) * range, 0.0f));
 }
 
