@@ -31,7 +31,7 @@ namespace GE
 		//// 全オブジェクトとレイキャスト
 		//bool Raycast(const Math::Vector3& pos, const Math::Vector3& dir,float length = 1000000,float* hitLength = nullptr);
 
-		//// 指定したタグを持ったオブジェクトとレイキャスト
-		//bool Raycast(const Math::Vector3& pos, const Math::Vector3& dir,const std::string& tag,float length = 1000000,float* hitLenght = nullptr);
+		// 指定したタグを持ったオブジェクトとレイキャスト
+		bool Raycast(const Math::Vector3& pos, const Math::Vector3& dir,const std::string& tag,float length = 1000000,float* hitLenght = nullptr);
 	};
 }

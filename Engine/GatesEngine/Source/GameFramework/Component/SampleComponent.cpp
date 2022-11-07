@@ -30,39 +30,41 @@ void GE::SampleComponent::Start()
 
 void GE::SampleComponent::Update(float deltaTime)
 {
-	const Math::Axis& axis = transform->GetMatrix().GetAxis();
-	if (inputDevice->GetKeyboard()->CheckHitKey(Keys::SPACE))
-	{
-		transform->position += axis.y;
-	}
+	//const Math::Axis& axis = transform->GetMatrix().GetAxis();
+	//if (inputDevice->GetKeyboard()->CheckHitKey(Keys::SPACE))
+	//{
+	//	transform->position += axis.y;
+	//}
 
-	if (inputDevice->GetKeyboard()->CheckPressTrigger(Keys::SPACE))
-	{
-		Utility::Printf("SampleComponent Update() : press space key\n");
-	}
+	//if (inputDevice->GetKeyboard()->CheckPressTrigger(Keys::SPACE))
+	//{
+	//	Utility::Printf("SampleComponent Update() : press space key\n");
+	//}
 
-	if (inputDevice->GetMouse()->GetCheckPressTrigger(MouseButtons::LEFT_CLICK))
-	{
-		Utility::Printf("SampleComponent Update() : press left click\n");
-	}
+	//if (inputDevice->GetMouse()->GetCheckPressTrigger(MouseButtons::LEFT_CLICK))
+	//{
+	//	Utility::Printf("SampleComponent Update() : press left click\n");
+	//}
 
-	if (inputDevice->GetXCtrler()->CheckHitButtonTrigger(XInputControllerButton::XINPUT_B))
-	{
-		Utility::Printf("SampleComponent Update() : press b button\n");
-	}
+	//if (inputDevice->GetXCtrler()->CheckHitButtonTrigger(XInputControllerButton::XINPUT_B))
+	//{
+	//	Utility::Printf("SampleComponent Update() : press b button\n");
+	//}
+
+	//Joycon* joycon = inputDevice->GetJoyconL();
+	//if (joycon == nullptr)return;
+	//Vector3Int16 gyroData = joycon->GetGyroscope();
+	//gyro = { (float)gyroData.y,(float)-gyroData.z,(float)-gyroData.x };
+
+	//transform->rotation *= Math::Quaternion(gyro.Normalize(), Math::ConvertToRadian(gyro.Length() * 1.f / 60.f));
+	////transform->rotation = Math::Quaternion::Euler(Math::Vector3(45, 0, 0));
+
 
 	const auto& cameraInfo = graphicsDevice->GetMainCamera()->GetCameraInfo();
 	Math::GetScreenToRay(inputDevice->GetMouse()->GetClientMousePos(), &rayPos, &rayDir, cameraInfo.viewMatrix, cameraInfo.projMatrix, Math::Matrix4x4::GetViewportMatrix(Window::GetWindowSize()));
-
-	Joycon* joycon = inputDevice->GetJoyconL();
-	if (joycon == nullptr)return;
-	Vector3Int16 gyroData = joycon->GetGyroscope();
-	gyro = { (float)gyroData.y,(float)-gyroData.z,(float)-gyroData.x };
-
-	transform->rotation *= Math::Quaternion(gyro.Normalize(), Math::ConvertToRadian(gyro.Length() * 1.f / 60.f));
-	//transform->rotation = Math::Quaternion::Euler(Math::Vector3(45, 0, 0));
-
 	auto manager = gameObject->GetGameObjectManager();
+	manager->Raycast(rayPos, rayDir, "none");
+
 	//auto object = manager->FindGameObject("test2");
 }
 

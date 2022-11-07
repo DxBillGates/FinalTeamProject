@@ -9,6 +9,7 @@ namespace GE
 {
 	class Component;
 	class ICollider;
+	class Collider;
 	class GameObjectManager;
 	class GameObject
 	{
@@ -25,6 +26,8 @@ namespace GE
 		std::string tag;
 
 		static IGraphicsDeviceDx12* graphicsDevice;
+
+		ICollider* firstCollider;
 	public:
 		GameObject(const std::string& name = "unknown", const std::string& tag = "none");
 		~GameObject();
@@ -41,6 +44,9 @@ namespace GE
 		const std::string& GetName();
 		const std::string& GetTag();
 
+		// 一番最初に追加されたコライダーを返す
+		ICollider* GetCollider();
+
 		void SetGameObjectManager(GameObjectManager* manager);
 		void SetParent(GameObject* object);
 		void SetName(const std::string& name);
@@ -52,6 +58,9 @@ namespace GE
 
 		template<typename T>
 		T* AddComponent();
+
+		template<typename T>
+		T* GetComponent();
 
 		GameObjectManager* GetGameObjectManager();
 		std::vector<Component*>* GetComponents();
@@ -69,6 +78,20 @@ namespace GE
 			components.push_back(pComponent);
 			return t;
 		}
+		return nullptr;
+	}
+
+	template<typename T>
+	inline T* GameObject::GetComponent()
+	{
+		for (auto& component : components)
+		{
+			T* t = dynamic_cast<T*>(component);
+			if (t == nullptr)continue;
+
+			return t;
+		}
+
 		return nullptr;
 	}
 }

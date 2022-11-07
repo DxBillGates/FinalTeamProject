@@ -16,5 +16,6 @@ namespace GE
 		virtual Transform* GetParent() = 0;
 		virtual Math::Matrix4x4 GetMatrix() = 0;
 		virtual void Hit(ICollider* hitCollider,GameObject* other) = 0;
+		virtual void Hit() = 0;
 	};
 }

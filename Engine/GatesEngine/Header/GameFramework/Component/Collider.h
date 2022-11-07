@@ -30,5 +30,6 @@ namespace GE
 		Transform* GetParent() override;
 		Math::Matrix4x4 GetMatrix() override;
 		void Hit(ICollider* hitCollider, GameObject* other) override;
+		void Hit() override;
 	};
 }

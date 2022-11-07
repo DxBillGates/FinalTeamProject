@@ -1,4 +1,5 @@
 #include "..\..\..\Header\GameFramework\GameObject\GameObjectManager.h"
+#include "..\..\..\Header\GameFramework\Collision\CollisionManager.h"
 
 GE::GameObjectManager::GameObjectManager()
 {
@@ -134,4 +135,31 @@ GE::GameObject* GE::GameObjectManager::FindGameObjectWithTag(const std::string& 
 	}
 
 	return returnObject;
+}
+
+bool GE::GameObjectManager::Raycast(const Math::Vector3& pos, const Math::Vector3& dir, const std::string& tag, float length, float* hitLenght)
+{
+	for (auto& objects : gameObjects)
+	{
+		if (objects.first != tag)continue;
+
+		for (auto& object : objects.second)
+		{
+			ICollider* collider = object->GetCollider();
+			if (collider == nullptr)continue;
+
+			Math::Vector3 hitPos;
+			
+			bool isHit = CollisionManager::CheckSphereToRay(collider,object->GetTransform()->position, pos, dir, &hitPos);
+
+			if (isHit == false)continue;
+			if (hitPos.Length() > length)continue;
+
+			// コライダーの色を変更させるよう
+			collider->Hit();
+
+			return true;
+		}
+	}
+	return false;
 }

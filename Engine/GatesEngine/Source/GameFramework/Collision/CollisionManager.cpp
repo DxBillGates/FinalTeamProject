@@ -283,3 +283,39 @@ bool GE::CollisionManager::CheckSphereToOBB(ICollider* sphere, ICollider* box)
 
 	return false;
 }
+
+bool GE::CollisionManager::CheckSphereToRay(ICollider* sphere, const Math::Vector3& pos, const Math::Vector3& rayPos, const Math::Vector3& rayDir, Math::Vector3* hitPos)
+{
+	const Bounds& sphereBounds = sphere->GetBounds();
+	Math::Vector3 worldColliderSize = (sphereBounds.size * sphere->GetParent()->scale) / 2;
+
+	float radius = (worldColliderSize.x + worldColliderSize.y + worldColliderSize.z) / 3;
+
+	// レイの始点から球の中心へのベクトル
+	Math::Vector3 rayToCenterVector = pos - rayPos;
+
+	// 解の公式に当てはめるための準備
+	float a = Math::Vector3::Dot(rayDir, rayDir);
+	float b = Math::Vector3::Dot(rayDir, rayToCenterVector);
+	float c = Math::Vector3::Dot(rayToCenterVector, rayToCenterVector) - radius * radius;
+
+	float result = b * b - a * c;
+	if (result < 0)return false;
+
+	result = std::sqrtf(result);
+	float a1 = (b + result) / a;
+	float a2 = (b - result) / a;
+
+	// レイの逆方向への計算もされるためレイの逆方向であたっていると判断されることがある
+	if (a1 < 0 || a2 < 0)return false;
+
+	// ヒットしていた場所の算出
+	if (hitPos == nullptr)return true;
+
+	// 当たり始め
+	*hitPos = rayPos + a1 * rayDir;
+	// 当たり終わり
+	*hitPos = rayPos + a2 * rayDir;
+
+	return true;
+}

@@ -16,5 +16,6 @@ namespace GE
 		static bool CheckOBB(ICollider* col1, ICollider* col2);
 		static bool CheckSphereToAABB(ICollider* sphere, ICollider* box);
 		static bool CheckSphereToOBB(ICollider* sphere, ICollider* box);
+		static bool CheckSphereToRay(ICollider* sphere,const Math::Vector3& pos,const Math::Vector3& rayPos, const Math::Vector3& rayDir,Math::Vector3* hitPos = nullptr);
 	};
 }
