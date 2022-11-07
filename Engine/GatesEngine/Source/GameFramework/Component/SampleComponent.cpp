@@ -51,10 +51,10 @@ void GE::SampleComponent::Update(float deltaTime)
 	//	Utility::Printf("SampleComponent Update() : press b button\n");
 	//}
 
-	//Joycon* joycon = inputDevice->GetJoyconL();
-	//if (joycon == nullptr)return;
-	//Vector3Int16 gyroData = joycon->GetGyroscope();
-	//gyro = { (float)gyroData.y,(float)-gyroData.z,(float)-gyroData.x };
+	Joycon* joycon = inputDevice->GetJoyconL();
+	if (joycon == nullptr)return;
+	Vector3Int16 gyroData = joycon->GetGyroscope();
+	gyro = { (float)gyroData.y,(float)-gyroData.z,(float)-gyroData.x };
 
 	//transform->rotation *= Math::Quaternion(gyro.Normalize(), Math::ConvertToRadian(gyro.Length() * 1.f / 60.f));
 	////transform->rotation = Math::Quaternion::Euler(Math::Vector3(45, 0, 0));

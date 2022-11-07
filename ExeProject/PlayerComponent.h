@@ -18,6 +18,7 @@ private:
 	GE::InputDevice* inputDevice;
 	GE::Math::Vector3 random;
 	GE::Math::Vector3 gyro;
+	GE::Math::Vector3 accelerometer;
 
 	GE::Math::Vector3 body_direction;//体の向き計算用
 	float dashEasingCount;			//スピード遷移のカウント
@@ -30,6 +31,8 @@ private:
 	float current_speed;		//現在のスピード
 	float normal_speed;			//通常時のスピード
 	float dash_speed;			//ダッシュ時のスピード
+
+	GE::Math::Quaternion quat;
 public:
 	PlayerComponent();
 	void Awake() override;

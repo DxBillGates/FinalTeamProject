@@ -46,7 +46,6 @@ void PlayerComponent::Start()
 }
 void PlayerComponent::Update(float deltaTime)
 {
-
 	const GE::Math::Axis& axis = transform->GetMatrix().GetAxis();
 	//操作
 	Control(1);
@@ -132,6 +131,7 @@ void PlayerComponent::OnGui()
 	ImGui::DragFloat("Speed", &current_speed, dragSpeed, 0, maxValue);
 	ImGui::DragFloat3("RandomVector", random.value, dragSpeed, -1, 1);
 	ImGui::DragFloat3("GyroVector", gyro.value, dragSpeed, -1, 1);
+	ImGui::InputFloat4("quat", quat.value);
 }
 
 void PlayerComponent::Control(float deltaTime)
@@ -193,6 +193,39 @@ void PlayerComponent::Control(float deltaTime)
 	default:
 		break;
 	}
+
+	GE::Joycon* joycon = inputDevice->GetJoyconL();
+	if (joycon == nullptr)return;
+	GE::Vector3Int16 gyroData = joycon->GetGyroscope();
+	GE::Vector3Int16 acceData = joycon->GetAccelerometer();
+	gyro = { (float)gyroData.y,(float)-gyroData.z,(float)-gyroData.x };
+	accelerometer = { (float)acceData.y,(float)-acceData.z,(float)-acceData.x };
+
+	// コントローラーから姿勢を更新し続ける
+	quat *= GE::Math::Quaternion(gyro.Normalize(), GE::Math::ConvertToRadian(gyro.Length() * 1.f / 144.f));
+
+	const float GYRO_OFFSET = 0.05f;
+	GE::Math::Vector3 quatVector = 
+	{
+		quat.x,
+		quat.y,
+		quat.z,
+	};
+
+	body_direction.x += quatVector.x / 20.f;
+	body_direction.y += quatVector.y / 20.f;
+	body_direction.z += quatVector.z / 20.f;
+
+	GE::Math::Vector3 bodyDirectionMax;
+	bodyDirectionMax = {1.57f,10,0.75f};
+	body_direction = GE::Math::Vector3::Min(-bodyDirectionMax, GE::Math::Vector3::Max(bodyDirectionMax, body_direction));
+
+	if (state == PlayerState::MOVE && accelerometer.Length() > 2.f)
+	{
+		//GE::Utility::Printf("%f\n", accelerometer.Length());
+		state = PlayerState::DASH;
+	}
+
 	transform->rotation =
 		GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), body_direction.y)
 		* GE::Math::Quaternion(GE::Math::Vector3(0, 0, 1), body_direction.z)
