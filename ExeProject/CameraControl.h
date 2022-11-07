@@ -5,6 +5,25 @@
 //カメラ制御を担当するクラス
 class CameraControl
 {
+private:
+	GE::IGraphicsDeviceDx12* graphicsDevice = nullptr;
+
+	GE::Math::Vector3 direction;	//方向
+	GE::Math::Vector3 position;		//カメラ位置
+	GE::Math::Vector3 other;		//相手
+	GE::Math::Axis otherAxis;		//相手のAxis
+
+	float dir;					//追従するカメラのPlayerから見た角度
+	float current_cameraDistance;//カメラとPlayerの距離
+	float normal_cameraDistance;//通常時カメラとPlayerの距離
+	float dash_cameraDistance;	//ダッシュ時カメラとPlayerの距離
+
+	//カメラシェイク用
+	int shakeFlame;
+	int count;
+	GE::Math::Vector2 range;
+	bool isShake;
+
 public:
 	static CameraControl* GetInstance();
 	CameraControl() = default;
@@ -29,20 +48,10 @@ public:
 	void Direction(GE::Math::Vector3& target);								//方向計算
 	void DashCam(float dashEasingCount, float dash_time = 100);				//ダッシュ中計算
 
+	void ShakeStart(GE::Math::Vector2 range, int flame);					//カメラシェイク設定
 private:
+	void Shake();
 	//EaseIn関係がよくわからなかったから一時的に追加
 	const float easeIn(const float start, const float end, float time);
-private:
-	GE::IGraphicsDeviceDx12* graphicsDevice = nullptr;
-
-	GE::Math::Vector3 direction;	//方向
-	GE::Math::Vector3 position;		//カメラ位置
-	GE::Math::Vector3 other;		//相手
-	GE::Math::Axis otherAxis;		//相手のAxis
-
-	float dir;					//追従するカメラのPlayerから見た角度
-	float current_cameraDistance;//カメラとPlayerの距離
-	float normal_cameraDistance;//通常時カメラとPlayerの距離
-	float dash_cameraDistance;	//ダッシュ時カメラとPlayerの距離
 };
 
