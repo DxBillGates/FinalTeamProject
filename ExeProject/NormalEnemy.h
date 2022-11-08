@@ -3,16 +3,20 @@
 
 class NormalEnemy : public GE::Component
 {
+	
+private:
+	GE::Math::Vector3 random;
+	float speed = 0.0f;
+	float angle = 0.0f;
+	GE::Material material;
+public:
 	enum class Statas
 	{
 		ALIVE,
 		DEAD,
 	};
-private:
-	GE::Math::Vector3 random;
-	float speed = 0.0f;
-	float angle = 0.0f;
 	Statas statas;
+
 public:
 	NormalEnemy();
 
@@ -24,4 +28,7 @@ public:
 	void OnCollision(GE::GameObject* other) override;
 	void OnCollision(GE::ICollider* hitCollider) override;
 	void OnGui() override;
+
+	void SetColor(GE::Color color);
+
 };

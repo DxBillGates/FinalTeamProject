@@ -25,6 +25,8 @@ void NormalEnemy::Start()
 	transform->scale = { 100.0f,100.0f,100.0f };
 	speed = 10;
 	statas = Statas::ALIVE;
+
+	material.color = GE::Color::Red();
 }
 void NormalEnemy::Update(float deltaTime)
 {
@@ -46,8 +48,7 @@ void NormalEnemy::Draw()
 	//transform->scale = { 200,200,2000 };
 
 	GE::Math::Matrix4x4 modelMatrix = transform->GetMatrix();
-	GE::Material material;
-	material.color = GE::Color::Red();
+	
 
 	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
@@ -101,4 +102,9 @@ void NormalEnemy::OnGui()
 	float maxValue = 100;
 	ImGui::DragFloat("Speed", &speed, dragSpeed, 0, maxValue);
 	ImGui::DragFloat3("RandomVector", random.value, dragSpeed, -1, 1);
+}
+
+void NormalEnemy::SetColor(GE::Color color)
+{
+	material.color = color;
 }

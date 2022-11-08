@@ -7,6 +7,7 @@
 
 #include"PlayerComponent.h"
 #include"EnemyManager.h"
+#include"NormalEnemy.h"
 
 PlayerComponent::PlayerComponent()
 	: inputDevice(nullptr)
@@ -23,23 +24,20 @@ void PlayerComponent::Start()
 {
 	GE::Utility::Printf("PlayerComponent Start()\n");
 	inputDevice = GE::InputDevice::GetInstance();
-	random = { GE::RandomMaker::GetFloat(-1,1),GE::RandomMaker::GetFloat(-1,1),GE::RandomMaker::GetFloat(-1,1) };
 	transform->position = { 0,10,0 };
 	transform->scale = { 50,50,50 };
 
 	body_direction = { 0,0,0 };
 	dashEasingCount = 0.0;
-	state = PlayerState::MOVE;
+	statas = PlayerStatas::MOVE;
 
 	normal_speed = 1000;
 	dash_speed = 10000;
 	current_speed = normal_speed;
 	gravity = { 0,0.5,0 };
-	normal_cameraDistance = 500;
-	dash_cameraDistance = 700;
-	current_cameraDistance = normal_cameraDistance;
 	dir = 0.0;
 
+	isLockOn = false;
 	CameraControl::GetInstance()->Initialize();
 	CameraControl::GetInstance()->SetGraphicsDevice(graphicsDevice);
 	CameraControl::GetInstance()->SetOtherPos(transform->position);
@@ -49,27 +47,21 @@ void PlayerComponent::Update(float deltaTime)
 
 	const GE::Math::Axis& axis = transform->GetMatrix().GetAxis();
 	//‘€ì
-	Control(1);
+
+	Control(deltaTime, 1);
 
 	CameraControl::GetInstance()->Direction(transform->position);
 	CameraControl::GetInstance()->SetOtherAxis(transform->GetMatrix().GetAxis());
-
 	CameraControl::GetInstance()->SetOtherPos(transform->position);
 	//axis.z.y‚ªMAX‚É‚È‚Á‚Äz.x‚Æz.z‚ª0‚É‚È‚é‚Ì‚ð–h‚®
-	if (abs(axis.z.y) < 0.6)
-	{
-		dir = atan2f(axis.z.x, axis.z.z);
-	}
 	CameraControl::GetInstance()->SetDir(dir);
 	CameraControl::GetInstance()->Update();
 
-	//printf("%f\n", GE::Math::Vector3::Dot({ 1,0,1 }, { 1,0,1 }));
 	//D0‰Ÿ‚µ‚½‚çˆÚ“®’âŽ~–ƒfƒoƒbƒO—p
 	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::D0))
 	{
-		state != PlayerState::STOP_DEBUG ? state = PlayerState::STOP_DEBUG : state = PlayerState::MOVE;
+		statas != PlayerStatas::STOP_DEBUG ? statas = PlayerStatas::STOP_DEBUG : statas = PlayerStatas::MOVE;
 	}
-	if (state != PlayerState::STOP_DEBUG)transform->position += axis.z * current_speed * deltaTime - gravity;
 }
 
 void PlayerComponent::Draw()
@@ -90,29 +82,7 @@ void PlayerComponent::Draw()
 
 void PlayerComponent::LateDraw()
 {
-	//const float SPRITE_SIZE = 100;
 
-	//GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
-	//GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
-
-	//graphicsDevice->SetShader("DefaultSpriteShader");
-
-	//GE::Math::Matrix4x4 modelMatrix = GE::Math::Matrix4x4::Scale({ SPRITE_SIZE });
-	//GE::Math::Vector2 mousePos = inputDevice->GetMouse()->GetClientMousePos();
-	////GE::Utility::Printf("%d,%d\n",(int)mousePos.x, (int)mousePos.y);
-
-	//modelMatrix *= GE::Math::Matrix4x4::Translate({ mousePos.x,mousePos.y,0 });
-	//GE::Material material;
-	//material.color = GE::Color::White();
-
-	//GE::CameraInfo cameraInfo;
-	//cameraInfo.viewMatrix = GE::Math::Matrix4x4::GetViewMatrixLookTo({ 0,1,0 }, { 0,0,1 }, { 0,1,0 });
-	//cameraInfo.projMatrix = GE::Math::Matrix4x4::GetOrthographMatrix(GE::Window::GetWindowSize());
-
-	//renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
-	//renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
-	//renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
-	//graphicsDevice->DrawMesh("2DPlane");
 }
 
 void PlayerComponent::OnCollision(GE::GameObject* other)
@@ -130,93 +100,149 @@ void PlayerComponent::OnGui()
 	float dragSpeed = 0.1f;
 	float maxValue = 100;
 	ImGui::DragFloat("Speed", &current_speed, dragSpeed, 0, maxValue);
-	ImGui::DragFloat3("RandomVector", random.value, dragSpeed, -1, 1);
 	ImGui::DragFloat3("GyroVector", gyro.value, dragSpeed, -1, 1);
 }
 
-void PlayerComponent::Control(float deltaTime)
+void PlayerComponent::Control(float deltaTime, float gameTime)
 {
-	if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::RIGHT))
-	{
-		body_direction.y += 0.01 * deltaTime;
-		body_direction.z > -0.3 ? body_direction.z -= 0.005 * deltaTime : 0;
 
-	}
-	else if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::LEFT))
+	GE::Math::Vector3 c;
+	GE::Math::Vector3 up = { 0,1,0 };
+	GE::Math::Matrix4x4 matrix;
+	switch (statas)
 	{
-		body_direction.y -= 0.01 * deltaTime;
-		body_direction.z < 0.3 ? body_direction.z += 0.005 * deltaTime : 0;
-	}
-	else
-	{
-		abs(body_direction.z) < 0.005 ? body_direction.z = 0 : body_direction.z > 0.0 ? body_direction.z -= 0.005 * deltaTime : body_direction.z += 0.005 * deltaTime;
-	}
-	if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::UP))
-	{
-		body_direction.x > -1.57 ? body_direction.x -= 0.005 * deltaTime : 0;
-	}
-	else if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::DOWN))
-	{
-		body_direction.x < 1.57 ? body_direction.x += 0.005 * deltaTime : 0;
-	}
-	else
-	{
-		abs(body_direction.x) < 0.01 ? body_direction.x = 0 : body_direction.x > 0.0 ? body_direction.x -= 0.01 * deltaTime : body_direction.x += 0.01 * deltaTime;
-	}
-	float dash_time = 100;
-	switch (state)
-	{
-	case PlayerComponent::PlayerState::STOP_DEBUG:
+	case PlayerComponent::PlayerStatas::STOP_DEBUG:
 		break;
-	case PlayerComponent::PlayerState::MOVE:
+	case PlayerComponent::PlayerStatas::MOVE:
 		//Key‰Ÿ‚µ‚½‚çPlayerState::DASH‚É•Ï‚í‚é
-		if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE))
+		if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE)) { statas = PlayerStatas::DASH; }
+
+		transform->position += transform->GetForward() * current_speed * deltaTime * gameTime - gravity;
+		transform->rotation =
+			GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), body_direction.y)
+			* GE::Math::Quaternion(GE::Math::Vector3(0, 0, 1), body_direction.z)
+			* GE::Math::Quaternion(GE::Math::Vector3(1, 0, 0), body_direction.x);
+		//ƒƒbƒNƒIƒ“‚µ‚ÄUŒ‚
+		LockOn();
+		break;
+	case PlayerComponent::PlayerStatas::DASH:
+
+		Dash(100.0, deltaTime, gameTime);
+
+		break;
+	case PlayerComponent::PlayerStatas::LOCKON_SHOOT:
+
+		if (lockOnEnemy.object->GetComponent<NormalEnemy>()->statas != NormalEnemy::Statas::DEAD)
 		{
-			state = PlayerState::DASH;
+			lockOnEnemy.direction = GE::Math::Vector3(lockOnEnemy.object->GetTransform()->position - transform->position).Normalize();
 		}
-		break;
-	case PlayerComponent::PlayerState::DASH:
-		//ƒXƒs[ƒh‚Ì‘JˆÚ
-		//current_speed = GE::Math::Easing::Lerp(dash_speed, normal_speed, speedEasingCount / time);
-		current_speed = easeIn(dash_speed, normal_speed, dashEasingCount / dash_time);
-		//ƒJƒƒ‰‚Ì‹——£‘JˆÚA‘JˆÚ‚Å—£‚ê‚Ä‘JˆÚ‚ÅŒ³‚É–ß‚é
-		//current_cameraDistance = easeIn(normal_cameraDistance, dash_cameraDistance,
-		//	sin(GE::Math::Easing::Lerp(0, 3.14, dashEasingCount / dash_time)));
-		CameraControl::GetInstance()->DashCam(dashEasingCount, dash_time);
+		else { isLockOn = false; }
 
-		if (dashEasingCount < dash_time) { dashEasingCount++; }
-		else { state = PlayerState::MOVE; dashEasingCount = 0.0f; }
+		//ƒxƒNƒgƒ‹‚Ì•ûŒü‚É‘Ì‚ðŒü‚¯‚é
+		c = GE::Math::Vector3::Cross(lockOnEnemy.direction, up);
+		matrix = {
+			up.x, up.y, up.z, 0.0f,
+			c.x, c.y, c.z, 0.0f,
+			lockOnEnemy.direction.x, lockOnEnemy.direction.y, lockOnEnemy.direction.z, 0.0f,
+			0.0f, 0.0f, 0.0f, 1.0f };
+		transform->rotation = GE::Math::Quaternion(matrix);
 
+		Dash(50, deltaTime, gameTime);
 		break;
-	case PlayerComponent::PlayerState::STAY_LAND:
+	case PlayerComponent::PlayerStatas::STAY_LAND:
 		break;
 	default:
 		break;
 	}
-	transform->rotation =
-		GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), body_direction.y)
-		* GE::Math::Quaternion(GE::Math::Vector3(0, 0, 1), body_direction.z)
-		* GE::Math::Quaternion(GE::Math::Vector3(1, 0, 0), body_direction.x);
+	//‘Ì‚ÌŠp“xŒvŽZ
+	if (abs(transform->GetForward().y) < 0.6)
+	{
+		dir = atan2f(transform->GetForward().x, transform->GetForward().z);
+	}
+
+	if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::RIGHT))
+	{
+		body_direction.y += 0.01 * gameTime;
+		body_direction.z > -0.3 ? body_direction.z -= 0.005 * gameTime : 0;
+	}
+	else if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::LEFT))
+	{
+		body_direction.y -= 0.01 * gameTime;
+		body_direction.z < 0.3 ? body_direction.z += 0.005 * gameTime : 0;
+	}
+	else
+	{
+		abs(body_direction.z) < 0.005 ? body_direction.z = 0 : body_direction.z > 0.0 ? body_direction.z -= 0.005 * gameTime : body_direction.z += 0.005 * gameTime;
+	}
+	if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::UP))
+	{
+		body_direction.x > -1.57 ? body_direction.x -= 0.005 * gameTime : 0;
+	}
+	else if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::DOWN))
+	{
+		body_direction.x < 1.57 ? body_direction.x += 0.005 * gameTime : 0;
+	}
+	else
+	{
+		abs(body_direction.x) < 0.01 ? body_direction.x = 0 : body_direction.x > 0.0 ? body_direction.x -= 0.01 * gameTime : body_direction.x += 0.01 * gameTime;
+	}
 }
-bool PlayerComponent::LockOn()
+void PlayerComponent::LockOn()
 {
 	std::vector<GE::GameObject*> enemies = EnemyManager::GetInstance()->GetNormalEnemies();
 	float result = 100000;
 	int a = 0;
+	bool look = false;
+
+	//Key‰Ÿ‚µ‚½‚çLockOn€”õ
+	if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::RETURN))
+	{
+		isLockOn = true;
+	}
+	else
+	{
+		if (isLockOn && lockOnEnemy.object != nullptr) { statas = PlayerStatas::LOCKON_SHOOT; }
+		return;
+	}
 	for (int i = 0; i < enemies.size(); i++)
 	{
 		float distance = abs(GE::Math::Vector3::Distance(transform->position, enemies[i]->GetTransform()->position));
-		if (result > distance)
+		GE::Math::Vector3 enemyDirection = enemies[i]->GetTransform()->position - transform->position;
+		enemies[i]->GetComponent<NormalEnemy>()->SetColor(GE::Color::Red());
+		//¶‚«‚Ä‚¢‚é‚©•‘O‘¤‚É‚¢‚é’†‚ÅÅ‚à‹ß‚¢“G
+		if (enemies[i]->GetComponent<NormalEnemy>()->statas != NormalEnemy::Statas::DEAD)
 		{
-			result = distance;
-			a = i;
+			if (GE::Math::Vector3::Dot(transform->GetForward(), enemyDirection.Normalize()) > 0.8)
+			{
+				look = true;
+				if (result > distance)
+				{
+					result = distance;
+					a = i;
+				}
+			}
 		}
 	}
-	//GE::Math::Vector3::Dot(transform->GetForward(),)
-	return 0;
+	if (look)
+	{
+		enemies[a]->GetComponent<NormalEnemy>()->SetColor(GE::Color::Blue());
+		lockOnEnemy.object = enemies[a];
+	}
 }
 //EaseInŠÖŒW‚ª‚æ‚­‚í‚©‚ç‚È‚©‚Á‚½‚©‚çˆêŽž“I‚É’Ç‰Á
 const float PlayerComponent::easeIn(const float start, const float end, float time)
 {
 	return start * (1.0f - time * time) + end * time * time;
+}
+
+void PlayerComponent::Dash(float dash_time, float deltaTime, float gameTime)
+{
+	//ƒXƒs[ƒh‚Ì‘JˆÚ
+	current_speed = easeIn(dash_speed, normal_speed, dashEasingCount / dash_time);
+	CameraControl::GetInstance()->DashCam(dashEasingCount, dash_time);
+
+	if (dashEasingCount < dash_time) { dashEasingCount++; }
+	else { statas = PlayerStatas::MOVE; dashEasingCount = 0.0f; }
+
+	transform->position += transform->GetForward() * current_speed * deltaTime * gameTime;
 }
