@@ -1,4 +1,5 @@
 #include "CameraControl.h"
+#include <GatesEngine/Header/Util/Random.h           >
 
 
 CameraControl* CameraControl::GetInstance()
@@ -18,6 +19,11 @@ void CameraControl::Initialize()
 	dash_cameraDistance = 700;
 	current_cameraDistance = normal_cameraDistance;
 	dir = 0.0f;
+
+	shakeFlame = 0;
+	count = 0;
+	isShake = false;
+	range = {};
 }
 
 void CameraControl::Update()
@@ -41,6 +47,8 @@ void CameraControl::Update()
 
 	position = GE::Math::Vector3::Lerp(beforeCameraPosition, newCameraPosition, LERP_VALUE);
 
+	Shake();
+
 	camera->SetPosition(position);
 }
 
@@ -57,6 +65,51 @@ void CameraControl::DashCam(float dashEasingCount, float dash_time)
 	//ƒJƒƒ‰‚Ì‹——£‘JˆÚA‘JˆÚ‚Å—£‚ê‚Ä‘JˆÚ‚ÅŒ³‚É–ß‚é
 	current_cameraDistance = easeIn(normal_cameraDistance, dash_cameraDistance,
 		sin(GE::Math::Easing::Lerp(0, 3.14, dashEasingCount / dash_time)));
+}
+
+void CameraControl::Shake()
+{
+	if (isShake)
+	{
+		if (shakeFlame > count)
+		{
+			if (count % 2 == 0)
+			{
+				position = { position.x + range.x,position.y + range.y,position.z };
+			}
+			else
+			{
+				position = { position.x - range.x,position.y - range.y,position.z };
+			}
+
+			//GE::Math::Vector2 random;
+			//random = { GE::RandomMaker::GetFloat(-range.x,range.x),
+			//	GE::RandomMaker::GetFloat(-range.y,range.y) };//ˆÚ“®•
+			//position = { position.x + random.x,position.y + random.y,position.z };
+
+			count++;
+		}
+		else
+		{
+			count = 0;
+			isShake = false;
+		}
+	}
+}
+
+void CameraControl::ShakeStart(GE::Math::Vector2 range, int flame)
+{
+	isShake = true;
+	this->range = range;
+	if (range.x < 0)
+	{
+		this->range.x *= -1;
+	}
+	if (range.y < 0)
+	{
+		this->range.y *= -1;
+	}
+	shakeFlame = flame;
 }
 
 //EaseInŠÖŒW‚ª‚æ‚­‚í‚©‚ç‚È‚©‚Á‚½‚©‚çˆêŽž“I‚É’Ç‰Á
