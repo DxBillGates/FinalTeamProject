@@ -7,6 +7,7 @@
 
 #include"NormalEnemy.h"
 
+float NormalEnemy::gameTime = 1.0;
 NormalEnemy::NormalEnemy()
 {
 
@@ -33,8 +34,8 @@ void NormalEnemy::Update(float deltaTime)
 {
 	const GE::Math::Axis& axis = transform->GetMatrix().GetAxis();
 	float range = 1.0f;//ホバリングの幅
-	angle += 0.01f;//ホバリングの速さ
-	transform->position = (transform->position + GE::Math::Vector3(0.0f, sinf(angle) * range, 0.0f));
+	angle += 1.0 * gameTime * deltaTime;//ホバリングの速さ
+	transform->position = (transform->position + GE::Math::Vector3(0.0f, sinf(angle) * range * gameTime, 0.0f));
 }
 
 void NormalEnemy::Draw()
@@ -49,7 +50,7 @@ void NormalEnemy::Draw()
 	//transform->scale = { 200,200,2000 };
 
 	GE::Math::Matrix4x4 modelMatrix = transform->GetMatrix();
-	
+
 
 	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });

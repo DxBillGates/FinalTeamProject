@@ -9,6 +9,8 @@
 #include"EnemyManager.h"
 #include"NormalEnemy.h"
 
+float PlayerComponent::GameTime = 1.0;
+
 PlayerComponent::PlayerComponent()
 	: inputDevice(nullptr)
 {
@@ -37,22 +39,38 @@ void PlayerComponent::Start()
 	dir = 0.0;
 
 	isLockOn = false;
+
+	hitStopTime = 30;
+	hitStopCount = hitStopTime;
+
 	CameraControl::GetInstance()->Initialize();
 	CameraControl::GetInstance()->SetGraphicsDevice(graphicsDevice);
 	CameraControl::GetInstance()->SetOtherPos(transform->position);
 }
 void PlayerComponent::Update(float deltaTime)
 {
-
+	if (!inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::RETURN))
+	{
+		if (hitStopCount < hitStopTime)
+		{
+			GameTime = 0.01;
+			hitStopCount++;
+		}
+		else
+		{
+			GameTime = 1.0;
+		}
+	}
 	const GE::Math::Axis& axis = transform->GetMatrix().GetAxis();
 	//操作
 
-	Control(deltaTime, 1);
+	Control(deltaTime, GameTime);
+
+	NormalEnemy::gameTime = GameTime;
 
 	CameraControl::GetInstance()->Direction(transform->position);
 	CameraControl::GetInstance()->SetOtherAxis(transform->GetMatrix().GetAxis());
 	CameraControl::GetInstance()->SetOtherPos(transform->position);
-	//axis.z.yがMAXになってz.xとz.zが0になるのを防ぐ
 	CameraControl::GetInstance()->SetDir(dir);
 	CameraControl::GetInstance()->Update();
 
@@ -87,6 +105,7 @@ void PlayerComponent::LateDraw()
 void PlayerComponent::OnCollision(GE::GameObject* other)
 {
 	GE::Utility::Printf("PlayerComponent OnCollision(GameObject* other) : hit\n");
+	hitStopCount = 0;
 }
 
 void PlayerComponent::OnCollision(GE::ICollider* hitCollider)
@@ -152,7 +171,7 @@ void PlayerComponent::Control(float deltaTime, float gameTime)
 			0.0f, 0.0f, 0.0f, 1.0f };
 		transform->rotation = GE::Math::Quaternion(matrix);
 
-		Dash(5000, 50, deltaTime, gameTime);
+		Dash(3000, 100, deltaTime, gameTime);
 		break;
 	case PlayerComponent::PlayerStatas::STAY_LAND:
 		break;
@@ -203,12 +222,26 @@ void PlayerComponent::LockOn()
 	if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::RETURN))
 	{
 		isLockOn = true;
+		//敵がロックオンの範囲内にいるとにのみ
+		if (lockOnEnemy.object != nullptr
+			&& lockOnEnemy.object->GetComponent<NormalEnemy>()->statas != NormalEnemy::Statas::DEAD)
+		{
+			//スロー
+			GameTime = 0.2;
+		}
 	}
 	else
 	{
-		if (isLockOn && lockOnEnemy.object != nullptr) { statas = PlayerStatas::LOCKON_SHOOT; }
+		//nullじゃなくて敵がロックオンの範囲内にいてロックオンしているか
+		if (isLockOn && lockOnEnemy.object != nullptr
+			&& lockOnEnemy.object->GetComponent<NormalEnemy>()->statas != NormalEnemy::Statas::DEAD)
+		{
+			statas = PlayerStatas::LOCKON_SHOOT;
+		}
 		return;
 	}
+
+
 	for (int i = 0; i < enemies.size(); i++)
 	{
 		float distance = abs(GE::Math::Vector3::Distance(transform->position, enemies[i]->GetTransform()->position));
@@ -246,7 +279,7 @@ void PlayerComponent::Dash(float dash_speed, float dash_time, float deltaTime, f
 	current_speed = easeIn(dash_speed, normal_speed, dashEasingCount / dash_time);
 	CameraControl::GetInstance()->DashCam(dashEasingCount, dash_time);
 
-	if (dashEasingCount < dash_time) { dashEasingCount++; }
+	if (dashEasingCount < dash_time) { dashEasingCount += 1 * gameTime; }
 	else { statas = PlayerStatas::MOVE; dashEasingCount = 0.0f; }
 
 	transform->position += transform->GetForward() * current_speed * deltaTime * gameTime;

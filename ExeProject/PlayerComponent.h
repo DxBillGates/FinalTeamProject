@@ -15,6 +15,8 @@ public:
 		STAY_LAND,
 	};
 	PlayerStatas statas;				//Playerの状態
+
+	static float GameTime;
 private:
 	GE::InputDevice* inputDevice;
 	GE::Math::Vector3 gyro;
@@ -27,7 +29,6 @@ private:
 	float current_speed;		//現在のスピード
 	float normal_speed;			//通常時のスピード
 
-
 	bool isLockOn;				//ロックオンして発射待機中フラグ
 
 	struct LockOnEnemy
@@ -36,6 +37,11 @@ private:
 		GE::Math::Vector3 direction;
 	};
 	LockOnEnemy lockOnEnemy;
+
+	//ヒットストップカウント用
+	int hitStopCount;
+	//ヒットストップの長さ(フレーム数)
+	int hitStopTime;
 
 public:
 	PlayerComponent();

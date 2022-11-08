@@ -1,5 +1,6 @@
 #include "CollisionDetection.h"
 #include "PlayerComponent.h"
+#include "NormalEnemy.h"
 #include <GatesEngine/Header/GameFramework/Collision/CollisionManager.h>
 
 
@@ -14,10 +15,13 @@ void CollisionDetection::Update(float deltaTime)
 {
 	for (auto& ne : nEnemies)
 	{
-		if (GE::CollisionManager::CheckHit(player.collider, ne.collider))
+		if (ne.object->GetComponent<NormalEnemy>()->statas != NormalEnemy::Statas::DEAD)
 		{
-			player.object->OnCollision(ne.object);
-			ne.object->OnCollision(player.object);
+			if (GE::CollisionManager::CheckHit(player.collider, ne.collider))
+			{
+				player.object->OnCollision(ne.object);
+				ne.object->OnCollision(player.object);
+			}
 		}
 	}
 }
