@@ -132,6 +132,7 @@ void PlayerComponent::OnGui()
 	ImGui::DragFloat3("RandomVector", random.value, dragSpeed, -1, 1);
 	ImGui::DragFloat3("GyroVector", gyro.value, dragSpeed, -1, 1);
 	ImGui::InputFloat4("quat", quat.value);
+	ImGui::InputFloat3("accelerometer", accelerometer.value);
 }
 
 void PlayerComponent::Control(float deltaTime)
