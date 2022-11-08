@@ -32,7 +32,6 @@ void PlayerComponent::Start()
 	statas = PlayerStatas::MOVE;
 
 	normal_speed = 1000;
-	dash_speed = 10000;
 	current_speed = normal_speed;
 	gravity = { 0,0.5,0 };
 	dir = 0.0;
@@ -112,12 +111,18 @@ void PlayerComponent::Control(float deltaTime, float gameTime)
 	switch (statas)
 	{
 	case PlayerComponent::PlayerStatas::STOP_DEBUG:
+		//‰ñ“]
+		transform->rotation =
+			GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), body_direction.y)
+			* GE::Math::Quaternion(GE::Math::Vector3(0, 0, 1), body_direction.z)
+			* GE::Math::Quaternion(GE::Math::Vector3(1, 0, 0), body_direction.x);
 		break;
 	case PlayerComponent::PlayerStatas::MOVE:
 		//Key‰Ÿ‚µ‚½‚çPlayerState::DASH‚É•Ï‚í‚é
 		if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE)) { statas = PlayerStatas::DASH; }
 
 		transform->position += transform->GetForward() * current_speed * deltaTime * gameTime - gravity;
+		//‰ñ“]
 		transform->rotation =
 			GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), body_direction.y)
 			* GE::Math::Quaternion(GE::Math::Vector3(0, 0, 1), body_direction.z)
@@ -127,7 +132,7 @@ void PlayerComponent::Control(float deltaTime, float gameTime)
 		break;
 	case PlayerComponent::PlayerStatas::DASH:
 
-		Dash(100.0, deltaTime, gameTime);
+		Dash(10000, 100.0, deltaTime, gameTime);
 
 		break;
 	case PlayerComponent::PlayerStatas::LOCKON_SHOOT:
@@ -147,7 +152,7 @@ void PlayerComponent::Control(float deltaTime, float gameTime)
 			0.0f, 0.0f, 0.0f, 1.0f };
 		transform->rotation = GE::Math::Quaternion(matrix);
 
-		Dash(50, deltaTime, gameTime);
+		Dash(5000, 50, deltaTime, gameTime);
 		break;
 	case PlayerComponent::PlayerStatas::STAY_LAND:
 		break;
@@ -235,7 +240,7 @@ const float PlayerComponent::easeIn(const float start, const float end, float ti
 	return start * (1.0f - time * time) + end * time * time;
 }
 
-void PlayerComponent::Dash(float dash_time, float deltaTime, float gameTime)
+void PlayerComponent::Dash(float dash_speed, float dash_time, float deltaTime, float gameTime)
 {
 	//ƒXƒs[ƒh‚Ì‘JˆÚ
 	current_speed = easeIn(dash_speed, normal_speed, dashEasingCount / dash_time);

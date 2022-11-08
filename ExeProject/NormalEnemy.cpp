@@ -25,6 +25,7 @@ void NormalEnemy::Start()
 	transform->scale = { 100.0f,100.0f,100.0f };
 	speed = 10;
 	statas = Statas::ALIVE;
+	angle = GE::RandomMaker::GetFloat(0.0f, 20.0f);//“G‚Ìn“®ˆÊ’u‚Ì’²®
 
 	material.color = GE::Color::Red();
 }
