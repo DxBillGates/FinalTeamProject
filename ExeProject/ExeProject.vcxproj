@@ -167,6 +167,7 @@
     <ClCompile Include="CollisionDetection.cpp" />
     <ClCompile Include="EnemyManager.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="NormalEnemy.cpp" />
     <ClCompile Include="PlayerComponent.cpp" />
@@ -177,6 +178,7 @@
     <ClInclude Include="CollisionDetection.h" />
     <ClInclude Include="EnemyManager.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="InputManager.h" />
     <ClInclude Include="NormalEnemy.h" />
     <ClInclude Include="PlayerComponent.h" />
     <ClInclude Include="resource.h" />

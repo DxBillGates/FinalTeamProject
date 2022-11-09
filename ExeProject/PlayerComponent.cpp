@@ -7,6 +7,7 @@
 
 #include"PlayerComponent.h"
 #include"EnemyManager.h"
+#include "InputManager.h"
 
 PlayerComponent::PlayerComponent()
 	: inputDevice(nullptr)
@@ -43,9 +44,13 @@ void PlayerComponent::Start()
 	CameraControl::GetInstance()->Initialize();
 	CameraControl::GetInstance()->SetGraphicsDevice(graphicsDevice);
 	CameraControl::GetInstance()->SetOtherPos(transform->position);
+
+	InputManager::GetInstance()->Initialize();
 }
 void PlayerComponent::Update(float deltaTime)
 {
+	InputManager::GetInstance()->Update();
+
 	const GE::Math::Axis& axis = transform->GetMatrix().GetAxis();
 	//‘€ì
 	Control(1);
@@ -133,6 +138,9 @@ void PlayerComponent::OnGui()
 	ImGui::DragFloat3("GyroVector", gyro.value, dragSpeed, -1, 1);
 	ImGui::InputFloat4("quat", quat.value);
 	ImGui::InputFloat3("accelerometer", accelerometer.value);
+
+	GE::Math::Vector3 inputAxis = InputManager::GetInstance()->GetAxis();
+	ImGui::InputFloat3("inputAxis", inputAxis.value);
 }
 
 void PlayerComponent::Control(float deltaTime)
