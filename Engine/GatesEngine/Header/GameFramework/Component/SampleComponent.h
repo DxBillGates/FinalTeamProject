@@ -11,7 +11,6 @@ namespace GE
 		Math::Vector3 random;
 		float speed;
 		Math::Vector3 gyro;
-		Math::Vector3 rayPos, rayDir;
 	public:
 		SampleComponent();
 		~SampleComponent();

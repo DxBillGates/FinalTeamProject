@@ -93,7 +93,7 @@ GE::GameObject* GE::GameObjectManager::AddGameObject(GameObject* newGameObject)
 		}
 	}
 
-	gameObjects.insert(std::make_pair(tag,std::vector<GameObject*>()));
+	gameObjects.insert(std::make_pair(tag, std::vector<GameObject*>()));
 	gameObjects[tag].push_back(newGameObject);
 	newGameObject->SetGameObjectManager(this);
 
@@ -149,8 +149,8 @@ bool GE::GameObjectManager::Raycast(const Math::Vector3& pos, const Math::Vector
 			if (collider == nullptr)continue;
 
 			Math::Vector3 hitPos;
-			
-			bool isHit = CollisionManager::CheckSphereToRay(collider,object->GetTransform()->position, pos, dir, &hitPos);
+
+			bool isHit = CollisionManager::CheckSphereToRay(collider, object->GetTransform()->position, pos, dir, &hitPos);
 
 			if (isHit == false)continue;
 			if (hitPos.Length() > length)continue;
@@ -163,3 +163,4 @@ bool GE::GameObjectManager::Raycast(const Math::Vector3& pos, const Math::Vector
 	}
 	return false;
 }
+

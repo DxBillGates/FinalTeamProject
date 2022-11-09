@@ -1,13 +1,16 @@
-#include <GatesEngine/Header/Graphics\CBufferStruct.h>
 #include <GatesEngine/Header/Util/Utility.h          >
-#include <GatesEngine/Header/Util/Random.h           >
+#include <GatesEngine/Header/Graphics\Window.h       >
 #include <GatesEngine/Header/Graphics\Window.h       >
 #include <GatesEngine/Header/GUI\GUIManager.h        >
-#include <GatesEngine/Header/Graphics/Camera3DDebug.h>
+#include <GatesEngine/Header/GameFramework/Collision/CollisionManager.h>
+
 
 #include"PlayerComponent.h"
 #include"EnemyManager.h"
 #include"NormalEnemy.h"
+#include"CameraControl.h"
+
+
 
 float PlayerComponent::GameTime = 1.0;
 
@@ -39,9 +42,16 @@ void PlayerComponent::Start()
 	dir = 0.0;
 
 	isLockOn = false;
+	isLockOnStart = false;
 
-	hitStopTime = 30;
+	//ヒットストップの長さ
+	hitStopTime = 20;
 	hitStopCount = hitStopTime;
+
+	rayHitCount = 0;
+	rayHitTime = 90.0;
+	//レティクルの位置
+	center = GE::Window::GetWindowSize() / 2.0 + GE::Math::Vector2(0, -100);
 
 	CameraControl::GetInstance()->Initialize();
 	CameraControl::GetInstance()->SetGraphicsDevice(graphicsDevice);
@@ -49,6 +59,10 @@ void PlayerComponent::Start()
 }
 void PlayerComponent::Update(float deltaTime)
 {
+	const auto& cameraInfo = graphicsDevice->GetMainCamera()->GetCameraInfo();
+	GE::Math::GetScreenToRay(center, &rayPos, &rayDir, cameraInfo.viewMatrix, cameraInfo.projMatrix, GE::Math::Matrix4x4::GetViewportMatrix(GE::Window::GetWindowSize()));
+
+	//ヒットストップのカウント
 	if (!inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::RETURN))
 	{
 		if (hitStopCount < hitStopTime)
@@ -58,13 +72,15 @@ void PlayerComponent::Update(float deltaTime)
 		}
 		else
 		{
+			//GameTime = 0.5;
 			GameTime = 1.0;
 		}
 	}
+
 	const GE::Math::Axis& axis = transform->GetMatrix().GetAxis();
 	//操作
 
-	Control(deltaTime, GameTime);
+	Control(deltaTime);
 
 	NormalEnemy::gameTime = GameTime;
 
@@ -99,13 +115,35 @@ void PlayerComponent::Draw()
 
 void PlayerComponent::LateDraw()
 {
+	const float SPRITE_SIZE = 30;
 
+	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
+	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
+
+	graphicsDevice->SetShader("DefaultSpriteShader");
+
+	GE::Math::Matrix4x4 modelMatrix = GE::Math::Matrix4x4::Scale({ GE::Math::Lerp(SPRITE_SIZE,10,rayHitCount / rayHitTime) });
+
+	modelMatrix *= GE::Math::Matrix4x4::RotationZ(rayHitCount);
+	modelMatrix *= GE::Math::Matrix4x4::Translate({ center.x,center.y,0 });
+	GE::Material material;
+	material.color = GE::Color::White();
+
+	GE::CameraInfo cameraInfo;
+	cameraInfo.viewMatrix = GE::Math::Matrix4x4::GetViewMatrixLookTo({ 0,1,0 }, { 0,0,1 }, { 0,1,0 });
+	cameraInfo.projMatrix = GE::Math::Matrix4x4::GetOrthographMatrix(GE::Window::GetWindowSize());
+
+	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
+	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
+	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
+	graphicsDevice->DrawMesh("2DPlane");
 }
 
 void PlayerComponent::OnCollision(GE::GameObject* other)
 {
 	GE::Utility::Printf("PlayerComponent OnCollision(GameObject* other) : hit\n");
 	hitStopCount = 0;
+	CameraControl::GetInstance()->ShakeStart({10,10},30);
 }
 
 void PlayerComponent::OnCollision(GE::ICollider* hitCollider)
@@ -121,7 +159,7 @@ void PlayerComponent::OnGui()
 	ImGui::DragFloat3("GyroVector", gyro.value, dragSpeed, -1, 1);
 }
 
-void PlayerComponent::Control(float deltaTime, float gameTime)
+void PlayerComponent::Control(float deltaTime)
 {
 
 	GE::Math::Vector3 c;
@@ -140,18 +178,32 @@ void PlayerComponent::Control(float deltaTime, float gameTime)
 		//Key押したらPlayerState::DASHに変わる
 		if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE)) { statas = PlayerStatas::DASH; }
 
-		transform->position += transform->GetForward() * current_speed * deltaTime * gameTime - gravity;
+		transform->position += transform->GetForward() * current_speed * deltaTime * GameTime - gravity;
 		//回転
 		transform->rotation =
 			GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), body_direction.y)
 			* GE::Math::Quaternion(GE::Math::Vector3(0, 0, 1), body_direction.z)
 			* GE::Math::Quaternion(GE::Math::Vector3(1, 0, 0), body_direction.x);
+
+		if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::RETURN))
+		{
+
+			isLockOnStart = true;
+			//最も近くて前方にいる敵をセット
+			SearchNearEnemy();
+		}
+		else {
+			isLockOnStart = false;
+		}
+
+		//RayCast();
 		//ロックオンして攻撃
 		LockOn();
+
 		break;
 	case PlayerComponent::PlayerStatas::DASH:
 
-		Dash(10000, 100.0, deltaTime, gameTime);
+		Dash(10000, 100.0, deltaTime);
 
 		break;
 	case PlayerComponent::PlayerStatas::LOCKON_SHOOT:
@@ -171,7 +223,7 @@ void PlayerComponent::Control(float deltaTime, float gameTime)
 			0.0f, 0.0f, 0.0f, 1.0f };
 		transform->rotation = GE::Math::Quaternion(matrix);
 
-		Dash(3000, 100, deltaTime, gameTime);
+		Dash(3000, 100, deltaTime);
 		break;
 	case PlayerComponent::PlayerStatas::STAY_LAND:
 		break;
@@ -186,67 +238,44 @@ void PlayerComponent::Control(float deltaTime, float gameTime)
 
 	if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::RIGHT))
 	{
-		body_direction.y += 0.01 * gameTime;
-		body_direction.z > -0.3 ? body_direction.z -= 0.005 * gameTime : 0;
+		body_direction.y += 0.01 * GameTime;
+		body_direction.z > -0.3 ? body_direction.z -= 0.005 * GameTime : 0;
 	}
 	else if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::LEFT))
 	{
-		body_direction.y -= 0.01 * gameTime;
-		body_direction.z < 0.3 ? body_direction.z += 0.005 * gameTime : 0;
+		body_direction.y -= 0.01 * GameTime;
+		body_direction.z < 0.3 ? body_direction.z += 0.005 * GameTime : 0;
 	}
 	else
 	{
-		abs(body_direction.z) < 0.005 ? body_direction.z = 0 : body_direction.z > 0.0 ? body_direction.z -= 0.005 * gameTime : body_direction.z += 0.005 * gameTime;
+		abs(body_direction.z) < 0.005 ? body_direction.z = 0 : body_direction.z > 0.0 ? body_direction.z -= 0.005 * GameTime : body_direction.z += 0.005 * GameTime;
 	}
 	if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::UP))
 	{
-		body_direction.x > -1.57 ? body_direction.x -= 0.005 * gameTime : 0;
+		body_direction.x > -1.57 ? body_direction.x -= 0.005 * GameTime : 0;
 	}
 	else if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::DOWN))
 	{
-		body_direction.x < 1.57 ? body_direction.x += 0.005 * gameTime : 0;
+		body_direction.x < 1.57 ? body_direction.x += 0.005 * GameTime : 0;
 	}
 	else
 	{
-		abs(body_direction.x) < 0.01 ? body_direction.x = 0 : body_direction.x > 0.0 ? body_direction.x -= 0.01 * gameTime : body_direction.x += 0.01 * gameTime;
+		abs(body_direction.x) < 0.01 ? body_direction.x = 0 : body_direction.x > 0.0 ? body_direction.x -= 0.01 * GameTime : body_direction.x += 0.01 * GameTime;
 	}
 }
-void PlayerComponent::LockOn()
+void PlayerComponent::SearchNearEnemy()
 {
 	std::vector<GE::GameObject*> enemies = EnemyManager::GetInstance()->GetNormalEnemies();
 	float result = 100000;
 	int a = 0;
 	bool look = false;
-
-	//Key押したらLockOn準備
-	if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::RETURN))
-	{
-		isLockOn = true;
-		//敵がロックオンの範囲内にいるとにのみ
-		if (lockOnEnemy.object != nullptr
-			&& lockOnEnemy.object->GetComponent<NormalEnemy>()->statas != NormalEnemy::Statas::DEAD)
-		{
-			//スロー
-			GameTime = 0.2;
-		}
-	}
-	else
-	{
-		//nullじゃなくて敵がロックオンの範囲内にいてロックオンしているか
-		if (isLockOn && lockOnEnemy.object != nullptr
-			&& lockOnEnemy.object->GetComponent<NormalEnemy>()->statas != NormalEnemy::Statas::DEAD)
-		{
-			statas = PlayerStatas::LOCKON_SHOOT;
-		}
-		return;
-	}
-
-
 	for (int i = 0; i < enemies.size(); i++)
 	{
 		float distance = abs(GE::Math::Vector3::Distance(transform->position, enemies[i]->GetTransform()->position));
 		GE::Math::Vector3 enemyDirection = enemies[i]->GetTransform()->position - transform->position;
+		//色初期化
 		enemies[i]->GetComponent<NormalEnemy>()->SetColor(GE::Color::Red());
+
 		//生きているか＆前側にいる中で最も近い敵
 		if (enemies[i]->GetComponent<NormalEnemy>()->statas != NormalEnemy::Statas::DEAD)
 		{
@@ -263,24 +292,75 @@ void PlayerComponent::LockOn()
 	}
 	if (look)
 	{
-		enemies[a]->GetComponent<NormalEnemy>()->SetColor(GE::Color::Blue());
+		//スロー
+		GameTime = 0.2;
+		//最も近い敵
 		lockOnEnemy.object = enemies[a];
+		//ロックオンしている敵を青くする
+		lockOnEnemy.object->GetComponent<NormalEnemy>()->SetColor(GE::Color::Blue());
 	}
 }
-//EaseIn関係がよくわからなかったから一時的に追加
-const float PlayerComponent::easeIn(const float start, const float end, float time)
+void PlayerComponent::LockOn()
 {
-	return start * (1.0f - time * time) + end * time * time;
+	if (lockOnEnemy.object != nullptr
+		&& lockOnEnemy.object->GetComponent<NormalEnemy>()->statas != NormalEnemy::Statas::DEAD)
+	{
+		//Key押したらLockOn準備
+		if (isLockOnStart)
+		{
+			isLockOn = true;
+		}
+		else
+		{
+			statas = PlayerStatas::LOCKON_SHOOT;
+		}
+	}
 }
 
-void PlayerComponent::Dash(float dash_speed, float dash_time, float deltaTime, float gameTime)
+void PlayerComponent::Dash(float dash_speed, float dash_time, float deltaTime)
 {
 	//スピードの遷移
 	current_speed = easeIn(dash_speed, normal_speed, dashEasingCount / dash_time);
 	CameraControl::GetInstance()->DashCam(dashEasingCount, dash_time);
 
-	if (dashEasingCount < dash_time) { dashEasingCount += 1 * gameTime; }
+	if (dashEasingCount < dash_time) { dashEasingCount += 1 * GameTime; }
 	else { statas = PlayerStatas::MOVE; dashEasingCount = 0.0f; }
 
-	transform->position += transform->GetForward() * current_speed * deltaTime * gameTime;
+	transform->position += transform->GetForward() * current_speed * deltaTime * GameTime;
+}
+//CollisionDetectionに引っ越すかも
+void PlayerComponent::RayCast()
+{
+	std::vector<GE::GameObject*> enemies = EnemyManager::GetInstance()->GetNormalEnemies();
+	bool hit = false;
+	for (int i = 0; i < enemies.size(); i++)
+	{
+		//色初期化
+		enemies[i]->GetComponent<NormalEnemy>()->SetColor(GE::Color::Red());
+		if (GE::CollisionManager::CheckSphereToRay(enemies[i]->GetCollider(), enemies[i]->GetTransform()->position, rayPos, rayDir))
+		{
+			hit = true;
+			lockOnEnemy.object = enemies[i];
+		}
+	}
+	if (hit) { rayHitCount += 1.0 * GameTime; }
+	else { rayHitCount = 0; }
+	//150フレームカーソル合わせたら
+	if (rayHitCount > rayHitTime)
+	{
+		//ロックオンしている敵を青くする
+		lockOnEnemy.object->GetComponent<NormalEnemy>()->SetColor(GE::Color::Blue());
+
+		isLockOnStart = false;
+	}
+	else
+	{
+		isLockOnStart = true;
+	}
+}
+
+//EaseIn関係がよくわからなかったから一時的に追加
+const float PlayerComponent::easeIn(const float start, const float end, float time)
+{
+	return start * (1.0f - time * time) + end * time * time;
 }

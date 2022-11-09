@@ -1,4 +1,5 @@
 #include "CameraControl.h"
+#include "PlayerComponent.h"
 #include <GatesEngine/Header/Util/Random.h           >
 
 
@@ -35,12 +36,13 @@ void CameraControl::Update()
 		camera->GetCameraInfo().cameraPos.z,
 	};
 	auto newCameraPosition = other + GE::Math::Vector3(sin(dir + 3.14) * current_cameraDistance, 100, cos(dir + 3.14) * current_cameraDistance);
+	direction = GE::Math::Vector3(target - position).Normalize();
 	camera->SetDirection(direction);
 
 	const float LERP_VALUE = 0.05f;
 
 	//GE::Math::Vector3 behind = other - otherAxis.z * normal_cameraDistance;
-	
+
 	/*position = GE::Math::Vector3(behind.x
 		, GE::Math::Lerp(beforeCameraPosition.y, newCameraPosition.y, LERP_VALUE)
 		, behind.z);*/
@@ -54,10 +56,7 @@ void CameraControl::Update()
 
 void CameraControl::Direction(GE::Math::Vector3& target)
 {
-	direction.x = target.x - position.x;
-	direction.y = target.y - position.y;
-	direction.z = target.z - position.z;
-	direction = direction.Normalize();
+	this->target = target;
 }
 
 void CameraControl::DashCam(float dashEasingCount, float dash_time)
@@ -73,13 +72,15 @@ void CameraControl::Shake()
 	{
 		if (shakeFlame > count)
 		{
-			if (count % 2 == 0)
+			if (int(count) % 2 == 0)
 			{
 				position = { position.x + range.x,position.y + range.y,position.z };
+				target = { target.x + range.x,target.y + range.y,target.z };
 			}
 			else
 			{
 				position = { position.x - range.x,position.y - range.y,position.z };
+				target = { target.x - range.x,target.y - range.y,target.z };
 			}
 
 			//GE::Math::Vector2 random;
@@ -87,7 +88,7 @@ void CameraControl::Shake()
 			//	GE::RandomMaker::GetFloat(-range.y,range.y) };//à⁄ìÆïù
 			//position = { position.x + random.x,position.y + random.y,position.z };
 
-			count++;
+			count += 1.0 * PlayerComponent::GameTime;
 		}
 		else
 		{

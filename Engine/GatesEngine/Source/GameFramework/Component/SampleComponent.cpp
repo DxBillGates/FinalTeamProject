@@ -60,10 +60,7 @@ void GE::SampleComponent::Update(float deltaTime)
 	////transform->rotation = Math::Quaternion::Euler(Math::Vector3(45, 0, 0));
 
 
-	const auto& cameraInfo = graphicsDevice->GetMainCamera()->GetCameraInfo();
-	Math::GetScreenToRay(inputDevice->GetMouse()->GetClientMousePos(), &rayPos, &rayDir, cameraInfo.viewMatrix, cameraInfo.projMatrix, Math::Matrix4x4::GetViewportMatrix(Window::GetWindowSize()));
-	auto manager = gameObject->GetGameObjectManager();
-	manager->Raycast(rayPos, rayDir, "none");
+	
 
 	//auto object = manager->FindGameObject("test2");
 }
@@ -130,6 +127,4 @@ void GE::SampleComponent::OnGui()
 	ImGui::DragFloat("Speed", &speed, dragSpeed, 0, maxValue);
 	ImGui::DragFloat3("RandomVector", random.value, dragSpeed, -1, 1);
 	ImGui::DragFloat3("GyroVector", gyro.value, dragSpeed, -1, 1);
-	ImGui::InputFloat3("rayPos", rayPos.value);
-	ImGui::InputFloat3("rayDir", rayDir.value);
 }

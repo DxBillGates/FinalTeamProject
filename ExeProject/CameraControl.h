@@ -8,6 +8,7 @@ class CameraControl
 private:
 	GE::IGraphicsDeviceDx12* graphicsDevice = nullptr;
 
+	GE::Math::Vector3 target;	//方向
 	GE::Math::Vector3 direction;	//方向
 	GE::Math::Vector3 position;		//カメラ位置
 	GE::Math::Vector3 other;		//相手
@@ -20,7 +21,7 @@ private:
 
 	//カメラシェイク用
 	int shakeFlame;
-	int count;
+	float count;
 	GE::Math::Vector2 range;
 	bool isShake;
 

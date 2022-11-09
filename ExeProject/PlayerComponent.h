@@ -1,22 +1,8 @@
 #pragma once
 #include <GatesEngine/Header/GameFramework/Component/Component.h>
 #include <GatesEngine/Header/Input/InputDevice.h>
-#include"CameraControl.h"
-
 class PlayerComponent : public GE::Component
 {
-public:
-	enum class PlayerStatas
-	{
-		STOP_DEBUG,
-		MOVE,
-		DASH,
-		LOCKON_SHOOT,
-		STAY_LAND,
-	};
-	PlayerStatas statas;				//Playerの状態
-
-	static float GameTime;
 private:
 	GE::InputDevice* inputDevice;
 	GE::Math::Vector3 gyro;
@@ -29,7 +15,10 @@ private:
 	float current_speed;		//現在のスピード
 	float normal_speed;			//通常時のスピード
 
+	bool isLockOnStart;			//ロックオン処理を呼ぶフラグ
 	bool isLockOn;				//ロックオンして発射待機中フラグ
+	float rayHitCount;	//何フレーム照準をあわせているか
+	float rayHitTime;	//照準を合わせる長さ（フレーム数）
 
 	struct LockOnEnemy
 	{
@@ -43,6 +32,23 @@ private:
 	//ヒットストップの長さ(フレーム数)
 	int hitStopTime;
 
+	//レティクルの位置
+	GE::Math::Vector2 center;
+public:
+	enum class PlayerStatas
+	{
+		STOP_DEBUG,
+		MOVE,
+		DASH,
+		LOCKON_SHOOT,
+		STAY_LAND,
+	};
+	PlayerStatas statas;				//Playerの状態
+
+	static float GameTime;
+	//RayCast用
+	GE::Math::Vector3 rayPos, rayDir;
+
 public:
 	PlayerComponent();
 	void Awake() override;
@@ -54,9 +60,32 @@ public:
 	void OnCollision(GE::ICollider* hitCollider) override;
 	void OnGui() override;
 private:
-	void Control(float deltaTime, float gameTime);
+	/// <summary>
+	/// 操作関係
+	/// </summary>
+	/// <param name="deltaTime">フレームレートの値</param>
+	/// <param name="gameTime">ゲームの時間の速さ</param>
+	void Control(float deltaTime);
+	/// <summary>
+	/// 前方にいて最も近い敵を求める
+	/// </summary>
+	void SearchNearEnemy();
+	/// <summary>
+	/// ロックオンして攻撃
+	/// </summary>
 	void LockOn();
-	void Dash(float dash_speed, float dash_time, float deltaTime, float gameTime);
+	/// <summary>
+	/// 加速
+	/// </summary>
+	/// <param name="dash_speed">速さ</param>
+	/// <param name="dash_time">ダッシュの長さ（時間）</param>
+	/// <param name="deltaTime">フレームレートの値</param>
+	/// <param name="gameTime">ゲームの時間の速さ</param>
+	void Dash(float dash_speed, float dash_time, float deltaTime);
+	/// <summary>
+	/// 
+	/// </summary>
+	void RayCast();
 	//EaseIn関係がよくわからなかったから一時的に追加
 	const float easeIn(const float start, const float end, float time);
 };

@@ -22,6 +22,7 @@ void CollisionDetection::Update(float deltaTime)
 				player.object->OnCollision(ne.object);
 				ne.object->OnCollision(player.object);
 			}
+			
 		}
 	}
 }
