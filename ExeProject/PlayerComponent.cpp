@@ -26,7 +26,7 @@ void PlayerComponent::Start()
 	GE::Utility::Printf("PlayerComponent Start()\n");
 	inputDevice = GE::InputDevice::GetInstance();
 	random = { GE::RandomMaker::GetFloat(-1,1),GE::RandomMaker::GetFloat(-1,1),GE::RandomMaker::GetFloat(-1,1) };
-	transform->position = { 0,10,0 };
+	transform->position = { 0,500,-5000 };
 	transform->scale = { 50,50,50 };
 
 	body_direction = { 0,0,0 };
@@ -37,7 +37,7 @@ void PlayerComponent::Start()
 	current_speed = normal_speed;
 	gravity = { 0,0.5,0 };
 	dir = 0.0;
-	rayHitSecond = 1.0;
+	rayHitSecond = 144.0;
 
 	// ヒットストップの長さ
 	hitStopTime = 20;
@@ -49,6 +49,8 @@ void PlayerComponent::Start()
 
 	//レティクルの位置
 	center = GE::Window::GetWindowSize() / 2.0 + GE::Math::Vector2(0, -100);
+
+	is_rayCast_active = false;
 
 	CameraControl::GetInstance()->Initialize();
 	CameraControl::GetInstance()->SetGraphicsDevice(graphicsDevice);
@@ -82,7 +84,7 @@ void PlayerComponent::Update(float deltaTime)
 
 	Control(deltaTime);
 
-	NormalEnemy::gameTime = GameTime;
+	NormalEnemy::GameTime = GameTime;
 
 	CameraControl::GetInstance()->Direction(transform->position);
 	CameraControl::GetInstance()->SetOtherAxis(transform->GetMatrix().GetAxis());
@@ -115,6 +117,10 @@ void PlayerComponent::Draw()
 
 void PlayerComponent::LateDraw()
 {
+	if (!is_rayCast_active)
+	{
+		return;
+	}
 	const float SPRITE_SIZE = 30;
 
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
@@ -137,6 +143,7 @@ void PlayerComponent::LateDraw()
 	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
 	graphicsDevice->DrawMesh("2DPlane");
+
 }
 
 void PlayerComponent::OnCollision(GE::GameObject* other)
@@ -171,6 +178,8 @@ void PlayerComponent::Control(float deltaTime)
 		GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), body_direction.y)
 		* GE::Math::Quaternion(GE::Math::Vector3(0, 0, 1), body_direction.z)
 		* GE::Math::Quaternion(GE::Math::Vector3(1, 0, 0), body_direction.x);
+
+	bool loop = false;
 	switch (statas)
 	{
 	case PlayerComponent::PlayerStatas::STOP_DEBUG:
@@ -203,6 +212,7 @@ void PlayerComponent::Control(float deltaTime)
 			isLockOnStart = false;
 		}
 
+		is_rayCast_active = false;
 		//RayCast(deltaTime);
 		//ロックオンして攻撃
 		LockOn();
@@ -215,13 +225,15 @@ void PlayerComponent::Control(float deltaTime)
 		break;
 	case PlayerComponent::PlayerStatas::LOCKON_SHOOT:
 
+
 		if (lockOnEnemy.object->GetComponent<NormalEnemy>()->statas != NormalEnemy::Statas::DEAD)
 		{
 			lockOnEnemy.direction = GE::Math::Vector3(lockOnEnemy.object->GetTransform()->position - transform->position).Normalize();
+			loop = true;
 		}
 		else { isLockOn = false; }
 
-		Dash(3000, 100, deltaTime, lockOnEnemy.direction);
+		Dash(3000, 200, deltaTime, lockOnEnemy.direction, loop);
 		break;
 	case PlayerComponent::PlayerStatas::STAY_LAND:
 		break;
@@ -260,7 +272,7 @@ void PlayerComponent::Control(float deltaTime)
 	body_direction.z += quatVector.z / 20.f;
 
 	GE::Math::Vector3 bodyDirectionMax;
-	bodyDirectionMax = { 1.57f,100000,0.75f };
+	bodyDirectionMax = { 1.0f,100000,0.75f };
 	body_direction = GE::Math::Vector3::Min(-bodyDirectionMax, GE::Math::Vector3::Max(bodyDirectionMax, body_direction));
 
 	if (statas == PlayerStatas::MOVE && accelerometer.Length() > 2.f)
@@ -271,7 +283,7 @@ void PlayerComponent::Control(float deltaTime)
 }
 void PlayerComponent::KeyboardMoveControl()
 {
-	
+
 	if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::RIGHT))
 	{
 		body_direction.y += 0.01 * GameTime;
@@ -353,12 +365,21 @@ void PlayerComponent::LockOn()
 	}
 }
 
-void PlayerComponent::Dash(float dash_speed, float dash_time, float deltaTime, GE::Math::Vector3 direction)
+void PlayerComponent::Dash(float dash_speed, float dash_time, float deltaTime, GE::Math::Vector3 direction, bool loop)
 {
 	//スピードの遷移
-	current_speed = easeIn(dash_speed, normal_speed, dashEasingCount / dash_time);
 	CameraControl::GetInstance()->DashCam(dashEasingCount, dash_time);
+	if (loop)
+	{
+		current_speed = dash_speed;
+		dashEasingCount = 0.0f;
+		body_direction_LerpCount = 0;
+	}
+	else
+	{
+		current_speed = easeIn(dash_speed, normal_speed, dashEasingCount / dash_time);
 
+	}
 	if (dashEasingCount < dash_time) { dashEasingCount += 1 * GameTime; }
 	else { statas = PlayerStatas::MOVE; dashEasingCount = 0.0f; body_direction_LerpCount = 0; }
 
@@ -376,6 +397,8 @@ void PlayerComponent::Dash(float dash_speed, float dash_time, float deltaTime, G
 //CollisionDetectionに引っ越すかも
 void PlayerComponent::RayCast(float deltaTime)
 {
+	is_rayCast_active = true;
+
 	std::vector<GE::GameObject*> enemies = EnemyManager::GetInstance()->GetNormalEnemies();
 	bool hit = false;
 	for (int i = 0; i < enemies.size(); i++)
@@ -391,7 +414,7 @@ void PlayerComponent::RayCast(float deltaTime)
 	if (hit) { rayHitCount += 1.0 * GameTime; }
 	else { rayHitCount = 0; }
 	//指定した秒数カーソル合わせたら
-	if (rayHitCount > rayHitSecond / deltaTime)
+	if (rayHitCount > rayHitSecond)
 	{
 		//ロックオンしている敵を青くする
 		lockOnEnemy.object->GetComponent<NormalEnemy>()->SetColor(GE::Color::Blue());

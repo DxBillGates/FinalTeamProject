@@ -16,7 +16,7 @@ public:
 		DEAD,
 	};
 	Statas statas;
-	static float gameTime;
+	static float GameTime;
 
 public:
 	NormalEnemy();

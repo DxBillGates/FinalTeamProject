@@ -44,6 +44,8 @@ private:
 
 	GE::Math::Quaternion quat;
 	GE::Math::Quaternion body_direction_LockOn;
+
+	bool is_rayCast_active;
 public:
 	enum class PlayerStatas
 	{
@@ -97,7 +99,7 @@ private:
 	/// <param name="deltaTime">フレームレートの値</param>
 	/// <param name="gameTime">ゲームの時間の速さ</param>
 	/// <param name="direction">向き</param>
-	void Dash(float dash_speed, float dash_time, float deltaTime, GE::Math::Vector3 direction);
+	void Dash(float dash_speed, float dash_time, float deltaTime, GE::Math::Vector3 direction, bool loop = false);
 	/// <summary>
 	/// 
 	/// </summary>
