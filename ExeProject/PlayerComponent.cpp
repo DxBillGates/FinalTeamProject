@@ -37,6 +37,10 @@ void PlayerComponent::Start()
 	current_speed = normal_speed;
 	gravity = { 0,0.5,0 };
 	dir = 0.0;
+	rayHitSecond = 1.0;
+
+	//レティクルの位置
+	center = GE::Window::GetWindowSize() / 2.0 + GE::Math::Vector2(0, -100);
 
 	CameraControl::GetInstance()->Initialize();
 	CameraControl::GetInstance()->SetGraphicsDevice(graphicsDevice);
@@ -109,8 +113,8 @@ void PlayerComponent::LateDraw()
 	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
 
 	graphicsDevice->SetShader("DefaultSpriteShader");
-
-	GE::Math::Matrix4x4 modelMatrix = GE::Math::Matrix4x4::Scale({ GE::Math::Lerp(SPRITE_SIZE,10,rayHitCount / rayHitTime) });
+	//																											//後でなおす
+	GE::Math::Matrix4x4 modelMatrix = GE::Math::Matrix4x4::Scale({ GE::Math::Lerp(SPRITE_SIZE,10,rayHitCount / (rayHitSecond*144.0)) });
 
 	modelMatrix *= GE::Math::Matrix4x4::RotationZ(rayHitCount);
 	modelMatrix *= GE::Math::Matrix4x4::Translate({ center.x,center.y,0 });
@@ -187,7 +191,7 @@ void PlayerComponent::Control(float deltaTime)
 			isLockOnStart = false;
 		}
 
-		//RayCast();
+		RayCast(deltaTime);
 		//ロックオンして攻撃
 		LockOn();
 
@@ -226,6 +230,7 @@ void PlayerComponent::Control(float deltaTime)
 	{
 		dir = atan2f(transform->GetForward().x, transform->GetForward().z);
 	}
+
 	//キーボードで移動操作
 	KeyboardMoveControl();
 
@@ -356,7 +361,7 @@ void PlayerComponent::Dash(float dash_speed, float dash_time, float deltaTime)
 	transform->position += transform->GetForward() * current_speed * deltaTime * GameTime;
 }
 //CollisionDetectionに引っ越すかも
-void PlayerComponent::RayCast()
+void PlayerComponent::RayCast(float deltaTime)
 {
 	std::vector<GE::GameObject*> enemies = EnemyManager::GetInstance()->GetNormalEnemies();
 	bool hit = false;
@@ -372,8 +377,8 @@ void PlayerComponent::RayCast()
 	}
 	if (hit) { rayHitCount += 1.0 * GameTime; }
 	else { rayHitCount = 0; }
-	//150フレームカーソル合わせたら
-	if (rayHitCount > rayHitTime)
+	//指定した秒数カーソル合わせたら
+	if (rayHitCount > rayHitSecond / deltaTime)
 	{
 		//ロックオンしている敵を青くする
 		lockOnEnemy.object->GetComponent<NormalEnemy>()->SetColor(GE::Color::Blue());

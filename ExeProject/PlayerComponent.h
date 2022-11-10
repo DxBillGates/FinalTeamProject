@@ -20,7 +20,7 @@ private:
 	bool isLockOnStart;			//ロックオン処理を呼ぶフラグ
 	bool isLockOn;				//ロックオンして発射待機中フラグ
 	float rayHitCount;	//何フレーム照準をあわせているか
-	float rayHitTime;	//照準を合わせる長さ（フレーム数）
+	float rayHitSecond;	//照準を合わせる長さ（秒数）
 
 	struct LockOnEnemy
 	{
@@ -93,7 +93,7 @@ private:
 	/// <summary>
 	/// 
 	/// </summary>
-	void RayCast();
+	void RayCast(float deltaTime);
 	//EaseIn関係がよくわからなかったから一時的に追加
 	const float easeIn(const float start, const float end, float time);
 };
