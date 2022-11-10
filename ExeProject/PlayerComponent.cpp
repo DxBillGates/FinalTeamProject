@@ -257,7 +257,7 @@ void PlayerComponent::Control(float deltaTime)
 	body_direction.z += quatVector.z / 20.f;
 
 	GE::Math::Vector3 bodyDirectionMax;
-	bodyDirectionMax = { 1.57f,10,0.75f };
+	bodyDirectionMax = { 1.57f,100000,0.75f };
 	body_direction = GE::Math::Vector3::Min(-bodyDirectionMax, GE::Math::Vector3::Max(bodyDirectionMax, body_direction));
 
 	if (statas == PlayerStatas::MOVE && accelerometer.Length() > 2.f)
