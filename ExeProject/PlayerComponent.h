@@ -71,6 +71,10 @@ private:
 	/// <param name="gameTime">ƒQ[ƒ€‚ÌŠÔ‚Ì‘¬‚³</param>
 	void Control(float deltaTime);
 	/// <summary>
+	/// Keyboard‚ÅˆÚ“®‘€ì
+	/// </summary>
+	void KeyboardMoveControl();
+	/// <summary>
 	/// ‘O•û‚É‚¢‚ÄÅ‚à‹ß‚¢“G‚ğ‹‚ß‚é
 	/// </summary>
 	void SearchNearEnemy();
