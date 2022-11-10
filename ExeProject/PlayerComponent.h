@@ -1,6 +1,7 @@
 #pragma once
 #include <GatesEngine/Header/GameFramework/Component/Component.h>
 #include <GatesEngine/Header/Input/InputDevice.h>
+
 class PlayerComponent : public GE::Component
 {
 private:
@@ -31,11 +32,18 @@ private:
 
 	//ヒットストップカウント用
 	int hitStopCount;
-	//ヒットストップの長さ(フレーム数)
+	//ヒットストップの長さ(秒数)
 	int hitStopTime;
 
 	//レティクルの位置
 	GE::Math::Vector2 center;
+
+	//元の姿勢に戻るときの遷移
+	int body_direction_LerpCount;
+	float body_direction_LerpTime; //秒数
+
+	GE::Math::Quaternion quat;
+	GE::Math::Quaternion body_direction_LockOn;
 public:
 	enum class PlayerStatas
 	{
@@ -51,7 +59,6 @@ public:
 	//RayCast用
 	GE::Math::Vector3 rayPos, rayDir;
 
-	GE::Math::Quaternion quat;
 public:
 public:
 	PlayerComponent();
@@ -89,7 +96,8 @@ private:
 	/// <param name="dash_time">ダッシュの長さ（時間）</param>
 	/// <param name="deltaTime">フレームレートの値</param>
 	/// <param name="gameTime">ゲームの時間の速さ</param>
-	void Dash(float dash_speed, float dash_time, float deltaTime);
+	/// <param name="direction">向き</param>
+	void Dash(float dash_speed, float dash_time, float deltaTime, GE::Math::Vector3 direction);
 	/// <summary>
 	/// 
 	/// </summary>

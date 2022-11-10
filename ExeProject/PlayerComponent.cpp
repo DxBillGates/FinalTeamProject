@@ -39,6 +39,14 @@ void PlayerComponent::Start()
 	dir = 0.0;
 	rayHitSecond = 1.0;
 
+	// ヒットストップの長さ
+	hitStopTime = 20;
+	hitStopCount = hitStopTime;
+
+	//姿勢遷移
+	body_direction_LerpTime = 50;
+	body_direction_LerpCount = body_direction_LerpTime;
+
 	//レティクルの位置
 	center = GE::Window::GetWindowSize() / 2.0 + GE::Math::Vector2(0, -100);
 
@@ -113,8 +121,8 @@ void PlayerComponent::LateDraw()
 	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
 
 	graphicsDevice->SetShader("DefaultSpriteShader");
-	//																											//後でなおす
-	GE::Math::Matrix4x4 modelMatrix = GE::Math::Matrix4x4::Scale({ GE::Math::Lerp(SPRITE_SIZE,10,rayHitCount / (rayHitSecond*144.0)) });
+
+	GE::Math::Matrix4x4 modelMatrix = GE::Math::Matrix4x4::Scale({ GE::Math::Lerp(SPRITE_SIZE,10,rayHitCount / rayHitSecond) });
 
 	modelMatrix *= GE::Math::Matrix4x4::RotationZ(rayHitCount);
 	modelMatrix *= GE::Math::Matrix4x4::Translate({ center.x,center.y,0 });
@@ -134,6 +142,8 @@ void PlayerComponent::LateDraw()
 void PlayerComponent::OnCollision(GE::GameObject* other)
 {
 	GE::Utility::Printf("PlayerComponent OnCollision(GameObject* other) : hit\n");
+	hitStopCount = 0;
+	CameraControl::GetInstance()->ShakeStart({ 10,10 }, 30);
 }
 
 void PlayerComponent::OnCollision(GE::ICollider* hitCollider)
@@ -150,39 +160,41 @@ void PlayerComponent::OnGui()
 	ImGui::DragFloat3("GyroVector", gyro.value, dragSpeed, -1, 1);
 	ImGui::InputFloat4("quat", quat.value);
 	ImGui::InputFloat3("accelerometer", accelerometer.value);
+	ImGui::InputFloat3("AXIS.Z", transform->GetForward().value);
 
 	GE::Math::Vector3 inputAxis = InputManager::GetInstance()->GetAxis();
 	ImGui::InputFloat3("inputAxis", inputAxis.value);
 }
 void PlayerComponent::Control(float deltaTime)
 {
-
-	GE::Math::Vector3 c;
-	GE::Math::Vector3 up = { 0,1,0 };
-	GE::Math::Matrix4x4 matrix;
+	GE::Math::Quaternion BODY_DIRECTION =
+		GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), body_direction.y)
+		* GE::Math::Quaternion(GE::Math::Vector3(0, 0, 1), body_direction.z)
+		* GE::Math::Quaternion(GE::Math::Vector3(1, 0, 0), body_direction.x);
 	switch (statas)
 	{
 	case PlayerComponent::PlayerStatas::STOP_DEBUG:
+
 		//回転
-		transform->rotation =
-			GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), body_direction.y)
-			* GE::Math::Quaternion(GE::Math::Vector3(0, 0, 1), body_direction.z)
-			* GE::Math::Quaternion(GE::Math::Vector3(1, 0, 0), body_direction.x);
+		transform->rotation = BODY_DIRECTION;
 		break;
 	case PlayerComponent::PlayerStatas::MOVE:
-		//Key押したらPlayerState::DASHに変わる
-		if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE)) { statas = PlayerStatas::DASH; }
 
 		transform->position += transform->GetForward() * current_speed * deltaTime * GameTime - gravity;
-		//回転
-		transform->rotation =
-			GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), body_direction.y)
-			* GE::Math::Quaternion(GE::Math::Vector3(0, 0, 1), body_direction.z)
-			* GE::Math::Quaternion(GE::Math::Vector3(1, 0, 0), body_direction.x);
+		//Key押したらPlayerState::DASHに変わる
+		if (InputManager::GetInstance()->GetActionButton()) { statas = PlayerStatas::DASH; }
+
+		//ダッシュ後体の角度の遷移
+		if (body_direction_LerpCount < body_direction_LerpTime)
+		{
+			body_direction_LerpCount += 1 * GameTime;
+			transform->rotation = GE::Math::Quaternion::Lerp(body_direction_LockOn, BODY_DIRECTION, body_direction_LerpCount / body_direction_LerpTime);
+		}
+		else { transform->rotation = BODY_DIRECTION; }
+
 
 		if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::RETURN))
 		{
-
 			isLockOnStart = true;
 			//最も近くて前方にいる敵をセット
 			SearchNearEnemy();
@@ -191,14 +203,14 @@ void PlayerComponent::Control(float deltaTime)
 			isLockOnStart = false;
 		}
 
-		RayCast(deltaTime);
+		//RayCast(deltaTime);
 		//ロックオンして攻撃
 		LockOn();
 
 		break;
 	case PlayerComponent::PlayerStatas::DASH:
 
-		Dash(10000, 100.0, deltaTime);
+		Dash(10000, 100.0, deltaTime, transform->GetForward());
 
 		break;
 	case PlayerComponent::PlayerStatas::LOCKON_SHOOT:
@@ -209,16 +221,7 @@ void PlayerComponent::Control(float deltaTime)
 		}
 		else { isLockOn = false; }
 
-		//ベクトルの方向に体を向ける
-		c = GE::Math::Vector3::Cross(lockOnEnemy.direction, up);
-		matrix = {
-			up.x, up.y, up.z, 0.0f,
-			c.x, c.y, c.z, 0.0f,
-			lockOnEnemy.direction.x, lockOnEnemy.direction.y, lockOnEnemy.direction.z, 0.0f,
-			0.0f, 0.0f, 0.0f, 1.0f };
-		transform->rotation = GE::Math::Quaternion(matrix);
-
-		Dash(3000, 100, deltaTime);
+		Dash(3000, 100, deltaTime, lockOnEnemy.direction);
 		break;
 	case PlayerComponent::PlayerStatas::STAY_LAND:
 		break;
@@ -349,14 +352,23 @@ void PlayerComponent::LockOn()
 	}
 }
 
-void PlayerComponent::Dash(float dash_speed, float dash_time, float deltaTime)
+void PlayerComponent::Dash(float dash_speed, float dash_time, float deltaTime, GE::Math::Vector3 direction)
 {
 	//スピードの遷移
 	current_speed = easeIn(dash_speed, normal_speed, dashEasingCount / dash_time);
 	CameraControl::GetInstance()->DashCam(dashEasingCount, dash_time);
 
 	if (dashEasingCount < dash_time) { dashEasingCount += 1 * GameTime; }
-	else { statas = PlayerStatas::MOVE; dashEasingCount = 0.0f; }
+	else { statas = PlayerStatas::MOVE; dashEasingCount = 0.0f; body_direction_LerpCount = 0; }
+
+	GE::Math::Vector3 forward = { 0,0,1 };
+	float dot;
+	float theta;
+	dot = GE::Math::Vector3::Dot(forward, direction);
+	theta = std::acosf(dot);
+	GE::Math::Vector3 cross = GE::Math::Vector3::Cross(forward, direction).Normalize();
+	body_direction_LockOn = { cross,theta };
+	transform->rotation = body_direction_LockOn;
 
 	transform->position += transform->GetForward() * current_speed * deltaTime * GameTime;
 }
