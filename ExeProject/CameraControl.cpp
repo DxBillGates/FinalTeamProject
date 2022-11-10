@@ -23,8 +23,9 @@ void CameraControl::Initialize()
 
 	shakeFlame = 0;
 	count = 0;
-	isShake = false;
+
 	range = {};
+	cameraShake = {};
 }
 
 void CameraControl::Update()
@@ -47,8 +48,8 @@ void CameraControl::Update()
 		, GE::Math::Lerp(beforeCameraPosition.y, newCameraPosition.y, LERP_VALUE)
 		, behind.z);*/
 
-	position = GE::Math::Vector3::Lerp(beforeCameraPosition, newCameraPosition, LERP_VALUE);
-
+	position = GE::Math::Vector3::Lerp(beforeCameraPosition, newCameraPosition, LERP_VALUE) + cameraShake * PlayerComponent::GameTime;
+	target += cameraShake * PlayerComponent::GameTime;
 	Shake();
 
 	camera->SetPosition(position);
@@ -68,49 +69,18 @@ void CameraControl::DashCam(float dashEasingCount, float dash_time)
 
 void CameraControl::Shake()
 {
-	if (isShake)
-	{
-		if (shakeFlame > count)
-		{
-			if (int(count) % 2 == 0)
-			{
-				position = { position.x + range.x,position.y + range.y,position.z };
-				target = { target.x + range.x,target.y + range.y,target.z };
-			}
-			else
-			{
-				position = { position.x - range.x,position.y - range.y,position.z };
-				target = { target.x - range.x,target.y - range.y,target.z };
-			}
-
-			//GE::Math::Vector2 random;
-			//random = { GE::RandomMaker::GetFloat(-range.x,range.x),
-			//	GE::RandomMaker::GetFloat(-range.y,range.y) };//移動幅
-			//position = { position.x + random.x,position.y + random.y,position.z };
-
-			count += 1.0 * PlayerComponent::GameTime;
-		}
-		else
-		{
-			count = 0;
-			isShake = false;
-		}
-	}
+	//ランダムで移動量
+	GE::Math::Vector2 randVel = GE::Math::Vector2(range.x > 0 ? GE::RandomMaker::GetFloat(-range.x, range.x) : 0, range.y > 0 ? GE::RandomMaker::GetFloat(-range.y, range.y) : 0);
+	//移動量をセットする
+	cameraShake = GE::Math::Vector3(randVel.x, randVel.y, 0);
+	//カメラシェイクの減衰
+	range.x > 0 ? range.x -= 1.0 * PlayerComponent::GameTime : range.x = 0.0f;
+	range.y > 0 ? range.y -= 1.0f * PlayerComponent::GameTime : range.y = 0.0f;
 }
-
 void CameraControl::ShakeStart(GE::Math::Vector2 range, int flame)
 {
-	isShake = true;
 	this->range = range;
-	if (range.x < 0)
-	{
-		this->range.x *= -1;
-	}
-	if (range.y < 0)
-	{
-		this->range.y *= -1;
-	}
-	shakeFlame = flame;
+	//shakeFlame = flame;
 }
 
 //EaseIn関係がよくわからなかったから一時的に追加

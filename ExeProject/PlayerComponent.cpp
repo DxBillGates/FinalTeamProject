@@ -143,7 +143,7 @@ void PlayerComponent::OnCollision(GE::GameObject* other)
 {
 	GE::Utility::Printf("PlayerComponent OnCollision(GameObject* other) : hit\n");
 	hitStopCount = 0;
-	CameraControl::GetInstance()->ShakeStart({ 10,10 }, 30);
+	CameraControl::GetInstance()->ShakeStart({ 50,50 }, 30);
 }
 
 void PlayerComponent::OnCollision(GE::ICollider* hitCollider)
@@ -271,6 +271,7 @@ void PlayerComponent::Control(float deltaTime)
 }
 void PlayerComponent::KeyboardMoveControl()
 {
+	
 	if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::RIGHT))
 	{
 		body_direction.y += 0.01 * GameTime;

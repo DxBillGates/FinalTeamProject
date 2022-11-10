@@ -23,7 +23,7 @@ private:
 	int shakeFlame;
 	float count;
 	GE::Math::Vector2 range;
-	bool isShake;
+	GE::Math::Vector3 cameraShake;
 
 public:
 	static CameraControl* GetInstance();
@@ -55,6 +55,8 @@ public:
 	/// <param name="range">—h‚ç‚·”ÍˆÍ</param>
 	/// <param name="flame">—h‚ç‚·ƒtƒŒ[ƒ€”</param>
 	void ShakeStart(GE::Math::Vector2 range = { 10,10 }, int flame = 5);
+
+	void CameraVivlate();
 private:
 	void Shake();
 	//EaseInŠÖŒW‚ª‚æ‚­‚í‚©‚ç‚È‚©‚Á‚½‚©‚çˆê“I‚É’Ç‰Á
