@@ -52,7 +52,7 @@ InputManager::Vector3 InputManager::GetAxis(int ctrlAxisIndex, InputCtrlAxisStat
 		break;
 	case InputManager::InputDeviceState::JOYCON:
 		stick = ctrlAxisIndex == 0 ? GE::Math::Vector2(joyconL->GetStick().x, joyconL->GetStick().y)
-													 : GE::Math::Vector2(joyconR->GetStick().x, joyconR->GetStick().y);
+			: GE::Math::Vector2(joyconR->GetStick().x, joyconR->GetStick().y);
 
 		auto joyconLGyro = joyconL->GetGyroscope();
 		auto joyconRGyro = joyconR->GetGyroscope();
@@ -86,18 +86,42 @@ InputManager::Vector3 InputManager::GetDirection()
 	switch (currentInputDeviceState)
 	{
 	case InputManager::InputDeviceState::KEYBOARD:
+		if (keyboard->CheckHitKey(GE::Keys::UP))result.y += 1;
+		if (keyboard->CheckHitKey(GE::Keys::LEFT))result.x += -1;
+		if (keyboard->CheckHitKey(GE::Keys::DOWN))result.y += -1;
+		if (keyboard->CheckHitKey(GE::Keys::RIGHT))result.x += 1;
 		break;
 	case InputManager::InputDeviceState::XCTRL:
+		if (xctrl->CheckHitButton(GE::XInputControllerButton::XINPUT_UP))result.y += 1;
+		if (xctrl->CheckHitButton(GE::XInputControllerButton::XINPUT_LEFT))result.x += -1;
+		if (xctrl->CheckHitButton(GE::XInputControllerButton::XINPUT_DOWN))result.y += -1;
+		if (xctrl->CheckHitButton(GE::XInputControllerButton::XINPUT_RIGHT))result.x += 1;
 		break;
 	case InputManager::InputDeviceState::JOYCON:
+		if (joyconL->GetButton(GE::JoyconButtonData::UP))result.y += 1;
+		if (joyconL->GetButton(GE::JoyconButtonData::LEFT))result.x += -1;
+		if (joyconL->GetButton(GE::JoyconButtonData::DOWN))result.y += -1;
+		if (joyconL->GetButton(GE::JoyconButtonData::RIGHT))result.x += 1;
 		break;
 	}
 
-	return Vector3();
+	return result;
 }
 
 bool InputManager::GetActionButton()
 {
+	switch (currentInputDeviceState)
+	{
+	case InputManager::InputDeviceState::KEYBOARD:
+		if (keyboard->CheckHitKey(GE::Keys::SPACE))return true;
+		break;
+	case InputManager::InputDeviceState::XCTRL:
+		if (xctrl->CheckHitButton(GE::XInputControllerButton::XINPUT_A))return true;
+		break;
+	case InputManager::InputDeviceState::JOYCON:
+		if (joyconR->GetButton(GE::JoyconButtonData::B))return true;
+		break;
+	}
 	return false;
 }
 
