@@ -1,10 +1,10 @@
 #pragma once
 #include <GatesEngine/Header/Input/InputDevice.h>
-#include <GatesEngine/Header/Util/Math/Vector3.h>
+#include <GatesEngine/Header/Util/Math/Math.h>
 
 class InputManager
 {
-private:
+public:
 	enum class InputDeviceState
 	{
 		KEYBOARD,
@@ -20,6 +20,7 @@ private:
 	};
 private:
 	using Vector3 = GE::Math::Vector3;
+	using Quaternion = GE::Math::Quaternion;
 
 	GE::InputDevice* pInputDevice;
 	GE::Keyboard* keyboard;
@@ -60,10 +61,22 @@ public:
 	Vector3 GetDirection();
 
 	/// <summary>
-	/// キーボードのSPACE / XコントローラーのA / ジョイコンのB
+	/// キーボードのSPACE / XコントローラーのA / ジョイコンのB or 加速度センサー
 	/// </summary>
 	/// <returns></returns>
-	bool GetActionButton();
+	bool GetActionButton(bool isJoyconAcc = false);
+
+	/// <summary>
+	/// キーボードのENTER / XコントローラーのRT / ジョイコンのZR
+	/// </summary>
+	/// <returns></returns>
+	bool GetLockonButton();
+
+	/// <summary>
+	/// 現在の入力デバイスが何かを返す
+	/// </summary>
+	/// <returns></returns>
+	InputDeviceState GetCurrentInputDeviceState();
 private:
 	InputManager();
 	InputManager(const InputManager&) = delete;

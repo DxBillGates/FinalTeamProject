@@ -65,7 +65,7 @@ void PlayerComponent::Update(float deltaTime)
 	GE::Math::GetScreenToRay(center, &rayPos, &rayDir, cameraInfo.viewMatrix, cameraInfo.projMatrix, GE::Math::Matrix4x4::GetViewportMatrix(GE::Window::GetWindowSize()));
 
 	//ヒットストップのカウント
-	if (!inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::RETURN))
+	if (!InputManager::GetInstance()->GetLockonButton())
 	{
 		if (hitStopCount < hitStopTime)
 		{
@@ -202,7 +202,7 @@ void PlayerComponent::Control(float deltaTime)
 		else { transform->rotation = BODY_DIRECTION; }
 
 
-		if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::RETURN))
+		if (InputManager::GetInstance()->GetLockonButton())
 		{
 			isLockOnStart = true;
 			//最も近くて前方にいる敵をセット
@@ -249,16 +249,49 @@ void PlayerComponent::Control(float deltaTime)
 	//キーボードで移動操作
 	KeyboardMoveControl();
 
+	if (statas == PlayerStatas::MOVE && accelerometer.Length() > 2.f)
+	{
+		//GE::Utility::Printf("%f\n", accelerometer.Length());
+		statas = PlayerStatas::DASH;
+	}
+}
+void PlayerComponent::KeyboardMoveControl()
+{
+	GE::Math::Vector3 inputAxis = InputManager::GetInstance()->GetAxis(0, InputManager::InputCtrlAxisState::GYROSCOPE);
+
+	if (inputAxis.x != 0)
+	{
+		body_direction.y += 0.01 * inputAxis.x * GameTime;
+		body_direction.z -= 0.005 * inputAxis.x * GameTime;
+
+		body_direction.z = (body_direction.z > 0.3f || body_direction.z < -0.3) ? 0.3f * ((body_direction.z > 0) ? 1 : -1) : body_direction.z;
+	}
+	else
+	{
+		abs(body_direction.z) < 0.005 ? body_direction.z = 0 : body_direction.z > 0.0 ? body_direction.z -= 0.005 * GameTime : body_direction.z += 0.005 * GameTime;
+	}
+
+	if (inputAxis.y != 0)
+	{
+		body_direction.x += 0.005 * inputAxis.y * GameTime;
+		body_direction.x = (body_direction.x > 1.57f || body_direction.x < -1.57f) ? 1.57f * ((body_direction.x > 0) ? 1 : -1) : body_direction.x;
+	}
+	else
+	{
+		abs(body_direction.x) < 0.01 ? body_direction.x = 0 : body_direction.x > 0.0 ? body_direction.x -= 0.01 * GameTime : body_direction.x += 0.01 * GameTime;
+	}
+
+	// ジョイコン操作中の際の姿勢制御
+
 	GE::Joycon* joycon = inputDevice->GetJoyconL();
 	if (joycon == nullptr)return;
 	GE::Vector3Int16 gyroData = joycon->GetGyroscope();
-	GE::Vector3Int16 acceData = joycon->GetAccelerometer();
 	gyro = { (float)gyroData.y,(float)-gyroData.z,(float)-gyroData.x };
-	accelerometer = { (float)acceData.y,(float)-acceData.z,(float)-acceData.x };
 
 	// コントローラーから姿勢を更新し続ける
 	quat *= GE::Math::Quaternion(gyro.Normalize(), GE::Math::ConvertToRadian(gyro.Length() * 1.f / 144.f));
 
+	if (InputManager::GetInstance()->GetCurrentInputDeviceState() != InputManager::InputDeviceState::JOYCON)return;
 	const float GYRO_OFFSET = 0.05f;
 	GE::Math::Vector3 quatVector =
 	{
@@ -274,42 +307,6 @@ void PlayerComponent::Control(float deltaTime)
 	GE::Math::Vector3 bodyDirectionMax;
 	bodyDirectionMax = { 1.0f,100000,0.75f };
 	body_direction = GE::Math::Vector3::Min(-bodyDirectionMax, GE::Math::Vector3::Max(bodyDirectionMax, body_direction));
-
-	if (statas == PlayerStatas::MOVE && accelerometer.Length() > 2.f)
-	{
-		//GE::Utility::Printf("%f\n", accelerometer.Length());
-		statas = PlayerStatas::DASH;
-	}
-}
-void PlayerComponent::KeyboardMoveControl()
-{
-
-	if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::RIGHT))
-	{
-		body_direction.y += 0.01 * GameTime;
-		body_direction.z > -0.3 ? body_direction.z -= 0.005 * GameTime : 0;
-	}
-	else if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::LEFT))
-	{
-		body_direction.y -= 0.01 * GameTime;
-		body_direction.z < 0.3 ? body_direction.z += 0.005 * GameTime : 0;
-	}
-	else
-	{
-		abs(body_direction.z) < 0.005 ? body_direction.z = 0 : body_direction.z > 0.0 ? body_direction.z -= 0.005 * GameTime : body_direction.z += 0.005 * GameTime;
-	}
-	if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::UP))
-	{
-		body_direction.x > -1.57 ? body_direction.x -= 0.005 * GameTime : 0;
-	}
-	else if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::DOWN))
-	{
-		body_direction.x < 1.57 ? body_direction.x += 0.005 * GameTime : 0;
-	}
-	else
-	{
-		abs(body_direction.x) < 0.01 ? body_direction.x = 0 : body_direction.x > 0.0 ? body_direction.x -= 0.01 * GameTime : body_direction.x += 0.01 * GameTime;
-	}
 }
 void PlayerComponent::SearchNearEnemy()
 {

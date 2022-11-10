@@ -58,9 +58,7 @@ InputManager::Vector3 InputManager::GetAxis(int ctrlAxisIndex, InputCtrlAxisStat
 		auto joyconRGyro = joyconR->GetGyroscope();
 		GE::Math::Vector3 gyroAxis =
 		{
-			(joyconLGyro.x + joyconRGyro.x) / 2.0f,
-			(joyconLGyro.y + joyconRGyro.y) / 2.0f,
-			(joyconLGyro.z + joyconRGyro.z) / 2.0f
+			0,0,0
 		};
 
 		if (ctrlAxisState == InputCtrlAxisState::STICK)
@@ -108,7 +106,7 @@ InputManager::Vector3 InputManager::GetDirection()
 	return result;
 }
 
-bool InputManager::GetActionButton()
+bool InputManager::GetActionButton(bool isJoyconAcc)
 {
 	switch (currentInputDeviceState)
 	{
@@ -119,10 +117,37 @@ bool InputManager::GetActionButton()
 		if (xctrl->CheckHitButton(GE::XInputControllerButton::XINPUT_A))return true;
 		break;
 	case InputManager::InputDeviceState::JOYCON:
-		if (joyconR->GetButton(GE::JoyconButtonData::B))return true;
+		if (joyconR->GetButton(GE::JoyconButtonData::B) && isJoyconAcc == false)return true;
+
+		GE::Vector3Int16 acc = joyconL->GetAccelerometer();
+		Vector3 accVector = { (float)acc.x,(float)acc.y,(float)acc.z };
+		if (accVector.Length() > 2)return true;
+
 		break;
 	}
 	return false;
+}
+
+bool InputManager::GetLockonButton()
+{
+	switch (currentInputDeviceState)
+	{
+	case InputManager::InputDeviceState::KEYBOARD:
+		if (keyboard->CheckHitKey(GE::Keys::RETURN))return true;
+		break;
+	case InputManager::InputDeviceState::XCTRL:
+		if (xctrl->CheckHitButton(GE::XInputControllerButton::XINPUT_RT))return true;
+		break;
+	case InputManager::InputDeviceState::JOYCON:
+		if (joyconR->GetButton(GE::JoyconButtonData::ZR))return true;
+		break;
+	}
+	return false;
+}
+
+InputManager::InputDeviceState InputManager::GetCurrentInputDeviceState()
+{
+	return currentInputDeviceState;
 }
 
 InputManager::InputManager()
