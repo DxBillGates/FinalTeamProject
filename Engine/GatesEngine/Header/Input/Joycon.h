@@ -212,6 +212,7 @@ namespace GE
 		void SetVibration(bool flag);
 
 		JoyconBatteryData GetBattery();
+		bool GetAllButton();
 		bool GetButton(JoyconButtonData buttonType);
 		bool GetTriggerButton(JoyconButtonData buttonType);
 		bool GetReleaseButton(JoyconButtonData buttonType);

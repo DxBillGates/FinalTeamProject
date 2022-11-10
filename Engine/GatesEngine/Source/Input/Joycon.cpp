@@ -175,6 +175,13 @@ GE::JoyconBatteryData GE::Joycon::GetBattery()
 	return (JoyconBatteryData)battery;
 }
 
+bool GE::Joycon::GetAllButton()
+{
+	if (joycon == nullptr)return false;
+
+	return currentJoyconButtonState > 0 || currentJoyconShareButtonState > 0;
+}
+
 bool GE::Joycon::GetButton(JoyconButtonData buttonType)
 {
 	if (joycon == nullptr)return false;
