@@ -273,7 +273,7 @@ void PlayerComponent::KeyboardMoveControl()
 
 	if (inputAxis.y != 0)
 	{
-		body_direction.x += 0.005 * inputAxis.y * GameTime;
+		body_direction.x -= 0.005 * inputAxis.y * GameTime;
 		body_direction.x = (body_direction.x > 1.57f || body_direction.x < -1.57f) ? 1.57f * ((body_direction.x > 0) ? 1 : -1) : body_direction.x;
 	}
 	else
