@@ -13,6 +13,8 @@ GE::GameObject::GameObject(const std::string& name, const std::string& tag)
 	, name(name)
 	, tag(tag)
 	, gameObjectManager(nullptr)
+	, firstCollider(nullptr)
+	, materialColor(Color::White())
 {
 }
 
@@ -133,6 +135,11 @@ GE::ICollider* GE::GameObject::GetCollider()
 	return firstCollider;
 }
 
+GE::Color GE::GameObject::GetColor()
+{
+	return materialColor;
+}
+
 void GE::GameObject::SetGameObjectManager(GameObjectManager* manager)
 {
 	gameObjectManager = manager;
@@ -171,6 +178,11 @@ void GE::GameObject::SetGraphicsDevice(IGraphicsDeviceDx12* gDevice)
 bool GE::GameObject::IsSetGraphicsDevice()
 {
 	return (graphicsDevice) ? true : false;
+}
+
+void GE::GameObject::SetColor(const Color& color)
+{
+	materialColor = color;
 }
 
 GE::GameObjectManager* GE::GameObject::GetGameObjectManager()
