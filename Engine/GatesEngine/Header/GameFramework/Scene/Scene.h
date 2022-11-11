@@ -3,6 +3,7 @@
 #include "..\..\Input\InputDevice.h"
 #include "..\..\Graphics\IGraphicsDeviceDx12.h"
 #include "..\..\GameFramework\GameObject\GameObjectManager.h"
+#include "..\..\GameFramework\Collision\CollisionManager.h"
 
 #include <string>
 
@@ -55,6 +56,7 @@ namespace GE
 		InputDevice* inputDevice;
 		IGraphicsDeviceDx12* graphicsDevice;
 		GameObjectManager gameObjectManager;
+		CollisionManager collisionManager;
 	public:
 		Scene();
 		Scene(const std::string& sceneName);

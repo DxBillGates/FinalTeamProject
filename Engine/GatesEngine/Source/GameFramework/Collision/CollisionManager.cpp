@@ -1,7 +1,64 @@
 #include "..\..\..\Header\GameFramework\Collision\CollisionManager.h"
+#include "..\..\..\Header\GameFramework\GameObject\GameObject.h"
 
 #include <array>
 #include <cmath>
+
+void GE::CollisionManager::CollisionCheck(std::vector<GameObject*>* firstTagGameObjects, std::vector<GameObject*>* secondTagGameObjects)
+{
+	for (auto& firstTagGameObject : *firstTagGameObjects)
+	{
+		for (auto& secondTagGameObjects : *secondTagGameObjects)
+		{
+			if (CheckHit(firstTagGameObject->GetCollider(), secondTagGameObjects->GetCollider()))
+			{
+				firstTagGameObject->OnCollision(secondTagGameObjects);
+				secondTagGameObjects->OnCollision(firstTagGameObject);
+			}
+		}
+	}
+}
+
+void GE::CollisionManager::AddTagCombination(const std::string& tag1, const std::string& tag2)
+{
+	bool isFind = false;
+
+	// 一つ目のタグが登録されているか
+	isFind = collisionTagCombination.find(tag1) != collisionTagCombination.end() ? true : false;
+
+	// 一つ目のタグが登録されていないならまずそれを登録する
+	if (isFind == false)
+	{
+		collisionTagCombination.insert(std::make_pair(tag1, std::vector<std::string>()));
+	}
+
+	collisionTagCombination[tag1].push_back(tag2);
+}
+
+void GE::CollisionManager::SetGameObjectManager(std::map<std::string, std::vector<GameObject*>>* pManager)
+{
+	pGameObjects = pManager;
+}
+
+void GE::CollisionManager::Update()
+{
+	bool isTagFinds = false;
+
+	// タグの組み合わせに登録されているタグがゲームオブジェクトの配列に登録されているかを確認
+	for (auto& tagCombination : collisionTagCombination)
+	{
+		// ゲームオブジェクトの配列にタグが登録されているかを確認する
+		isTagFinds = ((*pGameObjects).find(tagCombination.first) != (*pGameObjects).end());
+		
+		for (auto& tag : tagCombination.second)
+		{
+			isTagFinds = ((*pGameObjects).find(tag) != (*pGameObjects).end());
+			if (isTagFinds == false)continue;
+
+			CollisionCheck(&(*pGameObjects)[tagCombination.first], &(*pGameObjects)[tag]);
+		}
+	}
+}
 
 bool GE::CollisionManager::CheckHit(ICollider* col1, ICollider* col2)
 {
@@ -20,7 +77,7 @@ bool GE::CollisionManager::CheckHit(ICollider* col1, ICollider* col2)
 		collisionCheck = CheckSphere(col1, col2);
 		break;
 	case GE::CollisionBitCombination::SPHERE_AABB:
-		if (col1Type == ColliderType::SPHERE)collisionCheck = CheckSphereToAABB(col1,col2);
+		if (col1Type == ColliderType::SPHERE)collisionCheck = CheckSphereToAABB(col1, col2);
 		else collisionCheck = CheckSphereToAABB(col2, col1);
 		break;
 	case GE::CollisionBitCombination::SPHERE_OBB:
@@ -264,7 +321,7 @@ bool GE::CollisionManager::CheckSphereToOBB(ICollider* sphere, ICollider* box)
 	for (int i = 0; i < 3; ++i)
 	{
 		Math::Vector3 axis = boxAxis.value[i] * boxColliderSize.value[i];
-		float l = axis.Length()/2;
+		float l = axis.Length() / 2;
 		if (l <= 0)continue;
 		float s = Math::Vector3::Dot((sphereCenter - boxCenter), boxAxis.value[i]) / l;
 
