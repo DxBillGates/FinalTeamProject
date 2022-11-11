@@ -13,7 +13,9 @@ GE::Scene::Scene(const std::string& sceneName)
 	, inputDevice(nullptr)
 	, graphicsDevice(nullptr)
 	, gameObjectManager(GameObjectManager())
+	, collisionManager(CollisionManager())
 {
+	collisionManager.SetGameObjectManager(gameObjectManager.GetManager());
 }
 
 const std::string& GE::Scene::GetSceneName()

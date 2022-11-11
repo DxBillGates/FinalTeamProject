@@ -24,6 +24,7 @@ namespace GE
 		void Draw();
 		void LateDraw();
 
+		std::map<std::string, std::vector<GameObject*>>* GetManager();
 		GameObject* AddGameObject(GameObject* newGameObject);
 		GameObject* FindGameObject(const std::string& name);
 		GameObject* FindGameObjectWithTag(const std::string& name, const std::string& tag);

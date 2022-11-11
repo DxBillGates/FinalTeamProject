@@ -52,6 +52,9 @@ SampleScene::SampleScene(const std::string& sceneName)
 
 	EnemyManager::GetInstance()->Start(10, &gameObjectManager);
 
+
+	collisionManager.AddTagCombination("player", "enemy");
+	collisionManager.AddTagCombination("player", "birdEnemy");
 }
 
 SampleScene::~SampleScene()
@@ -67,7 +70,8 @@ void SampleScene::Initialize()
 void SampleScene::Update(float deltaTime)
 {
 	gameObjectManager.Update(deltaTime);
-	CollisionDetection::GetInstance()->Update(deltaTime);
+	collisionManager.Update();
+	//CollisionDetection::GetInstance()->Update(deltaTime);
 }
 
 void SampleScene::Draw()

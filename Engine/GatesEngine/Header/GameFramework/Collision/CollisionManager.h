@@ -1,7 +1,8 @@
 #pragma once
 #include "ICollider.h"
-#include "..\..\Util\Manager.h"
 
+#include <string>
+#include <map>
 #include <vector>
 
 namespace GE
@@ -9,7 +10,16 @@ namespace GE
 	class CollisionManager
 	{
 	private:
+		std::map<std::string, std::vector<std::string>> collisionTagCombination;
+		std::map<std::string, std::vector<GameObject*>>* pGameObjects;
+	private:
+		void CollisionCheck(std::vector<GameObject*>* firstTagGameObjects, std::vector<GameObject*>* secondTagGameObjects);
 	public:
+		void AddTagCombination(const std::string& tag1, const std::string& tag2);
+		void SetGameObjectManager(std::map<std::string, std::vector<GameObject*>>* pManager);
+
+		void Update();
+
 		static bool CheckHit(ICollider* col1, ICollider* col2);
 		static bool CheckSphere(ICollider* col1, ICollider* col2);
 		static bool CheckAABB(ICollider* col1, ICollider* col2);

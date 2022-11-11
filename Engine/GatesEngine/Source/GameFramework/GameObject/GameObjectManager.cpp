@@ -79,6 +79,11 @@ void GE::GameObjectManager::LateDraw()
 	}
 }
 
+std::map<std::string, std::vector<GE::GameObject*>>* GE::GameObjectManager::GetManager()
+{
+	return &gameObjects;
+}
+
 GE::GameObject* GE::GameObjectManager::AddGameObject(GameObject* newGameObject)
 {
 	const std::string& tag = newGameObject->GetTag();
