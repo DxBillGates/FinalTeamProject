@@ -13,6 +13,7 @@ private:
 	CollisionObjectData player;
 	CollisionObjectData lockon;
 	std::vector<CollisionObjectData> nEnemies;
+	std::vector<CollisionObjectData> bEnemies;
 public:
 	static CollisionDetection* GetInstance();
 	CollisionDetection() = default;
@@ -24,5 +25,6 @@ public:
 	void SetPlayer(GE::GameObject* p, GE::ICollider* coll);
 	void SetLockOn(GE::GameObject* p, GE::ICollider* coll);
 	void SetNormalEnemies(GE::GameObject* ne, GE::ICollider* coll);
+	void SetBirdEnemies(GE::GameObject* be, GE::ICollider* coll);
 };
 

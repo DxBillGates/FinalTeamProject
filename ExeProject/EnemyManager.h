@@ -12,7 +12,7 @@ class EnemyManager
 private:
 	GE::GameObjectManager* gameObjectManager = nullptr;
 	std::vector<GE::GameObject*> nEnemies;
-	BirdEnemy* birdEnemy = nullptr;
+	std::vector<GE::GameObject*> birdEnemies;
 	unsigned int count;
 public:
 	static EnemyManager* GetInstance();
@@ -23,5 +23,7 @@ public:
 	void Start(const int count, GE::GameObjectManager* gameObjectManager);
 
 	std::vector<GE::GameObject*> GetNormalEnemies() { return nEnemies; }
+	std::vector<GE::GameObject*> GetBirdEnemies() { return birdEnemies; }
+	std::vector<GE::GameObject*> GetAllEnemies();
 };
 

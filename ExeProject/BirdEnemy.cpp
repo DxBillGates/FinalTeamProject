@@ -22,11 +22,11 @@ void BirdEnemy::Start()
 {
 	GE::Utility::Printf("BirdEnemy Start()\n");
 	random = { GE::RandomMaker::GetFloat(-1000.0f,1000.0f),GE::RandomMaker::GetFloat(0.0f,1000.0f),GE::RandomMaker::GetFloat(-500.0f,500.0f) };//敵の位置のランダム変数
-	transform->position = { 100,100,0 };//位置をランダム化
-	transform->scale = { 100.0f,100.0f,100.0f };
-	speed = 0.03f;
+	transform->position = { 0,0,0 };//位置をランダム化
+	transform->scale = { 50.0f,50.0f,50.0f };
+	speed = 20.0f;
 	statas = Statas::ALIVE;
-	
+
 	material.color = GE::Color::Red();
 }
 void BirdEnemy::Update(float deltaTime)
@@ -34,9 +34,9 @@ void BirdEnemy::Update(float deltaTime)
 	const GE::Math::Axis& axis = transform->GetMatrix().GetAxis();
 
 	transform->rotation = GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), bodyDirection.y);
-	bodyDirection.y -= 0.01;
+	bodyDirection.y -= 0.005;
 
-	transform->position += transform->GetForward() * 10;
+	transform->position += transform->GetForward() * speed;
 }
 
 void BirdEnemy::Draw()

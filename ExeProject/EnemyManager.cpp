@@ -21,12 +21,31 @@ void EnemyManager::Start(const int count, GE::GameObjectManager* gameObjectManag
 		nEnemies.push_back(enemy);
 		CollisionDetection::GetInstance()->SetNormalEnemies(enemy, normalEnemyCollider);
 	}
+	for (int i = 0; i < 3; ++i)
+	{
+		auto* bEnemy = gameObjectManager->AddGameObject(new GE::GameObject("BirdEnemy", "birdEnemy"));
+		auto* bComponent = bEnemy->AddComponent<BirdEnemy>();
+		auto* birdEnemyCollider = bEnemy->AddComponent<GE::SphereCollider>();
+		birdEnemyCollider->SetCenter({ 0,0,0 });
+		birdEnemyCollider->SetSize({ 2 });
+		birdEnemies.push_back(bEnemy);
+		CollisionDetection::GetInstance()->SetBirdEnemies(bEnemy, birdEnemyCollider);
+	}
 
-	auto* bEnemy = gameObjectManager->AddGameObject(new GE::GameObject("BirdEnemy", "birdEnemy"));
-	auto* bComponent = bEnemy->AddComponent<BirdEnemy>();
-	auto* birdEnemyCollider = bEnemy->AddComponent<GE::SphereCollider>();
-	birdEnemyCollider->SetCenter({ 0,0,0 });
-	birdEnemyCollider->SetSize({ 2 });
+}
 
+std::vector<GE::GameObject*> EnemyManager::GetAllEnemies()
+{
+	std::vector<GE::GameObject*> result;
+
+	for (auto& ne : nEnemies)
+	{
+		result.push_back(ne);
+	}
+	for (auto& ne : birdEnemies)
+	{
+		result.push_back(ne);
+	}
+	return result;
 }
 

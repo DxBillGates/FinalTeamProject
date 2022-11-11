@@ -320,7 +320,6 @@ void PlayerComponent::SearchNearEnemy()
 		GE::Math::Vector3 enemyDirection = enemies[i]->GetTransform()->position - transform->position;
 		//F‰Šú‰»
 		enemies[i]->GetComponent<NormalEnemy>()->SetColor(GE::Color::Red());
-
 		//¶‚«‚Ä‚¢‚é‚©•‘O‘¤‚É‚¢‚é’†‚ÅÅ‚à‹ß‚¢“G
 		if (enemies[i]->GetComponent<NormalEnemy>()->statas != NormalEnemy::Statas::DEAD)
 		{

@@ -1,6 +1,7 @@
 #include "CollisionDetection.h"
 #include "PlayerComponent.h"
 #include "NormalEnemy.h"
+#include "BirdEnemy.h"
 #include <GatesEngine/Header/GameFramework/Collision/CollisionManager.h>
 
 
@@ -22,7 +23,17 @@ void CollisionDetection::Update(float deltaTime)
 				player.object->OnCollision(ne.object);
 				ne.object->OnCollision(player.object);
 			}
-			
+		}
+	}
+	for (auto& be : bEnemies)
+	{
+		if (be.object->GetComponent<BirdEnemy>()->statas != BirdEnemy::Statas::DEAD)
+		{
+			if (GE::CollisionManager::CheckHit(player.collider, be.collider))
+			{
+				player.object->OnCollision(be.object);
+				be.object->OnCollision(player.object);
+			}
 		}
 	}
 }
@@ -42,5 +53,10 @@ void CollisionDetection::SetLockOn(GE::GameObject* p, GE::ICollider* coll)
 void CollisionDetection::SetNormalEnemies(GE::GameObject* ne, GE::ICollider* coll)
 {
 	nEnemies.push_back({ ne,coll });
+}
+
+void CollisionDetection::SetBirdEnemies(GE::GameObject* be, GE::ICollider* coll)
+{
+	bEnemies.push_back({ be,coll });
 }
 
