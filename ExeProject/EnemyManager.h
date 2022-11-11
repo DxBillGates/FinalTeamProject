@@ -1,5 +1,6 @@
 #pragma once
 #include"NormalEnemy.h"
+#include"BirdEnemy.h"
 #include <GatesEngine/Header/GameFramework/GameObject/GameObjectManager.h> 
 #include <GatesEngine/Header/GameFramework/GameObject/GameObject.h> 
 #include <GatesEngine/Header/Util/Random.h>
@@ -11,6 +12,7 @@ class EnemyManager
 private:
 	GE::GameObjectManager* gameObjectManager = nullptr;
 	std::vector<GE::GameObject*> nEnemies;
+	BirdEnemy* birdEnemy = nullptr;
 	unsigned int count;
 public:
 	static EnemyManager* GetInstance();

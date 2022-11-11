@@ -21,5 +21,12 @@ void EnemyManager::Start(const int count, GE::GameObjectManager* gameObjectManag
 		nEnemies.push_back(enemy);
 		CollisionDetection::GetInstance()->SetNormalEnemies(enemy, normalEnemyCollider);
 	}
+
+	auto* bEnemy = gameObjectManager->AddGameObject(new GE::GameObject("BirdEnemy", "birdEnemy"));
+	auto* bComponent = bEnemy->AddComponent<BirdEnemy>();
+	auto* birdEnemyCollider = bEnemy->AddComponent<GE::SphereCollider>();
+	birdEnemyCollider->SetCenter({ 0,0,0 });
+	birdEnemyCollider->SetSize({ 2 });
+
 }
 

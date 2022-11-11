@@ -163,6 +163,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BirdEnemy.cpp" />
     <ClCompile Include="CameraControl.cpp" />
     <ClCompile Include="CollisionDetection.cpp" />
     <ClCompile Include="EnemyManager.cpp" />
@@ -174,6 +175,7 @@
     <ClCompile Include="SampleScene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BirdEnemy.h" />
     <ClInclude Include="CameraControl.h" />
     <ClInclude Include="CollisionDetection.h" />
     <ClInclude Include="EnemyManager.h" />
