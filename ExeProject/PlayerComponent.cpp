@@ -25,7 +25,6 @@ void PlayerComponent::Start()
 {
 	GE::Utility::Printf("PlayerComponent Start()\n");
 	inputDevice = GE::InputDevice::GetInstance();
-	random = { GE::RandomMaker::GetFloat(-1,1),GE::RandomMaker::GetFloat(-1,1),GE::RandomMaker::GetFloat(-1,1) };
 	transform->position = { 0,500,-5000 };
 	transform->scale = { 50,50,50 };
 
@@ -40,11 +39,11 @@ void PlayerComponent::Start()
 	rayHitSecond = 144.0;
 
 	// ヒットストップの長さ
-	hitStopTime = 20;
+	hitStopTime = 20.0;
 	hitStopCount = hitStopTime;
 
 	//姿勢遷移
-	body_direction_LerpTime = 50;
+	body_direction_LerpTime = 50.0;
 	body_direction_LerpCount = body_direction_LerpTime;
 
 	//レティクルの位置
@@ -163,7 +162,6 @@ void PlayerComponent::OnGui()
 	float dragSpeed = 0.1f;
 	float maxValue = 100;
 	ImGui::DragFloat("Speed", &current_speed, dragSpeed, 0, maxValue);
-	ImGui::DragFloat3("RandomVector", random.value, dragSpeed, -1, 1);
 	ImGui::DragFloat3("GyroVector", gyro.value, dragSpeed, -1, 1);
 	ImGui::InputFloat4("quat", quat.value);
 	ImGui::InputFloat3("accelerometer", accelerometer.value);
@@ -199,7 +197,6 @@ void PlayerComponent::Control(float deltaTime)
 			transform->rotation = GE::Math::Quaternion::Lerp(body_direction_LockOn, BODY_DIRECTION, body_direction_LerpCount / body_direction_LerpTime);
 		}
 		else { transform->rotation = BODY_DIRECTION; }
-
 
 		if (InputManager::GetInstance()->GetLockonButton())
 		{

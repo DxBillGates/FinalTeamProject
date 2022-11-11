@@ -6,7 +6,6 @@ class PlayerComponent : public GE::Component
 {
 private:
 	GE::InputDevice* inputDevice;
-	GE::Math::Vector3 random;
 	GE::Math::Vector3 gyro;
 	GE::Math::Vector3 accelerometer;
 

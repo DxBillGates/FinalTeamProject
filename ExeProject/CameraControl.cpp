@@ -40,7 +40,7 @@ void CameraControl::Update()
 	direction = GE::Math::Vector3(target - position).Normalize();
 	camera->SetDirection(direction);
 
-	const float LERP_VALUE = 0.05f;
+	const float LERP_VALUE = 0.05f * PlayerComponent::GameTime;
 
 	//GE::Math::Vector3 behind = other - otherAxis.z * normal_cameraDistance;
 
