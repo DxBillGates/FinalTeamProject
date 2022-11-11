@@ -16,7 +16,7 @@ void CollisionDetection::Update(float deltaTime)
 {
 	for (auto& ne : nEnemies)
 	{
-		if (ne.object->GetComponent<NormalEnemy>()->statas != NormalEnemy::Statas::DEAD)
+		if (ne.object->GetComponent<NormalEnemy>()->statas != Enemy::Statas::DEAD)
 		{
 			if (GE::CollisionManager::CheckHit(player.collider, ne.collider))
 			{
@@ -27,7 +27,7 @@ void CollisionDetection::Update(float deltaTime)
 	}
 	for (auto& be : bEnemies)
 	{
-		if (be.object->GetComponent<BirdEnemy>()->statas != BirdEnemy::Statas::DEAD)
+		if (be.object->GetComponent<BirdEnemy>()->statas != Enemy::Statas::DEAD)
 		{
 			if (GE::CollisionManager::CheckHit(player.collider, be.collider))
 			{

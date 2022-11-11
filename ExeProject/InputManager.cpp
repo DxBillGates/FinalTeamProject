@@ -41,10 +41,10 @@ InputManager::Vector3 InputManager::GetAxis(int ctrlAxisIndex, InputCtrlAxisStat
 	switch (currentInputDeviceState)
 	{
 	case InputManager::InputDeviceState::KEYBOARD:
-		if (keyboard->CheckHitKey(GE::Keys::W))result.y += 1;
-		if (keyboard->CheckHitKey(GE::Keys::A))result.x += -1;
-		if (keyboard->CheckHitKey(GE::Keys::S))result.y += -1;
-		if (keyboard->CheckHitKey(GE::Keys::D))result.x += 1;
+		if (keyboard->CheckHitKey(GE::Keys::W) || keyboard->CheckHitKey(GE::Keys::UP))result.y += 1;
+		if (keyboard->CheckHitKey(GE::Keys::A) || keyboard->CheckHitKey(GE::Keys::LEFT))result.x += -1;
+		if (keyboard->CheckHitKey(GE::Keys::S) || keyboard->CheckHitKey(GE::Keys::DOWN))result.y += -1;
+		if (keyboard->CheckHitKey(GE::Keys::D) || keyboard->CheckHitKey(GE::Keys::RIGHT))result.x += 1;
 		break;
 	case InputManager::InputDeviceState::XCTRL:
 		stick = ctrlAxisIndex == 0 ? xctrl->GetLStick() : xctrl->GetRStick();

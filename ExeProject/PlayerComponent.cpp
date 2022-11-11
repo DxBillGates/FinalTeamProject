@@ -133,7 +133,7 @@ void PlayerComponent::LateDraw()
 	modelMatrix *= GE::Math::Matrix4x4::RotationZ(rayHitCount);
 	modelMatrix *= GE::Math::Matrix4x4::Translate({ center.x,center.y,0 });
 	GE::Material material;
-	material.color = GE::Color::White();
+	material.color = gameObject->GetColor();
 
 	GE::CameraInfo cameraInfo;
 	cameraInfo.viewMatrix = GE::Math::Matrix4x4::GetViewMatrixLookTo({ 0,1,0 }, { 0,0,1 }, { 0,1,0 });
@@ -167,7 +167,6 @@ void PlayerComponent::OnGui()
 	ImGui::DragFloat3("GyroVector", gyro.value, dragSpeed, -1, 1);
 	ImGui::InputFloat4("quat", quat.value);
 	ImGui::InputFloat3("accelerometer", accelerometer.value);
-	ImGui::InputFloat3("AXIS.Z", transform->GetForward().value);
 
 	GE::Math::Vector3 inputAxis = InputManager::GetInstance()->GetAxis();
 	ImGui::InputFloat3("inputAxis", inputAxis.value);
@@ -226,14 +225,14 @@ void PlayerComponent::Control(float deltaTime)
 	case PlayerComponent::PlayerStatas::LOCKON_SHOOT:
 
 
-		if (lockOnEnemy.object->GetComponent<NormalEnemy>()->statas != NormalEnemy::Statas::DEAD)
+		if (lockOnEnemy.object->GetComponent<Enemy>()->statas != Enemy::Statas::DEAD)
 		{
 			lockOnEnemy.direction = GE::Math::Vector3(lockOnEnemy.object->GetTransform()->position - transform->position).Normalize();
 			loop = true;
 		}
 		else { isLockOn = false; }
 
-		Dash(3000, 200, deltaTime, lockOnEnemy.direction, loop);
+		Dash(10000, 200, deltaTime, lockOnEnemy.direction, loop);
 		break;
 	case PlayerComponent::PlayerStatas::STAY_LAND:
 		break;
@@ -310,7 +309,7 @@ void PlayerComponent::KeyboardMoveControl()
 }
 void PlayerComponent::SearchNearEnemy()
 {
-	std::vector<GE::GameObject*> enemies = EnemyManager::GetInstance()->GetNormalEnemies();
+	std::vector<GE::GameObject*> enemies = EnemyManager::GetInstance()->GetAllEnemies();
 	float result = 100000;
 	int a = 0;
 	bool look = false;
@@ -319,9 +318,9 @@ void PlayerComponent::SearchNearEnemy()
 		float distance = abs(GE::Math::Vector3::Distance(transform->position, enemies[i]->GetTransform()->position));
 		GE::Math::Vector3 enemyDirection = enemies[i]->GetTransform()->position - transform->position;
 		//色初期化
-		enemies[i]->GetComponent<NormalEnemy>()->SetColor(GE::Color::Red());
+		enemies[i]->SetColor(GE::Color::Red());
 		//生きているか＆前側にいる中で最も近い敵
-		if (enemies[i]->GetComponent<NormalEnemy>()->statas != NormalEnemy::Statas::DEAD)
+		if (enemies[i]->GetComponent<Enemy>()->statas != Enemy::Statas::DEAD)
 		{
 			if (GE::Math::Vector3::Dot(transform->GetForward(), enemyDirection.Normalize()) > 0.8)
 			{
@@ -341,13 +340,13 @@ void PlayerComponent::SearchNearEnemy()
 		//最も近い敵
 		lockOnEnemy.object = enemies[a];
 		//ロックオンしている敵を青くする
-		lockOnEnemy.object->GetComponent<NormalEnemy>()->SetColor(GE::Color::Blue());
+		lockOnEnemy.object->SetColor(GE::Color::Blue());
 	}
 }
 void PlayerComponent::LockOn()
 {
 	if (lockOnEnemy.object != nullptr
-		&& lockOnEnemy.object->GetComponent<NormalEnemy>()->statas != NormalEnemy::Statas::DEAD)
+		&& lockOnEnemy.object->GetComponent<Enemy>()->statas != Enemy::Statas::DEAD)
 	{
 		//Key押したらLockOn準備
 		if (isLockOnStart)
@@ -363,8 +362,6 @@ void PlayerComponent::LockOn()
 
 void PlayerComponent::Dash(float dash_speed, float dash_time, float deltaTime, GE::Math::Vector3 direction, bool loop)
 {
-	//スピードの遷移
-	CameraControl::GetInstance()->DashCam(dashEasingCount, dash_time);
 	if (loop)
 	{
 		current_speed = dash_speed;
@@ -379,6 +376,8 @@ void PlayerComponent::Dash(float dash_speed, float dash_time, float deltaTime, G
 	if (dashEasingCount < dash_time) { dashEasingCount += 1 * GameTime; }
 	else { statas = PlayerStatas::MOVE; dashEasingCount = 0.0f; body_direction_LerpCount = 0; }
 
+	//スピードの遷移
+	CameraControl::GetInstance()->DashCam(dashEasingCount, dash_time);
 	GE::Math::Vector3 forward = { 0,0,1 };
 	float dot;
 	float theta;
@@ -395,12 +394,12 @@ void PlayerComponent::RayCast(float deltaTime)
 {
 	is_rayCast_active = true;
 
-	std::vector<GE::GameObject*> enemies = EnemyManager::GetInstance()->GetNormalEnemies();
+	std::vector<GE::GameObject*> enemies = EnemyManager::GetInstance()->GetAllEnemies();
 	bool hit = false;
 	for (int i = 0; i < enemies.size(); i++)
 	{
 		//色初期化
-		enemies[i]->GetComponent<NormalEnemy>()->SetColor(GE::Color::Red());
+		enemies[i]->SetColor(GE::Color::Red());
 		if (GE::CollisionManager::CheckSphereToRay(enemies[i]->GetCollider(), enemies[i]->GetTransform()->position, rayPos, rayDir))
 		{
 			hit = true;
@@ -413,7 +412,7 @@ void PlayerComponent::RayCast(float deltaTime)
 	if (rayHitCount > rayHitSecond)
 	{
 		//ロックオンしている敵を青くする
-		lockOnEnemy.object->GetComponent<NormalEnemy>()->SetColor(GE::Color::Blue());
+		lockOnEnemy.object->SetColor(GE::Color::Blue());
 
 		isLockOnStart = false;
 	}

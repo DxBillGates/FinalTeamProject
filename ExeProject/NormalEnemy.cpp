@@ -3,11 +3,9 @@
 #include <GatesEngine/Header/Util/Random.h           >
 #include <GatesEngine/Header/Graphics\Window.h       >
 #include <GatesEngine/Header/GUI\GUIManager.h        >
-#include <GatesEngine/Header/Graphics/Camera3DDebug.h>
 
 #include"NormalEnemy.h"
 
-float NormalEnemy::GameTime = 1.0;
 NormalEnemy::NormalEnemy()
 {
 
@@ -25,10 +23,8 @@ void NormalEnemy::Start()
 	transform->position = random;//位置をランダム化
 	transform->scale = { 100.0f,100.0f,100.0f };
 	speed = 10;
-	statas = Statas::ALIVE;
 	angle = GE::RandomMaker::GetFloat(0.0f, 20.0f);//敵の始動位置の調整
-
-	material.color = GE::Color::Red();
+	gameObject->SetColor(GE::Color::Red());
 }
 void NormalEnemy::Update(float deltaTime)
 {
@@ -48,6 +44,10 @@ void NormalEnemy::Draw()
 	graphicsDevice->SetShader("DefaultMeshShader");
 
 	//transform->scale = { 200,200,2000 };
+
+	GE::Material material;
+	material.color = gameObject->GetColor();
+
 
 	GE::Math::Matrix4x4 modelMatrix = transform->GetMatrix();
 
@@ -104,9 +104,4 @@ void NormalEnemy::OnGui()
 	float maxValue = 100;
 	ImGui::DragFloat("Speed", &speed, dragSpeed, 0, maxValue);
 	ImGui::DragFloat3("RandomVector", random.value, dragSpeed, -1, 1);
-}
-
-void NormalEnemy::SetColor(GE::Color color)
-{
-	material.color = color;
 }

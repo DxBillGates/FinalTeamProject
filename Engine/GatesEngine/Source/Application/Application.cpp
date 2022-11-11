@@ -97,7 +97,7 @@ bool GE::Application::LoadContents()
 
 	// ƒOƒŠƒbƒh¶¬
 	MeshData<Vertex_Color> meshDataGrid;
-	MeshCreater::CreateGrid(meshDataGrid);
+	MeshCreater::CreateGrid(meshDataGrid,100.0,100000);
 	mesh = new Mesh();
 	mesh->Create(device, cmdList, meshDataGrid);
 	meshManager->Add(mesh, "Grid");

@@ -7,7 +7,6 @@
 
 #include"BirdEnemy.h"
 
-float BirdEnemy::GameTime = 1.0;
 BirdEnemy::BirdEnemy()
 {
 
@@ -21,10 +20,11 @@ void BirdEnemy::Awake()
 void BirdEnemy::Start()
 {
 	GE::Utility::Printf("BirdEnemy Start()\n");
-	random = { GE::RandomMaker::GetFloat(-1000.0f,1000.0f),GE::RandomMaker::GetFloat(0.0f,1000.0f),GE::RandomMaker::GetFloat(-500.0f,500.0f) };//敵の位置のランダム変数
-	transform->position = { 0,0,0 };//位置をランダム化
+	random = { GE::RandomMaker::GetFloat(-1,1),GE::RandomMaker::GetFloat(10,25),GE::RandomMaker::GetFloat(-500.0f,500.0f) };//敵の位置のランダム変数
+	transform->position = { 0,GE::RandomMaker::GetFloat(100,1000),0 };//位置をランダム化
 	transform->scale = { 50.0f,50.0f,50.0f };
-	speed = 20.0f;
+
+	speed = random.y;
 	statas = Statas::ALIVE;
 
 	material.color = GE::Color::Red();
@@ -34,14 +34,14 @@ void BirdEnemy::Update(float deltaTime)
 	const GE::Math::Axis& axis = transform->GetMatrix().GetAxis();
 
 	transform->rotation = GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), bodyDirection.y);
-	bodyDirection.y -= 0.005;
+	bodyDirection.y -= 0.005 * random.x;
 
 	transform->position += transform->GetForward() * speed;
 }
 
 void BirdEnemy::Draw()
 {
-	//if (statas == Statas::DEAD) { return; }
+	if (statas == Statas::DEAD) { return; }
 
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
 	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
@@ -49,7 +49,7 @@ void BirdEnemy::Draw()
 	graphicsDevice->SetShader("DefaultMeshShader");
 
 	//transform->scale = { 200,200,2000 };
-
+	material.color = gameObject->GetColor();
 	GE::Math::Matrix4x4 modelMatrix = transform->GetMatrix();
 
 
@@ -60,29 +60,7 @@ void BirdEnemy::Draw()
 
 void BirdEnemy::LateDraw()
 {
-	//const float SPRITE_SIZE = 100;
 
-	//GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
-	//GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
-
-	//graphicsDevice->SetShader("DefaultSpriteShader");
-
-	//GE::Math::Matrix4x4 modelMatrix = GE::Math::Matrix4x4::Scale({ SPRITE_SIZE });
-	//GE::Math::Vector2 mousePos = inputDevice->GetMouse()->GetClientMousePos();
-	////GE::Utility::Printf("%d,%d\n",(int)mousePos.x, (int)mousePos.y);
-
-	//modelMatrix *= GE::Math::Matrix4x4::Translate({ mousePos.x,mousePos.y,0 });
-	//GE::Material material;
-	//material.color = GE::Color::White();
-
-	//GE::CameraInfo cameraInfo;
-	//cameraInfo.viewMatrix = GE::Math::Matrix4x4::GetViewMatrixLookTo({ 0,1,0 }, { 0,0,1 }, { 0,1,0 });
-	//cameraInfo.projMatrix = GE::Math::Matrix4x4::GetOrthographMatrix(GE::Window::GetWindowSize());
-
-	//renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
-	//renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
-	//renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
-	//graphicsDevice->DrawMesh("2DPlane");
 }
 
 void BirdEnemy::OnCollision(GE::GameObject* other)
@@ -104,10 +82,4 @@ void BirdEnemy::OnGui()
 	float dragSpeed = 0.1f;
 	float maxValue = 100;
 	ImGui::DragFloat("Speed", &speed, dragSpeed, 0, maxValue);
-	ImGui::DragFloat3("RandomVector", random.value, dragSpeed, -1, 1);
-}
-
-void BirdEnemy::SetColor(GE::Color color)
-{
-	material.color = color;
 }
