@@ -1,6 +1,7 @@
 #pragma once
 #include "..\..\Util\Math\Transform.h"
 #include "..\..\Graphics\IGraphicsDeviceDx12.h"
+#include "..\..\Graphics\Color.h"
 
 #include <vector>
 #include <string>
@@ -28,6 +29,8 @@ namespace GE
 		static IGraphicsDeviceDx12* graphicsDevice;
 
 		ICollider* firstCollider;
+
+		Color materialColor;
 	public:
 		GameObject(const std::string& name = "unknown", const std::string& tag = "none");
 		~GameObject();
@@ -46,6 +49,7 @@ namespace GE
 
 		// 一番最初に追加されたコライダーを返す
 		ICollider* GetCollider();
+		Color GetColor();
 
 		void SetGameObjectManager(GameObjectManager* manager);
 		void SetParent(GameObject* object);
@@ -55,6 +59,7 @@ namespace GE
 		void SetDrawAxisEnabled(bool flag);
 		static void SetGraphicsDevice(IGraphicsDeviceDx12* gDevice);
 		static bool IsSetGraphicsDevice();
+		void SetColor(const Color& color);
 
 		template<typename T>
 		T* AddComponent();
