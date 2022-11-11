@@ -20,23 +20,25 @@ void BirdEnemy::Awake()
 void BirdEnemy::Start()
 {
 	GE::Utility::Printf("BirdEnemy Start()\n");
-	random = { GE::RandomMaker::GetFloat(-1,1),GE::RandomMaker::GetFloat(10,25),GE::RandomMaker::GetFloat(-500.0f,500.0f) };//敵の位置のランダム変数
-	transform->position = { 0,GE::RandomMaker::GetFloat(100,1000),0 };//位置をランダム化
-	transform->scale = { 50.0f,50.0f,50.0f };
+	random = { GE::RandomMaker::GetFloat(-1.0f,1.0f),GE::RandomMaker::GetFloat(10.0f,25.0f),GE::RandomMaker::GetFloat(-500.0f,500.0f) };//敵の位置のランダム変数
+	transform->position = { 0.0f,GE::RandomMaker::GetFloat(100.0f,1000.0f),0.0f };//位置をランダム化
+	transform->scale = { 50.0f,50.0f,50.0f };//サイズ
 
-	speed = random.y;
+	speed = random.y;//速度
 	statas = Statas::ALIVE;
 
 	material.color = GE::Color::Red();
 }
+
 void BirdEnemy::Update(float deltaTime)
 {
 	const GE::Math::Axis& axis = transform->GetMatrix().GetAxis();
 
-	transform->rotation = GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), bodyDirection.y);
-	bodyDirection.y -= 0.005 * random.x;
+	//回転処理
+	transform->rotation = GE::Math::Quaternion(GE::Math::Vector3(0.0f, 1.0f, 0.0f), bodyDirection.y);
+	bodyDirection.y -= 0.005f * random.x;
 
-	transform->position += transform->GetForward() * speed;
+	transform->position += transform->GetForward() * speed;//移動処理
 }
 
 void BirdEnemy::Draw()
@@ -80,6 +82,6 @@ void BirdEnemy::OnCollision(GE::ICollider* hitCollider)
 void BirdEnemy::OnGui()
 {
 	float dragSpeed = 0.1f;
-	float maxValue = 100;
+	float maxValue = 100.0f;
 	ImGui::DragFloat("Speed", &speed, dragSpeed, 0, maxValue);
 }
