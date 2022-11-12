@@ -10,6 +10,8 @@ void GE::CollisionManager::CollisionCheck(std::vector<GameObject*>* firstTagGame
 	{
 		for (auto& secondTagGameObjects : *secondTagGameObjects)
 		{
+			if (firstTagGameObject->IsDestroy() == true || secondTagGameObjects->IsDestroy() == true)continue;
+
 			if (CheckHit(firstTagGameObject->GetCollider(), secondTagGameObjects->GetCollider()))
 			{
 				firstTagGameObject->OnCollision(secondTagGameObjects);
@@ -54,7 +56,6 @@ void GE::CollisionManager::Update()
 		{
 			isTagFinds = ((*pGameObjects).find(tag) != (*pGameObjects).end());
 			if (isTagFinds == false)continue;
-
 			CollisionCheck(&(*pGameObjects)[tagCombination.first], &(*pGameObjects)[tag]);
 		}
 	}

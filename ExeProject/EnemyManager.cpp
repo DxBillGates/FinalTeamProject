@@ -11,6 +11,7 @@ EnemyManager* EnemyManager::GetInstance()
 void EnemyManager::Start(const int count, GE::GameObjectManager* gameObjectManager)
 {
 	this->count = count;
+	this->gameObjectManager = gameObjectManager;
 	for (int i = 0; i < 5; ++i)
 	{
 		auto* enemy = gameObjectManager->AddGameObject(new GE::GameObject("Enemy", "enemy"));
@@ -38,11 +39,12 @@ std::vector<GE::GameObject*> EnemyManager::GetAllEnemies()
 {
 	std::vector<GE::GameObject*> result;
 
-	for (auto& ne : nEnemies)
+	auto manager = gameObjectManager->GetManager();
+	for (auto& ne : (*manager)["enemy"])
 	{
 		result.push_back(ne);
 	}
-	for (auto& ne : birdEnemies)
+	for (auto& ne : (*manager)["birdEnemy"])
 	{
 		result.push_back(ne);
 	}

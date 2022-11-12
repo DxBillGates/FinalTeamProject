@@ -150,6 +150,11 @@ void PlayerComponent::OnCollision(GE::GameObject* other)
 	GE::Utility::Printf("PlayerComponent OnCollision(GameObject* other) : hit\n");
 	hitStopCount = 0;
 	CameraControl::GetInstance()->ShakeStart({ 50,50 }, 30);
+
+	if (other == lockOnEnemy.object)
+	{
+		lockOnEnemy.object = nullptr;
+	}
 }
 
 void PlayerComponent::OnCollision(GE::ICollider* hitCollider)
@@ -221,13 +226,15 @@ void PlayerComponent::Control(float deltaTime)
 		break;
 	case PlayerComponent::PlayerStatas::LOCKON_SHOOT:
 
-
-		if (lockOnEnemy.object->GetComponent<Enemy>()->statas != Enemy::Statas::DEAD)
+		if (lockOnEnemy.object != nullptr)
 		{
-			lockOnEnemy.direction = GE::Math::Vector3(lockOnEnemy.object->GetTransform()->position - transform->position).Normalize();
-			loop = true;
+			if (lockOnEnemy.object->GetComponent<Enemy>()->statas != Enemy::Statas::DEAD)
+			{
+				lockOnEnemy.direction = GE::Math::Vector3(lockOnEnemy.object->GetTransform()->position - transform->position).Normalize();
+				loop = true;
+			}
+			else { isLockOn = false; }
 		}
-		else { isLockOn = false; }
 
 		Dash(10000, 200, deltaTime, lockOnEnemy.direction, loop);
 		break;

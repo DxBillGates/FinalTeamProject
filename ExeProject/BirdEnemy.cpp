@@ -69,6 +69,7 @@ void BirdEnemy::OnCollision(GE::GameObject* other)
 	if (statas == Statas::ALIVE)
 	{
 		statas = Statas::DEAD;
+		gameObject->Destroy();
 	}
 }
 

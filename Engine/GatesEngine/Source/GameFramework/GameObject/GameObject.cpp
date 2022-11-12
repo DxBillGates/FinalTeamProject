@@ -2,6 +2,7 @@
 #include "..\..\..\Header\GameFramework\Component\Component.h"
 #include "..\..\..\Header\GameFramework\Component\Collider.h"
 #include "..\..\..\Header\Util\Utility.h"
+#include "..\..\..\Header\GameFramework\GameObject\GameObjectManager.h"
 
 GE::IGraphicsDeviceDx12* GE::GameObject::graphicsDevice = nullptr;
 
@@ -110,6 +111,20 @@ void GE::GameObject::OnCollision(ICollider* hitCollider)
 	}
 }
 
+void GE::GameObject::OnDestroy()
+{
+	for (auto& component : components)
+	{
+		component->OnDestroy();
+	}
+}
+
+void GE::GameObject::Destroy()
+{
+	isDestroy = true;
+	gameObjectManager->DestroyGameObject(this);
+}
+
 GE::Transform* GE::GameObject::GetTransform()
 {
 	return &transform;
@@ -128,6 +143,11 @@ const std::string& GE::GameObject::GetName()
 const std::string& GE::GameObject::GetTag()
 {
 	return tag;
+}
+
+bool GE::GameObject::IsDestroy()
+{
+	return isDestroy;
 }
 
 GE::ICollider* GE::GameObject::GetCollider()

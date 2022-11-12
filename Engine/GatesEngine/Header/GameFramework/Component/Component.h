@@ -36,6 +36,8 @@ namespace GE
 		bool IsOpenTreeNodeGui();
 		virtual void OnGui() {}
 
+		virtual void OnDestroy() {}
+
 		GameObject* GetGameObject();
 		bool GetEnabled();
 		

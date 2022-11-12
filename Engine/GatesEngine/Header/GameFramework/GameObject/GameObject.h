@@ -22,6 +22,7 @@ namespace GE
 		Transform transform;
 		bool enabled;
 		bool drawAxisEnabled;
+		bool isDestroy;
 
 		std::string name;
 		std::string tag;
@@ -41,11 +42,14 @@ namespace GE
 		void LateDraw();
 		void OnCollision(GameObject* other);
 		void OnCollision(ICollider* hitCollider);
+		void OnDestroy();
+		void Destroy();
 
 		Transform* GetTransform();
 		bool IsEnabled();
 		const std::string& GetName();
 		const std::string& GetTag();
+		bool IsDestroy();
 
 		// 一番最初に追加されたコライダーを返す
 		ICollider* GetCollider();

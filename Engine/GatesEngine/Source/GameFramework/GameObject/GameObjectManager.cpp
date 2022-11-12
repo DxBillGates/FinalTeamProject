@@ -41,6 +41,9 @@ void GE::GameObjectManager::Start()
 
 void GE::GameObjectManager::Update(float deltaTime)
 {
+	// 前フレームに削除予定配列に登録されたゲームオブジェクトを削除しつつその配列をクリア
+	Destroy();
+
 	for (auto& objects : gameObjects)
 	{
 		for (auto& object : objects.second)
@@ -77,6 +80,34 @@ void GE::GameObjectManager::LateDraw()
 			object->LateDraw();
 		}
 	}
+}
+
+void GE::GameObjectManager::Destroy()
+{
+	if (destroyGameObjects.size() == 0)return;
+
+	for (auto& destroyTagObjects : destroyGameObjects)
+	{
+		// そのタグで登録されているゲームオブジェクトを削除していく
+		for (auto& destroyObject : destroyTagObjects.second)
+		{
+			std::string tag = destroyTagObjects.first;
+			for (auto& gameObject : gameObjects[tag])
+			{
+				if (destroyObject == gameObject)
+				{
+					gameObject->OnDestroy();
+					delete gameObject;
+					gameObject = nullptr;
+					std::swap(gameObject, gameObjects[tag].back());
+					gameObjects[tag].pop_back();
+					break;
+				}
+			}
+		}
+		destroyTagObjects.second.clear();
+	}
+	destroyGameObjects.clear();
 }
 
 std::map<std::string, std::vector<GE::GameObject*>>* GE::GameObjectManager::GetManager()
@@ -140,6 +171,30 @@ GE::GameObject* GE::GameObjectManager::FindGameObjectWithTag(const std::string& 
 	}
 
 	return returnObject;
+}
+
+void GE::GameObjectManager::DestroyGameObject(const std::string& name)
+{
+	GameObject* destroyGameObject = FindGameObject(name);
+
+	if (destroyGameObject == nullptr)return;
+
+	DestroyGameObject(destroyGameObject);
+}
+
+void GE::GameObjectManager::DestroyGameObject(GameObject* gameObject)
+{
+	std::string tag = gameObject->GetTag();
+
+	// これから削除する予定のオブジェクトリストにそのタグが登録されているかを確認
+	// されていなかったら登録
+	if (destroyGameObjects.find(tag) == destroyGameObjects.end())
+	{
+		destroyGameObjects.insert(std::make_pair(tag, std::vector<GameObject*>()));
+	}
+
+	destroyGameObjects[tag].push_back(gameObject);
+
 }
 
 bool GE::GameObjectManager::Raycast(const Math::Vector3& pos, const Math::Vector3& dir, const std::string& tag, float length, float* hitLenght)
