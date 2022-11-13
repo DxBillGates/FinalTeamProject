@@ -13,7 +13,7 @@ private:
 	GE::GameObjectManager* gameObjectManager = nullptr;
 	std::vector<GE::GameObject*> nEnemies;
 	std::vector<GE::GameObject*> birdEnemies;
-	unsigned int count;
+	unsigned int count = 0;
 public:
 	static EnemyManager* GetInstance();
 	EnemyManager() = default;
