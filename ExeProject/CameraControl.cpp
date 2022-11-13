@@ -43,8 +43,8 @@ void CameraControl::Update()
 	target = targetObject->GetTransform()->position;
 	float dirY = atan2f(targetObject->GetTransform()->GetForward().z, targetObject->GetTransform()->GetForward().y);
 
-	auto newCameraPosition = target + GE::Math::Vector3(sin(dir + 3.14) * current_cameraDistance, -cos(dirY + 0.3) * current_cameraDistance, cos(dir + 3.14) * current_cameraDistance);
-	//auto newCameraPosition = target + GE::Math::Vector3(sin(dir + 3.14) * current_cameraDistance, 100, cos(dir + 3.14) * current_cameraDistance);
+	//auto newCameraPosition = target + GE::Math::Vector3(sin(dir + 3.14) * current_cameraDistance, -cos(dirY + 0.3) * current_cameraDistance, cos(dir + 3.14) * current_cameraDistance);
+	auto newCameraPosition = target + GE::Math::Vector3(sin(dir + 3.14) * current_cameraDistance, 100, cos(dir + 3.14) * current_cameraDistance);
 
 	GE::Math::Vector3 direction = GE::Math::Vector3(target - position).Normalize();
 
