@@ -35,7 +35,6 @@ void PlayerComponent::Start()
 	normal_speed = 1000;
 	current_speed = normal_speed;
 	gravity = { 0,0.5,0 };
-	dir = 0.0;
 	rayHitSecond = 144.0;
 
 	// ヒットストップの長さ
@@ -53,7 +52,6 @@ void PlayerComponent::Start()
 
 	CameraControl::GetInstance()->Initialize();
 	CameraControl::GetInstance()->SetGraphicsDevice(graphicsDevice);
-	CameraControl::GetInstance()->SetOtherPos(transform->position);
 
 	InputManager::GetInstance()->Initialize();
 }
@@ -77,18 +75,12 @@ void PlayerComponent::Update(float deltaTime)
 			GameTime = 1.0;
 		}
 	}
-
-	const GE::Math::Axis& axis = transform->GetMatrix().GetAxis();
 	//操作
-
 	Control(deltaTime);
 
 	NormalEnemy::GameTime = GameTime;
 
-	CameraControl::GetInstance()->Direction(transform->position);
-	CameraControl::GetInstance()->SetOtherAxis(transform->GetMatrix().GetAxis());
-	CameraControl::GetInstance()->SetOtherPos(transform->position);
-	CameraControl::GetInstance()->SetDir(dir);
+	CameraControl::GetInstance()->SetTargetObject(gameObject);
 	CameraControl::GetInstance()->Update();
 
 	//D0押したら移動停止＊デバッグ用
@@ -149,7 +141,7 @@ void PlayerComponent::OnCollision(GE::GameObject* other)
 {
 	GE::Utility::Printf("PlayerComponent OnCollision(GameObject* other) : hit\n");
 	hitStopCount = 0;
-	CameraControl::GetInstance()->ShakeStart({ 50,50 }, 30);
+	CameraControl::GetInstance()->ShakeStart({ 70,70 }, 30);
 
 	if (other == lockOnEnemy.object)
 	{
@@ -242,11 +234,6 @@ void PlayerComponent::Control(float deltaTime)
 		break;
 	default:
 		break;
-	}
-	//体の角度計算
-	if (abs(transform->GetForward().y) < 0.6)
-	{
-		dir = atan2f(transform->GetForward().x, transform->GetForward().z);
 	}
 
 	//キーボードで移動操作

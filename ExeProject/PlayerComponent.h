@@ -13,7 +13,6 @@ private:
 	float dashEasingCount;			//スピード遷移のカウント
 
 	GE::Math::Vector3 gravity;	//重力
-	float dir;					//追従するカメラのPlayerから見た角度
 	float current_speed;		//現在のスピード
 	float normal_speed;			//通常時のスピード
 
@@ -98,6 +97,7 @@ private:
 	/// <param name="deltaTime">フレームレートの値</param>
 	/// <param name="gameTime">ゲームの時間の速さ</param>
 	/// <param name="direction">向き</param>
+	/// <param name="loop">Trueの間はダッシュし続ける。Falseになるとdash_timeのフレーム数かけて減速する</param>
 	void Dash(float dash_speed, float dash_time, float deltaTime, GE::Math::Vector3 direction, bool loop = false);
 	/// <summary>
 	/// 

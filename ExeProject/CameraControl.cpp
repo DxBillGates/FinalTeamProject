@@ -19,10 +19,8 @@ void CameraControl::Initialize()
 	normal_cameraDistance = 500;
 	dash_cameraDistance = 700;
 	current_cameraDistance = normal_cameraDistance;
-	dir = 0.0f;
 
 	shakeFlame = 0;
-	count = 0;
 
 	range = {};
 	cameraShake = {};
@@ -36,28 +34,28 @@ void CameraControl::Update()
 		camera->GetCameraInfo().cameraPos.y,
 		camera->GetCameraInfo().cameraPos.z,
 	};
-	auto newCameraPosition = other + GE::Math::Vector3(sin(dir + 3.14) * current_cameraDistance, 100, cos(dir + 3.14) * current_cameraDistance);
-	direction = GE::Math::Vector3(target - position).Normalize();
-	camera->SetDirection(direction);
+
+	//‘Ì‚ÌŠp“xŒvŽZ
+	if (abs(targetObject->GetTransform()->GetForward().y) < 0.6)
+	{
+		dir = atan2f(targetObject->GetTransform()->GetForward().x, targetObject->GetTransform()->GetForward().z);
+	}
+	target = targetObject->GetTransform()->position;
+	float dirY = atan2f(targetObject->GetTransform()->GetForward().z, targetObject->GetTransform()->GetForward().y);
+
+	auto newCameraPosition = target + GE::Math::Vector3(sin(dir + 3.14) * current_cameraDistance, -cos(dirY + 0.2) * current_cameraDistance, cos(dir + 3.14) * current_cameraDistance);
+	//auto newCameraPosition = target + GE::Math::Vector3(sin(dir + 3.14) * current_cameraDistance, 100, cos(dir + 3.14) * current_cameraDistance);
+
+	GE::Math::Vector3 direction = GE::Math::Vector3(target - position).Normalize();
 
 	const float LERP_VALUE = 0.05f * PlayerComponent::GameTime;
-
-	//GE::Math::Vector3 behind = other - otherAxis.z * normal_cameraDistance;
-
-	/*position = GE::Math::Vector3(behind.x
-		, GE::Math::Lerp(beforeCameraPosition.y, newCameraPosition.y, LERP_VALUE)
-		, behind.z);*/
-
 	position = GE::Math::Vector3::Lerp(beforeCameraPosition, newCameraPosition, LERP_VALUE) + cameraShake * PlayerComponent::GameTime;
 	target += cameraShake * PlayerComponent::GameTime;
+
 	Shake();
 
+	camera->SetDirection(direction);
 	camera->SetPosition(position);
-}
-
-void CameraControl::Direction(GE::Math::Vector3& target)
-{
-	this->target = target;
 }
 
 void CameraControl::DashCam(float dashEasingCount, float dash_time)
@@ -95,14 +93,4 @@ void CameraControl::SetGraphicsDevice(GE::IGraphicsDeviceDx12* graphicsDevice)
 	position.x = graphicsDevice->GetMainCamera()->GetCameraInfo().cameraPos.x;
 	position.y = graphicsDevice->GetMainCamera()->GetCameraInfo().cameraPos.y;
 	position.z = graphicsDevice->GetMainCamera()->GetCameraInfo().cameraPos.z;
-}
-
-void CameraControl::SetOtherPos(GE::Math::Vector3& pos)
-{
-	other = pos;
-}
-
-void CameraControl::SetOtherAxis(GE::Math::Axis axis)
-{
-	otherAxis = axis;
 }
