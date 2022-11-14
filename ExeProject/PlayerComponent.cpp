@@ -38,7 +38,7 @@ void PlayerComponent::Start()
 	rayHitSecond = 144.0;
 
 	// ヒットストップの長さ
-	hitStopTime = 20.0;
+	hitStopTime = 40.0;
 	hitStopCount = hitStopTime;
 
 	//姿勢遷移

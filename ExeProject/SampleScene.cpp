@@ -1,7 +1,6 @@
 #include "SampleScene.h"
 #include "PlayerComponent.h"
 #include"EnemyManager.h"
-#include"CollisionDetection.h"
 #include <GatesEngine/Header\GameFramework\Component\SampleComponent.h>
 #include <GatesEngine/Header\GameFramework\Component\SphereCollider.h>
 #include <GatesEngine/Header\GameFramework\Component\BoxCollider.h>
@@ -33,9 +32,6 @@ SampleScene::SampleScene(const std::string& sceneName)
 		//lockOnCollider->SetCenter({ 0,0,0 });
 		//lockOnCollider->SetSize(200);
 		//lockOnCollider->DrawEnabled(false);
-
-		CollisionDetection::GetInstance()->SetPlayer(testObject, playerCollider);
-		//CollisionDetection::GetInstance()->SetLockOn(testObject, lockOnCollider);
 	}
 
 	{
@@ -71,7 +67,6 @@ void SampleScene::Update(float deltaTime)
 {
 	gameObjectManager.Update(deltaTime);
 	collisionManager.Update();
-	//CollisionDetection::GetInstance()->Update(deltaTime);
 }
 
 void SampleScene::Draw()

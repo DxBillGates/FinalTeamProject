@@ -165,7 +165,6 @@
   <ItemGroup>
     <ClCompile Include="BirdEnemy.cpp" />
     <ClCompile Include="CameraControl.cpp" />
-    <ClCompile Include="CollisionDetection.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="EnemyManager.cpp" />
     <ClCompile Include="Game.cpp" />
@@ -178,7 +177,6 @@
   <ItemGroup>
     <ClInclude Include="BirdEnemy.h" />
     <ClInclude Include="CameraControl.h" />
-    <ClInclude Include="CollisionDetection.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="EnemyManager.h" />
     <ClInclude Include="Game.h" />

@@ -6,6 +6,7 @@
 #include <GatesEngine/Header/Graphics/Camera3DDebug.h>
 
 #include"BirdEnemy.h"
+#include"PlayerComponent.h"
 
 BirdEnemy::BirdEnemy()
 {
@@ -38,7 +39,7 @@ void BirdEnemy::Update(float deltaTime)
 	transform->rotation = GE::Math::Quaternion(GE::Math::Vector3(0.0f, 1.0f, 0.0f), bodyDirection.y);
 	bodyDirection.y -= 0.005f * random.x;
 
-	transform->position += transform->GetForward() * speed;//ˆÚ“®ˆ—
+	transform->position += transform->GetForward() * speed * PlayerComponent::GameTime;//ˆÚ“®ˆ—
 }
 
 void BirdEnemy::Draw()

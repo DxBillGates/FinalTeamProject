@@ -1,5 +1,4 @@
 #include "EnemyManager.h"
-#include "CollisionDetection.h"
 #include <GatesEngine/Header/GameFramework/Component/SphereCollider.h>
 
 EnemyManager* EnemyManager::GetInstance()
@@ -20,7 +19,6 @@ void EnemyManager::Start(const int count, GE::GameObjectManager* gameObjectManag
 		normalEnemyCollider->SetCenter({ 0,0,0 });
 		normalEnemyCollider->SetSize({ 2 });
 		nEnemies.push_back(enemy);
-		CollisionDetection::GetInstance()->SetNormalEnemies(enemy, normalEnemyCollider);
 	}
 	for (int i = 0; i < 10; ++i)
 	{
@@ -30,7 +28,6 @@ void EnemyManager::Start(const int count, GE::GameObjectManager* gameObjectManag
 		birdEnemyCollider->SetCenter({ 0,0,0 });
 		birdEnemyCollider->SetSize({ 2 });
 		birdEnemies.push_back(bEnemy);
-		CollisionDetection::GetInstance()->SetBirdEnemies(bEnemy, birdEnemyCollider);
 	}
 
 }
