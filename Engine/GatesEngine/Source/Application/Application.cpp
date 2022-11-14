@@ -13,6 +13,7 @@
 #include "..\..\Header\Graphics\Texture.h"
 #include "..\..\Header\GameFramework\GameObject\GameObject.h"
 #include "..\..\Header\GUI\GUIManager.h"
+#include "..\..\Header\GameFramework\GameSetting.h"
 
 GE::Application::Application()
 	: Application(Math::Vector2(1920,1080), Math::Vector2(1920, 1080))
@@ -277,6 +278,7 @@ bool GE::Application::Initialize()
 	sceneManager.Initialize();
 
 	mainCamera->Initialize();
+	GameSetting::Time::Initialize();
 	return true;
 }
 
@@ -299,12 +301,15 @@ int GE::Application::Run()
 	if (!LoadContents())return -1;
 
 	inputDevice->Initialize();
+	GameSetting::Time::Start();
+
 	if (!Initialize())return -1;
 
 	while (!inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::ESC))
 	{
 		if (timer.Update())continue;
 		inputDevice->Update();
+		GameSetting::Time::Update(timer.GetElapsedTime());
 		if (!Update())return -1;
 		if (!Draw())return -1;
 
