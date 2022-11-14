@@ -19,6 +19,8 @@ namespace GE
 
 		GameObject* parent;
 		std::vector<Component*> components;
+		std::vector<GameObject*> currentFrameHitObjects;
+		std::vector<GameObject*> beforeFrameHitObjects;
 		Transform transform;
 		bool enabled;
 		bool drawAxisEnabled;
@@ -40,7 +42,7 @@ namespace GE
 		void Update(float deltaTime);
 		void Draw();
 		void LateDraw();
-		void OnCollision(GameObject* other);
+		void OnCollision(GameObject* other,bool enter = false,bool stay = false,bool exit = false);
 		void OnCollision(ICollider* hitCollider);
 		void OnDestroy();
 		void Destroy();
@@ -72,6 +74,10 @@ namespace GE
 		T* GetComponent();
 
 		GameObjectManager* GetGameObjectManager();
+
+		// 今のフレームでそいつとヒットしていたか
+		bool CheckBeforeFrameHitObject(GameObject* hitObject);
+
 		std::vector<Component*>* GetComponents();
 	};
 

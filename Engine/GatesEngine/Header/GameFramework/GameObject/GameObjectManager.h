@@ -41,6 +41,5 @@ namespace GE
 
 		// 指定したタグを持ったオブジェクトとレイキャスト
 		bool Raycast(const Math::Vector3& pos, const Math::Vector3& dir, const std::string& tag, float length = 1000000, float* hitLenght = nullptr);
-
 	};
 }

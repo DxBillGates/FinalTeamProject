@@ -335,6 +335,9 @@
     <ClInclude Include="Header\Input\Joycon.h">
       <Filter>Header\Input</Filter>
     </ClInclude>
+    <ClInclude Include="Header\GameFramework\GameSetting.h">
+      <Filter>Header\GameFramework</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Application\Application.cpp">
@@ -498,6 +501,9 @@
     </ClCompile>
     <ClCompile Include="Source\Input\Joycon.cpp">
       <Filter>Source\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GameFramework\GameSetting.cpp">
+      <Filter>Source\GameFramework</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
