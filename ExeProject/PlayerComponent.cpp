@@ -157,6 +157,16 @@ void PlayerComponent::OnCollision(GE::GameObject* other)
 	}
 }
 
+void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
+{
+	GE::Utility::Printf("PlayerComponent OnCollisionEnter\n");
+}
+
+void PlayerComponent::OnCollisionExit(GE::GameObject* other)
+{
+	GE::Utility::Printf("PlayerComponent OnCollisionExit\n");
+}
+
 void PlayerComponent::OnCollision(GE::ICollider* hitCollider)
 {
 	GE::Utility::Printf("PlayerComponent OnCollision(ICollider* other) : hit\n");

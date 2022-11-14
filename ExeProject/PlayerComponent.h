@@ -69,6 +69,8 @@ public:
 	void Draw() override;
 	void LateDraw() override;
 	void OnCollision(GE::GameObject* other) override;
+	void OnCollisionEnter(GE::GameObject* other)override;
+	void OnCollisionExit(GE::GameObject* other)override;
 	void OnCollision(GE::ICollider* hitCollider) override;
 	void OnGui() override;
 private:
