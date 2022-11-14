@@ -1,5 +1,6 @@
 #pragma once
 #include <GatesEngine/Header/GameFramework/Component/Component.h>
+#include <GatesEngine/Header\GameFramework/GameSetting.h>
 
 class Enemy : public GE::Component
 {
@@ -9,7 +10,6 @@ public:
 		ALIVE,
 		DEAD,
 	};
-	static float GameTime;
 	Statas statas = Statas::ALIVE;
 
 protected:

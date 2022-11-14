@@ -5,7 +5,6 @@
 #include <GatesEngine/Header/GUI\GUIManager.h        >
 
 #include"Enemy.h"
-float Enemy::GameTime = 1.0;
 Enemy::Enemy()
 {
 

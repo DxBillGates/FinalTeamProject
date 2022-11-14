@@ -30,8 +30,8 @@ void NormalEnemy::Update(float deltaTime)
 {
 	const GE::Math::Axis& axis = transform->GetMatrix().GetAxis();
 	float range = 1.0f;//ホバリングの幅
-	angle += 1.0 * GameTime * deltaTime;//ホバリングの速さ
-	transform->position = (transform->position + GE::Math::Vector3(0.0f, sinf(angle) * range * GameTime, 0.0f));
+	angle += 1.0 * GE::GameSetting::Time::GetGameTime() * deltaTime;//ホバリングの速さ
+	transform->position = (transform->position + GE::Math::Vector3(0.0f, sinf(angle) * range * GE::GameSetting::Time::GetGameTime(), 0.0f));
 }
 
 void NormalEnemy::Draw()

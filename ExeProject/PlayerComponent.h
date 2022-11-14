@@ -54,8 +54,6 @@ public:
 		STAY_LAND,
 	};
 	PlayerStatas statas;				//Player‚Ìó‘Ô
-
-	static float GameTime;
 	//RayCast—p
 	GE::Math::Vector3 rayPos, rayDir;
 

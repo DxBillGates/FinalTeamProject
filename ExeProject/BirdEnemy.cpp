@@ -39,7 +39,7 @@ void BirdEnemy::Update(float deltaTime)
 	transform->rotation = GE::Math::Quaternion(GE::Math::Vector3(0.0f, 1.0f, 0.0f), bodyDirection.y);
 	bodyDirection.y -= 0.005f * random.x;
 
-	transform->position += transform->GetForward() * speed * PlayerComponent::GameTime;//ˆÚ“®ˆ—
+	transform->position += transform->GetForward() * speed * GE::GameSetting::Time::GetGameTime();//ˆÚ“®ˆ—
 }
 
 void BirdEnemy::Draw()

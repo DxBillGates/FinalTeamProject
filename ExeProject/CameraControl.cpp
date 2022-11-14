@@ -1,5 +1,5 @@
 #include "CameraControl.h"
-#include "PlayerComponent.h"
+#include <GatesEngine/Header\GameFramework/GameSetting.h>
 #include <GatesEngine/Header/Util/Random.h           >
 
 CameraControl* CameraControl::GetInstance()
@@ -46,9 +46,9 @@ void CameraControl::Update()
 
 	GE::Math::Vector3 direction = GE::Math::Vector3(target - position).Normalize();
 
-	const float LERP_VALUE = 0.05f * PlayerComponent::GameTime;
-	position = GE::Math::Vector3::Lerp(beforeCameraPosition, newCameraPosition, LERP_VALUE) + cameraShake * PlayerComponent::GameTime;
-	target += cameraShake * PlayerComponent::GameTime;
+	const float LERP_VALUE = 0.05f * GE::GameSetting::Time::GetGameTime();
+	position = GE::Math::Vector3::Lerp(beforeCameraPosition, newCameraPosition, LERP_VALUE) + cameraShake * GE::GameSetting::Time::GetGameTime();
+	target += cameraShake * GE::GameSetting::Time::GetGameTime();
 
 	Shake();
 
@@ -70,8 +70,8 @@ void CameraControl::Shake()
 	//移動量をセットする
 	cameraShake = GE::Math::Vector3(randVel.x, randVel.y, 0);
 	//カメラシェイクの減衰
-	range.x > 0 ? range.x -= 1.0 * PlayerComponent::GameTime : range.x = 0.0f;
-	range.y > 0 ? range.y -= 1.0f * PlayerComponent::GameTime : range.y = 0.0f;
+	range.x > 0 ? range.x -= 1.0 * GE::GameSetting::Time::GetGameTime() : range.x = 0.0f;
+	range.y > 0 ? range.y -= 1.0f * GE::GameSetting::Time::GetGameTime() : range.y = 0.0f;
 }
 void CameraControl::ShakeStart(GE::Math::Vector2 range, int flame)
 {

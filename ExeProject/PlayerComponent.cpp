@@ -3,13 +3,13 @@
 #include <GatesEngine/Header/Graphics\Window.h       >
 #include <GatesEngine/Header/GUI\GUIManager.h        >
 #include <GatesEngine/Header/GameFramework/Collision/CollisionManager.h>
+#include <GatesEngine/Header\GameFramework/GameSetting.h>
 
 #include"PlayerComponent.h"
 #include"EnemyManager.h"
 #include "InputManager.h"
 #include "CameraControl.h"
 
-float PlayerComponent::GameTime = 1.0;
 PlayerComponent::PlayerComponent()
 	: inputDevice(nullptr)
 {
@@ -66,19 +66,17 @@ void PlayerComponent::Update(float deltaTime)
 	{
 		if (hitStopCount < hitStopTime)
 		{
-			GameTime = 0.01;
+			GE::GameSetting::Time::SetGameTime(0.01);
 			hitStopCount++;
 		}
 		else
 		{
 			//GameTime = 0.5;
-			GameTime = 1.0;
+			GE::GameSetting::Time::SetGameTime(1.0);
 		}
 	}
 	//操作
 	Control(deltaTime);
-
-	NormalEnemy::GameTime = GameTime;
 
 	CameraControl::GetInstance()->SetTargetObject(gameObject);
 	CameraControl::GetInstance()->Update();
@@ -193,14 +191,14 @@ void PlayerComponent::Control(float deltaTime)
 		break;
 	case PlayerComponent::PlayerStatas::MOVE:
 
-		transform->position += transform->GetForward() * current_speed * deltaTime * GameTime - gravity;
+		transform->position += transform->GetForward() * current_speed * deltaTime * GE::GameSetting::Time::GetGameTime() - gravity;
 		//Key押したらPlayerState::DASHに変わる
 		if (InputManager::GetInstance()->GetActionButton()) { statas = PlayerStatas::DASH; }
 
 		//ダッシュ後体の角度の遷移
 		if (body_direction_LerpCount < body_direction_LerpTime)
 		{
-			body_direction_LerpCount += 1 * GameTime;
+			body_direction_LerpCount += 1 * GE::GameSetting::Time::GetGameTime();
 			transform->rotation = GE::Math::Quaternion::Lerp(body_direction_LockOn, BODY_DIRECTION, body_direction_LerpCount / body_direction_LerpTime);
 		}
 		else { transform->rotation = BODY_DIRECTION; }
@@ -261,24 +259,24 @@ void PlayerComponent::KeyboardMoveControl()
 
 	if (inputAxis.x != 0)
 	{
-		body_direction.y += 0.01 * inputAxis.x * GameTime;
-		body_direction.z -= 0.005 * inputAxis.x * GameTime;
+		body_direction.y += 0.01 * inputAxis.x * GE::GameSetting::Time::GetGameTime();
+		body_direction.z -= 0.005 * inputAxis.x * GE::GameSetting::Time::GetGameTime();
 
 		body_direction.z = (body_direction.z > 0.3f || body_direction.z < -0.3) ? 0.3f * ((body_direction.z > 0) ? 1 : -1) : body_direction.z;
 	}
 	else
 	{
-		abs(body_direction.z) < 0.005 ? body_direction.z = 0 : body_direction.z > 0.0 ? body_direction.z -= 0.005 * GameTime : body_direction.z += 0.005 * GameTime;
+		abs(body_direction.z) < 0.005 ? body_direction.z = 0 : body_direction.z > 0.0 ? body_direction.z -= 0.005 * GE::GameSetting::Time::GetGameTime() : body_direction.z += 0.005 * GE::GameSetting::Time::GetGameTime();
 	}
 
 	if (inputAxis.y != 0)
 	{
-		body_direction.x -= 0.005 * inputAxis.y * GameTime;
+		body_direction.x -= 0.005 * inputAxis.y * GE::GameSetting::Time::GetGameTime();
 		body_direction.x = (body_direction.x > 1.57f || body_direction.x < -1.57f) ? 1.57f * ((body_direction.x > 0) ? 1 : -1) : body_direction.x;
 	}
 	else
 	{
-		abs(body_direction.x) < 0.01 ? body_direction.x = 0 : body_direction.x > 0.0 ? body_direction.x -= 0.01 * GameTime : body_direction.x += 0.01 * GameTime;
+		abs(body_direction.x) < 0.01 ? body_direction.x = 0 : body_direction.x > 0.0 ? body_direction.x -= 0.01 * GE::GameSetting::Time::GetGameTime() : body_direction.x += 0.01 * GE::GameSetting::Time::GetGameTime();
 	}
 
 	// ジョイコン操作中の際の姿勢制御
@@ -337,7 +335,7 @@ void PlayerComponent::SearchNearEnemy()
 	if (look)
 	{
 		//スロー
-		GameTime = 0.2;
+		GE::GameSetting::Time::SetGameTime(0.2);
 		//最も近い敵
 		lockOnEnemy.object = enemies[a];
 		//ロックオンしている敵を青くする
@@ -374,7 +372,7 @@ void PlayerComponent::Dash(float dash_speed, float dash_time, float deltaTime, G
 		current_speed = easeIn(dash_speed, normal_speed, dashEasingCount / dash_time);
 
 	}
-	if (dashEasingCount < dash_time) { dashEasingCount += 1 * GameTime; }
+	if (dashEasingCount < dash_time) { dashEasingCount += 1 * GE::GameSetting::Time::GetGameTime(); }
 	else { statas = PlayerStatas::MOVE; dashEasingCount = 0.0f; body_direction_LerpCount = 0; }
 
 	//スピードの遷移
@@ -388,7 +386,7 @@ void PlayerComponent::Dash(float dash_speed, float dash_time, float deltaTime, G
 	body_direction_LockOn = { cross,theta };
 	transform->rotation = body_direction_LockOn;
 
-	transform->position += transform->GetForward() * current_speed * deltaTime * GameTime;
+	transform->position += transform->GetForward() * current_speed * deltaTime * GE::GameSetting::Time::GetGameTime();
 }
 //CollisionDetectionに引っ越すかも
 void PlayerComponent::RayCast(float deltaTime)
@@ -407,7 +405,7 @@ void PlayerComponent::RayCast(float deltaTime)
 			lockOnEnemy.object = enemies[i];
 		}
 	}
-	if (hit) { rayHitCount += 1.0 * GameTime; }
+	if (hit) { rayHitCount += 1.0 * GE::GameSetting::Time::GetGameTime(); }
 	else { rayHitCount = 0; }
 	//指定した秒数カーソル合わせたら
 	if (rayHitCount > rayHitSecond)
