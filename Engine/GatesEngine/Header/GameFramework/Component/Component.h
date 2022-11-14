@@ -27,6 +27,9 @@ namespace GE
 		/// <param name="other">ヒットしたコライダーがアタッチされているゲームオブジェクト</param>
 		virtual void OnCollision(GameObject* other) {}
 
+		virtual void OnCollisionEnter(GameObject* other) {}
+		virtual void OnCollisionExit(GameObject* other) {}
+
 		/// <summary>
 		/// OnCollision(GameObject* other)のあとに呼ばれます
 		/// </summary>

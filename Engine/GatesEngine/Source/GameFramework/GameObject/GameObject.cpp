@@ -55,6 +55,13 @@ void GE::GameObject::Update(float deltaTime)
 {
 	if (!enabled)return;
 
+	beforeFrameHitObjects.clear();
+	for (auto& beforeFrameHitObject : currentFrameHitObjects)
+	{
+		beforeFrameHitObjects.push_back(beforeFrameHitObject);
+	}
+	currentFrameHitObjects.clear();
+
 	for (auto& component : components)
 	{
 		if (component->GetEnabled() == false)continue;
@@ -95,11 +102,15 @@ void GE::GameObject::LateDraw()
 	}
 }
 
-void GE::GameObject::OnCollision(GameObject* other)
+void GE::GameObject::OnCollision(GameObject* other, bool enter, bool stay, bool exit)
 {
+	if (enter == true || stay == true)currentFrameHitObjects.push_back(other);
+
 	for (auto& component : components)
 	{
-		component->OnCollision(other);
+		if (enter)component->OnCollisionEnter(other);
+		if (stay)component->OnCollision(other);
+		if (exit)component->OnCollisionExit(other);
 	}
 }
 
@@ -208,6 +219,18 @@ void GE::GameObject::SetColor(const Color& color)
 GE::GameObjectManager* GE::GameObject::GetGameObjectManager()
 {
 	return gameObjectManager;
+}
+
+bool GE::GameObject::CheckBeforeFrameHitObject(GameObject* hitObject)
+{
+	// 現在のフレームでヒットしていたかを走査
+	for (auto currentFrameHitObject : beforeFrameHitObjects)
+	{
+		if (currentFrameHitObject != hitObject)continue;
+
+		return true;
+	}
+	return false;
 }
 
 std::vector<GE::Component*>* GE::GameObject::GetComponents()

@@ -12,11 +12,42 @@ void GE::CollisionManager::CollisionCheck(std::vector<GameObject*>* firstTagGame
 		{
 			if (firstTagGameObject->IsDestroy() == true || secondTagGameObjects->IsDestroy() == true)continue;
 
-			if (CheckHit(firstTagGameObject->GetCollider(), secondTagGameObjects->GetCollider()))
+			// 前フレームでヒット判定されていたか
+			bool isHitBeforeFrame = firstTagGameObject->CheckBeforeFrameHitObject(secondTagGameObjects);
+			bool isHitCurrentFrame = CheckHit(firstTagGameObject->GetCollider(), secondTagGameObjects->GetCollider());
+
+			bool enter, stay, exit;
+			enter = stay = exit = false;
+
+			if (isHitCurrentFrame == true)
 			{
-				firstTagGameObject->OnCollision(secondTagGameObjects);
-				secondTagGameObjects->OnCollision(firstTagGameObject);
+				// 前フレームも現フレームもヒットしていた場合
+				// OnCollision
+				if (isHitBeforeFrame == true)
+				{
+					stay = true;
+				}
+				// 現フレームのみヒット
+				// OnCollisionExit
+				else
+				{
+					enter = true;
+				}
 			}
+			else
+			{
+				if (isHitBeforeFrame == false)continue;
+
+				// 前フレームまでヒットしていた場合
+				// OnCollisionExit
+				exit = true;
+			}
+
+			if (enter == false && stay == false && exit == false)continue;
+
+			firstTagGameObject->OnCollision(secondTagGameObjects, enter, stay, exit);
+			secondTagGameObjects->OnCollision(firstTagGameObject, enter, stay, exit);
+
 		}
 	}
 }
