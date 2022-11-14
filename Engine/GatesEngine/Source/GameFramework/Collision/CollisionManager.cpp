@@ -45,7 +45,9 @@ void GE::CollisionManager::CollisionCheck(std::vector<GameObject*>* firstTagGame
 
 			if (enter == false && stay == false && exit == false)continue;
 
+			firstTagGameObject->GetCollider()->Hit();
 			firstTagGameObject->OnCollision(secondTagGameObjects, enter, stay, exit);
+			secondTagGameObjects->GetCollider()->Hit();
 			secondTagGameObjects->OnCollision(firstTagGameObject, enter, stay, exit);
 
 		}
