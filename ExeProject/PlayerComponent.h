@@ -4,7 +4,16 @@
 
 class PlayerComponent : public GE::Component
 {
+public:
+	static float current_speed;		//現在のスピード
+	static float normal_speed;			//通常時のスピード
 private:
+	static GE::Math::Vector3 gravity;	//重力
+	static float rayHitSecond;	//照準を合わせる長さ（秒数）
+	static int hitStopTime;
+	static float body_direction_LerpTime; //秒数
+	static float damageSpeed;
+
 	GE::InputDevice* inputDevice;
 	GE::Math::Vector3 gyro;
 	GE::Math::Vector3 accelerometer;
@@ -12,15 +21,10 @@ private:
 	GE::Math::Vector3 body_direction;//体の向き計算用
 	float dashEasingCount;			//スピード遷移のカウント
 
-	GE::Math::Vector3 gravity;	//重力
-	float current_speed;		//現在のスピード
-	float normal_speed;			//通常時のスピード
-
 	bool isLockOnStart;			//ロックオン処理を呼ぶフラグ
 	bool isLockOn;				//ロックオンして発射待機中フラグ
-	float rayHitCount;	//何フレーム照準をあわせているか
-	float rayHitSecond;	//照準を合わせる長さ（秒数）
 
+	float rayHitCount;	//何フレーム照準をあわせているか
 	struct LockOnEnemy
 	{
 		GE::GameObject* object = nullptr;
@@ -30,15 +34,12 @@ private:
 
 	//ヒットストップカウント用
 	int hitStopCount;
-	//ヒットストップの長さ(秒数)
-	int hitStopTime;
 
 	//レティクルの位置
 	GE::Math::Vector2 center;
 
 	//元の姿勢に戻るときの遷移
 	int body_direction_LerpCount;
-	float body_direction_LerpTime; //秒数
 
 	GE::Math::Quaternion quat;
 	GE::Math::Quaternion body_direction_LockOn;
@@ -58,7 +59,6 @@ public:
 	GE::Math::Vector3 rayPos, rayDir;
 
 public:
-public:
 	PlayerComponent();
 	void Awake() override;
 	void Start() override;
@@ -70,6 +70,11 @@ public:
 	void OnCollisionExit(GE::GameObject* other)override;
 	void OnCollision(GE::ICollider* hitCollider) override;
 	void OnGui() override;
+	/// <summary>
+	/// 一定以上のスピードになっているかを取得するため
+	/// </summary>
+	/// <returns></returns>
+	static bool IsSpeedy();
 private:
 	/// <summary>
 	/// 操作関係

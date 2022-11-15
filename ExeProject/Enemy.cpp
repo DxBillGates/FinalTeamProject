@@ -32,6 +32,7 @@ void Enemy::LateDraw()
 
 void Enemy::OnCollision(GE::GameObject* other)
 {
+	
 }
 
 void Enemy::OnCollision(GE::ICollider* hitCollider)

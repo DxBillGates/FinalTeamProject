@@ -21,14 +21,16 @@ void BirdEnemy::Awake()
 void BirdEnemy::Start()
 {
 	GE::Utility::Printf("BirdEnemy Start()\n");
-	random = { GE::RandomMaker::GetFloat(-1.0f,1.0f),GE::RandomMaker::GetFloat(10.0f,25.0f),GE::RandomMaker::GetFloat(-500.0f,500.0f) };//敵の位置のランダム変数
-	transform->position = { 0.0f,GE::RandomMaker::GetFloat(100.0f,1000.0f),0.0f };//位置をランダム化
-	transform->scale = { 50.0f,50.0f,50.0f };//サイズ
+	random = GE::RandomMaker::GetFloat(-1.0f, 1.0f);
+	float randPos = GE::RandomMaker::GetFloat(100.0f, 1000.0f);
+	transform->position = { 0.0f,randPos,0.0f };//位置をランダム化
+	transform->scale = { 100.0f,100.0f,100.0f };//サイズ
+	float randSpeed = GE::RandomMaker::GetFloat(10.0f, 25.0f);
 
-	speed = random.y;//速度
+	speed = randSpeed;//速度
 	statas = Statas::ALIVE;
 
-	material.color = GE::Color::Red();
+	gameObject->SetColor(GE::Color::Red());
 }
 
 void BirdEnemy::Update(float deltaTime)
@@ -37,7 +39,7 @@ void BirdEnemy::Update(float deltaTime)
 
 	//回転処理
 	transform->rotation = GE::Math::Quaternion(GE::Math::Vector3(0.0f, 1.0f, 0.0f), bodyDirection.y);
-	bodyDirection.y -= 0.005f * random.x;
+	bodyDirection.y -= 0.005f * random;
 
 	transform->position += transform->GetForward() * speed * GE::GameSetting::Time::GetGameTime();//移動処理
 }
@@ -71,8 +73,11 @@ void BirdEnemy::OnCollision(GE::GameObject* other)
 	GE::Utility::Printf("BirdEnemy OnCollision(GameObject* other) : hit\n");
 	if (statas == Statas::ALIVE)
 	{
-		statas = Statas::DEAD;
-		gameObject->Destroy();
+		if (PlayerComponent::IsSpeedy())//一定上の速度
+		{
+			statas = Statas::DEAD;
+			gameObject->Destroy();
+		}
 	}
 }
 

@@ -22,7 +22,7 @@ void EnemyManager::Start(const int count, GE::GameObjectManager* gameObjectManag
 	}
 	for (int i = 0; i < 10; ++i)
 	{
-		auto* bEnemy = gameObjectManager->AddGameObject(new GE::GameObject("BirdEnemy", "birdEnemy"));
+		auto* bEnemy = gameObjectManager->AddGameObject(new GE::GameObject("BirdEnemy", "enemy"));
 		auto* bComponent = bEnemy->AddComponent<BirdEnemy>();
 		auto* birdEnemyCollider = bEnemy->AddComponent<GE::SphereCollider>();
 		birdEnemyCollider->SetCenter({ 0,0,0 });

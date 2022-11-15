@@ -6,7 +6,7 @@ class BirdEnemy : public Enemy
 {
 
 private:
-	GE::Math::Vector3 random;
+	float random;
 	float angle = 0.0f;
 public:
 	BirdEnemy();

@@ -10,6 +10,14 @@
 #include "InputManager.h"
 #include "CameraControl.h"
 
+float PlayerComponent::normal_speed = 1000.0f;					//通常時のスピード
+float PlayerComponent::current_speed = normal_speed;		//現在のスピード
+GE::Math::Vector3 PlayerComponent::gravity = { 0,0.5,0 };	//重力
+float PlayerComponent::rayHitSecond = 144.0f;				//ロックオンする照準を合わせる長さ
+int PlayerComponent::hitStopTime = 20;					// ヒットストップの長さ
+float PlayerComponent::body_direction_LerpTime = 50.0f;		//ダッシュ後体の角度の遷移
+float PlayerComponent::damageSpeed = 5000.0f;				//敵にヒットしたときにダメージが入るスピード
+
 PlayerComponent::PlayerComponent()
 	: inputDevice(nullptr)
 {
@@ -32,17 +40,9 @@ void PlayerComponent::Start()
 	dashEasingCount = 0.0;
 	statas = PlayerStatas::MOVE;
 
-	normal_speed = 1000;
-	current_speed = normal_speed;
-	gravity = { 0,0.5,0 };
-	rayHitSecond = 144.0;
-
-	// ヒットストップの長さ
-	hitStopTime = 40.0;
 	hitStopCount = hitStopTime;
 
 	//姿勢遷移
-	body_direction_LerpTime = 50.0;
 	body_direction_LerpCount = body_direction_LerpTime;
 
 	//レティクルの位置
@@ -150,6 +150,14 @@ void PlayerComponent::OnCollision(GE::GameObject* other)
 void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 {
 	GE::Utility::Printf("PlayerComponent OnCollisionEnter\n");
+	if (other->GetTag() == "enemy")
+	{
+		//一定上の速度を満たしていない
+		if (!IsSpeedy())
+		{
+
+		}
+	}
 }
 
 void PlayerComponent::OnCollisionExit(GE::GameObject* other)
@@ -174,6 +182,14 @@ void PlayerComponent::OnGui()
 	GE::Math::Vector3 inputAxis = InputManager::GetInstance()->GetAxis();
 	ImGui::InputFloat3("inputAxis", inputAxis.value);
 }
+bool PlayerComponent::IsSpeedy()
+{
+	if (current_speed > damageSpeed)
+	{
+		return true;
+	}
+	return false;
+}
 void PlayerComponent::Control(float deltaTime)
 {
 	GE::Math::Quaternion BODY_DIRECTION =
@@ -185,16 +201,13 @@ void PlayerComponent::Control(float deltaTime)
 	switch (statas)
 	{
 	case PlayerComponent::PlayerStatas::STOP_DEBUG:
-
 		//回転
 		transform->rotation = BODY_DIRECTION;
 		break;
 	case PlayerComponent::PlayerStatas::MOVE:
-
 		transform->position += transform->GetForward() * current_speed * deltaTime * GE::GameSetting::Time::GetGameTime() - gravity;
 		//Key押したらPlayerState::DASHに変わる
 		if (InputManager::GetInstance()->GetActionButton()) { statas = PlayerStatas::DASH; }
-
 		//ダッシュ後体の角度の遷移
 		if (body_direction_LerpCount < body_direction_LerpTime)
 		{
@@ -212,12 +225,10 @@ void PlayerComponent::Control(float deltaTime)
 		else {
 			isLockOnStart = false;
 		}
-
 		is_rayCast_active = false;
 		//RayCast(deltaTime);
 		//ロックオンして攻撃
 		LockOn();
-
 		break;
 	case PlayerComponent::PlayerStatas::DASH:
 
@@ -291,12 +302,7 @@ void PlayerComponent::KeyboardMoveControl()
 
 	if (InputManager::GetInstance()->GetCurrentInputDeviceState() != InputManager::InputDeviceState::JOYCON)return;
 	const float GYRO_OFFSET = 0.05f;
-	GE::Math::Vector3 quatVector =
-	{
-		quat.x,
-		quat.y,
-		quat.z,
-	};
+	GE::Math::Vector3 quatVector = { quat.x,quat.y,quat.z, };
 
 	body_direction.x += quatVector.x / 20.f;
 	body_direction.y += quatVector.y / 20.f;

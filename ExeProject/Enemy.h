@@ -1,6 +1,7 @@
 #pragma once
 #include <GatesEngine/Header/GameFramework/Component/Component.h>
 #include <GatesEngine/Header\GameFramework/GameSetting.h>
+#include"PlayerComponent.h"
 
 class Enemy : public GE::Component
 {
@@ -16,7 +17,6 @@ protected:
 	float speed = 0.0f;
 	GE::Math::Vector3 bodyDirection = {};
 	GE::Material material;
-
 public:
 	Enemy();
 

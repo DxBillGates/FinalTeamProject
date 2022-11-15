@@ -43,14 +43,10 @@ void NormalEnemy::Draw()
 
 	graphicsDevice->SetShader("DefaultMeshShader");
 
-	//transform->scale = { 200,200,2000 };
-
 	GE::Material material;
 	material.color = gameObject->GetColor();
 
-
 	GE::Math::Matrix4x4 modelMatrix = transform->GetMatrix();
-
 
 	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
@@ -89,8 +85,11 @@ void NormalEnemy::OnCollision(GE::GameObject* other)
 	GE::Utility::Printf("NormalEnemy OnCollision(GameObject* other) : hit\n");
 	if (statas == Statas::ALIVE)
 	{
-		statas = Statas::DEAD;
-		gameObject->Destroy();
+		if (PlayerComponent::IsSpeedy())//ˆê’èã‚Ì‘¬“x
+		{
+			statas = Statas::DEAD;
+			gameObject->Destroy();
+		}
 	}
 }
 
