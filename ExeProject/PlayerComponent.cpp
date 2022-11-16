@@ -233,7 +233,6 @@ void PlayerComponent::Control(float deltaTime)
 	case PlayerComponent::PlayerStatas::DASH:
 
 		Dash(10000, 100.0, deltaTime, transform->GetForward());
-
 		break;
 	case PlayerComponent::PlayerStatas::LOCKON_SHOOT:
 

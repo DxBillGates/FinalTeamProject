@@ -1,4 +1,5 @@
 #include "CameraControl.h"
+#include "PlayerComponent.h"
 #include <GatesEngine/Header\GameFramework/GameSetting.h>
 #include <GatesEngine/Header/Util/Random.h           >
 
@@ -14,8 +15,8 @@ void CameraControl::Create()
 
 void CameraControl::Initialize()
 {
-	normal_cameraDistance = 500;
-	dash_cameraDistance = 700;
+	normal_cameraDistance = 300;
+	dash_cameraDistance = 500;
 	current_cameraDistance = normal_cameraDistance;
 
 	shakeFlame = 0;
@@ -39,17 +40,21 @@ void CameraControl::Update()
 		dir = atan2f(targetObject->GetTransform()->GetForward().x, targetObject->GetTransform()->GetForward().z);
 	}
 	target = targetObject->GetTransform()->position;
-	float dirY = atan2f(targetObject->GetTransform()->GetForward().z, targetObject->GetTransform()->GetForward().y);
-
-	GE::Math::Vector3 newCameraPosition = target + GE::Math::Vector3(sin(dir + 3.14) * current_cameraDistance, -cos(dirY) * current_cameraDistance+300, cos(dir + 3.14) * current_cameraDistance);
-	//GE::Math::Vector3 newCameraPosition = target + GE::Math::Vector3(sin(dir + 3.14) * current_cameraDistance, 100, cos(dir + 3.14) * current_cameraDistance);
-
+	//カメラの更新
+	GE::Math::Vector3 newCameraPosition = target - targetObject->GetTransform()->GetForward() * current_cameraDistance;
+	//カメラの向き
 	GE::Math::Vector3 direction = GE::Math::Vector3(target - position).Normalize();
-
-	const float LERP_VALUE = 0.05f * GE::GameSetting::Time::GetGameTime();
+	
+	float LERP_VALUE = 0.01f * GE::GameSetting::Time::GetGameTime();
+	//ダッシュ時
+	if (targetObject->GetComponent<PlayerComponent>()->statas == PlayerComponent::PlayerStatas::DASH
+		|| targetObject->GetComponent<PlayerComponent>()->statas == PlayerComponent::PlayerStatas::LOCKON_SHOOT)
+	{
+		LERP_VALUE = 0.035f * GE::GameSetting::Time::GetGameTime();
+	}
 	position = GE::Math::Vector3::Lerp(beforeCameraPosition, newCameraPosition, LERP_VALUE) + cameraShake * GE::GameSetting::Time::GetGameTime();
 	target += cameraShake * GE::GameSetting::Time::GetGameTime();
-
+	//カメラシェイク
 	Shake();
 
 	camera->SetDirection(direction);
@@ -58,9 +63,9 @@ void CameraControl::Update()
 
 void CameraControl::DashCam(float dashEasingCount, float dash_time)
 {
-	//カメラの距離遷移、遷移で離れて遷移で元に戻る
-	current_cameraDistance = easeIn(normal_cameraDistance, dash_cameraDistance,
-		sin(GE::Math::Easing::Lerp(0, 3.14, dashEasingCount / dash_time)));
+	////カメラの距離遷移、遷移で離れて遷移で元に戻る
+	//current_cameraDistance = easeIn(normal_cameraDistance, dash_cameraDistance,
+	//	sin(GE::Math::Easing::Lerp(0, 3.14, dashEasingCount / dash_time)));
 }
 
 void CameraControl::Shake()
