@@ -33,12 +33,12 @@ void PlayerComponent::Start()
 {
 	GE::Utility::Printf("PlayerComponent Start()\n");
 	inputDevice = GE::InputDevice::GetInstance();
-	transform->position = { 0,500,-5000 };
+	transform->position = { 0,900,-10000 };
 	transform->scale = { 50,50,50 };
 
 	body_direction = { 0,0,0 };
 	dashEasingCount = 0.0;
-	statas = PlayerStatas::MOVE;
+	statas = PlayerStatas::STAY_LAND;
 
 	hitStopCount = hitStopTime;
 
@@ -50,8 +50,8 @@ void PlayerComponent::Start()
 
 	is_rayCast_active = false;
 
-	CameraControl::GetInstance()->Initialize();
 	CameraControl::GetInstance()->SetGraphicsDevice(graphicsDevice);
+	CameraControl::GetInstance()->Initialize();
 
 	InputManager::GetInstance()->Initialize();
 }
@@ -101,7 +101,15 @@ void PlayerComponent::Draw()
 
 	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
-	graphicsDevice->DrawMesh("Bird1");
+	//アルファまでの一時的なやつ
+	if (statas == PlayerStatas::STAY_LAND)
+	{
+		graphicsDevice->DrawMesh("Bird_Stay");
+	}
+	else
+	{
+		graphicsDevice->DrawMesh("Bird1");
+	}
 }
 
 void PlayerComponent::LateDraw()
@@ -249,6 +257,10 @@ void PlayerComponent::Control(float deltaTime)
 		Dash(10000, 200, deltaTime, lockOnEnemy.direction, loop);
 		break;
 	case PlayerComponent::PlayerStatas::STAY_LAND:
+		if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE))
+		{
+			statas = PlayerStatas::MOVE;
+		}
 		break;
 	default:
 		break;

@@ -3,6 +3,7 @@
 
 class TestTreeComponent : public GE::Component
 {
+	
 public:
 	TestTreeComponent();
 

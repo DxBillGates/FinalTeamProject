@@ -24,10 +24,20 @@ void CameraControl::Initialize()
 
 	range = {};
 	cameraShake = {};
+
+	graphicsDevice->GetMainCamera()->SetPosition({ 0,1000,-20000 });
 }
 
 void CameraControl::Update()
 {
+	if (targetObject->GetComponent<PlayerComponent>()->statas == PlayerComponent::PlayerStatas::STAY_LAND)
+	{
+		current_cameraDistance = 1000;
+	}
+	else
+	{
+		current_cameraDistance = normal_cameraDistance;
+	}
 	auto camera = dynamic_cast<GE::Camera3DDebug*>(graphicsDevice->GetMainCamera());
 	GE::Math::Vector3 beforeCameraPosition = {
 		camera->GetCameraInfo().cameraPos.x,
@@ -45,7 +55,7 @@ void CameraControl::Update()
 	GE::Math::Vector3 newCameraPosition = target - targetObject->GetTransform()->GetForward() * current_cameraDistance;
 	//カメラの向き
 	GE::Math::Vector3 direction = GE::Math::Vector3(target - position).Normalize();
-	
+
 	float LERP_VALUE = 0.01f * GE::GameSetting::Time::GetGameTime();
 	//ダッシュ時
 	if (targetObject->GetComponent<PlayerComponent>()->statas == PlayerComponent::PlayerStatas::DASH

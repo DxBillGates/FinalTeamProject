@@ -185,6 +185,12 @@ bool GE::Application::LoadContents()
 	mesh = new Mesh();
 	mesh->Create(device, cmdList, modelDataTree1);
 	meshManager->Add(mesh, "Tree1");
+	
+	MeshData<Vertex_UV_Normal> modelDataBird_Stay;
+	MeshCreater::LoadObjModelData("Resources/Model/bird_stay", modelDataBird_Stay);
+	mesh = new Mesh();
+	mesh->Create(device, cmdList, modelDataBird_Stay);
+	meshManager->Add(mesh, "Bird_Stay");
 
 	// texture load
 	auto* textureManager = graphicsDevice.GetTextureManager();
@@ -281,9 +287,9 @@ bool GE::Application::LoadContents()
 
 bool GE::Application::Initialize()
 {
+	mainCamera->Initialize();
 	sceneManager.Initialize();
 
-	mainCamera->Initialize();
 	GameSetting::Time::Initialize();
 	return true;
 }
