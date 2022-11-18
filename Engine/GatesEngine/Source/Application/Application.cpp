@@ -131,51 +131,59 @@ bool GE::Application::LoadContents()
 	mesh->Create(device, cmdList, meshDataLineAxis);
 	meshManager->Add(mesh, "LineAxis");
 
+	std::string resourcesFolder = "Resources/";
+	std::string modelFolder = "Model/";
+	std::string objModelFolder = "objModel/";
+	std::string fbxModelFolder = "fbxModel/";
+
+	std::string objModelPath = resourcesFolder + modelFolder + objModelFolder;
+	std::string fbxModelPath = resourcesFolder + modelFolder + fbxModelFolder;
+
 	// modelì«Ç›çûÇ›
 	MeshData<Vertex_UV_Normal> modelDataCube;
-	MeshCreater::LoadObjModelData("Resources/Model/cube", modelDataCube);
+	MeshCreater::LoadObjModelData(objModelFolder + "cube", modelDataCube);
 	mesh = new Mesh();
 	mesh->Create(device, cmdList, modelDataCube);
 	meshManager->Add(mesh, "Cube");
 
 	MeshData<Vertex_UV_Normal> modelDataSphere;
-	MeshCreater::LoadObjModelData("Resources/Model/sphere", modelDataSphere);
+	MeshCreater::LoadObjModelData(objModelFolder + "sphere", modelDataSphere);
 	mesh = new Mesh();
 	mesh->Create(device, cmdList, modelDataSphere);
 	meshManager->Add(mesh, "Sphere");
 
 	MeshData<Vertex_UV_Normal> modelDataPlatonic;
-	MeshCreater::LoadObjModelData("Resources/Model/platonic", modelDataPlatonic);
+	MeshCreater::LoadObjModelData(objModelFolder + "platonic", modelDataPlatonic);
 	mesh = new Mesh();
 	mesh->Create(device, cmdList, modelDataPlatonic);
 	meshManager->Add(mesh, "Platonic");
 
 	MeshData<Vertex_UV_Normal> modelDataCorn;
-	MeshCreater::LoadObjModelData("Resources/Model/corn", modelDataCorn);
+	MeshCreater::LoadObjModelData(objModelFolder + "corn", modelDataCorn);
 	mesh = new Mesh();
 	mesh->Create(device, cmdList, modelDataCorn);
 	meshManager->Add(mesh, "Corn");
 
 	MeshData<Vertex_UV_Normal> modelDataCylinder;
-	MeshCreater::LoadObjModelData("Resources/Model/cylinder", modelDataCylinder);
+	MeshCreater::LoadObjModelData(objModelFolder + "cylinder", modelDataCylinder);
 	mesh = new Mesh();
 	mesh->Create(device, cmdList, modelDataCylinder);
 	meshManager->Add(mesh, "Cylinder");
 
 	MeshData<Vertex_UV_Normal> modelDataSkydome;
-	MeshCreater::LoadObjModelData("Resources/Model/skydome", modelDataSkydome);
+	MeshCreater::LoadObjModelData(objModelFolder + "skydome", modelDataSkydome);
 	mesh = new Mesh();
 	mesh->Create(device, cmdList, modelDataSkydome);
 	meshManager->Add(mesh, "Skydome");
 
 	MeshData<Vertex_UV_Normal> modelDataTorus;
-	MeshCreater::LoadObjModelData("Resources/Model/torus", modelDataTorus);
+	MeshCreater::LoadObjModelData(objModelFolder + "torus", modelDataTorus);
 	mesh = new Mesh();
 	mesh->Create(device, cmdList, modelDataTorus);
 	meshManager->Add(mesh, "Torus");
 	
 	MeshData<Vertex_UV_Normal> modelDataBird1;
-	MeshCreater::LoadObjModelData("Resources/Model/bird1", modelDataBird1);
+	MeshCreater::LoadObjModelData(objModelFolder + "bird1", modelDataBird1);
 	mesh = new Mesh();
 	mesh->Create(device, cmdList, modelDataBird1);
 	meshManager->Add(mesh, "Bird1");
