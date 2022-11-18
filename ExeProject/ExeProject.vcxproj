@@ -173,6 +173,7 @@
     <ClCompile Include="NormalEnemy.cpp" />
     <ClCompile Include="PlayerComponent.cpp" />
     <ClCompile Include="SampleScene.cpp" />
+    <ClCompile Include="TestTreeComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BirdEnemy.h" />
@@ -185,6 +186,7 @@
     <ClInclude Include="PlayerComponent.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="SampleScene.h" />
+    <ClInclude Include="TestTreeComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shader\DefaultShader.hlsli" />

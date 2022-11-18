@@ -180,6 +180,12 @@ bool GE::Application::LoadContents()
 	mesh->Create(device, cmdList, modelDataBird1);
 	meshManager->Add(mesh, "Bird1");
 
+	MeshData<Vertex_UV_Normal> modelDataTree1;
+	MeshCreater::LoadObjModelData("Resources/Model/ki", modelDataTree1);
+	mesh = new Mesh();
+	mesh->Create(device, cmdList, modelDataTree1);
+	meshManager->Add(mesh, "Tree1");
+
 	// texture load
 	auto* textureManager = graphicsDevice.GetTextureManager();
 	Texture* nullTexture = new Texture();

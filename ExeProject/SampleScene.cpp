@@ -1,12 +1,12 @@
 #include "SampleScene.h"
 #include "PlayerComponent.h"
 #include"EnemyManager.h"
+#include"TestTreeComponent.h"
 #include <GatesEngine/Header\GameFramework\Component\SampleComponent.h>
 #include <GatesEngine/Header\GameFramework\Component\SphereCollider.h>
 #include <GatesEngine/Header\GameFramework\Component\BoxCollider.h>
 #include <GatesEngine/Header\GameFramework\Collision\CollisionManager.h>
 #include <GatesEngine/Header/Application/Application.h>
-
 
 SampleScene::SampleScene()
 	: SampleScene("SampleScene")
@@ -38,12 +38,7 @@ SampleScene::SampleScene(const std::string& sceneName)
 		auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject("test2","testTag"));
 		testObject->GetTransform()->position = { 1300,0,0 };
 		testObject->SetDrawAxisEnabled(true);
-		auto* sampleCollider = testObject->AddComponent<GE::BoxCollider>();
-		auto* sampleComponent = testObject->AddComponent<GE::SampleComponent>();
-		sampleCollider->SetCenter({ 0,0,0 });
-		sampleCollider->SetSize({ 2 });
-		sampleCollider->SetType(GE::ColliderType::OBB);
-		col2 = sampleCollider;
+		auto* sampleComponent = testObject->AddComponent<TestTreeComponent>();
 	}
 
 	EnemyManager::GetInstance()->Start(10, &gameObjectManager);

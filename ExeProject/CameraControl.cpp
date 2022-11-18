@@ -11,6 +11,7 @@ CameraControl* CameraControl::GetInstance()
 
 void CameraControl::Create()
 {
+
 }
 
 void CameraControl::Initialize()
