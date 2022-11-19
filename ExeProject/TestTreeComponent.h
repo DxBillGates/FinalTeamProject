@@ -5,8 +5,8 @@ class TestTreeComponent : public GE::Component
 {
 	
 public:
+	static GE::Math::Vector3 position;
 	TestTreeComponent();
-
 	void Awake();
 	void Start();
 	void Update(float deltaTime);

@@ -13,6 +13,7 @@ private:
 	static int hitStopTime;
 	static float body_direction_LerpTime; //秒数
 	static float damageSpeed;
+	static float pushStartTime;//キーを押してから操作できるようになるまでのカウント
 
 	GE::InputDevice* inputDevice;
 	GE::Math::Vector3 gyro;
@@ -31,15 +32,15 @@ private:
 		GE::Math::Vector3 direction;
 	};
 	LockOnEnemy lockOnEnemy;
-
 	//ヒットストップカウント用
 	int hitStopCount;
-
 	//レティクルの位置
 	GE::Math::Vector2 center;
-
 	//元の姿勢に戻るときの遷移
 	int body_direction_LerpCount;
+
+	//開始時のカウント
+	float startCouunt;
 
 	GE::Math::Quaternion quat;
 	GE::Math::Quaternion body_direction_LockOn;

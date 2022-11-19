@@ -5,6 +5,8 @@
 
 #include"TestTreeComponent.h"
 
+GE::Math::Vector3 TestTreeComponent::position = { 0,700,-10000 };
+
 TestTreeComponent::TestTreeComponent()
 {
 
@@ -20,7 +22,7 @@ void TestTreeComponent::Start()
 	GE::Utility::Printf("TestTreeComponent Start()\n");
 
 	gameObject->SetColor(GE::Color::Red());
-	transform->position = {0,700,-10000};
+	transform->position = position;
 	transform->scale = { 100,100,100 };
 
 }

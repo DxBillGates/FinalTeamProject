@@ -9,14 +9,16 @@
 #include"EnemyManager.h"
 #include "InputManager.h"
 #include "CameraControl.h"
+#include "TestTreeComponent.h"
 
-float PlayerComponent::normal_speed = 1000.0f;					//通常時のスピード
+float PlayerComponent::normal_speed = 1000.0f;				//通常時のスピード
 float PlayerComponent::current_speed = normal_speed;		//現在のスピード
 GE::Math::Vector3 PlayerComponent::gravity = { 0,0.5,0 };	//重力
 float PlayerComponent::rayHitSecond = 144.0f;				//ロックオンする照準を合わせる長さ
-int PlayerComponent::hitStopTime = 20;					// ヒットストップの長さ
+int PlayerComponent::hitStopTime = 20;						// ヒットストップの長さ
 float PlayerComponent::body_direction_LerpTime = 50.0f;		//ダッシュ後体の角度の遷移
 float PlayerComponent::damageSpeed = 5000.0f;				//敵にヒットしたときにダメージが入るスピード
+float PlayerComponent::pushStartTime = 100.0f;				//キーを押してから操作できるようになるまでのカウント
 
 PlayerComponent::PlayerComponent()
 	: inputDevice(nullptr)
@@ -33,7 +35,7 @@ void PlayerComponent::Start()
 {
 	GE::Utility::Printf("PlayerComponent Start()\n");
 	inputDevice = GE::InputDevice::GetInstance();
-	transform->position = { 0,900,-10000 };
+	transform->position = TestTreeComponent::position;
 	transform->scale = { 50,50,50 };
 
 	body_direction = { 0,0,0 };
@@ -49,6 +51,8 @@ void PlayerComponent::Start()
 	center = GE::Window::GetWindowSize() / 2.0 + GE::Math::Vector2(0, -100);
 
 	is_rayCast_active = false;
+
+	startCouunt = 0.0f;
 
 	CameraControl::GetInstance()->SetGraphicsDevice(graphicsDevice);
 	CameraControl::GetInstance()->Initialize();
@@ -230,9 +234,8 @@ void PlayerComponent::Control(float deltaTime)
 			//最も近くて前方にいる敵をセット
 			SearchNearEnemy();
 		}
-		else {
-			isLockOnStart = false;
-		}
+		else { isLockOnStart = false; }
+
 		is_rayCast_active = false;
 		//RayCast(deltaTime);
 		//ロックオンして攻撃
@@ -257,10 +260,19 @@ void PlayerComponent::Control(float deltaTime)
 		Dash(10000, 200, deltaTime, lockOnEnemy.direction, loop);
 		break;
 	case PlayerComponent::PlayerStatas::STAY_LAND:
-		if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE))
+		if (startCouunt == 0.0f)
 		{
-			statas = PlayerStatas::MOVE;
+			if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE))
+			{
+				startCouunt++;
+			}
 		}
+		else if (startCouunt < pushStartTime)
+		{
+			transform->rotation = GE::Math::Quaternion(GE::Math::Vector3(1, 0, 0), GE::Math::Lerp(0.0f, 1.50f, startCouunt / pushStartTime));
+			startCouunt++;
+		}
+		else { statas = PlayerStatas::MOVE; }
 		break;
 	default:
 		break;

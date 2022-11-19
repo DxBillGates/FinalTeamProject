@@ -25,18 +25,33 @@ void CameraControl::Initialize()
 	range = {};
 	cameraShake = {};
 
-	graphicsDevice->GetMainCamera()->SetPosition({ 0,1000,-20000 });
+	graphicsDevice->GetMainCamera()->SetPosition({ 0,5000,-20000 });
 }
 
 void CameraControl::Update()
 {
+	//ターゲトポジションセット
+	target = targetObject->GetTransform()->position;
+	//体の角度計算
+	if (abs(targetObject->GetTransform()->GetForward().y) < 0.6)
+	{
+		dir = atan2f(targetObject->GetTransform()->GetForward().x, targetObject->GetTransform()->GetForward().z);
+	}
+
+	//カメラの更新
+	GE::Math::Vector3 newCameraPosition;
 	if (targetObject->GetComponent<PlayerComponent>()->statas == PlayerComponent::PlayerStatas::STAY_LAND)
 	{
 		current_cameraDistance = 1000;
+		newCameraPosition = target
+			- GE::Math::Vector3(targetObject->GetTransform()->GetForward().x * current_cameraDistance,
+				-300,
+				targetObject->GetTransform()->GetForward().z * current_cameraDistance);
 	}
 	else
 	{
 		current_cameraDistance = normal_cameraDistance;
+		newCameraPosition = target - targetObject->GetTransform()->GetForward() * current_cameraDistance;
 	}
 	auto camera = dynamic_cast<GE::Camera3DDebug*>(graphicsDevice->GetMainCamera());
 	GE::Math::Vector3 beforeCameraPosition = {
@@ -45,14 +60,6 @@ void CameraControl::Update()
 		camera->GetCameraInfo().cameraPos.z,
 	};
 
-	//体の角度計算
-	if (abs(targetObject->GetTransform()->GetForward().y) < 0.6)
-	{
-		dir = atan2f(targetObject->GetTransform()->GetForward().x, targetObject->GetTransform()->GetForward().z);
-	}
-	target = targetObject->GetTransform()->position;
-	//カメラの更新
-	GE::Math::Vector3 newCameraPosition = target - targetObject->GetTransform()->GetForward() * current_cameraDistance;
 	//カメラの向き
 	GE::Math::Vector3 direction = GE::Math::Vector3(target - position).Normalize();
 
