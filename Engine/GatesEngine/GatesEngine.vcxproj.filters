@@ -338,6 +338,9 @@
     <ClInclude Include="Header\GameFramework\GameSetting.h">
       <Filter>Header\GameFramework</Filter>
     </ClInclude>
+    <ClInclude Include="Header\Graphics\FbxLoader.h">
+      <Filter>Header\Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Application\Application.cpp">
@@ -504,6 +507,9 @@
     </ClCompile>
     <ClCompile Include="Source\GameFramework\GameSetting.cpp">
       <Filter>Source\GameFramework</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Graphics\FbxLoader.cpp">
+      <Filter>Source\Graphics</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -14,6 +14,7 @@
 #include "..\..\Header\GameFramework\GameObject\GameObject.h"
 #include "..\..\Header\GUI\GUIManager.h"
 #include "..\..\Header\GameFramework\GameSetting.h"
+#include "..\..\Header\Graphics\FbxLoader.h"
 
 GE::Application::Application()
 	: Application(Math::Vector2(1920,1080), Math::Vector2(1920, 1080))
@@ -59,6 +60,7 @@ GE::Application::~Application()
 {
 	delete mainCamera;
 
+	FbxLoader::Finalize();
 	GUIManager::Finalize();
 }
 
@@ -76,6 +78,8 @@ bool GE::Application::LoadContents()
 	auto* shaderResourceHeap = graphicsDevice.GetShaderResourceHeap();
 
 	auto* meshManager = graphicsDevice.GetMeshManager();
+	FbxLoader::Initialize();
+
 	Mesh* mesh;
 	// î¬É|Éäê∂ê¨
 	MeshData<Vertex_UV_Normal> meshDataPlane;
@@ -187,6 +191,9 @@ bool GE::Application::LoadContents()
 	mesh = new Mesh();
 	mesh->Create(device, cmdList, modelDataBird1);
 	meshManager->Add(mesh, "Bird1");
+
+	auto& skinMeshData = FbxLoader::Load("Player",&graphicsDevice);
+	meshManager->Add(skinMeshData.mesh, "Player");
 
 	// texture load
 	auto* textureManager = graphicsDevice.GetTextureManager();

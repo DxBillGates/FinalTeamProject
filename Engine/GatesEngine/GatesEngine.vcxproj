@@ -46,6 +46,7 @@
     <ClInclude Include="Header\Graphics\COMRelease.h" />
     <ClInclude Include="Header\Graphics\DepthStencil.h" />
     <ClInclude Include="Header\Graphics\DepthTexture.h" />
+    <ClInclude Include="Header\Graphics\FbxLoader.h" />
     <ClInclude Include="Header\Graphics\GraphicsDeviceDx12.h" />
     <ClInclude Include="Header\Graphics\GraphicsPipeline.h" />
     <ClInclude Include="Header\Graphics\GraphicsPipelineInfo.h" />
@@ -126,6 +127,7 @@
     <ClCompile Include="Source\Graphics\Color.cpp" />
     <ClCompile Include="Source\Graphics\DepthStencil.cpp" />
     <ClCompile Include="Source\Graphics\DepthTexture.cpp" />
+    <ClCompile Include="Source\Graphics\FbxLoader.cpp" />
     <ClCompile Include="Source\Graphics\GraphicsDeviceDx12.cpp" />
     <ClCompile Include="Source\Graphics\GraphicsPipeline.cpp" />
     <ClCompile Include="Source\Graphics\Layer.cpp" />

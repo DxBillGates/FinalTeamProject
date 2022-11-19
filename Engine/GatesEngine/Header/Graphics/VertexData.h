@@ -41,6 +41,16 @@ namespace GE
 		Vertex_UV_Normal(const Math::Vector3& p, const Math::Vector2& u, const Math::Vector3& n) : point(p), uv(u), normal(n) {}
 	};
 
+	struct Vertex_UV_Normal_Skin
+	{
+		Math::Vector3 point;
+		Math::Vector2 uv;
+		Math::Vector3 normal;
+
+		Vertex_UV_Normal_Skin() : point({}), uv({}), normal({}) {}
+		Vertex_UV_Normal_Skin(const Math::Vector3& p, const Math::Vector2& u, const Math::Vector3& n) : point(p), uv(u), normal(n) {}
+	};
+
 	struct Vertex_UV_Normal_Color
 	{
 		Math::Vector3 point;
