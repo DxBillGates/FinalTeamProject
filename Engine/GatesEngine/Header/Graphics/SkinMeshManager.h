@@ -42,7 +42,6 @@ namespace GE
 	struct SkinMeshData
 	{
 		FbxScene* fbxScene;
-
 		// メッシュ情報
 		Mesh* mesh;
 		// ボーン
