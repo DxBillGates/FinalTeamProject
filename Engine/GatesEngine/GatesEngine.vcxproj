@@ -141,6 +141,7 @@
     <ClCompile Include="Source\Graphics\RootSignature.cpp" />
     <ClCompile Include="Source\Graphics\Shader.cpp" />
     <ClCompile Include="Source\Graphics\ShaderResourceHeap.cpp" />
+    <ClCompile Include="Source\Graphics\SkinMeshAnimator.cpp" />
     <ClCompile Include="Source\Graphics\SkinMeshManager.cpp" />
     <ClCompile Include="Source\Graphics\Texture.cpp" />
     <ClCompile Include="Source\Graphics\Window.cpp" />

@@ -7,20 +7,25 @@ namespace GE
 	class SkinMeshAnimator
 	{
 	private:
-		SkinMeshData* animationData;
+		SkinMeshData* skinMeshData;
 		SkinMeshAnimationData* currentPlayAnimationData;
 		bool isPlay;
 		bool isLoop;
+
+		FbxTime currentTime;
 	public:
 		SkinMeshAnimator();
-		SkinMeshAnimator(SkinMeshAnimationData* setAnimationData);
+		SkinMeshAnimator(SkinMeshData* setSkinMeshData);
 
 		// アニメーションの名前を検索し見つかればそのアニメーションを再生
-		void PlayAnimation(const std::string& name,bool loopFlag);
-		void PlayAnimation(int index,bool loopFlag);
+		void PlayAnimation(const std::string& name, bool loopFlag = true);
+		void PlayAnimation(int index,bool loopFlag = true);
 
 		// stopAnimationをしたあとに続きからアニメーションさせたいときに使用
 		void PlayAnimation();
+
+		// アニメーションブレンド
+		void ChangeAnimation(const std::string& name, int frameCount = 10,bool loopFlag = true);
 
 		// isPlayをfalseにする
 		void StopAnimation();
@@ -29,6 +34,6 @@ namespace GE
 		void Update();
 
 		// 描画時に必要なアニメーションデータをシェーダーにバインド
-		void SetAnimationData(IGraphicsDeviceDx12* graphicsDevice);
+		void SetAnimationData(IGraphicsDeviceDx12* graphicsDevice,const Math::Matrix4x4& modelMatrix);
 	};
 }

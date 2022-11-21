@@ -38,9 +38,11 @@ struct DefaultLineVSOutput
 	float4 color : COLOR;
 };
 
+static const int MAX_BONE = 32;
 cbuffer ModelInfo : register(b0)
 {
 	matrix modelMatrix;
+	matrix bones[MAX_BONE];
 }
 
 cbuffer CameraInfo : register(b1)
