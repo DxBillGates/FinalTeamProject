@@ -11,6 +11,7 @@ namespace GE
 		SkinMeshAnimationData* currentPlayAnimationData;
 		bool isPlay;
 		bool isLoop;
+		bool isStartedFrame;
 
 		FbxTime currentTime;
 	public:

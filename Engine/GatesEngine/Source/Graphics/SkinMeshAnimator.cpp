@@ -10,6 +10,7 @@ GE::SkinMeshAnimator::SkinMeshAnimator(SkinMeshData* setSkinMeshData)
 	, currentPlayAnimationData(nullptr)
 	, isPlay(false)
 	, isLoop(false)
+	, isStartedFrame(false)
 	, currentTime()
 {
 }
@@ -34,9 +35,12 @@ void GE::SkinMeshAnimator::PlayAnimation(int index, bool loopFlag)
 
 	currentPlayAnimationData = &skinMeshData->animationDatas[index];
 
+	skinMeshData->fbxScene->SetCurrentAnimationStack(currentPlayAnimationData->animStack);
+
 	currentTime = 0;
 	isPlay = true;
 	isLoop = loopFlag;
+	isStartedFrame = true;
 }
 
 void GE::SkinMeshAnimator::PlayAnimation()
@@ -64,6 +68,13 @@ void GE::SkinMeshAnimator::Initialize()
 void GE::SkinMeshAnimator::Update()
 {
 	if (isPlay == false)return;
+
+	// 開始し始めたフレーム時のデータが取得できるように
+	if (isStartedFrame == true)
+	{
+		isStartedFrame = false;
+		return;
+	}
 
 	if (currentTime >= currentPlayAnimationData->endTime && isLoop)
 	{
@@ -103,14 +114,14 @@ void GE::SkinMeshAnimator::SetAnimationData(IGraphicsDeviceDx12* graphicsDevice,
 		if (i >= MAX_BONES)break;
 
 		Math::Matrix4x4 currentPose;
-		FbxAMatrix fbxCurrentPose = skinMeshData->bones[i].fbxCluster->GetLink()->EvaluateGlobalTransform(0);
+		FbxAMatrix fbxCurrentPose = skinMeshData->bones[i].fbxCluster->GetLink()->EvaluateGlobalTransform(currentTime);
 		ConvertMatrixFromFbxMatrix(currentPose, fbxCurrentPose);
 
 		skinMeshInfo.bones[i] = skinMeshData->bones[i].invInitialPose * currentPose;
 	}
 
 	ShaderResourceCommand cbufferCommand;
-	cbufferCommand.descIndex = 4;
+	cbufferCommand.descIndex = 0;
 	cbufferCommand.viewNumber = graphicsDevice->GetCBufferAllocater()->BindAndAttachData(0, &skinMeshInfo,sizeof(skinMeshInfo));
 	graphicsDevice->GetRenderQueue()->AddSetConstantBufferInfo(cbufferCommand);
 }

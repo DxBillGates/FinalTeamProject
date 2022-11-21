@@ -158,6 +158,7 @@ void GE::FbxLoader::ParseAnimation(FbxScene* fbxScene, int animationCount)
 		auto& animationData = currentLoadModelData->animationDatas.back();
 
 		FbxAnimStack* animStack = fbxScene->GetSrcObject<FbxAnimStack>(i);
+		animationData.animStack = animStack;
 		animationData.name = animStack->GetName();
 
 		FbxTakeInfo* takeInfo = fbxScene->GetTakeInfo(animStack->GetName());

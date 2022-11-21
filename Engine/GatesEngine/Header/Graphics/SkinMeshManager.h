@@ -5,8 +5,8 @@
 #include "..\..\Header\Graphics\VertexData.h"
 #include "..\..\Header\Graphics\Mesh.h"
 #include "..\..\Header\Util\Manager.h"
+#include "..\..\External\FBX\fbxsdk.h"
 
-#include <fbxsdk.h>
 #include <string>
 #include <vector>
 
@@ -27,6 +27,7 @@ namespace GE
 
 	struct SkinMeshAnimationData
 	{
+		FbxAnimStack* animStack;
 		// アニメーションの名前
 		std::string name;
 		// fbxSceneに登録されている要素番号
