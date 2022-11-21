@@ -75,6 +75,8 @@
     <ClInclude Include="Header\Graphics\RootSignature.h" />
     <ClInclude Include="Header\Graphics\Shader.h" />
     <ClInclude Include="Header\Graphics\ShaderResourceHeap.h" />
+    <ClInclude Include="Header\Graphics\SkinMeshAnimator.h" />
+    <ClInclude Include="Header\Graphics\SkinMeshManager.h" />
     <ClInclude Include="Header\Graphics\Texture.h" />
     <ClInclude Include="Header\Graphics\VertexData.h" />
     <ClInclude Include="Header\Graphics\Window.h" />
@@ -139,6 +141,7 @@
     <ClCompile Include="Source\Graphics\RootSignature.cpp" />
     <ClCompile Include="Source\Graphics\Shader.cpp" />
     <ClCompile Include="Source\Graphics\ShaderResourceHeap.cpp" />
+    <ClCompile Include="Source\Graphics\SkinMeshManager.cpp" />
     <ClCompile Include="Source\Graphics\Texture.cpp" />
     <ClCompile Include="Source\Graphics\Window.cpp" />
     <ClCompile Include="Source\GUI\GUIManager.cpp" />

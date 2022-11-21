@@ -10,6 +10,7 @@ FbxImporter* GE::FbxLoader::fbxImporter = nullptr;
 bool GE::FbxLoader::isInitialize = false;
 const std::string GE::FbxLoader::BASE_DIRECTORY = "Resources/Model/fbxModel/";
 GE::MeshData<GE::Vertex_UV_Normal_Skin>* GE::FbxLoader::currentLoadModelMeshData = nullptr;
+GE::SkinMeshData* GE::FbxLoader::currentLoadModelData = nullptr;
 
 void GE::FbxLoader::ParseNodeRecursive(FbxNode* fbxNode, std::vector<Node>& nodes, Node* parentNode)
 {
@@ -65,8 +66,7 @@ void GE::FbxLoader::ParseMesh(FbxNode* fbxNode)
 	ParseMeshFaces(fbxMesh);
 	ParseMaterial(fbxNode);
 
-	std::vector<Bone> bones;
-	ParseSkin(fbxMesh, bones);
+	ParseSkin(fbxMesh, currentLoadModelData->bones);
 }
 
 void GE::FbxLoader::ParseMeshVertices(FbxMesh* fbxMesh)
@@ -154,12 +154,17 @@ void GE::FbxLoader::ParseAnimation(FbxScene* fbxScene, int animationCount)
 {
 	for (int i = 0; i < animationCount; ++i)
 	{
-		FbxAnimStack* animStack = fbxScene->GetSrcObject<FbxAnimStack>(i);
-		std::string animName = animStack->GetName();
-		FbxTakeInfo* takeInfo = fbxScene->GetTakeInfo(animName.c_str());
+		currentLoadModelData->animationDatas.emplace_back();
+		auto& animationData = currentLoadModelData->animationDatas.back();
 
-		FbxTime startTime = takeInfo->mLocalTimeSpan.GetStart();
-		FbxTime endTime = takeInfo->mLocalTimeSpan.GetStop();
+		FbxAnimStack* animStack = fbxScene->GetSrcObject<FbxAnimStack>(i);
+		animationData.name = animStack->GetName();
+
+		FbxTakeInfo* takeInfo = fbxScene->GetTakeInfo(animStack->GetName());
+
+		animationData.startTime = takeInfo->mLocalTimeSpan.GetStart();
+		animationData.endTime = takeInfo->mLocalTimeSpan.GetStop();
+		animationData.frameTime = FbxTime::eFrames60;
 	}
 }
 
@@ -264,7 +269,7 @@ void GE::FbxLoader::LoadTexture(const std::string& fullpath)
 {
 }
 
-const GE::SkinMeshData& GE::FbxLoader::Load(const std::string& modelName, IGraphicsDeviceDx12* graphicsDevice)
+GE::Mesh* GE::FbxLoader::Load(const std::string& modelName, IGraphicsDeviceDx12* graphicsDevice)
 {
 	const std::string FILE_NAME = modelName + ".fbx";
 	const std::string FULLPATH = BASE_DIRECTORY + FILE_NAME;
@@ -283,22 +288,24 @@ const GE::SkinMeshData& GE::FbxLoader::Load(const std::string& modelName, IGraph
 	std::vector<Node> nodes;
 	nodes.reserve(fbxScene->GetNodeCount());
 
-	// アニメーションの数を予め取得
-	int animationCount = fbxImporter->GetAnimStackCount();
-	ParseAnimation(fbxScene, animationCount);
-
 	MeshData<Vertex_UV_Normal_Skin> meshData;
 	currentLoadModelMeshData = &meshData;
 
+	currentLoadModelData = new SkinMeshData();
+
+	// アニメーションの数を予め取得
+	int animationCount = fbxImporter->GetAnimStackCount();
+	ParseAnimation(fbxScene, animationCount);
 	ParseNodeRecursive(fbxScene->GetRootNode(), nodes);
 
-	SkinMeshData skinMeshData;
-	skinMeshData.mesh = new Mesh();
-	skinMeshData.mesh->Create(graphicsDevice->GetDevice(), graphicsDevice->GetCmdList(), meshData);
+	currentLoadModelData->mesh = new Mesh();
+	currentLoadModelData->mesh->Create(graphicsDevice->GetDevice(), graphicsDevice->GetCmdList(), meshData);
 
-	fbxScene->Destroy();
+	SkinMeshManager::GetInstance()->Add(currentLoadModelData, modelName);
 
-	return skinMeshData;
+	currentLoadModelData->fbxScene = fbxScene;
+
+	return currentLoadModelData->mesh;
 }
 
 void GE::FbxLoader::Initialize()
@@ -318,6 +325,8 @@ void GE::FbxLoader::Initialize()
 void GE::FbxLoader::Finalize()
 {
 	if (isInitialize == false)return;
+
+	SkinMeshManager::GetInstance()->Finalize();
 
 	fbxImporter->Destroy();
 	fbxManager->Destroy();

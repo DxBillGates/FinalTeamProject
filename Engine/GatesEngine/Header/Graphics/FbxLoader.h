@@ -1,25 +1,9 @@
 #pragma once
-#include "..\Util\Math\Vector3.h"
-#include "..\Util\Math\Matrix4.h"
-#include "..\..\Header\Graphics\MeshData.h"
-#include "..\..\Header\Graphics\VertexData.h"
-#include "..\..\Header\Graphics\Mesh.h"
+#include "..\..\Header\Graphics\SkinMeshManager.h"
 #include "..\..\Header\Graphics\IGraphicsDeviceDx12.h"
-
-#include <fbxsdk.h>
-#include <string>
-#include <vector>
 
 namespace GE
 {
-	struct SkinMeshData
-	{
-		// メッシュ情報
-		Mesh* mesh;
-		// アニメーションデータ
-
-	};
-
 	class FbxLoader
 	{
 	private:
@@ -40,25 +24,13 @@ namespace GE
 			{
 			}
 		};
-
-		struct Bone
-		{
-			std::string name;
-			Math::Matrix4x4 invInitialPose;
-			FbxCluster* fbxCluster;
-
-			Bone(const std::string& name)
-				: name(name)
-				, invInitialPose()
-				, fbxCluster(nullptr)
-			{}
-		};
 	private:
 		static FbxManager* fbxManager;
 		static FbxImporter* fbxImporter;
 		static const std::string BASE_DIRECTORY;
 
 		static MeshData<Vertex_UV_Normal_Skin>* currentLoadModelMeshData;
+		static SkinMeshData* currentLoadModelData;
 
 		static bool isInitialize;
 	private:
@@ -71,7 +43,7 @@ namespace GE
 		static void ParseSkin(FbxMesh* fbxMesh,std::vector<Bone>& bones);
 		static void LoadTexture(const std::string& fullpath);
 	public:
-		static const SkinMeshData& Load(const std::string& modelName,IGraphicsDeviceDx12* graphicsDevice);
+		static Mesh* Load(const std::string& modelName,IGraphicsDeviceDx12* graphicsDevice);
 
 		static void Initialize();
 		static void Finalize();

@@ -192,8 +192,7 @@ bool GE::Application::LoadContents()
 	mesh->Create(device, cmdList, modelDataBird1);
 	meshManager->Add(mesh, "Bird1");
 
-	auto& skinMeshData = FbxLoader::Load("Player",&graphicsDevice);
-	meshManager->Add(skinMeshData.mesh, "Player");
+	meshManager->Add(FbxLoader::Load("Player", &graphicsDevice), "Player");
 
 	// texture load
 	auto* textureManager = graphicsDevice.GetTextureManager();
