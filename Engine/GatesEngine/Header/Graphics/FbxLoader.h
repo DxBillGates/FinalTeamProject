@@ -40,6 +40,19 @@ namespace GE
 			{
 			}
 		};
+
+		struct Bone
+		{
+			std::string name;
+			Math::Matrix4x4 invInitialPose;
+			FbxCluster* fbxCluster;
+
+			Bone(const std::string& name)
+				: name(name)
+				, invInitialPose()
+				, fbxCluster(nullptr)
+			{}
+		};
 	private:
 		static FbxManager* fbxManager;
 		static FbxImporter* fbxImporter;
@@ -54,6 +67,8 @@ namespace GE
 		static void ParseMeshVertices(FbxMesh* fbxMesh);
 		static void ParseMeshFaces(FbxMesh* fbxMesh);
 		static void ParseMaterial(FbxNode* fbxNode);
+		static void ParseAnimation(FbxScene* fbxScene, int animationCount);
+		static void ParseSkin(FbxMesh* fbxMesh,std::vector<Bone>& bones);
 		static void LoadTexture(const std::string& fullpath);
 	public:
 		static const SkinMeshData& Load(const std::string& modelName,IGraphicsDeviceDx12* graphicsDevice);

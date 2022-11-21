@@ -41,14 +41,17 @@ namespace GE
 		Vertex_UV_Normal(const Math::Vector3& p, const Math::Vector2& u, const Math::Vector3& n) : point(p), uv(u), normal(n) {}
 	};
 
+	static const int MAX_BONE_INDEX_COUNT = 4;
 	struct Vertex_UV_Normal_Skin
 	{
 		Math::Vector3 point;
 		Math::Vector2 uv;
 		Math::Vector3 normal;
+		unsigned int boneIndex[MAX_BONE_INDEX_COUNT];
+		float boneWeight[MAX_BONE_INDEX_COUNT];
 
-		Vertex_UV_Normal_Skin() : point({}), uv({}), normal({}) {}
-		Vertex_UV_Normal_Skin(const Math::Vector3& p, const Math::Vector2& u, const Math::Vector3& n) : point(p), uv(u), normal(n) {}
+		Vertex_UV_Normal_Skin() : Vertex_UV_Normal_Skin(0,0,0) {}
+		Vertex_UV_Normal_Skin(const Math::Vector3& p, const Math::Vector2& u, const Math::Vector3& n) : point(p), uv(u), normal(n),boneIndex(),boneWeight() {}
 	};
 
 	struct Vertex_UV_Normal_Color

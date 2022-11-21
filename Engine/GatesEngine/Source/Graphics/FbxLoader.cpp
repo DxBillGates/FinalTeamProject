@@ -1,7 +1,9 @@
 #include "..\..\Header\Graphics\FbxLoader.h"
 #include "..\..\Header\Util\Math\Math.h"
 #include "..\..\Header\Util\Utility.h"
+
 #include <assert.h>
+#include <list>
 
 FbxManager* GE::FbxLoader::fbxManager = nullptr;
 FbxImporter* GE::FbxLoader::fbxImporter = nullptr;
@@ -62,6 +64,9 @@ void GE::FbxLoader::ParseMesh(FbxNode* fbxNode)
 	ParseMeshVertices(fbxMesh);
 	ParseMeshFaces(fbxMesh);
 	ParseMaterial(fbxNode);
+
+	std::vector<Bone> bones;
+	ParseSkin(fbxMesh, bones);
 }
 
 void GE::FbxLoader::ParseMeshVertices(FbxMesh* fbxMesh)
@@ -145,6 +150,116 @@ void GE::FbxLoader::ParseMaterial(FbxNode* fbxNode)
 {
 }
 
+void GE::FbxLoader::ParseAnimation(FbxScene* fbxScene, int animationCount)
+{
+	for (int i = 0; i < animationCount; ++i)
+	{
+		FbxAnimStack* animStack = fbxScene->GetSrcObject<FbxAnimStack>(i);
+		std::string animName = animStack->GetName();
+		FbxTakeInfo* takeInfo = fbxScene->GetTakeInfo(animName.c_str());
+
+		FbxTime startTime = takeInfo->mLocalTimeSpan.GetStart();
+		FbxTime endTime = takeInfo->mLocalTimeSpan.GetStop();
+	}
+}
+
+void GE::FbxLoader::ParseSkin(FbxMesh* fbxMesh, std::vector<Bone>& bones)
+{
+	int deformerCount = fbxMesh->GetDeformerCount();
+	FbxSkin* fbxSkin = static_cast<FbxSkin*>(fbxMesh->GetDeformer(0, FbxDeformer::eSkin));
+
+	if (fbxSkin == nullptr)return;
+
+	int clusterCount = fbxSkin->GetClusterCount();
+	bones.reserve(clusterCount);
+
+	// fbxMatrix から Math::Matrix4x4 に変換
+	auto ConvertMatrixFromFbxMatrix = [](Math::Matrix4x4& dst,const FbxAMatrix& src)
+	{
+		for (int i = 0; i < 4; ++i)
+		{
+			for (int j = 0; j < 4; ++j)
+			{
+				dst.m[i][j] = (float)src.Get(i, j);
+			}
+		}
+	};
+
+	struct WeightSet
+	{
+		UINT index;
+		float weight;
+	};
+
+	std::vector<std::list<WeightSet>> weightLists(currentLoadModelMeshData->GetVertices()->size());
+
+	for (int i = 0; i < clusterCount; ++i)
+	{
+		FbxCluster* fbxCluster = fbxSkin->GetCluster(i);
+
+		// このボーンに影響を受ける頂点数
+		int controlPointIndicesCount = fbxCluster->GetControlPointIndicesCount();
+		// このボーンに影響を受ける頂点配列
+		int* controlPointIndies = fbxCluster->GetControlPointIndices();
+		double* controlPointWeights = fbxCluster->GetControlPointWeights();
+
+		for (int j = 0; j < controlPointIndicesCount; ++j)
+		{
+			// 頂点番号
+			int vertexIndex = controlPointIndies[j];
+			// スキンウェイト
+			float weight = (float)controlPointWeights[j];
+
+			weightLists[vertexIndex].emplace_back(WeightSet{ (UINT)i,weight });
+		}
+
+		const char* boneName = fbxCluster->GetLink()->GetName();
+		bones.emplace_back(Bone(boneName));
+		Bone& bone = bones.back();
+
+		bone.fbxCluster = fbxCluster;
+
+		FbxAMatrix fbxMat;
+		fbxCluster->GetTransformLinkMatrix(fbxMat);
+		ConvertMatrixFromFbxMatrix(bone.invInitialPose, fbxMat);
+		bone.invInitialPose = Math::Matrix4x4::Inverse(bone.invInitialPose);
+	}
+
+	auto& vertices = *currentLoadModelMeshData->GetVertices();
+
+	for (int i = 0; i < (int)vertices.size(); ++i)
+	{
+		auto& weightList = weightLists[i];
+
+		// list.sort用のラムダ式
+		auto WeightListSort = [](auto const& lhs, auto const& rhs)
+		{
+			return lhs.weight > rhs.weight;
+		};
+		weightList.sort(WeightListSort);
+
+		int weightArrayIndex = 0;
+
+		for (auto& weightSet : weightList)
+		{
+			vertices[i].boneIndex[weightArrayIndex] = weightSet.index;
+			vertices[i].boneWeight[weightArrayIndex] = weightSet.weight;
+
+			if (++weightArrayIndex >= MAX_BONE_INDEX_COUNT)
+			{
+				float weight = 0;
+				for (int j = 1;j < MAX_BONE_INDEX_COUNT; ++j)
+				{
+					weight += vertices[i].boneWeight[j];
+				}
+
+				vertices[i].boneWeight[0] = 1 - weight;
+				break;
+			}
+		}
+	}
+}
+
 void GE::FbxLoader::LoadTexture(const std::string& fullpath)
 {
 }
@@ -164,8 +279,13 @@ const GE::SkinMeshData& GE::FbxLoader::Load(const std::string& modelName, IGraph
 
 	fbxImporter->Import(fbxScene);
 
+	// 配列のキャパシティを予め確保しておく
 	std::vector<Node> nodes;
 	nodes.reserve(fbxScene->GetNodeCount());
+
+	// アニメーションの数を予め取得
+	int animationCount = fbxImporter->GetAnimStackCount();
+	ParseAnimation(fbxScene, animationCount);
 
 	MeshData<Vertex_UV_Normal_Skin> meshData;
 	currentLoadModelMeshData = &meshData;
