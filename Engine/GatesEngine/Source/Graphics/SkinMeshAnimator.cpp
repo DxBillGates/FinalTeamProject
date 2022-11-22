@@ -65,9 +65,20 @@ void GE::SkinMeshAnimator::Initialize()
 	currentTime = 0;
 }
 
-void GE::SkinMeshAnimator::Update()
+void GE::SkinMeshAnimator::Update(float deltaTime)
 {
 	if (isPlay == false)return;
+
+	// frameTimeの修正
+	int fps = 1 / deltaTime;
+	if (fps >= 60)
+	{
+		currentPlayAnimationData->frameTime.SetTime(0, 0, 0, 1, 0, FbxTime::EMode::eFrames60);
+		if(fps >= 120)
+		{
+			currentPlayAnimationData->frameTime.SetTime(0, 0, 0, 1, 0, FbxTime::EMode::eFrames120);
+		}
+	}
 
 	// 開始し始めたフレーム時のデータが取得できるように
 	if (isStartedFrame == true)

@@ -32,7 +32,7 @@ namespace GE
 		void StopAnimation();
 
 		void Initialize();
-		void Update();
+		void Update(float deltaTime);
 
 		// 描画時に必要なアニメーションデータをシェーダーにバインド
 		void SetAnimationData(IGraphicsDeviceDx12* graphicsDevice,const Math::Matrix4x4& modelMatrix);
