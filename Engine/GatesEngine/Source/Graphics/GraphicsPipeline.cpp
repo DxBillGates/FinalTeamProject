@@ -88,12 +88,12 @@ void GE::GraphicsPipeline::Create(ID3D12Device* device, const std::vector<Graphi
 			}
 			else if (inputLayout == GraphicsPipelineInputLayout::BONEINDEX)
 			{
-				semantics = "BONEINDEX";
+				semantics = "BONEINDICES";
 				format = DXGI_FORMAT_R32G32B32A32_UINT;
 			}
 			else if (inputLayout == GraphicsPipelineInputLayout::BONEWEIGHT)
 			{
-				semantics = "BONEWEIGHT";
+				semantics = "BONEWEIGHTS";
 				format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 			}
 

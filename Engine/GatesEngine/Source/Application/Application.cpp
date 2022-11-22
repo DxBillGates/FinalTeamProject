@@ -204,6 +204,8 @@ bool GE::Application::LoadContents()
 	Shader defaultMeshVertexShader, defaultMeshPixelShader;
 	defaultMeshVertexShader.CompileShaderFileWithoutFormat(L"DefaultMeshVertexShader", "vs_5_0");
 	defaultMeshPixelShader.CompileShaderFileWithoutFormat(L"DefaultMeshPixelShader", "ps_5_0");
+	Shader defaultSkinMeshVertexShader;
+	defaultSkinMeshVertexShader.CompileShaderFileWithoutFormat(L"DefaultSkinMeshVertexShader", "vs_5_0");
 	Shader defaultLineVertexShader, defaultLinePixelShader;
 	defaultLineVertexShader.CompileShaderFileWithoutFormat(L"DefaultLineVertexShader", "vs_5_0");
 	defaultLinePixelShader.CompileShaderFileWithoutFormat(L"DefaultLinePixelShader", "ps_5_0");
@@ -241,6 +243,10 @@ bool GE::Application::LoadContents()
 	GraphicsPipeline* defaultMeshPipline = new GraphicsPipeline({ &defaultMeshVertexShader,nullptr,nullptr,nullptr,&defaultMeshPixelShader });
 	defaultMeshPipline->Create(device, { GraphicsPipelineInputLayout::POSITION,GraphicsPipelineInputLayout::UV ,GraphicsPipelineInputLayout::NORMAL }, defaultMeshRootSignature, pipelineInfo);
 	graphicsPipelineManager->Add(defaultMeshPipline, "DefaultMeshShader");
+	// skinMesh shader
+	GraphicsPipeline* defaultSkinMeshPipline = new GraphicsPipeline({ &defaultSkinMeshVertexShader,nullptr,nullptr,nullptr,&defaultMeshPixelShader });
+	defaultSkinMeshPipline->Create(device, { GraphicsPipelineInputLayout::POSITION,GraphicsPipelineInputLayout::UV ,GraphicsPipelineInputLayout::NORMAL,GraphicsPipelineInputLayout::BONEINDEX,GraphicsPipelineInputLayout::BONEWEIGHT }, defaultMeshRootSignature, pipelineInfo);
+	graphicsPipelineManager->Add(defaultSkinMeshPipline, "DefaultSkinMeshShader");
 	// line shader
 	pipelineInfo.topologyType = GraphicsPipelinePrimitiveTopolotyType::LINE;
 	GraphicsPipeline* dafaultLinePipeline = new GraphicsPipeline({ &defaultLineVertexShader,nullptr,nullptr,nullptr,&defaultLinePixelShader });
