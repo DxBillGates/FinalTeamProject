@@ -165,7 +165,7 @@ void GE::FbxLoader::ParseAnimation(FbxScene* fbxScene, int animationCount)
 
 		animationData.startTime = takeInfo->mLocalTimeSpan.GetStart();
 		animationData.endTime = takeInfo->mLocalTimeSpan.GetStop();
-		animationData.frameTime = FbxTime::eFrames60;
+		animationData.frameTime.SetTime(0,0,0,1,0, FbxTime::EMode::eFrames60);
 	}
 }
 
