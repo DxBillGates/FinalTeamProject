@@ -18,6 +18,11 @@ GE::Scene::Scene(const std::string& sceneName)
 	collisionManager.SetGameObjectManager(gameObjectManager.GetManager());
 }
 
+void GE::Scene::UnLoad()
+{
+	gameObjectManager.DestroyGameObjects();
+}
+
 const std::string& GE::Scene::GetSceneName()
 {
 	return name;

@@ -18,38 +18,6 @@ SampleScene::SampleScene(const std::string& sceneName)
 	, col1(nullptr)
 	, col2(nullptr)
 {
-	{
-		auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject("Player","player"));
-		auto* sampleComponent = testObject->AddComponent<PlayerComponent>();
-
-		auto* playerCollider = testObject->AddComponent < GE::SphereCollider >();
-		playerCollider->SetCenter({ 0,0,0 });
-		playerCollider->SetSize({ 2 });
-		col1 = playerCollider;
-
-		////ロックオンの範囲のCollider
-		//auto* lockOnCollider = testObject->AddComponent < GE::SphereCollider >();
-		//lockOnCollider->SetCenter({ 0,0,0 });
-		//lockOnCollider->SetSize(200);
-		//lockOnCollider->DrawEnabled(false);
-	}
-
-	{
-		auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject("test2","testTag"));
-		testObject->GetTransform()->position = { 1300,0,0 };
-		testObject->SetDrawAxisEnabled(true);
-		auto* sampleCollider = testObject->AddComponent<GE::BoxCollider>();
-		auto* sampleComponent = testObject->AddComponent<GE::SampleComponent>();
-		sampleCollider->SetCenter({ 0,0,0 });
-		sampleCollider->SetSize({ 2 });
-		sampleCollider->SetType(GE::ColliderType::OBB);
-		col2 = sampleCollider;
-	}
-
-	EnemyManager::GetInstance()->Start(10, &gameObjectManager);
-
-	collisionManager.AddTagCombination("player", "enemy");
-	//collisionManager.AddTagCombination("player", "birdEnemy");
 }
 
 SampleScene::~SampleScene()
@@ -67,6 +35,12 @@ void SampleScene::Update(float deltaTime)
 	gameObjectManager.Update(deltaTime);
 	collisionManager.Update();
 	
+	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::Y))
+	{
+		changeSceneInfo.flag = true;
+		changeSceneInfo.name = "SampleScene";
+		changeSceneInfo.initNextSceneFlag = true;
+	}
 }
 
 void SampleScene::Draw()
@@ -77,4 +51,46 @@ void SampleScene::Draw()
 void SampleScene::LateDraw()
 {
 	gameObjectManager.LateDraw();
+}
+
+void SampleScene::Load()
+{
+	{
+		auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject("Player", "player"));
+		auto* sampleComponent = testObject->AddComponent<PlayerComponent>();
+
+		auto* playerCollider = testObject->AddComponent < GE::SphereCollider >();
+		playerCollider->SetCenter({ 0,0,0 });
+		playerCollider->SetSize({ 2 });
+		col1 = playerCollider;
+
+		////ロックオンの範囲のCollider
+		//auto* lockOnCollider = testObject->AddComponent < GE::SphereCollider >();
+		//lockOnCollider->SetCenter({ 0,0,0 });
+		//lockOnCollider->SetSize(200);
+		//lockOnCollider->DrawEnabled(false);
+	}
+
+	{
+		auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject("test2", "testTag"));
+		testObject->GetTransform()->position = { 1300,0,0 };
+		testObject->SetDrawAxisEnabled(true);
+		auto* sampleCollider = testObject->AddComponent<GE::BoxCollider>();
+		auto* sampleComponent = testObject->AddComponent<GE::SampleComponent>();
+		sampleCollider->SetCenter({ 0,0,0 });
+		sampleCollider->SetSize({ 2 });
+		sampleCollider->SetType(GE::ColliderType::OBB);
+		col2 = sampleCollider;
+	}
+
+	EnemyManager::GetInstance()->Start(10, &gameObjectManager);
+
+	collisionManager.AddTagCombination("player", "enemy");
+	//collisionManager.AddTagCombination("player", "birdEnemy");
+}
+
+void SampleScene::UnLoad()
+{
+	// gameObjectsを削除する
+	Scene::UnLoad();
 }
