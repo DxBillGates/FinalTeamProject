@@ -54,6 +54,81 @@ void GE::CollisionManager::CollisionCheck(std::vector<GameObject*>* firstTagGame
 	}
 }
 
+GE::Math::Vector3 GE::CollisionManager::CheckClosestPoint(const Math::Vector3& point, const Triangle& triangle)
+{
+	Math::Vector3 center = point;
+	Math::Vector3 returnPosition;
+
+	// ポイント間のベクトル
+	Math::Vector3 p1_p2, p3_p1;
+	p1_p2 = triangle.pos2 - triangle.pos1;
+	p3_p1 = triangle.pos1 - triangle.pos3;
+
+	// 各ポイントとコライダーの真ん中間のベクトル
+	Math::Vector3 p1_pt, p2_pt, p3_pt;
+	p1_pt = center - triangle.pos1;
+	p2_pt = center - triangle.pos2;
+	p3_pt = center - triangle.pos3;
+
+	float d1, d2, d3, d4, d5, d6;
+	d1 = Math::Vector3::Dot(p1_p2, p1_pt);
+	d2 = Math::Vector3::Dot(-p3_p1, p1_pt);
+
+	if (d1 <= 0 && d2 <= 0)
+	{
+		returnPosition = triangle.pos1;
+		return returnPosition;
+	}
+
+	d3 = Math::Vector3::Dot(p1_p2, p2_pt);
+	d4 = Math::Vector3::Dot(-p3_p1, p2_pt);
+
+	if (d3 >= 0 && d4 <= d3)
+	{
+		returnPosition = triangle.pos2;
+		return returnPosition;
+	}
+
+	float vc = d1 * d4 - d3 * d2;
+	if (vc <= 0 && d1 >= 0 && d3 <= 0)
+	{
+		float v = d1 / (d1 - d3);
+		returnPosition = triangle.pos1 + v * p1_p2;
+		return returnPosition;
+	}
+
+	d5 = Math::Vector3::Dot(p1_p2, p3_pt);
+	d6 = Math::Vector3::Dot(-p3_p1, p3_pt);
+
+	if (d5 >= 0 && d5 <= d6)
+	{
+		returnPosition = triangle.pos3;
+		return returnPosition;
+	}
+
+	float vb = d5 * d2 - d1 * d6;
+	if (vb <= 0 && d2 >= 0 && d6 <= 0)
+	{
+		float v = d2 / (d2 - d6);
+		returnPosition = triangle.pos1 + v * -p3_p1;
+		return returnPosition;
+	}
+
+	float va = d3 * d6 - d5 * d4;
+	if (va <= 0 && (d4 - d3) >= 0 && (d5 - d6) >= 0)
+	{
+		float v = (d4 - d3) / ((d4 - d3) + (d5 - d6));
+		returnPosition = triangle.pos1 + v * (triangle.pos2 - triangle.pos1);
+		return returnPosition;
+	}
+
+	float denom = 1.0f / (va + vb + vc);
+	float v = vb * denom;
+	float w = vc * denom;
+	returnPosition = triangle.pos1 + p1_p2 * v + -p3_p1 * w;
+	return returnPosition;
+}
+
 void GE::CollisionManager::AddTagCombination(const std::string& tag1, const std::string& tag2)
 {
 	bool isFind = false;
@@ -84,7 +159,7 @@ void GE::CollisionManager::Update()
 	{
 		// ゲームオブジェクトの配列にタグが登録されているかを確認する
 		isTagFinds = ((*pGameObjects).find(tagCombination.first) != (*pGameObjects).end());
-		
+
 		for (auto& tag : tagCombination.second)
 		{
 			isTagFinds = ((*pGameObjects).find(tag) != (*pGameObjects).end());
@@ -299,6 +374,18 @@ bool GE::CollisionManager::CheckOBB(ICollider* col1, ICollider* col2)
 	rB = LengthSegmentSeparateAxis(cross, be1, be2);
 	l = std::fabs(Math::Vector3::Dot(intervalVec, cross));
 	if (l > rA + rB)return false;
+
+	return true;
+}
+
+bool GE::CollisionManager::CheckSphereToTriangle(ICollider* collider, const Triangle& triangle)
+{
+	Math::Vector3 closestPoint = CheckClosestPoint(collider->GetMatrix().GetPosition(), triangle);
+
+	Math::Vector3 v = closestPoint - collider->GetMatrix().GetPosition();
+	float distance = Math::Vector3::Dot(v, v);
+
+	if (distance >= collider->GetBounds().size.x * collider->GetBounds().size.x)return false;
 
 	return true;
 }
