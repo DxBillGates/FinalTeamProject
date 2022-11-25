@@ -191,12 +191,19 @@ bool GE::Application::LoadContents()
 	mesh = new Mesh();
 	mesh->Create(device, cmdList, modelDataBird_Stay);
 	meshManager->Add(mesh, "Bird_Stay");
+	
+	MeshData<Vertex_UV_Normal> modelDataGroundTest;
+	MeshCreater::LoadObjModelData("Resources/Model/groundTest", modelDataGroundTest);
+	mesh = new Mesh();
+	mesh->Create(device, cmdList, modelDataGroundTest);
+	meshManager->Add(mesh, "GroundTest");
 
 	// texture load
 	auto* textureManager = graphicsDevice.GetTextureManager();
 	Texture* nullTexture = new Texture();
 	nullTexture->Load("texture_null.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "texture_null");
+
 
 	// shader compile
 	Shader defaultMeshVertexShader, defaultMeshPixelShader;
