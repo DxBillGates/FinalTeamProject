@@ -1,6 +1,7 @@
 #include "SampleScene.h"
 #include "PlayerComponent.h"
 #include"EnemyManager.h"
+#include"FieldObjectManager.h"
 #include"TestTreeComponent.h"
 #include <GatesEngine/Header\GameFramework\Component\SampleComponent.h>
 #include <GatesEngine/Header\GameFramework\Component\SphereCollider.h>
@@ -27,21 +28,17 @@ SampleScene::SampleScene(const std::string& sceneName)
 		playerCollider->SetSize({ 2 });
 		col1 = playerCollider;
 
-		////ƒƒbƒNƒIƒ“‚Ì”ÍˆÍ‚ÌCollider
-		//auto* lockOnCollider = testObject->AddComponent < GE::SphereCollider >();
-		//lockOnCollider->SetCenter({ 0,0,0 });
-		//lockOnCollider->SetSize(200);
-		//lockOnCollider->DrawEnabled(false);
 	}
 
 	{
 		auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject("test2","testTag"));
 		testObject->GetTransform()->position = { 1300,0,0 };
 		testObject->SetDrawAxisEnabled(true);
-		auto* sampleComponent = testObject->AddComponent<TestTreeComponent>();
+		auto* sampleComponent = testObject->AddComponent<GE::SampleComponent>();
 	}
 
 	EnemyManager::GetInstance()->Start(10, &gameObjectManager);
+	FieldObjectManager::GetInstance()->Start(&gameObjectManager);
 
 	collisionManager.AddTagCombination("player", "enemy");
 	//collisionManager.AddTagCombination("player", "birdEnemy");

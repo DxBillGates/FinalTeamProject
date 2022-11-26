@@ -167,6 +167,7 @@
     <ClCompile Include="CameraControl.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="EnemyManager.cpp" />
+    <ClCompile Include="FieldObjectManager.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Ground.cpp" />
     <ClCompile Include="InputManager.cpp" />
@@ -181,6 +182,7 @@
     <ClInclude Include="CameraControl.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="EnemyManager.h" />
+    <ClInclude Include="FieldObjectManager.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Ground.h" />
     <ClInclude Include="InputManager.h" />
