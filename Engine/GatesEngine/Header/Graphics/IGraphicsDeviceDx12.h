@@ -60,6 +60,8 @@ namespace GE
 		virtual void SetDepthTexture(const std::string& layerName, int descIndex) = 0;
 		virtual void DrawMesh(const std::string& meshName, int instanceCount = 1) = 0;
 
+		virtual void SetCurrentRenderQueue(bool is3DRenderQueue = true) = 0;
+
 		virtual void OnResizeWindow(const Math::Vector2& size) {};
 	};
 }

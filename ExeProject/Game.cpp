@@ -50,6 +50,8 @@ bool Game::Update()
 bool Game::Draw()
 {
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice.GetCBufferAllocater();
+
+	graphicsDevice.SetCurrentRenderQueue(true);
 	GE::RenderQueue* renderQueue = graphicsDevice.GetRenderQueue();
 
 	graphicsDevice.ClearDefaultRenderTarget(GE::Color::Blue());
@@ -57,6 +59,10 @@ bool Game::Draw()
 
 	graphicsDevice.ClearLayer("resultLayer");
 	graphicsDevice.SetLayer("resultLayer");
+
+	graphicsDevice.SetCurrentRenderQueue(false);
+	graphicsDevice.SetLayer("resultLayer");
+	graphicsDevice.SetCurrentRenderQueue(true);
 
 	graphicsDevice.SetShaderResourceDescriptorHeap();
 	graphicsDevice.ResetCBufferAllocater();
@@ -93,6 +99,7 @@ bool Game::Draw()
 	graphicsDevice.ExecuteRenderQueue();
 	graphicsDevice.ExecuteCommands();
 
+	graphicsDevice.SetCurrentRenderQueue(true);
 	graphicsDevice.SetShaderResourceDescriptorHeap();
 	graphicsDevice.SetDefaultRenderTarget();
 	graphicsDevice.SetShader("DefaultSpriteWithTextureShader");

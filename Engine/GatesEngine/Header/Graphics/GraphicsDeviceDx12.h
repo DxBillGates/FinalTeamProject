@@ -42,6 +42,9 @@ namespace GE
 		Manager<ILayer> layerManager;
 
 		RenderQueue renderQueue;
+		RenderQueue renderQueue2D;
+		RenderQueue* currentRenderQueue;
+
 		Camera* mainCamera;
 	private:
 		void CreateDxgiFactory();
@@ -51,6 +54,7 @@ namespace GE
 		void CreateRTV();
 		void CreateDSV();
 		void CreateFence();
+		void IsSetRenderQueue();
 	public:
 		GraphicsDeviceDx12();
 		~GraphicsDeviceDx12();
@@ -94,6 +98,8 @@ namespace GE
 		void SetRenderTexture(const std::string& texName, int descIndex) override;
 		void SetDepthTexture(const std::string& layerName, int descIndex) override;
 		void DrawMesh(const std::string& meshName,int instanceCount = 1) override;
+
+		void SetCurrentRenderQueue(bool is3DRenderQueue = true)override;
 
 		void OnResizeWindow(const Math::Vector2& size) override;
 	};
