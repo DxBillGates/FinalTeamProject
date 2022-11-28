@@ -192,6 +192,24 @@ bool GE::Application::LoadContents()
 	mesh->Create(device, cmdList, modelDataBird1);
 	meshManager->Add(mesh, "Bird1");
 
+	MeshData<Vertex_UV_Normal> modelDataTree1;
+	MeshCreater::LoadObjModelData("Resources/Model/ki", modelDataTree1);
+	mesh = new Mesh();
+	mesh->Create(device, cmdList, modelDataTree1);
+	meshManager->Add(mesh, "Tree1");
+
+	MeshData<Vertex_UV_Normal> modelDataBird_Stay;
+	MeshCreater::LoadObjModelData("Resources/Model/bird_stay", modelDataBird_Stay);
+	mesh = new Mesh();
+	mesh->Create(device, cmdList, modelDataBird_Stay);
+	meshManager->Add(mesh, "Bird_Stay");
+
+	MeshData<Vertex_UV_Normal> modelDataGroundTest;
+	MeshCreater::LoadObjModelData("Resources/Model/groundTest", modelDataGroundTest);
+	mesh = new Mesh();
+	mesh->Create(device, cmdList, modelDataGroundTest);
+	meshManager->Add(mesh, "GroundTest");
+
 	meshManager->Add(FbxLoader::Load("Player", &graphicsDevice), "Player");
 
 	// texture load
