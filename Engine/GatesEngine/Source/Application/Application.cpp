@@ -210,7 +210,7 @@ bool GE::Application::LoadContents()
 	mesh->Create(device, cmdList, modelDataGroundTest);
 	meshManager->Add(mesh, "GroundTest");
 
-	meshManager->Add(FbxLoader::Load("Player", &graphicsDevice), "Player");
+	meshManager->Add(FbxLoader::Load("Bird", &graphicsDevice), "Player");
 
 	// texture load
 	auto* textureManager = graphicsDevice.GetTextureManager();

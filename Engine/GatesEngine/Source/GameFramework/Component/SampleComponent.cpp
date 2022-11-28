@@ -26,7 +26,7 @@ void GE::SampleComponent::Start()
 	inputDevice = InputDevice::GetInstance();
 	random = { RandomMaker::GetFloat(-1,1),RandomMaker::GetFloat(-1,1),RandomMaker::GetFloat(-1,1) };
 	speed = 1;
-	animator = SkinMeshManager::GetInstance()->Get("Player");
+	animator = SkinMeshManager::GetInstance()->Get("Bird");
 	animator.Initialize();
 }
 
