@@ -14,6 +14,7 @@
 #include "..\..\Header\GameFramework\GameObject\GameObject.h"
 #include "..\..\Header\GUI\GUIManager.h"
 #include "..\..\Header\GameFramework\GameSetting.h"
+#include "..\..\Header\Graphics\FbxLoader.h"
 
 GE::Application::Application()
 	: Application(Math::Vector2(1920,1080), Math::Vector2(1920, 1080))
@@ -59,6 +60,7 @@ GE::Application::~Application()
 {
 	delete mainCamera;
 
+	FbxLoader::Finalize();
 	GUIManager::Finalize();
 }
 
@@ -76,6 +78,8 @@ bool GE::Application::LoadContents()
 	auto* shaderResourceHeap = graphicsDevice.GetShaderResourceHeap();
 
 	auto* meshManager = graphicsDevice.GetMeshManager();
+	FbxLoader::Initialize();
+
 	Mesh* mesh;
 	// î¬É|Éäê∂ê¨
 	MeshData<Vertex_UV_Normal> meshDataPlane;
@@ -131,72 +135,64 @@ bool GE::Application::LoadContents()
 	mesh->Create(device, cmdList, meshDataLineAxis);
 	meshManager->Add(mesh, "LineAxis");
 
+	std::string resourcesFolder = "Resources/";
+	std::string modelFolder = "Model/";
+	std::string objModelFolder = "objModel/";
+	std::string fbxModelFolder = "fbxModel/";
+
+	std::string objModelPath = resourcesFolder + modelFolder + objModelFolder;
+	std::string fbxModelPath = resourcesFolder + modelFolder + fbxModelFolder;
+
 	// modelì«Ç›çûÇ›
 	MeshData<Vertex_UV_Normal> modelDataCube;
-	MeshCreater::LoadObjModelData("Resources/Model/cube", modelDataCube);
+	MeshCreater::LoadObjModelData(objModelPath + "cube", modelDataCube);
 	mesh = new Mesh();
 	mesh->Create(device, cmdList, modelDataCube);
 	meshManager->Add(mesh, "Cube");
 
 	MeshData<Vertex_UV_Normal> modelDataSphere;
-	MeshCreater::LoadObjModelData("Resources/Model/sphere", modelDataSphere);
+	MeshCreater::LoadObjModelData(objModelPath + "sphere", modelDataSphere);
 	mesh = new Mesh();
 	mesh->Create(device, cmdList, modelDataSphere);
 	meshManager->Add(mesh, "Sphere");
 
 	MeshData<Vertex_UV_Normal> modelDataPlatonic;
-	MeshCreater::LoadObjModelData("Resources/Model/platonic", modelDataPlatonic);
+	MeshCreater::LoadObjModelData(objModelPath + "platonic", modelDataPlatonic);
 	mesh = new Mesh();
 	mesh->Create(device, cmdList, modelDataPlatonic);
 	meshManager->Add(mesh, "Platonic");
 
 	MeshData<Vertex_UV_Normal> modelDataCorn;
-	MeshCreater::LoadObjModelData("Resources/Model/corn", modelDataCorn);
+	MeshCreater::LoadObjModelData(objModelPath + "corn", modelDataCorn);
 	mesh = new Mesh();
 	mesh->Create(device, cmdList, modelDataCorn);
 	meshManager->Add(mesh, "Corn");
 
 	MeshData<Vertex_UV_Normal> modelDataCylinder;
-	MeshCreater::LoadObjModelData("Resources/Model/cylinder", modelDataCylinder);
+	MeshCreater::LoadObjModelData(objModelPath + "cylinder", modelDataCylinder);
 	mesh = new Mesh();
 	mesh->Create(device, cmdList, modelDataCylinder);
 	meshManager->Add(mesh, "Cylinder");
 
 	MeshData<Vertex_UV_Normal> modelDataSkydome;
-	MeshCreater::LoadObjModelData("Resources/Model/skydome", modelDataSkydome);
+	MeshCreater::LoadObjModelData(objModelPath + "skydome", modelDataSkydome);
 	mesh = new Mesh();
 	mesh->Create(device, cmdList, modelDataSkydome);
 	meshManager->Add(mesh, "Skydome");
 
 	MeshData<Vertex_UV_Normal> modelDataTorus;
-	MeshCreater::LoadObjModelData("Resources/Model/torus", modelDataTorus);
+	MeshCreater::LoadObjModelData(objModelPath + "torus", modelDataTorus);
 	mesh = new Mesh();
 	mesh->Create(device, cmdList, modelDataTorus);
 	meshManager->Add(mesh, "Torus");
 	
 	MeshData<Vertex_UV_Normal> modelDataBird1;
-	MeshCreater::LoadObjModelData("Resources/Model/bird1", modelDataBird1);
+	MeshCreater::LoadObjModelData(objModelPath + "bird1", modelDataBird1);
 	mesh = new Mesh();
 	mesh->Create(device, cmdList, modelDataBird1);
 	meshManager->Add(mesh, "Bird1");
 
-	MeshData<Vertex_UV_Normal> modelDataTree1;
-	MeshCreater::LoadObjModelData("Resources/Model/ki", modelDataTree1);
-	mesh = new Mesh();
-	mesh->Create(device, cmdList, modelDataTree1);
-	meshManager->Add(mesh, "Tree1");
-	
-	MeshData<Vertex_UV_Normal> modelDataBird_Stay;
-	MeshCreater::LoadObjModelData("Resources/Model/bird_stay", modelDataBird_Stay);
-	mesh = new Mesh();
-	mesh->Create(device, cmdList, modelDataBird_Stay);
-	meshManager->Add(mesh, "Bird_Stay");
-	
-	MeshData<Vertex_UV_Normal> modelDataGroundTest;
-	MeshCreater::LoadObjModelData("Resources/Model/groundTest", modelDataGroundTest);
-	mesh = new Mesh();
-	mesh->Create(device, cmdList, modelDataGroundTest);
-	meshManager->Add(mesh, "GroundTest");
+	meshManager->Add(FbxLoader::Load("Player", &graphicsDevice), "Player");
 
 	// texture load
 	auto* textureManager = graphicsDevice.GetTextureManager();
@@ -204,11 +200,12 @@ bool GE::Application::LoadContents()
 	nullTexture->Load("texture_null.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "texture_null");
 
-
 	// shader compile
 	Shader defaultMeshVertexShader, defaultMeshPixelShader;
 	defaultMeshVertexShader.CompileShaderFileWithoutFormat(L"DefaultMeshVertexShader", "vs_5_0");
 	defaultMeshPixelShader.CompileShaderFileWithoutFormat(L"DefaultMeshPixelShader", "ps_5_0");
+	Shader defaultSkinMeshVertexShader;
+	defaultSkinMeshVertexShader.CompileShaderFileWithoutFormat(L"DefaultSkinMeshVertexShader", "vs_5_0");
 	Shader defaultLineVertexShader, defaultLinePixelShader;
 	defaultLineVertexShader.CompileShaderFileWithoutFormat(L"DefaultLineVertexShader", "vs_5_0");
 	defaultLinePixelShader.CompileShaderFileWithoutFormat(L"DefaultLinePixelShader", "ps_5_0");
@@ -246,6 +243,10 @@ bool GE::Application::LoadContents()
 	GraphicsPipeline* defaultMeshPipline = new GraphicsPipeline({ &defaultMeshVertexShader,nullptr,nullptr,nullptr,&defaultMeshPixelShader });
 	defaultMeshPipline->Create(device, { GraphicsPipelineInputLayout::POSITION,GraphicsPipelineInputLayout::UV ,GraphicsPipelineInputLayout::NORMAL }, defaultMeshRootSignature, pipelineInfo);
 	graphicsPipelineManager->Add(defaultMeshPipline, "DefaultMeshShader");
+	// skinMesh shader
+	GraphicsPipeline* defaultSkinMeshPipline = new GraphicsPipeline({ &defaultSkinMeshVertexShader,nullptr,nullptr,nullptr,&defaultMeshPixelShader });
+	defaultSkinMeshPipline->Create(device, { GraphicsPipelineInputLayout::POSITION,GraphicsPipelineInputLayout::UV ,GraphicsPipelineInputLayout::NORMAL,GraphicsPipelineInputLayout::BONEINDEX,GraphicsPipelineInputLayout::BONEWEIGHT }, defaultMeshRootSignature, pipelineInfo);
+	graphicsPipelineManager->Add(defaultSkinMeshPipline, "DefaultSkinMeshShader");
 	// line shader
 	pipelineInfo.topologyType = GraphicsPipelinePrimitiveTopolotyType::LINE;
 	GraphicsPipeline* dafaultLinePipeline = new GraphicsPipeline({ &defaultLineVertexShader,nullptr,nullptr,nullptr,&defaultLinePixelShader });
@@ -294,9 +295,9 @@ bool GE::Application::LoadContents()
 
 bool GE::Application::Initialize()
 {
-	mainCamera->Initialize();
 	sceneManager.Initialize();
 
+	mainCamera->Initialize();
 	GameSetting::Time::Initialize();
 	return true;
 }

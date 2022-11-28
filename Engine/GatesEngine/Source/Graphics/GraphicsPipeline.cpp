@@ -86,6 +86,16 @@ void GE::GraphicsPipeline::Create(ID3D12Device* device, const std::vector<Graphi
 				semantics = "COLOR";
 				format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 			}
+			else if (inputLayout == GraphicsPipelineInputLayout::BONEINDEX)
+			{
+				semantics = "BONEINDICES";
+				format = DXGI_FORMAT_R32G32B32A32_UINT;
+			}
+			else if (inputLayout == GraphicsPipelineInputLayout::BONEWEIGHT)
+			{
+				semantics = "BONEWEIGHTS";
+				format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+			}
 
 			inputDescs[i] = { semantics, 0,format, 0, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 };
 			++i;

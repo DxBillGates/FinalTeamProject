@@ -51,6 +51,8 @@ namespace GE
 		UV,
 		NORMAL,
 		COLOR,
+		BONEINDEX,
+		BONEWEIGHT,
 	};
 
 	struct ShaderStages

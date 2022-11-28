@@ -46,6 +46,7 @@
     <ClInclude Include="Header\Graphics\COMRelease.h" />
     <ClInclude Include="Header\Graphics\DepthStencil.h" />
     <ClInclude Include="Header\Graphics\DepthTexture.h" />
+    <ClInclude Include="Header\Graphics\FbxLoader.h" />
     <ClInclude Include="Header\Graphics\GraphicsDeviceDx12.h" />
     <ClInclude Include="Header\Graphics\GraphicsPipeline.h" />
     <ClInclude Include="Header\Graphics\GraphicsPipelineInfo.h" />
@@ -74,6 +75,8 @@
     <ClInclude Include="Header\Graphics\RootSignature.h" />
     <ClInclude Include="Header\Graphics\Shader.h" />
     <ClInclude Include="Header\Graphics\ShaderResourceHeap.h" />
+    <ClInclude Include="Header\Graphics\SkinMeshAnimator.h" />
+    <ClInclude Include="Header\Graphics\SkinMeshManager.h" />
     <ClInclude Include="Header\Graphics\Texture.h" />
     <ClInclude Include="Header\Graphics\VertexData.h" />
     <ClInclude Include="Header\Graphics\Window.h" />
@@ -126,6 +129,7 @@
     <ClCompile Include="Source\Graphics\Color.cpp" />
     <ClCompile Include="Source\Graphics\DepthStencil.cpp" />
     <ClCompile Include="Source\Graphics\DepthTexture.cpp" />
+    <ClCompile Include="Source\Graphics\FbxLoader.cpp" />
     <ClCompile Include="Source\Graphics\GraphicsDeviceDx12.cpp" />
     <ClCompile Include="Source\Graphics\GraphicsPipeline.cpp" />
     <ClCompile Include="Source\Graphics\Layer.cpp" />
@@ -137,6 +141,8 @@
     <ClCompile Include="Source\Graphics\RootSignature.cpp" />
     <ClCompile Include="Source\Graphics\Shader.cpp" />
     <ClCompile Include="Source\Graphics\ShaderResourceHeap.cpp" />
+    <ClCompile Include="Source\Graphics\SkinMeshAnimator.cpp" />
+    <ClCompile Include="Source\Graphics\SkinMeshManager.cpp" />
     <ClCompile Include="Source\Graphics\Texture.cpp" />
     <ClCompile Include="Source\Graphics\Window.cpp" />
     <ClCompile Include="Source\GUI\GUIManager.cpp" />
@@ -224,7 +230,8 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)Bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(ProjectDir)Bin\$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)External</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)External\;$(ProjectDir)External\FBX</IncludePath>
+    <LibraryPath>C:\Fbxsdk\lib</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
@@ -236,7 +243,8 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)Bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(ProjectDir)Bin\$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)External</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)External\;$(ProjectDir)External\FBX</IncludePath>
+    <LibraryPath>C:\Fbxsdk\lib</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -262,6 +270,11 @@
       </SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Lib>
+      <AdditionalDependencies>libfbxsdk-md.lib;libxml2-md.lib;zlib-md.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -304,6 +317,9 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Lib>
+      <AdditionalDependencies>libfbxsdk-mt.lib;libxml2-mt.lib;zlib-mt.lib;</AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>

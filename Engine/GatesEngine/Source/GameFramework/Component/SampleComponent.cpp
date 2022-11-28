@@ -26,43 +26,38 @@ void GE::SampleComponent::Start()
 	inputDevice = InputDevice::GetInstance();
 	random = { RandomMaker::GetFloat(-1,1),RandomMaker::GetFloat(-1,1),RandomMaker::GetFloat(-1,1) };
 	speed = 1;
+	animator = SkinMeshManager::GetInstance()->Get("Player");
+	animator.Initialize();
 }
 
 void GE::SampleComponent::Update(float deltaTime)
 {
-	//const Math::Axis& axis = transform->GetMatrix().GetAxis();
-	//if (inputDevice->GetKeyboard()->CheckHitKey(Keys::SPACE))
-	//{
-	//	transform->position += axis.y;
-	//}
+	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::D1))
+	{
+		animator.PlayAnimation(0);
+	}
+	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::D2))
+	{
+		animator.PlayAnimation(1);
+	}
+	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::D3))
+	{
+		animator.PlayAnimation(2);
+	}
+	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::D4))
+	{
+		animator.PlayAnimation(3);
+	}
+	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::D5))
+	{
+		animator.PlayAnimation(4);
+	}
+	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::D6))
+	{
+		animator.PlayAnimation(5);
+	}
 
-	//if (inputDevice->GetKeyboard()->CheckPressTrigger(Keys::SPACE))
-	//{
-	//	Utility::Printf("SampleComponent Update() : press space key\n");
-	//}
-
-	//if (inputDevice->GetMouse()->GetCheckPressTrigger(MouseButtons::LEFT_CLICK))
-	//{
-	//	Utility::Printf("SampleComponent Update() : press left click\n");
-	//}
-
-	//if (inputDevice->GetXCtrler()->CheckHitButtonTrigger(XInputControllerButton::XINPUT_B))
-	//{
-	//	Utility::Printf("SampleComponent Update() : press b button\n");
-	//}
-
-	Joycon* joycon = inputDevice->GetJoyconL();
-	if (joycon == nullptr)return;
-	Vector3Int16 gyroData = joycon->GetGyroscope();
-	gyro = { (float)gyroData.y,(float)-gyroData.z,(float)-gyroData.x };
-
-	//transform->rotation *= Math::Quaternion(gyro.Normalize(), Math::ConvertToRadian(gyro.Length() * 1.f / 60.f));
-	////transform->rotation = Math::Quaternion::Euler(Math::Vector3(45, 0, 0));
-
-
-	
-
-	//auto object = manager->FindGameObject("test2");
+	animator.Update(deltaTime);
 }
 
 void GE::SampleComponent::Draw()
@@ -71,16 +66,18 @@ void GE::SampleComponent::Draw()
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
 	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
 
-	graphicsDevice->SetShader("DefaultMeshShader");
+	graphicsDevice->SetShader("DefaultSkinMeshShader");
 
 	transform->scale = DRAW_SIZE;
 	Math::Matrix4x4 modelMatrix = transform->GetMatrix();
 	Material material;
 	material.color = Color::White();
 
-	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
+	animator.SetAnimationData(graphicsDevice, modelMatrix);
+
+	//renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(Material)) });
-	graphicsDevice->DrawMesh("Plane");
+	graphicsDevice->DrawMesh("Player");
 }
 
 void GE::SampleComponent::LateDraw()

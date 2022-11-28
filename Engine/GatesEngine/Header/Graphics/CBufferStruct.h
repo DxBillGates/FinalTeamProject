@@ -10,6 +10,13 @@ namespace GE
 		Math::Matrix4x4 modelMatrix = Math::Matrix4x4::Identity();
 	};
 
+	static const int MAX_BONES = 32;
+	struct ModelSkinMeshInfo
+	{
+		Math::Matrix4x4 modelMatrix = Math::Matrix4x4::Identity();
+		Math::Matrix4x4 bones[MAX_BONES];
+	};
+
 	struct CameraInfo
 	{
 		Math::Matrix4x4 viewMatrix;

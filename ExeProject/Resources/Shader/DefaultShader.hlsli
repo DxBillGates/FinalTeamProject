@@ -5,6 +5,15 @@ struct DefaultMeshVSInput
 	float3 normal : NORMAL;
 };
 
+struct DefaultSkinMeshVSInput
+{
+	float4 pos : POSITION;
+	float2 uv : UV;
+	float3 normal : NORMAL;
+	uint4 boneIndices : BONEINDICES;
+	float4 boneWeights : BONEWEIGHTS;
+};
+
 struct DefaultMeshVSOutput
 {
 	float4 svpos : SV_POSITION;
@@ -38,9 +47,11 @@ struct DefaultLineVSOutput
 	float4 color : COLOR;
 };
 
+static const int MAX_BONE = 32;
 cbuffer ModelInfo : register(b0)
 {
 	matrix modelMatrix;
+	matrix matSkinning[MAX_BONE];
 }
 
 cbuffer CameraInfo : register(b1)

@@ -1,6 +1,7 @@
 #pragma once
 #include "Component.h"
 #include "..\..\Input\InputDevice.h"
+#include "..\..\Graphics\SkinMeshAnimator.h"
 
 namespace GE
 {
@@ -11,6 +12,7 @@ namespace GE
 		Math::Vector3 random;
 		float speed;
 		Math::Vector3 gyro;
+		SkinMeshAnimator animator;
 	public:
 		SampleComponent();
 		~SampleComponent();
