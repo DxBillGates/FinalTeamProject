@@ -98,7 +98,7 @@ bool GE::Application::LoadContents()
 
 	// ÉOÉäÉbÉhê∂ê¨
 	MeshData<Vertex_Color> meshDataGrid;
-	MeshCreater::CreateGrid(meshDataGrid,100.0,100000);
+	MeshCreater::CreateGrid(meshDataGrid, 100.0, 100000);
 	mesh = new Mesh();
 	mesh->Create(device, cmdList, meshDataGrid);
 	meshManager->Add(mesh, "Grid");
@@ -173,7 +173,7 @@ bool GE::Application::LoadContents()
 	mesh = new Mesh();
 	mesh->Create(device, cmdList, modelDataTorus);
 	meshManager->Add(mesh, "Torus");
-	
+
 	MeshData<Vertex_UV_Normal> modelDataBird1;
 	MeshCreater::LoadObjModelData("Resources/Model/bird1", modelDataBird1);
 	mesh = new Mesh();
@@ -185,7 +185,7 @@ bool GE::Application::LoadContents()
 	mesh = new Mesh();
 	mesh->Create(device, cmdList, modelDataTree1);
 	meshManager->Add(mesh, "Tree1");
-	
+
 	MeshData<Vertex_UV_Normal> modelDataBird_Stay;
 	MeshCreater::LoadObjModelData("Resources/Model/bird_stay", modelDataBird_Stay);
 	mesh = new Mesh();
@@ -212,7 +212,8 @@ bool GE::Application::LoadContents()
 	defaultSpritePixelShader.CompileShaderFileWithoutFormat(L"DefaultSpritePixelShader", "ps_5_0");
 	Shader gaussBlurPixelShader;
 	gaussBlurPixelShader.CompileShaderFileWithoutFormat(L"GaussBlurPixelShader", "ps_5_0");
-	Shader defaultSpriteWithTexturePixelShader;
+	Shader defaultSpriteWithTextureVertexShader, defaultSpriteWithTexturePixelShader;
+	defaultSpriteWithTextureVertexShader.CompileShaderFileWithoutFormat(L"DefaultSpriteWithTextureVertexShader", "vs_5_0");
 	defaultSpriteWithTexturePixelShader.CompileShaderFileWithoutFormat(L"DefaultSpriteWithTexturePixelShader", "ps_5_0");
 
 	// rootSignatureçÏê¨
@@ -258,8 +259,8 @@ bool GE::Application::LoadContents()
 	// default sprite with texture shader
 	pipelineInfo.topologyType = GraphicsPipelinePrimitiveTopolotyType::TRIANGLE;
 	pipelineInfo.isUseDepthClip = false;
-	GraphicsPipeline* dafaultSpriteWithTexturePipeline = new GraphicsPipeline({ &defaultSpriteVertexShader,nullptr,nullptr,nullptr,&defaultSpriteWithTexturePixelShader });
-	dafaultSpriteWithTexturePipeline->Create(device, { GraphicsPipelineInputLayout::POSITION,GraphicsPipelineInputLayout::UV }, defaultMeshWithOneSrvRootSignature, pipelineInfo);
+	GraphicsPipeline* dafaultSpriteWithTexturePipeline = new GraphicsPipeline({ &defaultSpriteWithTextureVertexShader,nullptr,nullptr,nullptr,&defaultSpriteWithTexturePixelShader });
+	dafaultSpriteWithTexturePipeline->Create(device, { GraphicsPipelineInputLayout::POSITION,GraphicsPipelineInputLayout::UV }, cbv5srv1RootSignature, pipelineInfo);
 	graphicsPipelineManager->Add(dafaultSpriteWithTexturePipeline, "DefaultSpriteWithTextureShader");
 	// gauss blur shader
 	GraphicsPipeline* gaussBlurPipeline = new GraphicsPipeline({ &defaultSpriteVertexShader,nullptr,nullptr,nullptr,&gaussBlurPixelShader });
