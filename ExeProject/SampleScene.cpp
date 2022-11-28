@@ -2,6 +2,8 @@
 #include "PlayerComponent.h"
 #include"EnemyManager.h"
 #include"TestTreeComponent.h"
+#include"Title.h"
+
 #include <GatesEngine/Header\GameFramework\Component\SampleComponent.h>
 #include <GatesEngine/Header\GameFramework\Component\SphereCollider.h>
 #include <GatesEngine/Header\GameFramework\Component\BoxCollider.h>
@@ -32,6 +34,11 @@ SampleScene::SampleScene(const std::string& sceneName)
 		//lockOnCollider->SetCenter({ 0,0,0 });
 		//lockOnCollider->SetSize(200);
 		//lockOnCollider->DrawEnabled(false);
+
+				//ƒ^ƒCƒgƒ‹Œn
+		{
+			Title::GetInstance()->Start(&gameObjectManager, testObject);
+		}
 	}
 
 	{
@@ -61,7 +68,8 @@ void SampleScene::Update(float deltaTime)
 {
 	gameObjectManager.Update(deltaTime);
 	collisionManager.Update();
-	
+	Title::GetInstance()->Update();
+
 }
 
 void SampleScene::Draw()
