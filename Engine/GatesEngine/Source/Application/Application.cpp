@@ -313,9 +313,9 @@ bool GE::Application::LoadContents()
 
 bool GE::Application::Initialize()
 {
+	mainCamera->Initialize();
 	sceneManager.Initialize();
 
-	mainCamera->Initialize();
 	GameSetting::Time::Initialize();
 	return true;
 }

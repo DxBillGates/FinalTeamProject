@@ -56,7 +56,6 @@ void GE::SampleComponent::Update(float deltaTime)
 	{
 		animator.PlayAnimation(5);
 	}
-
 	animator.Update(deltaTime);
 }
 
