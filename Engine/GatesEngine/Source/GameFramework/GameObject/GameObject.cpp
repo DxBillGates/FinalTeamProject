@@ -71,6 +71,8 @@ void GE::GameObject::Update(float deltaTime)
 
 void GE::GameObject::Draw()
 {
+	graphicsDevice->SetCurrentRenderQueue();
+
 	for (auto& component : components)
 	{
 		component->Draw();
@@ -96,6 +98,8 @@ void GE::GameObject::Draw()
 
 void GE::GameObject::LateDraw()
 {
+	graphicsDevice->SetCurrentRenderQueue(false);
+
 	for (auto& component : components)
 	{
 		component->LateDraw();

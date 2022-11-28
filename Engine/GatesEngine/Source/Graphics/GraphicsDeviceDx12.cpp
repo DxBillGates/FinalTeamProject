@@ -96,6 +96,13 @@ void GE::GraphicsDeviceDx12::CreateFence()
 	result = device->CreateFence(fenceValue, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence));
 }
 
+void GE::GraphicsDeviceDx12::IsSetRenderQueue()
+{
+	if (currentRenderQueue)return;
+
+	currentRenderQueue = &renderQueue;
+}
+
 GE::GraphicsDeviceDx12::GraphicsDeviceDx12()
 	: viewPort(D3D12_VIEWPORT())
 	, rect(D3D12_RECT())
@@ -117,6 +124,8 @@ GE::GraphicsDeviceDx12::GraphicsDeviceDx12()
 	, meshManager(Manager<IMesh>())
 	, textureManager(Manager<ITexture>())
 	, renderQueue(RenderQueue())
+	, renderQueue2D(RenderQueue())
+	, currentRenderQueue(nullptr)
 	, mainCamera(nullptr)
 {
 }
@@ -211,22 +220,26 @@ void GE::GraphicsDeviceDx12::ClearLayer(const std::string& name)
 
 void GE::GraphicsDeviceDx12::SetDefaultRenderTarget()
 {
-	renderQueue.SetLayer(&renderTarget,&depthStencil );
+	IsSetRenderQueue();
+	currentRenderQueue->SetLayer(&renderTarget,&depthStencil );
 }
 
 void GE::GraphicsDeviceDx12::SetDefaultRenderTargetWithoutDSV()
 {
-	renderQueue.SetLayer(&renderTarget,nullptr);
+	IsSetRenderQueue();
+	currentRenderQueue->SetLayer(&renderTarget,nullptr);
 }
 
 void GE::GraphicsDeviceDx12::SetRenderTarget(IRenderTarget* renderTarget, IDepthStencil* depthStencil)
 {
-	renderQueue.SetLayer(renderTarget, depthStencil);
+	IsSetRenderQueue();
+	currentRenderQueue->SetLayer(renderTarget, depthStencil);
 }
 
 void GE::GraphicsDeviceDx12::SetRenderTargetWithoutDSV(IRenderTarget* renderTarget)
 {
-	renderQueue.SetLayer(renderTarget,nullptr);
+	IsSetRenderQueue();
+	currentRenderQueue->SetLayer(renderTarget,nullptr);
 }
 
 void GE::GraphicsDeviceDx12::SetLayer(const std::string& name)
@@ -236,7 +249,8 @@ void GE::GraphicsDeviceDx12::SetLayer(const std::string& name)
 
 	if (!layerRenderTarget)return;
 
-	renderQueue.SetLayer(layerRenderTarget,layerDepthStencil);
+	IsSetRenderQueue();
+	currentRenderQueue->SetLayer(layerRenderTarget,layerDepthStencil);
 
 	if (!layerDepthStencil)
 	{
@@ -329,7 +343,8 @@ GE::Manager<GE::ILayer>* GE::GraphicsDeviceDx12::GetLayerManager()
 
 GE::RenderQueue* GE::GraphicsDeviceDx12::GetRenderQueue()
 {
-	return &renderQueue;
+	IsSetRenderQueue();
+	return currentRenderQueue;
 }
 
 GE::Camera* GE::GraphicsDeviceDx12::GetMainCamera()
@@ -345,6 +360,7 @@ GE::Math::Vector2 GE::GraphicsDeviceDx12::GetViewportSize()
 void GE::GraphicsDeviceDx12::ExecuteRenderQueue()
 {
 	renderQueue.Execute(cmdList,&shaderResourceHeap);
+	renderQueue2D.Execute(cmdList, &shaderResourceHeap);
 }
 
 void GE::GraphicsDeviceDx12::ExecuteCommands()
@@ -372,30 +388,40 @@ void GE::GraphicsDeviceDx12::ExecuteCommands()
 void GE::GraphicsDeviceDx12::SetShader(const std::string& shaderName, bool isWireframe)
 {
 	IGraphicsPipeline* usePipeline = graphicsPipelineManager.Get(shaderName);
-	renderQueue.SetPipeline(usePipeline,isWireframe);
+	IsSetRenderQueue();
+	currentRenderQueue->SetPipeline(usePipeline,isWireframe);
 }
 
 void GE::GraphicsDeviceDx12::SetTexture(const std::string& texName, int descIndex)
 {
-	renderQueue.AddSetShaderResource({ descIndex,textureManager.Get(texName)->GetSRVNumber() });
+	IsSetRenderQueue();
+	currentRenderQueue->AddSetShaderResource({ descIndex,textureManager.Get(texName)->GetSRVNumber() });
 }
 
 void GE::GraphicsDeviceDx12::SetRenderTexture(const std::string& texName, int descIndex)
 {
 	IRenderTexture* renderTexture = layerManager.Get(texName)->GetRenderTexture();
-	renderQueue.AddSetShaderResource({ descIndex,renderTexture->GetSRVNumber() });
+	IsSetRenderQueue();
+	currentRenderQueue->AddSetShaderResource({ descIndex,renderTexture->GetSRVNumber() });
 }
 
 void GE::GraphicsDeviceDx12::SetDepthTexture(const std::string& layerName, int descIndex)
 {
 	IDepthTexture* depthTexture = layerManager.Get(layerName)->GetDepthTexture();
-	renderQueue.AddSetShaderResource({ descIndex,depthTexture->GetSRVNumber() });
+	IsSetRenderQueue();
+	currentRenderQueue->AddSetShaderResource({ descIndex,depthTexture->GetSRVNumber() });
 }
 
 void GE::GraphicsDeviceDx12::DrawMesh(const std::string& meshName, int instanceCount)
 {
-	renderQueue.SetMesh(meshManager.Get(meshName));
-	renderQueue.AddCommand();
+	IsSetRenderQueue();
+	currentRenderQueue->SetMesh(meshManager.Get(meshName));
+	currentRenderQueue->AddCommand();
+}
+
+void GE::GraphicsDeviceDx12::SetCurrentRenderQueue(bool is3DRenderQueue)
+{
+	currentRenderQueue = is3DRenderQueue ? &renderQueue : &renderQueue2D;
 }
 
 void GE::GraphicsDeviceDx12::OnResizeWindow(const Math::Vector2& size)
