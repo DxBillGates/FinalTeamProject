@@ -21,6 +21,9 @@ void TimeLimit::Draw()
 {
 	//// 描画するためのGraphicsDeviceを取得しとくように！
 	
+	//// レンダーキューを2d用に切り替える
+	//graphicsDevice.SetCurrentRenderQueue(false);
+
 	//// テクスチャ描画用のシェーダーをセット
 	//graphicsDevice.SetShader("DefaultSpriteWithTextureShader");
 	
