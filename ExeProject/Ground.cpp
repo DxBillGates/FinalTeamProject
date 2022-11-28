@@ -21,14 +21,15 @@ void Ground::Start()
 	GE::Utility::Printf("Ground Start()\n");
 
 	gameObject->SetColor(GE::Color(0.5f, 0.9f, 0.5f, 1.0f));
-	position = { -5000,0,18000 };
+	position = { 1000,0,-15000 };
 	transform->position = position;
-	transform->scale = { 20000,20000,20000 };
+	transform->scale = { 25000,25000,25000 };
+	transform->rotation = GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), -5.0f);
 
 }
-
 void Ground::Update(float deltaTime)
 {
+
 }
 
 void Ground::Draw()

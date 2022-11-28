@@ -29,8 +29,7 @@ void TestTreeComponent::Start()
 
 void TestTreeComponent::Update(float deltaTime)
 {
-	//‰ñ“]ˆ—
-	transform->rotation = {};
+
 }
 
 void TestTreeComponent::Draw()
