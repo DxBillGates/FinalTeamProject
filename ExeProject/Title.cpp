@@ -23,9 +23,17 @@ void Title::Start(GE::GameObjectManager* gameObjectManager, GE::GameObject* t)
 	
 	//テクスチャたちの生成、初期設定
 	Create("title_name", "texture_title", gameObjectManager, t);
+	sprites.back()->GetTransform()->position = { 1000.0f,220.0f,0.0f };
+	sprites.back()->GetTransform()->scale = { 500,500,0 };
 	Create("title_stage1", "texture_stage1", gameObjectManager, t);
+	sprites.back()->GetTransform()->position = { 1170.0f,400.0f,0.0f };
+	sprites.back()->GetTransform()->scale = { 300,300,0 };
 	Create("title_option", "texture_option", gameObjectManager, t);
+	sprites.back()->GetTransform()->position = { 1170.0f,500,0.0f };
+	sprites.back()->GetTransform()->scale = { 300,300,0 };
 	Create("title_exit", "texture_exit", gameObjectManager, t);
+	sprites.back()->GetTransform()->position = { 1170.0f,600,0.0f };
+	sprites.back()->GetTransform()->scale = { 300,300,0 };
 }
 
 void Title::Create(std::string gui_tag, std::string tex_tag, GE::GameObjectManager* gameObjectManager, GE::GameObject* t)
@@ -37,16 +45,15 @@ void Title::Create(std::string gui_tag, std::string tex_tag, GE::GameObjectManag
 	titleComponent->tag = tex_tag;
 	sprites.push_back(titleObject);
 	//位置調整など
-	titleComponent->position = { 1170.0f,180.0f + 64 * sprites.size(),0.0f };
-	titleComponent->scale = { 300,300,0 };
+	//titleComponent->position = { 1170.0f,180.0f + 64 * sprites.size(),0.0f };
+	//titleComponent->scale = { 300,300,0 };
 }
 
 
 void Title::Update()
 {
 	//タイトル状態なら、選択可能
-	if (targetObject->GetComponent<PlayerComponent>()->statas
-		== PlayerComponent::PlayerStatas::STAY_LAND)
+	if (!decided)
 	{
 		Serect();
 	}
@@ -108,6 +115,7 @@ void Title::Serect()
 		default:
 			break;
 		}
+		decided = true;
 	}
 }
 
@@ -118,8 +126,8 @@ void TitleTex::Awake()
 
 void TitleTex::Start()
 {
-	transform->position = position;
-	transform->scale = scale;
+	//transform->position = position;
+	//transform->scale = scale;
 }
 
 void TitleTex::Update(float deltaTime)
@@ -130,8 +138,7 @@ void TitleTex::Update(float deltaTime)
 
 void TitleTex::LateDraw()
 {
-	if (targetObject->GetComponent<PlayerComponent>()->statas
-		!= PlayerComponent::PlayerStatas::STAY_LAND)
+	if (Title::GetInstance()->GetDecid())
 	{
 		return;
 	}

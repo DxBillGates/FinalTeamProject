@@ -3,7 +3,6 @@
 #include <GatesEngine/Header/Input/InputDevice.h>
 #include <GatesEngine/Header/GameFramework/GameObject/GameObjectManager.h> 
 #include <GatesEngine/Header/GameFramework/GameObject/GameObject.h> 
-#include<GatesEngine/Header/Graphics/Texture.h>
 
 //タイトル用テクスチャクラス
 class TitleTex :public GE::Component
@@ -11,8 +10,8 @@ class TitleTex :public GE::Component
 private:
 	GE::GameObject* targetObject = nullptr;
 public:
-	GE::Math::Vector3 position;
-	GE::Math::Vector3 scale;
+	//GE::Math::Vector3 position;
+	//GE::Math::Vector3 scale;
 	std::string tag;
 public:
 	void Awake();
@@ -33,6 +32,8 @@ private:
 	GE::InputDevice* inputDevice;
 
 	std::vector<GE::GameObject*> sprites;
+
+	bool decided = false;
 public:
 	//選択項目
 	enum States
@@ -70,5 +71,7 @@ public:
 	//初期設定
 	void Start(GE::GameObjectManager* gameObjectManager, GE::GameObject* t);
 	void Update();
+
+	bool GetDecid() { return decided; }
 };
 
