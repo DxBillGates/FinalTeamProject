@@ -89,7 +89,7 @@ void Title::Serect()
 	}
 
 	//Œˆ’è
-	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::RETURN))
+	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE))
 	{
 		switch (states)
 		{
