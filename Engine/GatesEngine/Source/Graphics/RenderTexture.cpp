@@ -22,6 +22,7 @@ void GE::RenderTexture::Create(ID3D12Device* device, IShaderResourceHeap* shader
 {
 	this->device = device;
 	size = setSize;
+	color = setColor;
 
 	D3D12_HEAP_PROPERTIES heapProp = {};
 	heapProp.Type = D3D12_HEAP_TYPE_DEFAULT;

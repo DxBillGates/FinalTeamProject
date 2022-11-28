@@ -134,6 +134,9 @@
     <FxCompile Include="Resources\Shader\DefaultSpriteWithTextureVertexShader.hlsl">
       <Filter>シェーダー ファイル</Filter>
     </FxCompile>
+    <FxCompile Include="Resources\Shader\SpriteTextureForPostEffectPixelShader.hlsl">
+      <Filter>シェーダー ファイル</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ExeProject.rc" />

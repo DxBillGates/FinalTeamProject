@@ -154,9 +154,20 @@ void TitleTex::LateDraw()
 	cameraInfo.viewMatrix = GE::Math::Matrix4x4::GetViewMatrixLookTo({ 0,1,0 }, { 0,0,1 }, { 0,1,0 });
 	cameraInfo.projMatrix = GE::Math::Matrix4x4::GetOrthographMatrix(GE::Window::GetWindowSize());
 
+	// アニメーションの情報
+	GE::TextureAnimationInfo textureAnimationInfo;
+	// 画像の元サイズ
+	textureAnimationInfo.textureSize = 1;
+	// 元画像のサイズからどうやって切り抜くか　例) 元サイズが100*100で半分だけ表示したいなら{50,100}にする
+	// textureSizeと一緒にすると切り抜かれずに描画される
+	textureAnimationInfo.clipSize = 1;
+	// 切り抜く際の左上座標 例) {0,0}なら元画像の左上 texture->GetSize()なら右下になる
+	textureAnimationInfo.pivot = {0,0};
+
 	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
 	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
-	renderQueue->AddSetShaderResource({ 4,graphicsDevice->GetTextureManager()->Get(tag)->GetSRVNumber() });
+	renderQueue->AddSetConstantBufferInfo({ 4,cbufferAllocater->BindAndAttachData(4, &textureAnimationInfo,sizeof(GE::TextureAnimationInfo)) });
+	renderQueue->AddSetShaderResource({ 5,graphicsDevice->GetTextureManager()->Get(tag)->GetSRVNumber() });
 	graphicsDevice->DrawMesh("2DPlane");
 }

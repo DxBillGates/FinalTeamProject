@@ -102,7 +102,7 @@ bool Game::Draw()
 	graphicsDevice.SetCurrentRenderQueue(true);
 	graphicsDevice.SetShaderResourceDescriptorHeap();
 	graphicsDevice.SetDefaultRenderTarget();
-	graphicsDevice.SetShader("DefaultSpriteWithTextureShader");
+	graphicsDevice.SetShader("SpriteTextureForPosteffectShader");
 	auto windowSize = GE::Window::GetWindowSize();
 	GE::Math::Matrix4x4 modelMatrix = GE::Math::Matrix4x4::Scale({ windowSize.x,windowSize.y,0 });
 	windowSize.x /= 2;

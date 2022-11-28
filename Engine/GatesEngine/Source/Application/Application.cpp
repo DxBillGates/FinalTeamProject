@@ -231,6 +231,8 @@ bool GE::Application::LoadContents()
 	Shader defaultSpriteWithTextureVertexShader, defaultSpriteWithTexturePixelShader;
 	defaultSpriteWithTextureVertexShader.CompileShaderFileWithoutFormat(L"DefaultSpriteWithTextureVertexShader", "vs_5_0");
 	defaultSpriteWithTexturePixelShader.CompileShaderFileWithoutFormat(L"DefaultSpriteWithTexturePixelShader", "ps_5_0");
+	Shader spriteTextureForPosteffectPixelShader;
+	spriteTextureForPosteffectPixelShader.CompileShaderFileWithoutFormat(L"SpriteTextureForPosteffectPixelShader", "ps_5_0");
 
 	// rootSignatureì¬
 	auto* rootSignatureManager = graphicsDevice.GetRootSignatureManager();
@@ -278,6 +280,9 @@ bool GE::Application::LoadContents()
 	GraphicsPipeline* dafaultSpriteWithTexturePipeline = new GraphicsPipeline({ &defaultSpriteWithTextureVertexShader,nullptr,nullptr,nullptr,&defaultSpriteWithTexturePixelShader });
 	dafaultSpriteWithTexturePipeline->Create(device, { GraphicsPipelineInputLayout::POSITION,GraphicsPipelineInputLayout::UV }, cbv5srv1RootSignature, pipelineInfo);
 	graphicsPipelineManager->Add(dafaultSpriteWithTexturePipeline, "DefaultSpriteWithTextureShader");
+	GraphicsPipeline* spriteTextureForPosteffectPipiline = new GraphicsPipeline({ &defaultSpriteWithTextureVertexShader,nullptr,nullptr,nullptr,&spriteTextureForPosteffectPixelShader });
+	spriteTextureForPosteffectPipiline->Create(device, { GraphicsPipelineInputLayout::POSITION,GraphicsPipelineInputLayout::UV }, cbv5srv1RootSignature, pipelineInfo);
+	graphicsPipelineManager->Add(spriteTextureForPosteffectPipiline, "SpriteTextureForPosteffectShader");
 	// gauss blur shader
 	GraphicsPipeline* gaussBlurPipeline = new GraphicsPipeline({ &defaultSpriteVertexShader,nullptr,nullptr,nullptr,&gaussBlurPixelShader });
 	gaussBlurPipeline->Create(device, { GraphicsPipelineInputLayout::POSITION,GraphicsPipelineInputLayout::UV }, cbv5srv1RootSignature, pipelineInfo);
@@ -288,13 +293,13 @@ bool GE::Application::LoadContents()
 
 	RenderTexture* demoRenderTexture = new RenderTexture();
 	DepthTexture* demoDepthTexture = new DepthTexture();
-	demoRenderTexture->Create(device,shaderResourceHeap, mainWindow.GetWindowSize(), Color::Black());
+	demoRenderTexture->Create(device,shaderResourceHeap, mainWindow.GetWindowSize(), Color::Blue());
 	demoDepthTexture->Create(device, shaderResourceHeap, mainWindow.GetWindowSize());
 	layerManager->Add(new Layer(demoRenderTexture,demoDepthTexture),"demoLayer");
 
 	RenderTexture* resultRenderTexture = new RenderTexture();
 	DepthTexture* resultDepthTexture = new DepthTexture();
-	resultRenderTexture->Create(device, shaderResourceHeap, mainWindow.GetWindowSize(), Color::Black());
+	resultRenderTexture->Create(device, shaderResourceHeap, mainWindow.GetWindowSize(), Color::Blue());
 	resultDepthTexture->Create(device, shaderResourceHeap, mainWindow.GetWindowSize());
 	layerManager->Add(new Layer(resultRenderTexture, resultDepthTexture), "resultLayer");
 
