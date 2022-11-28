@@ -174,7 +174,7 @@
     <ClCompile Include="PlayerComponent.cpp" />
     <ClCompile Include="SampleScene.cpp" />
     <ClCompile Include="TestTreeComponent.cpp" />
-    <ClCompile Include="TimeLimid.cpp" />
+    <ClCompile Include="TimeLimit.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BirdEnemy.h" />
@@ -188,7 +188,7 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="SampleScene.h" />
     <ClInclude Include="TestTreeComponent.h" />
-    <ClInclude Include="TimeLimid.h" />
+    <ClInclude Include="TimeLimit.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shader\DefaultShader.hlsli" />
