@@ -36,28 +36,30 @@ void PlayerComponent::Start()
 	GE::Utility::Printf("PlayerComponent Start()\n");
 	inputDevice = GE::InputDevice::GetInstance();
 	transform->position = TestTreeComponent::position;
-	transform->scale = { 50,50,50 };
+	transform->scale = { 10,10,10 };
 
 	body_direction = { 0,0,0 };
 	dashEasingCount = 0.0;
 	statas = PlayerStatas::STAY_LAND;
 
 	hitStopCount = hitStopTime;
-
 	//姿勢遷移
 	body_direction_LerpCount = body_direction_LerpTime;
-
 	//レティクルの位置
 	center = GE::Window::GetWindowSize() / 2.0 + GE::Math::Vector2(0, -100);
-
+	//レイキャストのスプライトを描画するか
 	is_rayCast_active = false;
 
 	startCouunt = 0.0f;
 
 	CameraControl::GetInstance()->SetGraphicsDevice(graphicsDevice);
 	CameraControl::GetInstance()->Initialize();
-
 	InputManager::GetInstance()->Initialize();
+
+	animator = GE::SkinMeshManager::GetInstance()->Get("Bird");
+	animator.Initialize();
+	animator.PlayAnimation(3, false);
+
 }
 void PlayerComponent::Update(float deltaTime)
 {
@@ -90,6 +92,8 @@ void PlayerComponent::Update(float deltaTime)
 	{
 		statas != PlayerStatas::STOP_DEBUG ? statas = PlayerStatas::STOP_DEBUG : statas = PlayerStatas::MOVE;
 	}
+	animator.Update(deltaTime);
+
 }
 
 void PlayerComponent::Draw()
@@ -97,23 +101,19 @@ void PlayerComponent::Draw()
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
 	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
 
-	graphicsDevice->SetShader("DefaultMeshShader");
+	graphicsDevice->SetShader("DefaultSkinMeshShader");
 
 	GE::Math::Matrix4x4 modelMatrix = transform->GetMatrix();
 	GE::Material material;
 	material.color = GE::Color::White();
 
-	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
+	animator.SetAnimationData(graphicsDevice, modelMatrix);
+
+	//renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
-	//アルファまでの一時的なやつ
-	if (statas == PlayerStatas::STAY_LAND)
-	{
-		graphicsDevice->DrawMesh("Bird_Stay");
-	}
-	else
-	{
-		graphicsDevice->DrawMesh("Bird1");
-	}
+
+	graphicsDevice->DrawMesh("Player");
+
 }
 
 void PlayerComponent::LateDraw()
@@ -220,7 +220,10 @@ void PlayerComponent::Control(float deltaTime)
 	case PlayerComponent::PlayerStatas::MOVE:
 		transform->position += transform->GetForward() * current_speed * deltaTime * GE::GameSetting::Time::GetGameTime() - gravity;
 		//Key押したらPlayerState::DASHに変わる
-		if (InputManager::GetInstance()->GetActionButton()) { statas = PlayerStatas::DASH; }
+		if (InputManager::GetInstance()->GetActionButton())
+		{
+			statas = PlayerStatas::DASH;
+		}
 		//ダッシュ後体の角度の遷移
 		if (body_direction_LerpCount < body_direction_LerpTime)
 		{
@@ -263,17 +266,27 @@ void PlayerComponent::Control(float deltaTime)
 	case PlayerComponent::PlayerStatas::STAY_LAND:
 		if (startCouunt == 0.0f)
 		{
+
 			if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE))
 			{
 				startCouunt++;
+				//MoveFromStop
+				animator.PlayAnimation(2, false);
 			}
 		}
 		else if (startCouunt < pushStartTime)
 		{
-			transform->rotation = GE::Math::Quaternion(GE::Math::Vector3(1, 0, 0), GE::Math::Lerp(0.0f, 1.50f, startCouunt / pushStartTime));
+			//木から降りる動きを書くところ
+
+			//木から降りる動きを書くところ
 			startCouunt++;
 		}
-		else { statas = PlayerStatas::MOVE; }
+		else
+		{
+			statas = PlayerStatas::MOVE;
+			//Flapping
+			animator.PlayAnimation(0);
+		}
 		break;
 	default:
 		break;
@@ -391,6 +404,9 @@ void PlayerComponent::LockOn()
 
 void PlayerComponent::Dash(float dash_speed, float dash_time, float deltaTime, GE::Math::Vector3 direction, bool loop)
 {
+	//FlyAnimation
+	if (dashEasingCount == 0.0f) { animator.PlayAnimation(1); }
+
 	if (loop)
 	{
 		current_speed = dash_speed;
@@ -403,7 +419,7 @@ void PlayerComponent::Dash(float dash_speed, float dash_time, float deltaTime, G
 
 	}
 	if (dashEasingCount < dash_time) { dashEasingCount += 1 * GE::GameSetting::Time::GetGameTime(); }
-	else { statas = PlayerStatas::MOVE; dashEasingCount = 0.0f; body_direction_LerpCount = 0; }
+	else { statas = PlayerStatas::MOVE; dashEasingCount = 0.0f; body_direction_LerpCount = 0; animator.PlayAnimation(0); }
 
 	//スピードの遷移
 	CameraControl::GetInstance()->DashCam(dashEasingCount, dash_time);

@@ -1,6 +1,7 @@
 #pragma once
 #include <GatesEngine/Header/GameFramework/Component/Component.h>
 #include <GatesEngine/Header/Input/InputDevice.h>
+#include <GatesEngine/Header/Graphics/SkinMeshAnimator.h>
 
 class PlayerComponent : public GE::Component
 {
@@ -18,6 +19,7 @@ private:
 	GE::InputDevice* inputDevice;
 	GE::Math::Vector3 gyro;
 	GE::Math::Vector3 accelerometer;
+	GE::SkinMeshAnimator animator;
 
 	GE::Math::Vector3 body_direction;//体の向き計算用
 	float dashEasingCount;			//スピード遷移のカウント
@@ -103,7 +105,7 @@ private:
 	/// <param name="deltaTime">フレームレートの値</param>
 	/// <param name="gameTime">ゲームの時間の速さ</param>
 	/// <param name="direction">向き</param>
-	/// <param name="loop">Trueの間はダッシュし続ける。Falseになるとdash_timeのフレーム数かけて減速する</param>
+	/// <param name="loop">Trueの間はダッシュし続ける。Falseになるとdash_timeのフレーム数かけて減速する。最初からfalseだとdash_timeフレーム数加速する</param>
 	void Dash(float dash_speed, float dash_time, float deltaTime, GE::Math::Vector3 direction, bool loop = false);
 	/// <summary>
 	/// 

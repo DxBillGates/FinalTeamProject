@@ -70,8 +70,11 @@ void CameraControl::Update()
 	{
 		LERP_VALUE = 0.035f * GE::GameSetting::Time::GetGameTime();
 	}
-	position = GE::Math::Vector3::Lerp(beforeCameraPosition, newCameraPosition, LERP_VALUE) + cameraShake * GE::GameSetting::Time::GetGameTime();
-	target += cameraShake * GE::GameSetting::Time::GetGameTime();
+	if (targetObject->GetComponent<PlayerComponent>()->statas != PlayerComponent::PlayerStatas::STOP_DEBUG)
+	{
+		position = GE::Math::Vector3::Lerp(beforeCameraPosition, newCameraPosition, LERP_VALUE) + cameraShake * GE::GameSetting::Time::GetGameTime();
+		target += cameraShake * GE::GameSetting::Time::GetGameTime();
+	}
 	//カメラシェイク
 	Shake();
 

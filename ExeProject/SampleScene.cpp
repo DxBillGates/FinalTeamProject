@@ -31,10 +31,10 @@ SampleScene::SampleScene(const std::string& sceneName)
 	}
 
 	{
-		auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject("test2","testTag"));
+		/*auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject("test2","testTag"));
 		testObject->GetTransform()->position = { 1300,0,0 };
 		testObject->SetDrawAxisEnabled(true);
-		auto* sampleComponent = testObject->AddComponent<GE::SampleComponent>();
+		auto* sampleComponent = testObject->AddComponent<GE::SampleComponent>();*/
 	}
 
 	EnemyManager::GetInstance()->Start(10, &gameObjectManager);

@@ -52,10 +52,7 @@ void GE::SampleComponent::Update(float deltaTime)
 	{
 		animator.PlayAnimation(4);
 	}
-	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::D6))
-	{
-		animator.PlayAnimation(5);
-	}
+
 	animator.Update(deltaTime);
 }
 
