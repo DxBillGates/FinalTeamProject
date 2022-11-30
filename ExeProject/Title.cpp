@@ -22,9 +22,6 @@ void Title::Start(GE::GameObjectManager* gameObjectManager, GE::GameObject* t)
 	stage = Stage::stage1;
 	
 	//テクスチャたちの生成、初期設定
-	Create("title_name", "texture_title", gameObjectManager, t);
-	sprites.back()->GetTransform()->position = { 1000.0f,220.0f,0.0f };
-	sprites.back()->GetTransform()->scale = { 500,500,0 };
 	Create("title_stage1", "texture_stage1", gameObjectManager, t);
 	sprites.back()->GetTransform()->position = { 1170.0f,400.0f,0.0f };
 	sprites.back()->GetTransform()->scale = { 300,300,0 };
@@ -34,6 +31,19 @@ void Title::Start(GE::GameObjectManager* gameObjectManager, GE::GameObject* t)
 	Create("title_exit", "texture_exit", gameObjectManager, t);
 	sprites.back()->GetTransform()->position = { 1170.0f,600,0.0f };
 	sprites.back()->GetTransform()->scale = { 300,300,0 };
+
+	Create("title_name", "texture_title", gameObjectManager, t);
+	sprites.back()->GetTransform()->position = { 1000.0f,220.0f,0.0f };
+	sprites.back()->GetTransform()->scale = { 500,500,0 };
+	Create("title_nextL", "texture_next", gameObjectManager, t);
+	sprites.back()->GetTransform()->position = { 70.0f,400.0f,0.0f };
+	sprites.back()->GetTransform()->scale = { 150,150,0 };
+	Create("title_nextR", "texture_next", gameObjectManager, t);
+	sprites.back()->GetTransform()->position = { 1460.0f,400.0f,0.0f };
+	sprites.back()->GetTransform()->rotation = GE::Math::Quaternion::Euler({ 0, 0, 180 });
+	sprites.back()->GetTransform()->scale = { 150,150,0 };
+
+	alpha = 0.0f;
 }
 
 void Title::Create(std::string gui_tag, std::string tex_tag, GE::GameObjectManager* gameObjectManager, GE::GameObject* t)
@@ -56,33 +66,38 @@ void Title::Update()
 	if (!decided)
 	{
 		Serect();
+		alpha += 0.003f;
 	}
 	//選択中のテクスチャ色変え
-	sprites[states+1]->SetColor(GE::Color::Red());
+	sprites[states]->SetColor(GE::Color::Red());
 }
 
 void Title::Serect()
 {
 	int a;
 	//上下選択(スタート,オプション、exit
-	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::UP))
+	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::UP)
+		||inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::W))
 	{
 		a = (states + (States::serectNum - 1)) % States::serectNum;
 		states = (Title::States)a;
 	}
-	else if(inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::DOWN))
+	else if(inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::DOWN)
+		|| inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::S))
 	{
 		a = (states + 1) % States::serectNum;
 		states = (Title::States)a;
 	}
 
 	//左右選択(ステージ
-	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::RIGHT))
+	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::RIGHT)
+		|| inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::D))
 	{
 		a = (stage + (Stage::stageNum - 1)) % Stage::stageNum;
 		stage = (Title::Stage)a;
 	}
-	else if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::LEFT))
+	else if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::LEFT)
+		|| inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::A))
 	{
 		a = (stage + 1) % Stage::stageNum;
 		stage = (Title::Stage)a;
@@ -156,6 +171,7 @@ void TitleTex::LateDraw()
 	modelMatrix = transform->GetMatrix();
 	GE::Material material;
 	material.color = gameObject->GetColor();
+	//material.color.a = Title::GetInstance()->alpha;
 
 	GE::CameraInfo cameraInfo;
 	cameraInfo.viewMatrix = GE::Math::Matrix4x4::GetViewMatrixLookTo({ 0,1,0 }, { 0,0,1 }, { 0,1,0 });

@@ -56,6 +56,7 @@ public:
 	States states;
 	Stage stage;
 
+	float alpha = 0.0f;
 private:
 	//‘I‘ğ
 	void Serect();
