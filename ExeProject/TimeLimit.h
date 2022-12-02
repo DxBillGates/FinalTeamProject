@@ -1,5 +1,21 @@
 #pragma once
-class TimeLimit
+#include <GatesEngine/Header/GameFramework/Component/Component.h>
+#include <GatesEngine/Header/GameFramework/GameObject/GameObjectManager.h> 
+#include <GatesEngine/Header/GameFramework/GameObject/GameObject.h> 
+
+class TimeTex : public GE::Component
+{
+private:
+	
+public:
+
+	void Start()override;
+	void Update(float deltaTime) override;
+	void LateDraw() override;
+
+};
+
+class TimeLimit :public GE::Component
 {
 private:
 	int timer = 1;//êßå¿éûä‘
@@ -10,10 +26,11 @@ private:
 
 
 public:
+	std::string tag;
+public:
 	TimeLimit(const int& timer);
 
 	void Start();
 	void Update();
-	void Draw();
 };
 
