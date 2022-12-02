@@ -11,14 +11,16 @@
 #include "CameraControl.h"
 #include "TestTreeComponent.h"
 
-float PlayerComponent::normal_speed = 1000.0f;				//通常時のスピード
-float PlayerComponent::current_speed = normal_speed;		//現在のスピード
-GE::Math::Vector3 PlayerComponent::gravity = { 0,0.5,0 };	//重力
-float PlayerComponent::rayHitSecond = 144.0f;				//ロックオンする照準を合わせる長さ
 int PlayerComponent::hitStopTime = 20;						// ヒットストップの長さ
-float PlayerComponent::damageSpeed = 5000.0f;				//敵にヒットしたときにダメージが入るスピード
 float PlayerComponent::pushStartTime = 100.0f;				//キーを押してから操作できるようになるまでのカウント
 float PlayerComponent::stayLandLerpTime = 200.0f;			//木に着陸するラープ長さ
+GE::Math::Vector3 PlayerComponent::gravity = { 0,0.5,0 };	//重力
+float PlayerComponent::rayHitSecond = 144.0f;				//ロックオンする照準を合わせる長さ
+float PlayerComponent::normal_speed = 1000.0f;				//通常時のスピード
+float PlayerComponent::current_speed = normal_speed;		//現在のスピード
+float PlayerComponent::damageSpeed = 5000.0f;				//敵にヒットしたときにダメージが入るスピード
+int PlayerComponent::collectMax = 3;
+
 PlayerComponent::PlayerComponent()
 	: inputDevice(nullptr)
 {
@@ -37,9 +39,10 @@ void PlayerComponent::Start()
 	transform->position = TestTreeComponent::position;
 	transform->scale = { 10,10,10 };
 
-	body_direction = { 0,0,0 };
-	dashEasingCount = 0.0;
 	statas = PlayerStatas::STAY_TREE;
+	dashEasingCount = 0.0;
+	startCouunt = 0.0f;
+	collectCount = 0;
 
 	hitStopCount = hitStopTime;
 	stayLandLerpEasingCount = stayLandLerpTime;
@@ -47,8 +50,7 @@ void PlayerComponent::Start()
 	center = GE::Window::GetWindowSize() / 2.0 + GE::Math::Vector2(0, -100);
 	//レイキャストのスプライトを描画するか
 	is_rayCast_active = false;
-
-	startCouunt = 0.0f;
+	isCollect = false;
 
 	CameraControl::GetInstance()->SetGraphicsDevice(graphicsDevice);
 	CameraControl::GetInstance()->Initialize();
@@ -81,6 +83,12 @@ void PlayerComponent::Update(float deltaTime)
 	}
 	//操作
 	Control(deltaTime);
+	//収集物カウント
+	if (collectCount > collectMax)
+	{
+		//クリアフラグ
+		isCollect = true;
+	}
 
 	CameraControl::GetInstance()->SetTargetObject(gameObject);
 	CameraControl::GetInstance()->Update();
@@ -336,16 +344,13 @@ void PlayerComponent::KeyboardMoveControl()
 	const float GYRO_OFFSET = 0.05f;
 	GE::Math::Vector3 quatVector = { quat.x,quat.y,quat.z, };
 
-	//body_direction.x += quatVector.x / 20.f;
-	//body_direction.y += quatVector.y / 20.f;
-	//body_direction.z += quatVector.z / 20.f;
+	
 	transform->rotation *= GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), quatVector.y / 20.f);
 	transform->rotation *= GE::Math::Quaternion(GE::Math::Vector3(1, 0, 0), quatVector.x / 20.f);
 	transform->rotation *= GE::Math::Quaternion(GE::Math::Vector3(0, 0, 1), quatVector.z / 20.f);
 
 	GE::Math::Vector3 bodyDirectionMax;
 	bodyDirectionMax = { 1.0f,100000,0.75f };
-	//body_direction = GE::Math::Vector3::Min(-bodyDirectionMax, GE::Math::Vector3::Max(bodyDirectionMax, body_direction));
 }
 void PlayerComponent::SearchNearEnemy()
 {

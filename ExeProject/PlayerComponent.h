@@ -7,44 +7,44 @@ class PlayerComponent : public GE::Component
 {
 public:
 	static float current_speed;		//現在のスピード
-	static float normal_speed;			//通常時のスピード
+	static float normal_speed;		//通常時のスピード
+	bool isCollect;					//指定個数集めたかどうか	
 private:
 	static GE::Math::Vector3 gravity;	//重力
-	static float rayHitSecond;	//照準を合わせる長さ（秒数）
+	static float rayHitSecond;		//照準を合わせる長さ（秒数）
 	static int hitStopTime;
 	static float damageSpeed;
-	static float pushStartTime;//キーを押してから操作できるようになるまでのカウント
-	static float stayLandLerpTime;//
+	static float pushStartTime;		//キーを押してから操作できるようになるまでのカウント
+	static float stayLandLerpTime;	//木に戻るラープ
+	static int collectMax;			//収集物の目標個数
 
 	GE::InputDevice* inputDevice;
 	GE::Math::Vector3 gyro;
 	GE::Math::Vector3 accelerometer;
 	GE::SkinMeshAnimator animator;
 
-	GE::Math::Vector3 body_direction;//体の向き計算用
 	float dashEasingCount;			//スピード遷移のカウント
 
-	float stayLandLerpEasingCount;			//着陸する遷移カウント
+	float stayLandLerpEasingCount;	//着陸する遷移カウント
 
-	bool isLockOnStart;			//ロックオン処理を呼ぶフラグ
-	bool isLockOn;				//ロックオンして発射待機中フラグ
+	bool isLockOnStart;				//ロックオン処理を呼ぶフラグ
+	bool isLockOn;					//ロックオンして発射待機中フラグ
 
-	float rayHitCount;	//何フレーム照準をあわせているか
+	float rayHitCount;				//何フレーム照準をあわせているか
+	int collectCount;				//取集物を何個集めたか
+	int hitStopCount;				//ヒットストップカウント用
+	float startCouunt;				//開始時のカウント
 	struct LockOnEnemy
 	{
 		GE::GameObject* object = nullptr;
 		GE::Math::Vector3 direction;
 	};
 	LockOnEnemy lockOnEnemy;
-	//ヒットストップカウント用
-	int hitStopCount;
+	
 	//レティクルの位置
 	GE::Math::Vector2 center;
 	
-	//開始時のカウント
-	float startCouunt;
-
-	GE::Math::Quaternion quat;
+		GE::Math::Quaternion quat;
 	GE::Math::Quaternion body_direction_LockOn;
 	bool is_rayCast_active;
 
