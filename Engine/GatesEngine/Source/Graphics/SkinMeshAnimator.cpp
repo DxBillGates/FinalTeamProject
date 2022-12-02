@@ -1,5 +1,5 @@
 #include "..\..\Header\Graphics\SkinMeshAnimator.h"
-
+#include "..\..\Header\GameFramework\GameSetting.h"
 
 GE::SkinMeshAnimator::SkinMeshAnimator() : SkinMeshAnimator(nullptr)
 {
@@ -94,7 +94,7 @@ void GE::SkinMeshAnimator::Update(float deltaTime)
 	}
 
 	// 時間更新
-	currentTime += currentPlayAnimationData->frameTime;
+	currentTime += currentPlayAnimationData->frameTime * GameSetting::Time::GetGameTime();
 
 	// このフレームで上限タイムを超えていた場合は値を修正
 	if (currentTime >= currentPlayAnimationData->endTime)
