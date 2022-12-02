@@ -66,6 +66,8 @@ namespace GE
 		virtual void Update(float deltaTime){}
 		virtual void Draw() {}
 		virtual void LateDraw() {}
+		virtual void Load() {}
+		virtual void UnLoad();
 
 		const std::string& GetSceneName();
 		bool IsTerminateApplication();

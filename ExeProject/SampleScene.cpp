@@ -28,6 +28,54 @@ SampleScene::SampleScene(const std::string& sceneName, const GE::SceneInitialize
 	, col1(nullptr)
 	, col2(nullptr)
 {
+	using namespace GE;
+	auto meshManager = graphicsDevice->GetMeshManager();
+	auto device = graphicsDevice->GetDevice();
+	auto cmdList = graphicsDevice->GetCmdList();
+	MeshData<Vertex_UV_Normal> modelDataCylinder;
+	MeshCreater::LoadObjModelData("Resources/Model/cylinder", modelDataCylinder);
+	Mesh* mesh = new Mesh();
+	mesh->Create(device, cmdList, modelDataCylinder);
+	meshManager->Add(mesh, "Cylinder1");
+
+	meshCollider.SetMesh(&modelDataCylinder);
+}
+
+SampleScene::~SampleScene()
+{
+}
+
+void SampleScene::Initialize()
+{
+	gameObjectManager.Awake();
+	gameObjectManager.Start();
+}
+
+void SampleScene::Update(float deltaTime)
+{
+	gameObjectManager.Update(deltaTime);
+	collisionManager.Update();
+
+	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::Y))
+	{
+		changeSceneInfo.flag = true;
+		changeSceneInfo.name = "SampleScene";
+		changeSceneInfo.initNextSceneFlag = true;
+	}
+}
+
+void SampleScene::Draw()
+{
+	gameObjectManager.Draw();
+}
+
+void SampleScene::LateDraw()
+{
+	gameObjectManager.LateDraw();
+}
+
+void SampleScene::Load()
+{
 	{
 		auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject("Player", "player"));
 		auto* sampleComponent = testObject->AddComponent<PlayerComponent>();
@@ -60,43 +108,10 @@ SampleScene::SampleScene(const std::string& sceneName, const GE::SceneInitialize
 
 	collisionManager.AddTagCombination("player", "enemy");
 	//collisionManager.AddTagCombination("player", "birdEnemy");
-
-
-	using namespace GE;
-	auto meshManager = graphicsDevice->GetMeshManager();
-	auto device = graphicsDevice->GetDevice();
-	auto cmdList = graphicsDevice->GetCmdList();
-	MeshData<Vertex_UV_Normal> modelDataCylinder;
-	MeshCreater::LoadObjModelData("Resources/Model/cylinder", modelDataCylinder);
-	Mesh* mesh = new Mesh();
-	mesh->Create(device, cmdList, modelDataCylinder);
-	meshManager->Add(mesh, "Cylinder1");
-
-	meshCollider.SetMesh(&modelDataCylinder);
 }
 
-SampleScene::~SampleScene()
+void SampleScene::UnLoad()
 {
-}
-
-void SampleScene::Initialize()
-{
-	gameObjectManager.Awake();
-	gameObjectManager.Start();
-}
-
-void SampleScene::Update(float deltaTime)
-{
-	gameObjectManager.Update(deltaTime);
-	collisionManager.Update();
-}
-
-void SampleScene::Draw()
-{
-	gameObjectManager.Draw();
-}
-
-void SampleScene::LateDraw()
-{
-	gameObjectManager.LateDraw();
+	// gameObjects‚ğíœ‚·‚é
+	Scene::UnLoad();
 }

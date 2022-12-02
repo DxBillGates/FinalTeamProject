@@ -24,6 +24,12 @@ GE::Scene::Scene(const std::string& sceneName, const SceneInitializer& initializ
 	SetSceneInitializer(initializer);
 }
 
+void GE::Scene::UnLoad()
+{
+	gameObjectManager.DestroyGameObjects();
+}
+
+
 const std::string& GE::Scene::GetSceneName()
 {
 	return name;

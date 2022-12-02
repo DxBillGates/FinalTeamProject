@@ -197,6 +197,19 @@ void GE::GameObjectManager::DestroyGameObject(GameObject* gameObject)
 
 }
 
+void GE::GameObjectManager::DestroyGameObjects()
+{
+	for (auto& tagGameObjects : gameObjects)
+	{
+		for (auto& tagGameObject : tagGameObjects.second)
+		{
+			DestroyGameObject(tagGameObject);
+		}
+	}
+
+	Destroy();
+}
+
 bool GE::GameObjectManager::Raycast(const Math::Vector3& pos, const Math::Vector3& dir, const std::string& tag, float length, float* hitLenght)
 {
 	for (auto& objects : gameObjects)

@@ -17,4 +17,6 @@ public:
 	void Update(float deltaTime) override;
 	void Draw() override;
 	void LateDraw() override;
+	void Load() override;
+	void UnLoad() override;
 };
