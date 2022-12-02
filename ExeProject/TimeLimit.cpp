@@ -8,11 +8,12 @@ TimeLimit::TimeLimit(const int& timer)
 	this->timer = timer * 60 * fps;//分数を秒数に直して144fpsかける
 }
 
-void TimeLimit::Start()
+void TimeLimit::Start(GE::GameObjectManager* gameObjectManager)
 {
+	Create("time", "texture_Number", gameObjectManager);
 }
 
-void TimeLimit::Update(float deltaTime)
+void TimeLimit::Update()
 {
 	timer--;//カウントダウン
 	minutes = timer / fps / 60;//分数の計算
@@ -20,15 +21,33 @@ void TimeLimit::Update(float deltaTime)
 	oneSeconds = timer / fps % 60 % 10;//秒数の一の位の計算
 }
 
-void TimeLimit::LateDraw()
+void TimeLimit::Create(std::string gui_tag, std::string tex_tag, GE::GameObjectManager* gameObjectManager)
+{
+	auto* titleObject = gameObjectManager->AddGameObject(new GE::GameObject(gui_tag, "time"));
+	auto* titleComponent = titleObject->AddComponent<TimeTex>();
+	titleComponent->tag = tex_tag;
+	titleObject->GetTransform()->position = { 1200,500,0 };
+}
+
+void TimeTex::Start()
+{
+}
+
+void TimeTex::Update(float deltaTime)
+{
+}
+
+void TimeTex::LateDraw()
 {
 	// 描画するためのGraphicsDeviceを取得しとくように！
+	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
+	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
 	
 	// レンダーキューを2d用に切り替える
-	graphicsDevice.SetCurrentRenderQueue(false);
+	graphicsDevice->SetCurrentRenderQueue(false);
 
 	// テクスチャ描画用のシェーダーをセット
-	graphicsDevice.SetShader("DefaultSpriteWithTextureShader");
+	graphicsDevice->SetShader("DefaultSpriteWithTextureShader");
 	
 	// 描画位置とかサイズとかの設定
 	auto windowSize = GE::Window::GetWindowSize();
@@ -46,12 +65,12 @@ void TimeLimit::LateDraw()
 
 	// アニメーションの情報
 	GE::TextureAnimationInfo textureAnimationInfo;
-	GE::Texture* texture = graphicsDevice.GetTextureManager()->Get("テクスチャ名");
+	GE::ITexture* texture = graphicsDevice->GetTextureManager()->Get(tag);
 	// 画像の元サイズ
-	textureAnimationInfo.textureSize = texture->GetSize();
+	textureAnimationInfo.textureSize = 1;
 	// 元画像のサイズからどうやって切り抜くか　例) 元サイズが100*100で半分だけ表示したいなら{50,100}にする
 	// textureSizeと一緒にすると切り抜かれずに描画される
-	textureAnimationInfo.clipSize = texture->GetSize();
+	textureAnimationInfo.clipSize = 1;
 	// 切り抜く際の左上座標 例) {0,0}なら元画像の左上 texture->GetSize()なら右下になる
 	textureAnimationInfo.pivot = {0,0};
 
@@ -59,6 +78,6 @@ void TimeLimit::LateDraw()
 	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2, &material,sizeof(GE::Material)) });
 	renderQueue->AddSetConstantBufferInfo({ 4,cbufferAllocater->BindAndAttachData(4, &textureAnimationInfo,sizeof(GE::TextureAnimationInfo)) });
-	renderQueue->AddSetShaderResource({ 5,texture.GetSRVNumber() });
-	graphicsDevice.DrawMesh("2DPlane");
+	renderQueue->AddSetShaderResource({ 5,texture->GetSRVNumber() });
+	graphicsDevice->DrawMesh("2DPlane");
 }

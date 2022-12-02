@@ -9,6 +9,7 @@
 #include <GatesEngine/Header\GameFramework\Collision\CollisionManager.h>
 #include <GatesEngine/Header/Application/Application.h>
 #include"Title.h"
+#include"TimeLimit.h"
 
 SampleScene::SampleScene()
 	: SampleScene("SampleScene")
@@ -30,6 +31,8 @@ SampleScene::SampleScene(const std::string& sceneName)
 		col1 = playerCollider;
 		//タイトルセット
 		Title::GetInstance()->Start(&gameObjectManager, testObject);
+		
+
 	}
 
 	{
@@ -54,6 +57,7 @@ void SampleScene::Initialize()
 {
 	gameObjectManager.Awake();
 	gameObjectManager.Start();
+
 }
 
 void SampleScene::Update(float deltaTime)
@@ -61,7 +65,6 @@ void SampleScene::Update(float deltaTime)
 	gameObjectManager.Update(deltaTime);
 	collisionManager.Update();
 	Title::GetInstance()->Update();
-
 }
 
 void SampleScene::Draw()

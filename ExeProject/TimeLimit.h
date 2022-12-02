@@ -5,7 +5,11 @@
 
 class TimeTex : public GE::Component
 {
-private:
+public:
+	GE::Math::Vector3 position;
+	GE::Math::Vector3 scale;
+	GE::Math::Quaternion rotation;
+	std::string tag;
 	
 public:
 
@@ -15,7 +19,7 @@ public:
 
 };
 
-class TimeLimit :public GE::Component
+class TimeLimit 
 {
 private:
 	int timer = 1;//制限時間
@@ -30,7 +34,10 @@ public:
 public:
 	TimeLimit(const int& timer);
 
-	void Start();
+	void Start(GE::GameObjectManager* gameObjectManager);
 	void Update();
+
+	//テクスチャ生成
+	void Create(std::string gui_tag, std::string tex_tag, GE::GameObjectManager* gameObjectManager);
 };
 
