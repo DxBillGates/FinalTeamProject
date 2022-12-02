@@ -8,10 +8,11 @@
 class TitleTex :public GE::Component
 {
 private:
-	GE::GameObject* targetObject = nullptr;
+	GE::ITexture* tex;
 public:
-	//GE::Math::Vector3 position;
-	//GE::Math::Vector3 scale;
+	GE::Math::Vector3 position = {};
+	GE::Math::Vector3 scale = {};
+	GE::Math::Quaternion rotation = {};
 	std::string tag;
 public:
 	void Awake();
@@ -19,19 +20,17 @@ public:
 	void Update(float deltaTime) override;
 	void LateDraw() override;
 
-	void SetTargetObject(GE::GameObject* t) { targetObject = t; }
-private:
+	void SetTexture(GE::ITexture* setTex) { tex = setTex; }
 };
 
 //タイトルクラス
 class Title
 {
 private:
-	GE::GameObject* targetObject = nullptr;
-
 	GE::InputDevice* inputDevice;
 
-	std::vector<GE::GameObject*> sprites;
+	std::vector<TitleTex*> sprites;
+	std::vector<GE::ITexture*> textures;
 
 	bool decided = false;
 public:
@@ -59,9 +58,9 @@ public:
 	float alpha = 0.0f;
 private:
 	//選択
-	void Serect();
+	void Select();
 	//テクスチャ生成
-	void Create(std::string gui_tag,std::string tex_tag ,GE::GameObjectManager* gameObjectManager, GE::GameObject* t);
+	void Create(std::string gui_tag, std::string tex_tag, GE::GameObjectManager* gameObjectManager, GE::IGraphicsDeviceDx12* device);
 public:
 	static Title* GetInstance();
 	Title() = default;
@@ -70,7 +69,7 @@ public:
 	Title(const Title& obj) = delete;
 
 	//初期設定
-	void Start(GE::GameObjectManager* gameObjectManager, GE::GameObject* t);
+	void Awake(GE::GameObjectManager* gameObjectManager, GE::IGraphicsDeviceDx12* device);
 	void Update();
 
 	bool GetDecid() { return decided; }
