@@ -19,7 +19,7 @@ int PlayerComponent::hitStopTime = 20;						// ヒットストップの長さ
 float PlayerComponent::body_direction_LerpTime = 50.0f;		//ダッシュ後体の角度の遷移
 float PlayerComponent::damageSpeed = 5000.0f;				//敵にヒットしたときにダメージが入るスピード
 float PlayerComponent::pushStartTime = 100.0f;				//キーを押してから操作できるようになるまでのカウント
-
+float PlayerComponent::stayLandLerpTime = 200.0f;			//木に着陸するラープ長さ
 PlayerComponent::PlayerComponent()
 	: inputDevice(nullptr)
 {
@@ -151,12 +151,27 @@ void PlayerComponent::LateDraw()
 void PlayerComponent::OnCollision(GE::GameObject* other)
 {
 	GE::Utility::Printf("PlayerComponent OnCollision(GameObject* other) : hit\n");
-	hitStopCount = 0;
-	CameraControl::GetInstance()->ShakeStart({ 70,70 }, 30);
 
 	if (other == lockOnEnemy.object)
 	{
 		lockOnEnemy.object = nullptr;
+	}
+
+	if (other->GetTag() == "tree")
+	{
+		if (statas == PlayerStatas::STAY_LAND)
+		{
+
+		}
+		else
+		{
+			if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE))
+			{
+				startCouunt = 0.0f;
+				statas = PlayerStatas::STAY_LAND;
+				animator.PlayAnimation(3, false);
+			}
+		}
 	}
 }
 
@@ -170,6 +185,8 @@ void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 		{
 
 		}
+		hitStopCount = 0;
+		CameraControl::GetInstance()->ShakeStart({ 70,70 }, 30);
 	}
 }
 

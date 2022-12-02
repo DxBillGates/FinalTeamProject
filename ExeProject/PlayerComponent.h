@@ -15,6 +15,7 @@ private:
 	static float body_direction_LerpTime; //秒数
 	static float damageSpeed;
 	static float pushStartTime;//キーを押してから操作できるようになるまでのカウント
+	static float stayLandLerpTime;//
 
 	GE::InputDevice* inputDevice;
 	GE::Math::Vector3 gyro;
@@ -23,6 +24,8 @@ private:
 
 	GE::Math::Vector3 body_direction;//体の向き計算用
 	float dashEasingCount;			//スピード遷移のカウント
+
+	float stayLandLerpEasingCount;			//着陸する遷移カウント
 
 	bool isLockOnStart;			//ロックオン処理を呼ぶフラグ
 	bool isLockOn;				//ロックオンして発射待機中フラグ
