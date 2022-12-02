@@ -12,7 +12,6 @@ private:
 	static GE::Math::Vector3 gravity;	//重力
 	static float rayHitSecond;	//照準を合わせる長さ（秒数）
 	static int hitStopTime;
-	static float body_direction_LerpTime; //秒数
 	static float damageSpeed;
 	static float pushStartTime;//キーを押してから操作できるようになるまでのカウント
 	static float stayLandLerpTime;//
@@ -41,16 +40,15 @@ private:
 	int hitStopCount;
 	//レティクルの位置
 	GE::Math::Vector2 center;
-	//元の姿勢に戻るときの遷移
-	int body_direction_LerpCount;
-
+	
 	//開始時のカウント
 	float startCouunt;
 
 	GE::Math::Quaternion quat;
 	GE::Math::Quaternion body_direction_LockOn;
-
 	bool is_rayCast_active;
+
+	GE::Math::Vector3 currentPosition;//巣に着陸するときのラープ用
 public:
 	enum class PlayerStatas
 	{
@@ -58,7 +56,8 @@ public:
 		MOVE,
 		DASH,
 		LOCKON_SHOOT,
-		STAY_LAND,
+		GO_TREE,
+		STAY_TREE,
 	};
 	PlayerStatas statas;				//Playerの状態
 	//RayCast用

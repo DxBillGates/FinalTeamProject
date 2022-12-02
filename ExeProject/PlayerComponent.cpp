@@ -16,7 +16,6 @@ float PlayerComponent::current_speed = normal_speed;		//現在のスピード
 GE::Math::Vector3 PlayerComponent::gravity = { 0,0.5,0 };	//重力
 float PlayerComponent::rayHitSecond = 144.0f;				//ロックオンする照準を合わせる長さ
 int PlayerComponent::hitStopTime = 20;						// ヒットストップの長さ
-float PlayerComponent::body_direction_LerpTime = 50.0f;		//ダッシュ後体の角度の遷移
 float PlayerComponent::damageSpeed = 5000.0f;				//敵にヒットしたときにダメージが入るスピード
 float PlayerComponent::pushStartTime = 100.0f;				//キーを押してから操作できるようになるまでのカウント
 float PlayerComponent::stayLandLerpTime = 200.0f;			//木に着陸するラープ長さ
@@ -40,11 +39,10 @@ void PlayerComponent::Start()
 
 	body_direction = { 0,0,0 };
 	dashEasingCount = 0.0;
-	statas = PlayerStatas::STAY_LAND;
+	statas = PlayerStatas::STAY_TREE;
 
 	hitStopCount = hitStopTime;
-	//姿勢遷移
-	body_direction_LerpCount = body_direction_LerpTime;
+	stayLandLerpEasingCount = stayLandLerpTime;
 	//レティクルの位置
 	center = GE::Window::GetWindowSize() / 2.0 + GE::Math::Vector2(0, -100);
 	//レイキャストのスプライトを描画するか
@@ -159,7 +157,7 @@ void PlayerComponent::OnCollision(GE::GameObject* other)
 
 	if (other->GetTag() == "tree")
 	{
-		if (statas == PlayerStatas::STAY_LAND)
+		if (statas == PlayerStatas::STAY_TREE || statas == PlayerStatas::GO_TREE)
 		{
 
 		}
@@ -167,9 +165,9 @@ void PlayerComponent::OnCollision(GE::GameObject* other)
 		{
 			if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE))
 			{
-				startCouunt = 0.0f;
-				statas = PlayerStatas::STAY_LAND;
-				animator.PlayAnimation(3, false);
+				stayLandLerpEasingCount = 0.0f;
+				currentPosition = transform->position;
+				statas = PlayerStatas::GO_TREE;
 			}
 		}
 	}
@@ -222,32 +220,15 @@ bool PlayerComponent::IsSpeedy()
 }
 void PlayerComponent::Control(float deltaTime)
 {
-	GE::Math::Quaternion BODY_DIRECTION =
-		GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), body_direction.y)
-		* GE::Math::Quaternion(GE::Math::Vector3(0, 0, 1), body_direction.z)
-		* GE::Math::Quaternion(GE::Math::Vector3(1, 0, 0), body_direction.x);
-
 	bool loop = false;
 	switch (statas)
 	{
 	case PlayerComponent::PlayerStatas::STOP_DEBUG:
-		//回転
-		transform->rotation = BODY_DIRECTION;
 		break;
 	case PlayerComponent::PlayerStatas::MOVE:
 		transform->position += transform->GetForward() * current_speed * deltaTime * GE::GameSetting::Time::GetGameTime() - gravity;
 		//Key押したらPlayerState::DASHに変わる
-		if (InputManager::GetInstance()->GetActionButton())
-		{
-			statas = PlayerStatas::DASH;
-		}
-		//ダッシュ後体の角度の遷移
-		if (body_direction_LerpCount < body_direction_LerpTime)
-		{
-			body_direction_LerpCount += 1 * GE::GameSetting::Time::GetGameTime();
-			transform->rotation = GE::Math::Quaternion::Lerp(body_direction_LockOn, BODY_DIRECTION, body_direction_LerpCount / body_direction_LerpTime);
-		}
-		else { transform->rotation = BODY_DIRECTION; }
+		if (InputManager::GetInstance()->GetActionButton()) { statas = PlayerStatas::DASH; }
 
 		if (InputManager::GetInstance()->GetLockonButton())
 		{
@@ -263,7 +244,6 @@ void PlayerComponent::Control(float deltaTime)
 		LockOn();
 		break;
 	case PlayerComponent::PlayerStatas::DASH:
-
 		Dash(10000, 100.0, deltaTime, transform->GetForward());
 		break;
 	case PlayerComponent::PlayerStatas::LOCKON_SHOOT:
@@ -280,7 +260,20 @@ void PlayerComponent::Control(float deltaTime)
 
 		Dash(10000, 200, deltaTime, lockOnEnemy.direction, loop);
 		break;
-	case PlayerComponent::PlayerStatas::STAY_LAND:
+	case PlayerComponent::PlayerStatas::GO_TREE:
+		if (stayLandLerpEasingCount < stayLandLerpTime)
+		{
+			stayLandLerpEasingCount++;
+			transform->position = GE::Math::Vector3::Lerp(currentPosition, TestTreeComponent::position, stayLandLerpEasingCount / stayLandLerpTime);
+		}
+		else
+		{
+			startCouunt = 0.0f;
+			animator.PlayAnimation(3, false);
+			statas = PlayerStatas::STAY_TREE;
+		}
+		break;
+	case PlayerComponent::PlayerStatas::STAY_TREE:
 		if (startCouunt == 0.0f)
 		{
 
@@ -308,7 +301,6 @@ void PlayerComponent::Control(float deltaTime)
 	default:
 		break;
 	}
-
 	//キーボードで移動操作
 	KeyboardMoveControl();
 
@@ -324,28 +316,14 @@ void PlayerComponent::KeyboardMoveControl()
 
 	if (inputAxis.x != 0)
 	{
-		body_direction.y += 0.01 * inputAxis.x * GE::GameSetting::Time::GetGameTime();
-		body_direction.z -= 0.005 * inputAxis.x * GE::GameSetting::Time::GetGameTime();
-
-		body_direction.z = (body_direction.z > 0.3f || body_direction.z < -0.3) ? 0.3f * ((body_direction.z > 0) ? 1 : -1) : body_direction.z;
-	}
-	else
-	{
-		abs(body_direction.z) < 0.005 ? body_direction.z = 0 : body_direction.z > 0.0 ? body_direction.z -= 0.005 * GE::GameSetting::Time::GetGameTime() : body_direction.z += 0.005 * GE::GameSetting::Time::GetGameTime();
+		transform->rotation *= GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), 0.01 * inputAxis.x * GE::GameSetting::Time::GetGameTime());
 	}
 
 	if (inputAxis.y != 0)
 	{
-		body_direction.x -= 0.005 * inputAxis.y * GE::GameSetting::Time::GetGameTime();
-		body_direction.x = (body_direction.x > 1.57f || body_direction.x < -1.57f) ? 1.57f * ((body_direction.x > 0) ? 1 : -1) : body_direction.x;
+		transform->rotation *= GE::Math::Quaternion(GE::Math::Vector3(1, 0, 0), -0.005 * inputAxis.y * GE::GameSetting::Time::GetGameTime());
 	}
-	else
-	{
-		abs(body_direction.x) < 0.01 ? body_direction.x = 0 : body_direction.x > 0.0 ? body_direction.x -= 0.01 * GE::GameSetting::Time::GetGameTime() : body_direction.x += 0.01 * GE::GameSetting::Time::GetGameTime();
-	}
-
 	// ジョイコン操作中の際の姿勢制御
-
 	GE::Joycon* joycon = inputDevice->GetJoyconL();
 	if (joycon == nullptr)return;
 	GE::Vector3Int16 gyroData = joycon->GetGyroscope();
@@ -358,13 +336,16 @@ void PlayerComponent::KeyboardMoveControl()
 	const float GYRO_OFFSET = 0.05f;
 	GE::Math::Vector3 quatVector = { quat.x,quat.y,quat.z, };
 
-	body_direction.x += quatVector.x / 20.f;
-	body_direction.y += quatVector.y / 20.f;
-	body_direction.z += quatVector.z / 20.f;
+	//body_direction.x += quatVector.x / 20.f;
+	//body_direction.y += quatVector.y / 20.f;
+	//body_direction.z += quatVector.z / 20.f;
+	transform->rotation *= GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), quatVector.y / 20.f);
+	transform->rotation *= GE::Math::Quaternion(GE::Math::Vector3(1, 0, 0), quatVector.x / 20.f);
+	transform->rotation *= GE::Math::Quaternion(GE::Math::Vector3(0, 0, 1), quatVector.z / 20.f);
 
 	GE::Math::Vector3 bodyDirectionMax;
 	bodyDirectionMax = { 1.0f,100000,0.75f };
-	body_direction = GE::Math::Vector3::Min(-bodyDirectionMax, GE::Math::Vector3::Max(bodyDirectionMax, body_direction));
+	//body_direction = GE::Math::Vector3::Min(-bodyDirectionMax, GE::Math::Vector3::Max(bodyDirectionMax, body_direction));
 }
 void PlayerComponent::SearchNearEnemy()
 {
@@ -428,7 +409,6 @@ void PlayerComponent::Dash(float dash_speed, float dash_time, float deltaTime, G
 	{
 		current_speed = dash_speed;
 		dashEasingCount = 0.0f;
-		body_direction_LerpCount = 0;
 	}
 	else
 	{
@@ -436,7 +416,7 @@ void PlayerComponent::Dash(float dash_speed, float dash_time, float deltaTime, G
 
 	}
 	if (dashEasingCount < dash_time) { dashEasingCount += 1 * GE::GameSetting::Time::GetGameTime(); }
-	else { statas = PlayerStatas::MOVE; dashEasingCount = 0.0f; body_direction_LerpCount = 0; animator.PlayAnimation(0); }
+	else { statas = PlayerStatas::MOVE; dashEasingCount = 0.0f; animator.PlayAnimation(0); }
 
 	//スピードの遷移
 	CameraControl::GetInstance()->DashCam(dashEasingCount, dash_time);
@@ -451,7 +431,7 @@ void PlayerComponent::Dash(float dash_speed, float dash_time, float deltaTime, G
 
 	transform->position += transform->GetForward() * current_speed * deltaTime * GE::GameSetting::Time::GetGameTime();
 }
-//CollisionDetectionに引っ越すかも
+
 void PlayerComponent::RayCast(float deltaTime)
 {
 	is_rayCast_active = true;
