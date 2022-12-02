@@ -26,6 +26,7 @@ namespace GE
 		Scene* GetBeforeScene();
 		Scene* GetAddScene();
 		Scene* GetScene(const std::string& sceneName);
+		SceneInitializer GetSceneInitializer();
 		void SetSceneInitializer(const SceneInitializer& initializer);
 	};
 }

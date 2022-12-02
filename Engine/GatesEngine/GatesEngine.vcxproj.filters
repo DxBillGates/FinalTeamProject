@@ -338,6 +338,9 @@
     <ClInclude Include="Header\GameFramework\GameSetting.h">
       <Filter>Header\GameFramework</Filter>
     </ClInclude>
+    <ClInclude Include="Header\GameFramework\Component\MeshCollider.h">
+      <Filter>Header\GameFramework\Component</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Application\Application.cpp">
@@ -504,6 +507,9 @@
     </ClCompile>
     <ClCompile Include="Source\GameFramework\GameSetting.cpp">
       <Filter>Source\GameFramework</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GameFramework\Component\MeshCollider.cpp">
+      <Filter>Source\GameFramework\Component</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

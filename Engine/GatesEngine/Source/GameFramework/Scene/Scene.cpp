@@ -18,6 +18,12 @@ GE::Scene::Scene(const std::string& sceneName)
 	collisionManager.SetGameObjectManager(gameObjectManager.GetManager());
 }
 
+GE::Scene::Scene(const std::string& sceneName, const SceneInitializer& initializer)
+	: Scene(sceneName)
+{
+	SetSceneInitializer(initializer);
+}
+
 const std::string& GE::Scene::GetSceneName()
 {
 	return name;

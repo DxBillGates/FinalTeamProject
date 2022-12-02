@@ -7,6 +7,11 @@
 #include <GatesEngine/Header\GameFramework\Collision\CollisionManager.h>
 #include <GatesEngine/Header/Application/Application.h>
 
+#include <GatesEngine/Header/Graphics/MeshData.h>
+#include <GatesEngine/Header/Graphics/VertexData.h>
+#include <GatesEngine/Header/Graphics/MeshCreater.h>
+#include <GatesEngine/Header/Graphics/Mesh.h>
+
 
 SampleScene::SampleScene()
 	: SampleScene("SampleScene")
@@ -14,12 +19,17 @@ SampleScene::SampleScene()
 }
 
 SampleScene::SampleScene(const std::string& sceneName)
-	: Scene(sceneName)
+	: SampleScene(sceneName, {})
+{
+}
+
+SampleScene::SampleScene(const std::string& sceneName, const GE::SceneInitializer& initializer)
+	: Scene(sceneName,initializer)
 	, col1(nullptr)
 	, col2(nullptr)
 {
 	{
-		auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject("Player","player"));
+		auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject("Player", "player"));
 		auto* sampleComponent = testObject->AddComponent<PlayerComponent>();
 
 		auto* playerCollider = testObject->AddComponent < GE::SphereCollider >();
@@ -35,7 +45,7 @@ SampleScene::SampleScene(const std::string& sceneName)
 	}
 
 	{
-		auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject("test2","testTag"));
+		auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject("test2", "testTag"));
 		testObject->GetTransform()->position = { 1300,0,0 };
 		testObject->SetDrawAxisEnabled(true);
 		auto* sampleCollider = testObject->AddComponent<GE::BoxCollider>();
@@ -51,7 +61,18 @@ SampleScene::SampleScene(const std::string& sceneName)
 	collisionManager.AddTagCombination("player", "enemy");
 	//collisionManager.AddTagCombination("player", "birdEnemy");
 
-	//meshCollider.SetMesh(graphicsDevice.GetMeshManager().Get("ground"));
+
+	using namespace GE;
+	auto meshManager = graphicsDevice->GetMeshManager();
+	auto device = graphicsDevice->GetDevice();
+	auto cmdList = graphicsDevice->GetCmdList();
+	MeshData<Vertex_UV_Normal> modelDataCylinder;
+	MeshCreater::LoadObjModelData("Resources/Model/cylinder", modelDataCylinder);
+	Mesh* mesh = new Mesh();
+	mesh->Create(device, cmdList, modelDataCylinder);
+	meshManager->Add(mesh, "Cylinder1");
+
+	meshCollider.SetMesh(&modelDataCylinder);
 }
 
 SampleScene::~SampleScene()
@@ -68,11 +89,6 @@ void SampleScene::Update(float deltaTime)
 {
 	gameObjectManager.Update(deltaTime);
 	collisionManager.Update();
-	
-	//if(meshCollider.CheckHit(col1))
-	//{
-	//    col1.Hit();
-	//}
 }
 
 void SampleScene::Draw()

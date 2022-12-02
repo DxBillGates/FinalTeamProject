@@ -28,7 +28,7 @@ Game::~Game()
 bool Game::LoadContents()
 {
 	Application::LoadContents();
-	auto* testScene = sceneManager.AddScene(new SampleScene("SampleScene"));
+	auto* testScene = sceneManager.AddScene(new SampleScene("SampleScene",sceneManager.GetSceneInitializer()));
 	sceneManager.ChangeScene("SampleScene");
 
 	return true;

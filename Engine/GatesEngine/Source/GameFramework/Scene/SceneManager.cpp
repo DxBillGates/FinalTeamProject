@@ -108,6 +108,11 @@ GE::Scene* GE::SceneManager::GetScene(const std::string& sceneName)
 	return returnScene;
 }
 
+GE::SceneInitializer GE::SceneManager::GetSceneInitializer()
+{
+	return sceneInitializer;
+}
+
 void GE::SceneManager::SetSceneInitializer(const SceneInitializer& initializer)
 {
 	sceneInitializer = initializer;
