@@ -50,6 +50,8 @@ bool Game::Update()
 bool Game::Draw()
 {
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice.GetCBufferAllocater();
+
+	graphicsDevice.SetCurrentRenderQueue(true);
 	GE::RenderQueue* renderQueue = graphicsDevice.GetRenderQueue();
 
 	graphicsDevice.ClearDefaultRenderTarget(GE::Color::Blue());
@@ -57,6 +59,10 @@ bool Game::Draw()
 
 	graphicsDevice.ClearLayer("resultLayer");
 	graphicsDevice.SetLayer("resultLayer");
+
+	graphicsDevice.SetCurrentRenderQueue(false);
+	graphicsDevice.SetLayer("resultLayer");
+	graphicsDevice.SetCurrentRenderQueue(true);
 
 	graphicsDevice.SetShaderResourceDescriptorHeap();
 	graphicsDevice.ResetCBufferAllocater();
@@ -93,9 +99,10 @@ bool Game::Draw()
 	graphicsDevice.ExecuteRenderQueue();
 	graphicsDevice.ExecuteCommands();
 
+	graphicsDevice.SetCurrentRenderQueue(true);
 	graphicsDevice.SetShaderResourceDescriptorHeap();
 	graphicsDevice.SetDefaultRenderTarget();
-	graphicsDevice.SetShader("DefaultSpriteWithTextureShader");
+	graphicsDevice.SetShader("SpriteTextureForPosteffectShader");
 	auto windowSize = GE::Window::GetWindowSize();
 	GE::Math::Matrix4x4 modelMatrix = GE::Math::Matrix4x4::Scale({ windowSize.x,windowSize.y,0 });
 	windowSize.x /= 2;
@@ -108,10 +115,16 @@ bool Game::Draw()
 	cameraInfo.viewMatrix = GE::Math::Matrix4x4::GetViewMatrixLookTo({ 0,0,0 }, { 0,0,1 }, { 0,1,0 });
 	cameraInfo.projMatrix = GE::Math::Matrix4x4::GetOrthographMatrix(GE::Window::GetWindowSize());
 
+	GE::TextureAnimationInfo textureAnimationInfo;
+	GE::IRenderTexture* resultLayerRenderTexture = graphicsDevice.GetLayerManager()->Get("resultLayer")->GetRenderTexture();
+	textureAnimationInfo.clipSize = resultLayerRenderTexture->GetSize();
+	textureAnimationInfo.textureSize = textureAnimationInfo.clipSize;
+
 	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
 	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
-	renderQueue->AddSetShaderResource({ 4,graphicsDevice.GetLayerManager()->Get("resultLayer")->GetRenderTexture()->GetSRVNumber() });
+	renderQueue->AddSetConstantBufferInfo({ 4,cbufferAllocater->BindAndAttachData(4,&textureAnimationInfo,sizeof(GE::TextureAnimationInfo)) });
+	renderQueue->AddSetShaderResource({ 5,graphicsDevice.GetLayerManager()->Get("resultLayer")->GetRenderTexture()->GetSRVNumber() });
 	graphicsDevice.DrawMesh("2DPlane");
 
 	graphicsDevice.ExecuteRenderQueue();

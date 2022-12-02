@@ -47,10 +47,10 @@
     <ClCompile Include="TestTreeComponent.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Ground.cpp">
+    <ClCompile Include="TimeLimit.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="FieldObjectManager.cpp">
+    <ClCompile Include="Title.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -88,10 +88,10 @@
     <ClInclude Include="TestTreeComponent.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Ground.h">
+    <ClInclude Include="TimeLimit.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="FieldObjectManager.h">
+    <ClInclude Include="Title.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
@@ -131,7 +131,10 @@
     <FxCompile Include="Resources\Shader\DefaultSpriteWithTexturePixelShader.hlsl">
       <Filter>シェーダー ファイル</Filter>
     </FxCompile>
-    <FxCompile Include="Resources\Shader\DefaultSkinMeshVertexShader.hlsl">
+    <FxCompile Include="Resources\Shader\DefaultSpriteWithTextureVertexShader.hlsl">
+      <Filter>シェーダー ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shader\SpriteTextureForPostEffectPixelShader.hlsl">
       <Filter>シェーダー ファイル</Filter>
     </FxCompile>
   </ItemGroup>
