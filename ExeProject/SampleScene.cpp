@@ -28,8 +28,6 @@ SampleScene::SampleScene(const std::string& sceneName)
 		playerCollider->SetCenter({ 0,0,0 });
 		playerCollider->SetSize({ 2 });
 		col1 = playerCollider;
-		//タイトルセット
-		Title::GetInstance()->Start(&gameObjectManager, testObject);
 	}
 
 	{
@@ -52,6 +50,8 @@ SampleScene::~SampleScene()
 
 void SampleScene::Initialize()
 {
+	Title::GetInstance()->Awake(&gameObjectManager, graphicsDevice);
+
 	gameObjectManager.Awake();
 	gameObjectManager.Start();
 }
