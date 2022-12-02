@@ -10,50 +10,56 @@ Title* Title::GetInstance()
 	return &instance;
 }
 
-void Title::Start(GE::GameObjectManager* gameObjectManager, GE::GameObject* t)
+void Title::Awake(GE::GameObjectManager* gameObjectManager, GE::IGraphicsDeviceDx12* device)
 {
-	GE::Utility::Printf("Title Start()\n");
+	GE::Utility::Printf("Title Awake()\n");
 
 	inputDevice = GE::InputDevice::GetInstance();
-	targetObject = t;
 
 	//選択項目
 	states = States::start;
 	stage = Stage::stage1;
 	
 	//テクスチャたちの生成、初期設定
-	Create("title_stage1", "texture_stage1", gameObjectManager, t);
-	sprites.back()->GetTransform()->position = { 1170.0f,400.0f,0.0f };
-	sprites.back()->GetTransform()->scale = { 300,300,0 };
-	Create("title_option", "texture_option", gameObjectManager, t);
-	sprites.back()->GetTransform()->position = { 1170.0f,500,0.0f };
-	sprites.back()->GetTransform()->scale = { 300,300,0 };
-	Create("title_exit", "texture_exit", gameObjectManager, t);
-	sprites.back()->GetTransform()->position = { 1170.0f,600,0.0f };
-	sprites.back()->GetTransform()->scale = { 300,300,0 };
+	Create("title_stage1", "texture_stage1", gameObjectManager, device);
+	sprites.back()->position = { 1170.0f,400.0f,0.0f };
+	sprites.back()->scale = { 300,300,0 };
+	//ステージ用テクスチャ追加
+	textures.push_back(device->GetTextureManager()->Get("texture_stage2"));
+	Create("title_option", "texture_option", gameObjectManager, device);
+	sprites.back()->position = { 1170.0f,500.0f,0.0f };
+	sprites.back()->scale = { 300,300,0 };
+	Create("title_exit", "texture_exit", gameObjectManager, device);
+	sprites.back()->position = { 1170.0f,600.0f,0.0f };
+	sprites.back()->scale = { 300,300,0 };
 
-	Create("title_name", "texture_title", gameObjectManager, t);
-	sprites.back()->GetTransform()->position = { 1000.0f,220.0f,0.0f };
-	sprites.back()->GetTransform()->scale = { 500,500,0 };
-	Create("title_nextL", "texture_next", gameObjectManager, t);
-	sprites.back()->GetTransform()->position = { 70.0f,400.0f,0.0f };
-	sprites.back()->GetTransform()->scale = { 150,150,0 };
-	Create("title_nextR", "texture_next", gameObjectManager, t);
-	sprites.back()->GetTransform()->position = { 1460.0f,400.0f,0.0f };
-	sprites.back()->GetTransform()->rotation = GE::Math::Quaternion::Euler({ 0, 0, 180 });
-	sprites.back()->GetTransform()->scale = { 150,150,0 };
+	Create("title_name", "texture_title", gameObjectManager, device);
+	sprites.back()->position = { 1000.0f,220.0f,0.0f };
+	sprites.back()->scale = { 500,500,0 };
+	Create("title_nextL", "texture_next", gameObjectManager, device);
+	sprites.back()->position = { 70.0f,400.0f,0.0f };
+	sprites.back()->scale = { 150,150,0 };
+	Create("title_nextR", "texture_next", gameObjectManager, device);
+	sprites.back()->position = { 1460.0f,400.0f,0.0f };
+	sprites.back()->rotation = GE::Math::Quaternion::Euler({ 0, 0, 180 });
+	sprites.back()->scale = { 150,150,0 };
 
 	alpha = 0.0f;
 }
 
-void Title::Create(std::string gui_tag, std::string tex_tag, GE::GameObjectManager* gameObjectManager, GE::GameObject* t)
+void Title::Create(std::string gui_tag, std::string tex_tag, GE::GameObjectManager* gameObjectManager, GE::IGraphicsDeviceDx12* device)
 {
 	auto* titleObject = gameObjectManager->AddGameObject(new GE::GameObject(gui_tag, "title"));
 	//titleObject->SetDrawAxisEnabled(true);
 	auto* titleComponent = titleObject->AddComponent<TitleTex>();
-	titleComponent->SetTargetObject(t);
 	titleComponent->tag = tex_tag;
-	sprites.push_back(titleObject);
+	sprites.push_back(titleComponent);
+
+	//テクスチャ保存
+	textures.push_back(device->GetTextureManager()->Get(tex_tag));
+	//テクスチャ反映
+	titleComponent->SetTexture(textures.back());
+
 	//位置調整など
 	//titleComponent->position = { 1170.0f,180.0f + 64 * sprites.size(),0.0f };
 	//titleComponent->scale = { 300,300,0 };
@@ -65,14 +71,14 @@ void Title::Update()
 	//タイトル状態なら、選択可能
 	if (!decided)
 	{
-		Serect();
+		Select();
 		alpha += 0.003f;
 	}
 	//選択中のテクスチャ色変え
-	sprites[states]->SetColor(GE::Color::Red());
+	sprites[states]->GetGameObject()->SetColor(GE::Color::Red());
 }
 
-void Title::Serect()
+void Title::Select()
 {
 	int a;
 	//上下選択(スタート,オプション、exit
@@ -95,12 +101,14 @@ void Title::Serect()
 	{
 		a = (stage + (Stage::stageNum - 1)) % Stage::stageNum;
 		stage = (Title::Stage)a;
+		sprites[Title::States::start]->SetTexture(textures[stage]);
 	}
 	else if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::LEFT)
 		|| inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::A))
 	{
 		a = (stage + 1) % Stage::stageNum;
 		stage = (Title::Stage)a;
+		sprites[Title::States::start]->SetTexture(textures[stage]);
 	}
 
 	//決定
@@ -141,8 +149,9 @@ void TitleTex::Awake()
 
 void TitleTex::Start()
 {
-	//transform->position = position;
-	//transform->scale = scale;
+	transform->position = position;
+	transform->scale = scale;
+	transform->rotation = rotation;
 }
 
 void TitleTex::Update(float deltaTime)
@@ -191,6 +200,6 @@ void TitleTex::LateDraw()
 	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
 	renderQueue->AddSetConstantBufferInfo({ 4,cbufferAllocater->BindAndAttachData(4, &textureAnimationInfo,sizeof(GE::TextureAnimationInfo)) });
-	renderQueue->AddSetShaderResource({ 5,graphicsDevice->GetTextureManager()->Get(tag)->GetSRVNumber() });
+	renderQueue->AddSetShaderResource({ 5,tex->GetSRVNumber() });
 	graphicsDevice->DrawMesh("2DPlane");
 }

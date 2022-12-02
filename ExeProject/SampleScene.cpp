@@ -37,7 +37,6 @@ SampleScene::SampleScene(const std::string& sceneName)
 
 				//ƒ^ƒCƒgƒ‹Œn
 		{
-			Title::GetInstance()->Start(&gameObjectManager, testObject);
 		}
 	}
 
@@ -60,6 +59,7 @@ SampleScene::~SampleScene()
 
 void SampleScene::Initialize()
 {
+	Title::GetInstance()->Awake(&gameObjectManager, graphicsDevice);
 	gameObjectManager.Awake();
 	gameObjectManager.Start();
 }

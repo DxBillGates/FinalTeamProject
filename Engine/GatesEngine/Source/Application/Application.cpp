@@ -207,6 +207,10 @@ bool GE::Application::LoadContents()
 	textureManager->Add(nullTexture, "texture_stage1");
 
 	nullTexture = new Texture();
+	nullTexture->Load("stage2.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "texture_stage2");
+
+	nullTexture = new Texture();
 	nullTexture->Load("option.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "texture_option");
 
