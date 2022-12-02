@@ -6,6 +6,7 @@ class SampleScene : public GE::Scene
 {
 private:
 	GE::ICollider* col1, * col2;
+	//GE::MeshCollider* meshCollider;
 public:
 	SampleScene();
 	SampleScene(const std::string& sceneName);

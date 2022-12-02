@@ -50,6 +50,8 @@ SampleScene::SampleScene(const std::string& sceneName)
 
 	collisionManager.AddTagCombination("player", "enemy");
 	//collisionManager.AddTagCombination("player", "birdEnemy");
+
+	//meshCollider.SetMesh(graphicsDevice.GetMeshManager().Get("ground"));
 }
 
 SampleScene::~SampleScene()
@@ -67,6 +69,10 @@ void SampleScene::Update(float deltaTime)
 	gameObjectManager.Update(deltaTime);
 	collisionManager.Update();
 	
+	//if(meshCollider.CheckHit(col1))
+	//{
+	//    col1.Hit();
+	//}
 }
 
 void SampleScene::Draw()

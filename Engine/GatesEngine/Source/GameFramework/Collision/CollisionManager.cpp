@@ -1,5 +1,6 @@
 #include "..\..\..\Header\GameFramework\Collision\CollisionManager.h"
 #include "..\..\..\Header\GameFramework\GameObject\GameObject.h"
+#include "..\..\..\Header\GameFramework\Component\MeshCollider.h"
 
 #include <array>
 #include <cmath>
@@ -194,6 +195,10 @@ bool GE::CollisionManager::CheckHit(ICollider* col1, ICollider* col2)
 		else collisionCheck = CheckSphereToOBB(col2, col1);
 		break;
 	case GE::CollisionBitCombination::SPHERE_CAPSULE:
+		break;
+	case GE::CollisionBitCombination::SPHERE_MESH:
+		if (col1Type == ColliderType::SPHERE)collisionCheck = CheckSphereToMesh(col1, col2);
+		else collisionCheck = CheckSphereToMesh(col2, col1);
 		break;
 	case GE::CollisionBitCombination::AABB_AABB:
 		collisionCheck = CheckAABB(col1, col2);
@@ -496,4 +501,12 @@ bool GE::CollisionManager::CheckSphereToRay(ICollider* sphere, const Math::Vecto
 	*hitPos = rayPos + a2 * rayDir;
 
 	return true;
+}
+
+bool GE::CollisionManager::CheckSphereToMesh(ICollider* sphere, ICollider* mesh)
+{
+	MeshCollider* meshCollider = dynamic_cast<MeshCollider*>(mesh);
+	bool result = false;
+	result = meshCollider->CheckHit(sphere);
+	return result;
 }
