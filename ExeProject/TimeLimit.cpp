@@ -1,5 +1,8 @@
 #include "TimeLimit.h"
 
+#include <GatesEngine/Header/Util/Utility.h          >
+#include <GatesEngine/Header/Graphics\Window.h       >
+
 TimeLimit::TimeLimit(const int& timer)
 {
 	this->timer = timer * 60 * fps;//•ª”‚ğ•b”‚É’¼‚µ‚Ä144fps‚©‚¯‚é

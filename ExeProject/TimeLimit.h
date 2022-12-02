@@ -1,4 +1,9 @@
 #pragma once
+#include <GatesEngine/Header/GameFramework/Component/Component.h>
+#include <GatesEngine/Header/Input/InputDevice.h>
+#include <GatesEngine/Header/GameFramework/GameObject/GameObjectManager.h> 
+#include <GatesEngine/Header/GameFramework/GameObject/GameObject.h> 
+
 class TimeLimit
 {
 private:
