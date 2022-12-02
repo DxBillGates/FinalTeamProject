@@ -8,6 +8,7 @@
 #include <GatesEngine/Header\GameFramework\Component\BoxCollider.h>
 #include <GatesEngine/Header\GameFramework\Collision\CollisionManager.h>
 #include <GatesEngine/Header/Application/Application.h>
+#include"Title.h"
 
 SampleScene::SampleScene()
 	: SampleScene("SampleScene")
@@ -27,7 +28,8 @@ SampleScene::SampleScene(const std::string& sceneName)
 		playerCollider->SetCenter({ 0,0,0 });
 		playerCollider->SetSize({ 2 });
 		col1 = playerCollider;
-
+		//タイトルセット
+		Title::GetInstance()->Start(&gameObjectManager, testObject);
 	}
 
 	{
@@ -58,7 +60,8 @@ void SampleScene::Update(float deltaTime)
 {
 	gameObjectManager.Update(deltaTime);
 	collisionManager.Update();
-	
+	Title::GetInstance()->Update();
+
 }
 
 void SampleScene::Draw()

@@ -212,6 +212,26 @@ bool GE::Application::LoadContents()
 	nullTexture->Load("texture_null.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "texture_null");
 
+	nullTexture = new Texture();
+	nullTexture->Load("title.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "texture_title");
+
+	nullTexture = new Texture();
+	nullTexture->Load("stage1.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "texture_stage1");
+
+	nullTexture = new Texture();
+	nullTexture->Load("option.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "texture_option");
+
+	nullTexture = new Texture();
+	nullTexture->Load("exit.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "texture_exit");
+
+	nullTexture = new Texture();
+	nullTexture->Load("next.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "texture_next");
+
 	// shader compile
 	Shader defaultMeshVertexShader, defaultMeshPixelShader;
 	defaultMeshVertexShader.CompileShaderFileWithoutFormat(L"DefaultMeshVertexShader", "vs_5_0");

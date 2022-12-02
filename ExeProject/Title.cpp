@@ -20,7 +20,7 @@ void Title::Start(GE::GameObjectManager* gameObjectManager, GE::GameObject* t)
 	//選択項目
 	states = States::start;
 	stage = Stage::stage1;
-	
+
 	//テクスチャたちの生成、初期設定
 	Create("title_stage1", "texture_stage1", gameObjectManager, t);
 	sprites.back()->GetTransform()->position = { 1170.0f,400.0f,0.0f };
@@ -77,12 +77,12 @@ void Title::Serect()
 	int a;
 	//上下選択(スタート,オプション、exit
 	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::UP)
-		||inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::W))
+		|| inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::W))
 	{
 		a = (states + (States::serectNum - 1)) % States::serectNum;
 		states = (Title::States)a;
 	}
-	else if(inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::DOWN)
+	else if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::DOWN)
 		|| inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::S))
 	{
 		a = (states + 1) % States::serectNum;
@@ -185,7 +185,7 @@ void TitleTex::LateDraw()
 	// textureSizeと一緒にすると切り抜かれずに描画される
 	textureAnimationInfo.clipSize = 1;
 	// 切り抜く際の左上座標 例) {0,0}なら元画像の左上 texture->GetSize()なら右下になる
-	textureAnimationInfo.pivot = {0,0};
+	textureAnimationInfo.pivot = { 0,0 };
 
 	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
 	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
