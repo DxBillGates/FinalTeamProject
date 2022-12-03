@@ -61,7 +61,7 @@ GE::Math::Vector3 GE::CollisionManager::CheckClosestPoint(const Math::Vector3& p
 	Math::Vector3 returnPosition;
 
 	// ポイント間のベクトル
-	Math::Vector3 p1_p2, p3_p1;
+	Math::Vector3 p1_p2, p3_p1,p1_p3;
 	p1_p2 = triangle.pos2 - triangle.pos1;
 	p3_p1 = triangle.pos1 - triangle.pos3;
 
@@ -101,7 +101,7 @@ GE::Math::Vector3 GE::CollisionManager::CheckClosestPoint(const Math::Vector3& p
 	d5 = Math::Vector3::Dot(p1_p2, p3_pt);
 	d6 = Math::Vector3::Dot(-p3_p1, p3_pt);
 
-	if (d5 >= 0 && d5 <= d6)
+	if (d6 >= 0 && d5 <= d6)
 	{
 		returnPosition = triangle.pos3;
 		return returnPosition;

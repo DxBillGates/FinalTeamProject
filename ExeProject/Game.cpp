@@ -37,6 +37,7 @@ bool Game::LoadContents()
 bool Game::Initialize()
 {
 	Application::Initialize();
+	timer.SetIsShow(true);
 	return true;
 }
 

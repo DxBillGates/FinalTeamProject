@@ -37,9 +37,9 @@ bool GE::MeshCollider::CheckHit(ICollider* collider)
 	for (auto& mesh : meshs)
 	{
 		Triangle triangle = mesh;
-		//triangle.pos1 = Math::Matrix4x4::Transform(mesh.pos1, matrix);
-		//triangle.pos2 = Math::Matrix4x4::Transform(mesh.pos2, matrix);
-		//triangle.pos3 = Math::Matrix4x4::Transform(mesh.pos3, matrix);
+		triangle.pos1 = Math::Matrix4x4::Transform(mesh.pos1, matrix);
+		triangle.pos2 = Math::Matrix4x4::Transform(mesh.pos2, matrix);
+		triangle.pos3 = Math::Matrix4x4::Transform(mesh.pos3, matrix);
 
 		if (CollisionManager::CheckSphereToTriangle(collider, triangle))
 		{

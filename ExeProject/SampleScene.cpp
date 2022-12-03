@@ -28,7 +28,7 @@ SampleScene::SampleScene(const std::string& sceneName, const GE::SceneInitialize
 	auto device = graphicsDevice->GetDevice();
 	auto cmdList = graphicsDevice->GetCmdList();
 
-	MeshCreater::LoadObjModelData("Resources/Model/groundTest", groundModel);
+	MeshCreater::LoadObjModelData("Resources/Model/groundTest2", groundModel);
 	Mesh* mesh = new Mesh();
 	mesh->Create(device, cmdList, groundModel);
 	meshManager->Add(mesh, "ground");
@@ -99,7 +99,7 @@ void SampleScene::Load()
 
 	{
 		auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject("ground", "ground"));
-		testObject->GetTransform()->scale = { 1 };
+		testObject->GetTransform()->scale = { 25000 };
 		auto collider = testObject->AddComponent<GE::MeshCollider>();
 		auto* sampleComponent = testObject->AddComponent<GE::SampleComponent>();
 		collider->SetMesh(&groundModel);
