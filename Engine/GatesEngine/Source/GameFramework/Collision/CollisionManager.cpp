@@ -123,7 +123,8 @@ GE::Math::Vector3 GE::CollisionManager::CheckClosestPoint(const Math::Vector3& p
 		return returnPosition;
 	}
 
-	float denom = 1.0f / (va + vb + vc);
+	float divide = (va + vb + vc);
+	float denom = divide == 0.0f ? 0 : 1.0f / divide;
 	float v = vb * denom;
 	float w = vc * denom;
 	returnPosition = triangle.pos1 + p1_p2 * v + -p3_p1 * w;
@@ -385,12 +386,17 @@ bool GE::CollisionManager::CheckOBB(ICollider* col1, ICollider* col2)
 
 bool GE::CollisionManager::CheckSphereToTriangle(ICollider* collider, const Triangle& triangle)
 {
+	Math::Vector3 position = collider->GetMatrix().GetPosition();
 	Math::Vector3 closestPoint = CheckClosestPoint(collider->GetMatrix().GetPosition(), triangle);
+
+	Math::Vector3 localColliderRadius = collider->GetBounds().size;
+	Math::Vector3 parentScale = collider->GetParent()->scale;
+	Math::Vector3 worldColliderSize = (localColliderRadius * parentScale) / 2;
 
 	Math::Vector3 v = closestPoint - collider->GetMatrix().GetPosition();
 	float distance = Math::Vector3::Dot(v, v);
 
-	if (distance >= collider->GetBounds().size.x * collider->GetBounds().size.x)return false;
+	if (distance >= worldColliderSize.x * worldColliderSize.x)return false;
 
 	return true;
 }

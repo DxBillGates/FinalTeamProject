@@ -73,14 +73,14 @@ void GE::SampleComponent::Draw()
 
 	graphicsDevice->SetShader("DefaultMeshShader");
 
-	transform->scale = DRAW_SIZE;
+	//transform->scale = DRAW_SIZE;
 	Math::Matrix4x4 modelMatrix = transform->GetMatrix();
 	Material material;
 	material.color = Color::White();
 
 	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(Material)) });
-	graphicsDevice->DrawMesh("Plane");
+	graphicsDevice->DrawMesh("ground");
 }
 
 void GE::SampleComponent::LateDraw()

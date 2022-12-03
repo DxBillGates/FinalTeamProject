@@ -7,11 +7,6 @@
 #include <GatesEngine/Header\GameFramework\Collision\CollisionManager.h>
 #include <GatesEngine/Header/Application/Application.h>
 
-#include <GatesEngine/Header/Graphics/MeshData.h>
-#include <GatesEngine/Header/Graphics/VertexData.h>
-#include <GatesEngine/Header/Graphics/MeshCreater.h>
-#include <GatesEngine/Header/Graphics/Mesh.h>
-
 
 SampleScene::SampleScene()
 	: SampleScene("SampleScene")
@@ -32,13 +27,11 @@ SampleScene::SampleScene(const std::string& sceneName, const GE::SceneInitialize
 	auto meshManager = graphicsDevice->GetMeshManager();
 	auto device = graphicsDevice->GetDevice();
 	auto cmdList = graphicsDevice->GetCmdList();
-	MeshData<Vertex_UV_Normal> modelDataCylinder;
-	MeshCreater::LoadObjModelData("Resources/Model/cylinder", modelDataCylinder);
-	Mesh* mesh = new Mesh();
-	mesh->Create(device, cmdList, modelDataCylinder);
-	meshManager->Add(mesh, "Cylinder1");
 
-	meshCollider.SetMesh(&modelDataCylinder);
+	MeshCreater::LoadObjModelData("Resources/Model/groundTest", groundModel);
+	Mesh* mesh = new Mesh();
+	mesh->Create(device, cmdList, groundModel);
+	meshManager->Add(mesh, "ground");
 }
 
 SampleScene::~SampleScene()
@@ -97,16 +90,25 @@ void SampleScene::Load()
 		testObject->GetTransform()->position = { 1300,0,0 };
 		testObject->SetDrawAxisEnabled(true);
 		auto* sampleCollider = testObject->AddComponent<GE::BoxCollider>();
-		auto* sampleComponent = testObject->AddComponent<GE::SampleComponent>();
+		//auto* sampleComponent = testObject->AddComponent<GE::SampleComponent>();
 		sampleCollider->SetCenter({ 0,0,0 });
 		sampleCollider->SetSize({ 2 });
 		sampleCollider->SetType(GE::ColliderType::OBB);
 		col2 = sampleCollider;
 	}
 
+	{
+		auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject("ground", "ground"));
+		testObject->GetTransform()->scale = { 1 };
+		auto collider = testObject->AddComponent<GE::MeshCollider>();
+		auto* sampleComponent = testObject->AddComponent<GE::SampleComponent>();
+		collider->SetMesh(&groundModel);
+	}
+
 	EnemyManager::GetInstance()->Start(10, &gameObjectManager);
 
 	collisionManager.AddTagCombination("player", "enemy");
+	collisionManager.AddTagCombination("player", "ground");
 	//collisionManager.AddTagCombination("player", "birdEnemy");
 }
 
