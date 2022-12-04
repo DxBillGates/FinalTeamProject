@@ -309,9 +309,6 @@ void PlayerComponent::Control(float deltaTime)
 	case PlayerComponent::PlayerStatas::STAY_TREE:
 		if (startCouunt == 0.0f)
 		{
-			//‘Ì‚ÌŒü‚«
-			transform->rotation = GE::Math::Quaternion();
-
 			if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE))
 			{
 				startCouunt++;
