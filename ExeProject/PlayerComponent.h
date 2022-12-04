@@ -17,6 +17,7 @@ private:
 	static float pushStartTime;		//キーを押してから操作できるようになるまでのカウント
 	static float stayLandLerpTime;	//木に戻るラープ
 	static int collectMax;			//収集物の目標個数
+	static float body_direction_LerpTime; //秒数
 
 	GE::InputDevice* inputDevice;
 	GE::Math::Vector3 gyro;
@@ -34,6 +35,7 @@ private:
 	int collectCount;				//取集物を何個集めたか
 	int hitStopCount;				//ヒットストップカウント用
 	float startCouunt;				//開始時のカウント
+	int body_direction_LerpCount;	//元の姿勢に戻るときの遷移
 	struct LockOnEnemy
 	{
 		GE::GameObject* object = nullptr;
@@ -44,7 +46,8 @@ private:
 	//レティクルの位置
 	GE::Math::Vector2 center;
 	
-		GE::Math::Quaternion quat;
+	GE::Math::Quaternion quat;
+	GE::Math::Vector3 body_direction;				//体の向き計算用
 	GE::Math::Quaternion body_direction_LockOn;
 	bool is_rayCast_active;
 

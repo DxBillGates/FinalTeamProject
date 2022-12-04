@@ -6,6 +6,7 @@ class TestTreeComponent : public GE::Component
 	
 public:
 	static GE::Math::Vector3 position;
+	static int collectCount;
 	TestTreeComponent();
 	void Awake();
 	void Start();

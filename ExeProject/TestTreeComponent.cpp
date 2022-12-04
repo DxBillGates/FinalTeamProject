@@ -6,6 +6,7 @@
 #include"TestTreeComponent.h"
 
 GE::Math::Vector3 TestTreeComponent::position = { 0,700,-10000 };
+int TestTreeComponent::collectCount;
 
 TestTreeComponent::TestTreeComponent()
 {
@@ -24,6 +25,7 @@ void TestTreeComponent::Start()
 	gameObject->SetColor(GE::Color::Red());
 	transform->position = position;
 	transform->scale = { 100,100,100 };
+	collectCount = 0;
 
 }
 
@@ -57,12 +59,12 @@ void TestTreeComponent::LateDraw()
 
 void TestTreeComponent::OnCollision(GE::GameObject* other)
 {
-	GE::Utility::Printf("TestTreeComponent OnCollision(GameObject* other) : hit\n");
+	//GE::Utility::Printf("TestTreeComponent OnCollision(GameObject* other) : hit\n");
 }
 
 void TestTreeComponent::OnCollision(GE::ICollider* hitCollider)
 {
-	GE::Utility::Printf("TestTreeComponent OnCollision(ICollider* other) : hit\n");
+	//GE::Utility::Printf("TestTreeComponent OnCollision(ICollider* other) : hit\n");
 }
 
 void TestTreeComponent::OnGui()
