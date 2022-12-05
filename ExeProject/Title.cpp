@@ -22,25 +22,25 @@ void Title::Awake(GE::GameObjectManager* gameObjectManager, GE::IGraphicsDeviceD
 
 	//テクスチャたちの生成、初期設定
 	Create("title_stage1", "texture_stage1", gameObjectManager, device);
-	sprites.back()->position = { 1170.0f,400.0f,0.0f };
+	sprites.back()->position = { GE::Window::GetWindowSize().x - 400,GE::Window::GetWindowSize().y / 2,0.0f };
 	sprites.back()->scale = { 300,300,0 };
 	//ステージ用テクスチャ追加
 	textures.push_back(device->GetTextureManager()->Get("texture_stage2"));
 	Create("title_option", "texture_option", gameObjectManager, device);
-	sprites.back()->position = { 1170.0f,500.0f,0.0f };
+	sprites.back()->position = { GE::Window::GetWindowSize().x - 400,GE::Window::GetWindowSize().y / 2 + 100,0.0f };
 	sprites.back()->scale = { 300,300,0 };
 	Create("title_exit", "texture_exit", gameObjectManager, device);
-	sprites.back()->position = { 1170.0f,600.0f,0.0f };
+	sprites.back()->position = { GE::Window::GetWindowSize().x - 400,GE::Window::GetWindowSize().y / 2 + 200,0.0f };
 	sprites.back()->scale = { 300,300,0 };
 
 	Create("title_name", "texture_title", gameObjectManager, device);
-	sprites.back()->position = { 1000.0f,220.0f,0.0f };
+	sprites.back()->position = { GE::Window::GetWindowSize().x - 500,GE::Window::GetWindowSize().y / 2 - 200,0.0f };
 	sprites.back()->scale = { 500,500,0 };
 	Create("title_nextL", "texture_next", gameObjectManager, device);
-	sprites.back()->position = { 70.0f,400.0f,0.0f };
+	sprites.back()->position = { 70.0f,GE::Window::GetWindowSize().y / 2,0.0f };
 	sprites.back()->scale = { 150,150,0 };
 	Create("title_nextR", "texture_next", gameObjectManager, device);
-	sprites.back()->position = { 1460.0f,400.0f,0.0f };
+	sprites.back()->position = { GE::Window::GetWindowSize().x - 70,GE::Window::GetWindowSize().y / 2,0.0f };
 	sprites.back()->rotation = GE::Math::Quaternion::Euler({ 0, 0, 180 });
 	sprites.back()->scale = { 150,150,0 };
 
@@ -73,9 +73,9 @@ void Title::Update()
 	{
 		Select();
 		alpha += 0.003f;
+		//選択中のテクスチャ色変え
+		sprites[states]->GetGameObject()->SetColor(GE::Color::Red());
 	}
-	//選択中のテクスチャ色変え
-	sprites[states]->GetGameObject()->SetColor(GE::Color::Red());
 }
 
 void Title::Select()
@@ -141,6 +141,19 @@ void Title::Select()
 		decided = true;
 	}
 }
+
+bool Title::GetSelect(Title::States s)
+{
+	if (decided)
+	{
+		if (s == states)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 
 //タイトル用テクスチャ
 void TitleTex::Awake()
