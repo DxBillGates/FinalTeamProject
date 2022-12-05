@@ -143,6 +143,17 @@ void GE::CollisionManager::AddTagCombination(const std::string& tag1, const std:
 	{
 		collisionTagCombination.insert(std::make_pair(tag1, std::vector<std::string>()));
 	}
+	// “ñ‚Â–Ú‚Ìƒ^ƒO‚ª“o˜^‚³‚ê‚Ä‚¢‚é‚©
+	else
+	{
+		for (auto& tag : collisionTagCombination[tag1])
+		{
+			if (tag == tag2)
+			{
+				return;
+			}
+		}
+	}
 
 	collisionTagCombination[tag1].push_back(tag2);
 }
