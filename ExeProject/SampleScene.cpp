@@ -62,6 +62,12 @@ void SampleScene::Update(float deltaTime)
 	collisionManager.Update();
 	Title::GetInstance()->Update();
 
+	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::Q))
+	{
+		changeSceneInfo.name = "ClearScene";
+		changeSceneInfo.flag = true;
+		changeSceneInfo.initNextSceneFlag = true;
+	}
 }
 
 void SampleScene::Draw()

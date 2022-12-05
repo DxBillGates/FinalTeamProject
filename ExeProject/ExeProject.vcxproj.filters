@@ -84,6 +84,9 @@
     <ClCompile Include="Title.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Clear.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BirdEnemy.h">
@@ -129,6 +132,9 @@
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Clear.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
   </ItemGroup>

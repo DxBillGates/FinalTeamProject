@@ -236,6 +236,14 @@ bool GE::Application::LoadContents()
 	nullTexture->Load("next.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "texture_next");
 
+	nullTexture = new Texture();
+	nullTexture->Load("Game_Clear.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "texture_clear");
+
+	nullTexture = new Texture();
+	nullTexture->Load("Game_Over.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "texture_over");
+
 	// shader compile
 	Shader defaultMeshVertexShader, defaultMeshPixelShader;
 	defaultMeshVertexShader.CompileShaderFileWithoutFormat(L"DefaultMeshVertexShader", "vs_5_0");

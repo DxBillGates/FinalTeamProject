@@ -45,6 +45,7 @@ void Title::Awake(GE::GameObjectManager* gameObjectManager, GE::IGraphicsDeviceD
 	sprites.back()->scale = { 150,150,0 };
 
 	alpha = 0.0f;
+	decided = false;
 }
 
 void Title::Create(std::string gui_tag, std::string tex_tag, GE::GameObjectManager* gameObjectManager, GE::IGraphicsDeviceDx12* device)

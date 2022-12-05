@@ -1,5 +1,6 @@
 #include "Game.h"
 #include "SampleScene.h"
+#include"Clear.h"
 
 #include <GatesEngine/Header/Util/Random.h>
 #include <GatesEngine/Header/Util/Utility.h>
@@ -29,6 +30,7 @@ bool Game::LoadContents()
 {
 	Application::LoadContents();
 	auto* testScene = sceneManager.AddScene(new SampleScene("SampleScene"));
+	sceneManager.AddScene(new Clear("ClearScene"));
 	sceneManager.ChangeScene("SampleScene");
 
 	return true;
