@@ -9,6 +9,7 @@ public:
 	static float current_speed;		//現在のスピード
 	static float normal_speed;		//通常時のスピード
 private:
+	static GE::Math::Vector3 onTheTreePosition;	//木の上で体の高さ調整用
 	static GE::Math::Vector3 gravity;	//重力
 	static float rayHitSecond;		//照準を合わせる長さ（秒数）
 	static int hitStopTime;
@@ -52,12 +53,13 @@ private:
 public:
 	enum class PlayerStatas
 	{
-		STOP_DEBUG,
-		MOVE,
-		DASH,
-		LOCKON_SHOOT,
-		GO_TREE,
-		STAY_TREE,
+		STOP_DEBUG,		//その場に停止
+		MOVE,			//通常移動
+		DASH,			//ダッシュ
+		CRASH,			//壁に激突して墜落
+		LOCKON_SHOOT,	//敵をロックオンして攻撃
+		GO_TREE,		//巣の木に着陸中
+		STAY_TREE,		//木で待機
 	};
 	PlayerStatas statas;				//Playerの状態
 	//RayCast用

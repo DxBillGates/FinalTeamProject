@@ -11,15 +11,16 @@
 #include "CameraControl.h"
 #include "TestTreeComponent.h"
 
-int PlayerComponent::hitStopTime = 20;						// ヒットストップの長さ
-float PlayerComponent::body_direction_LerpTime = 50.0f;		//ダッシュ後体の角度の遷移
-float PlayerComponent::pushStartTime = 100.0f;				//キーを押してから操作できるようになるまでのカウント
-float PlayerComponent::stayLandLerpTime = 200.0f;			//木に着陸するラープ長さ
-GE::Math::Vector3 PlayerComponent::gravity = { 0,0.5,0 };	//重力
-float PlayerComponent::rayHitSecond = 144.0f;				//ロックオンする照準を合わせる長さ
-float PlayerComponent::normal_speed = 2000.0f;				//通常時のスピード
-float PlayerComponent::current_speed = normal_speed;		//現在のスピード
-float PlayerComponent::damageSpeed = 5000.0f;				//敵にヒットしたときにダメージが入るスピード
+GE::Math::Vector3 PlayerComponent::onTheTreePosition = { 0,180,0 };	//木の上で体の高さ調整用
+int PlayerComponent::hitStopTime = 20;								// ヒットストップの長さ
+float PlayerComponent::body_direction_LerpTime = 50.0f;				//ダッシュ後体の角度の遷移
+float PlayerComponent::pushStartTime = 100.0f;						//キーを押してから操作できるようになるまでのカウント
+float PlayerComponent::stayLandLerpTime = 200.0f;					//木に着陸するラープ長さ
+GE::Math::Vector3 PlayerComponent::gravity = { 0,0.5,0 };			//重力
+float PlayerComponent::rayHitSecond = 144.0f;						//ロックオンする照準を合わせる長さ
+float PlayerComponent::normal_speed = 2000.0f;						//通常時のスピード
+float PlayerComponent::current_speed = normal_speed;				//現在のスピード
+float PlayerComponent::damageSpeed = 5000.0f;						//敵にヒットしたときにダメージが入るスピード
 int PlayerComponent::collectMax = 3;
 
 PlayerComponent::PlayerComponent()
@@ -37,7 +38,7 @@ void PlayerComponent::Start()
 {
 	GE::Utility::Printf("PlayerComponent Start()\n");
 	inputDevice = GE::InputDevice::GetInstance();
-	transform->position = TestTreeComponent::position;
+	transform->position = TestTreeComponent::position + onTheTreePosition;
 	transform->scale = { 10,10,10 };
 
 	statas = PlayerStatas::STAY_TREE;
@@ -155,12 +156,6 @@ void PlayerComponent::OnCollision(GE::GameObject* other)
 {
 	GE::Utility::Printf("PlayerComponent OnCollision(GameObject* other) : hit\n");
 
-	if (other->GetTag() == "ground")
-	{
-		GE::Utility::Printf("aaa\n");
-		return;
-	}
-
 	if (other == lockOnEnemy.object)
 	{
 		lockOnEnemy.object = nullptr;
@@ -186,6 +181,13 @@ void PlayerComponent::OnCollision(GE::GameObject* other)
 
 void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 {
+	if (other->GetTag() == "ground")
+	{
+		body_direction.x *= -1.0f;
+		body_direction.y *= -1.0f;
+		statas = PlayerStatas::CRASH;
+		return;
+	}
 	//GE::Utility::Printf("PlayerComponent OnCollisionEnter\n");
 	if (other->GetTag() == "enemy")
 	{
@@ -236,18 +238,6 @@ bool PlayerComponent::IsSpeedy()
 }
 void PlayerComponent::Control(float deltaTime)
 {
-	GE::Math::Quaternion BODY_DIRECTION =
-		GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), body_direction.y)
-		* GE::Math::Quaternion(GE::Math::Vector3(0, 0, 1), body_direction.z)
-		* GE::Math::Quaternion(GE::Math::Vector3(1, 0, 0), body_direction.x);
-	//ダッシュ後体の角度の遷移
-	if (body_direction_LerpCount < body_direction_LerpTime)
-	{
-		body_direction_LerpCount += 1 * GE::GameSetting::Time::GetGameTime();
-		transform->rotation = GE::Math::Quaternion::Lerp(body_direction_LockOn, BODY_DIRECTION, body_direction_LerpCount / body_direction_LerpTime);
-	}
-	else { transform->rotation = BODY_DIRECTION; }
-
 	bool loop = false;
 	switch (statas)
 	{
@@ -292,7 +282,7 @@ void PlayerComponent::Control(float deltaTime)
 		if (stayLandLerpEasingCount < stayLandLerpTime)
 		{
 			stayLandLerpEasingCount++;
-			transform->position = GE::Math::Vector3::Lerp(currentPosition, TestTreeComponent::position, stayLandLerpEasingCount / stayLandLerpTime);
+			transform->position = GE::Math::Vector3::Lerp(currentPosition, TestTreeComponent::position + onTheTreePosition, stayLandLerpEasingCount / stayLandLerpTime);
 		}
 		else
 		{
@@ -347,6 +337,18 @@ void PlayerComponent::Control(float deltaTime)
 }
 void PlayerComponent::KeyboardMoveControl()
 {
+	GE::Math::Quaternion BODY_DIRECTION =
+		GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), body_direction.y)
+		* GE::Math::Quaternion(GE::Math::Vector3(0, 0, 1), body_direction.z)
+		* GE::Math::Quaternion(GE::Math::Vector3(1, 0, 0), body_direction.x);
+	//ダッシュ後体の角度の遷移
+	if (body_direction_LerpCount < body_direction_LerpTime)
+	{
+		body_direction_LerpCount += 1 * GE::GameSetting::Time::GetGameTime();
+		transform->rotation = GE::Math::Quaternion::Lerp(body_direction_LockOn, BODY_DIRECTION, body_direction_LerpCount / body_direction_LerpTime);
+	}
+	else { transform->rotation = BODY_DIRECTION; }
+
 	GE::Math::Vector3 inputAxis = InputManager::GetInstance()->GetAxis(0, InputManager::InputCtrlAxisState::GYROSCOPE);
 
 	if (inputAxis.x != 0)

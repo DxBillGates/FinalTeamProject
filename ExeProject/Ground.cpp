@@ -23,7 +23,7 @@ void Ground::Start()
 	gameObject->SetColor(GE::Color(0.5f, 0.9f, 0.5f, 1.0f));
 	position = { 1000,0,-15000 };
 	transform->position = position;
-	transform->scale = { 25000,25000,25000 };
+	transform->scale = { 2 };
 	transform->rotation = GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), -5.0f);
 
 }
