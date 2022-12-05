@@ -161,6 +161,15 @@ void PlayerComponent::OnCollision(GE::GameObject* other)
 {
 	GE::Utility::Printf("PlayerComponent OnCollision(GameObject* other) : hit\n");
 
+	if (other->GetTag() == "ground")
+	{
+		GE::Utility::Printf("aaa\n");
+		return;
+	}
+
+	hitStopCount = 0;
+	CameraControl::GetInstance()->ShakeStart({ 70,70 }, 30);
+
 	if (other == lockOnEnemy.object)
 	{
 		lockOnEnemy.object = nullptr;

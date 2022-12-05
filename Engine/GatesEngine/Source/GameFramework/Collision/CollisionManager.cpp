@@ -1,5 +1,6 @@
 #include "..\..\..\Header\GameFramework\Collision\CollisionManager.h"
 #include "..\..\..\Header\GameFramework\GameObject\GameObject.h"
+#include "..\..\..\Header\GameFramework\Component\MeshCollider.h"
 
 #include <array>
 #include <cmath>
@@ -54,6 +55,82 @@ void GE::CollisionManager::CollisionCheck(std::vector<GameObject*>* firstTagGame
 	}
 }
 
+GE::Math::Vector3 GE::CollisionManager::CheckClosestPoint(const Math::Vector3& point, const Triangle& triangle)
+{
+	Math::Vector3 center = point;
+	Math::Vector3 returnPosition;
+
+	// ポイント間のベクトル
+	Math::Vector3 p1_p2, p3_p1,p1_p3;
+	p1_p2 = triangle.pos2 - triangle.pos1;
+	p3_p1 = triangle.pos1 - triangle.pos3;
+
+	// 各ポイントとコライダーの真ん中間のベクトル
+	Math::Vector3 p1_pt, p2_pt, p3_pt;
+	p1_pt = center - triangle.pos1;
+	p2_pt = center - triangle.pos2;
+	p3_pt = center - triangle.pos3;
+
+	float d1, d2, d3, d4, d5, d6;
+	d1 = Math::Vector3::Dot(p1_p2, p1_pt);
+	d2 = Math::Vector3::Dot(-p3_p1, p1_pt);
+
+	if (d1 <= 0 && d2 <= 0)
+	{
+		returnPosition = triangle.pos1;
+		return returnPosition;
+	}
+
+	d3 = Math::Vector3::Dot(p1_p2, p2_pt);
+	d4 = Math::Vector3::Dot(-p3_p1, p2_pt);
+
+	if (d3 >= 0 && d4 <= d3)
+	{
+		returnPosition = triangle.pos2;
+		return returnPosition;
+	}
+
+	float vc = d1 * d4 - d3 * d2;
+	if (vc <= 0 && d1 >= 0 && d3 <= 0)
+	{
+		float v = d1 / (d1 - d3);
+		returnPosition = triangle.pos1 + v * p1_p2;
+		return returnPosition;
+	}
+
+	d5 = Math::Vector3::Dot(p1_p2, p3_pt);
+	d6 = Math::Vector3::Dot(-p3_p1, p3_pt);
+
+	if (d6 >= 0 && d5 <= d6)
+	{
+		returnPosition = triangle.pos3;
+		return returnPosition;
+	}
+
+	float vb = d5 * d2 - d1 * d6;
+	if (vb <= 0 && d2 >= 0 && d6 <= 0)
+	{
+		float v = d2 / (d2 - d6);
+		returnPosition = triangle.pos1 + v * -p3_p1;
+		return returnPosition;
+	}
+
+	float va = d3 * d6 - d5 * d4;
+	if (va <= 0 && (d4 - d3) >= 0 && (d5 - d6) >= 0)
+	{
+		float v = (d4 - d3) / ((d4 - d3) + (d5 - d6));
+		returnPosition = triangle.pos1 + v * (triangle.pos2 - triangle.pos1);
+		return returnPosition;
+	}
+
+	float divide = (va + vb + vc);
+	float denom = divide == 0.0f ? 0 : 1.0f / divide;
+	float v = vb * denom;
+	float w = vc * denom;
+	returnPosition = triangle.pos1 + p1_p2 * v + -p3_p1 * w;
+	return returnPosition;
+}
+
 void GE::CollisionManager::AddTagCombination(const std::string& tag1, const std::string& tag2)
 {
 	bool isFind = false;
@@ -84,7 +161,7 @@ void GE::CollisionManager::Update()
 	{
 		// ゲームオブジェクトの配列にタグが登録されているかを確認する
 		isTagFinds = ((*pGameObjects).find(tagCombination.first) != (*pGameObjects).end());
-		
+
 		for (auto& tag : tagCombination.second)
 		{
 			isTagFinds = ((*pGameObjects).find(tag) != (*pGameObjects).end());
@@ -119,6 +196,10 @@ bool GE::CollisionManager::CheckHit(ICollider* col1, ICollider* col2)
 		else collisionCheck = CheckSphereToOBB(col2, col1);
 		break;
 	case GE::CollisionBitCombination::SPHERE_CAPSULE:
+		break;
+	case GE::CollisionBitCombination::SPHERE_MESH:
+		if (col1Type == ColliderType::SPHERE)collisionCheck = CheckSphereToMesh(col1, col2);
+		else collisionCheck = CheckSphereToMesh(col2, col1);
 		break;
 	case GE::CollisionBitCombination::AABB_AABB:
 		collisionCheck = CheckAABB(col1, col2);
@@ -303,6 +384,23 @@ bool GE::CollisionManager::CheckOBB(ICollider* col1, ICollider* col2)
 	return true;
 }
 
+bool GE::CollisionManager::CheckSphereToTriangle(ICollider* collider, const Triangle& triangle)
+{
+	Math::Vector3 position = collider->GetMatrix().GetPosition();
+	Math::Vector3 closestPoint = CheckClosestPoint(collider->GetMatrix().GetPosition(), triangle);
+
+	Math::Vector3 localColliderRadius = collider->GetBounds().size;
+	Math::Vector3 parentScale = collider->GetParent()->scale;
+	Math::Vector3 worldColliderSize = (localColliderRadius * parentScale) / 2;
+
+	Math::Vector3 v = closestPoint - collider->GetMatrix().GetPosition();
+	float distance = Math::Vector3::Dot(v, v);
+
+	if (distance >= worldColliderSize.x * worldColliderSize.x)return false;
+
+	return true;
+}
+
 bool GE::CollisionManager::CheckSphereToAABB(ICollider* sphere, ICollider* box)
 {
 	const Bounds& sphereBounds = sphere->GetBounds();
@@ -409,4 +507,12 @@ bool GE::CollisionManager::CheckSphereToRay(ICollider* sphere, const Math::Vecto
 	*hitPos = rayPos + a2 * rayDir;
 
 	return true;
+}
+
+bool GE::CollisionManager::CheckSphereToMesh(ICollider* sphere, ICollider* mesh)
+{
+	MeshCollider* meshCollider = dynamic_cast<MeshCollider*>(mesh);
+	bool result = false;
+	result = meshCollider->CheckHit(sphere);
+	return result;
 }

@@ -13,7 +13,7 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 	this->gameObjectManager = gameObjectManager;
 	//地形
 	{
-		auto* object = gameObjectManager->AddGameObject(new GE::GameObject("Ground", "ground"));
+		auto* object = gameObjectManager->AddGameObject(new GE::GameObject("Ground", "none"));
 		auto* sampleComponent = object->AddComponent<Ground>();
 	}
 	//スタートの止まり木
