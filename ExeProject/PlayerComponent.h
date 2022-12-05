@@ -8,7 +8,6 @@ class PlayerComponent : public GE::Component
 public:
 	static float current_speed;		//現在のスピード
 	static float normal_speed;		//通常時のスピード
-	bool isCollect;					//指定個数集めたかどうか	
 private:
 	static GE::Math::Vector3 gravity;	//重力
 	static float rayHitSecond;		//照準を合わせる長さ（秒数）
@@ -16,7 +15,6 @@ private:
 	static float damageSpeed;
 	static float pushStartTime;		//キーを押してから操作できるようになるまでのカウント
 	static float stayLandLerpTime;	//木に戻るラープ
-	static int goalCollect;			//収集物の目標個数
 	static int collectMax;			//収集物の同時にもてる最大個数
 	static float body_direction_LerpTime; //秒数
 
@@ -93,10 +91,7 @@ private:
 	/// Keyboardで移動操作
 	/// </summary>
 	void KeyboardMoveControl();
-	/// <summary>
-	/// 収集物の制御
-	/// </summary>
-	void CollectControl();
+
 	/// <summary>
 	/// 前方にいて最も近い敵を求める
 	/// </summary>

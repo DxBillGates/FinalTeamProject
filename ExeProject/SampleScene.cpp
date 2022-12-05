@@ -21,7 +21,7 @@ SampleScene::SampleScene(const std::string& sceneName)
 }
 
 SampleScene::SampleScene(const std::string& sceneName, const GE::SceneInitializer& initializer)
-	: Scene(sceneName,initializer)
+	: Scene(sceneName, initializer)
 	, col1(nullptr)
 	, col2(nullptr)
 {
@@ -84,11 +84,6 @@ void SampleScene::Load()
 		playerCollider->SetSize({ 20 });
 		col1 = playerCollider;
 
-		////ƒƒbƒNƒIƒ“‚Ì”ÍˆÍ‚ÌCollider
-		//auto* lockOnCollider = testObject->AddComponent < GE::SphereCollider >();
-		//lockOnCollider->SetCenter({ 0,0,0 });
-		//lockOnCollider->SetSize(200);
-		//lockOnCollider->DrawEnabled(false);
 	}
 
 	{
@@ -104,15 +99,16 @@ void SampleScene::Load()
 	}
 
 	{
-		auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject("ground", "ground"));
+		/*auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject("ground", "ground"));
 		testObject->GetTransform()->scale = { 25000 };
 		auto collider = testObject->AddComponent<GE::MeshCollider>();
 		auto* sampleComponent = testObject->AddComponent<GE::SampleComponent>();
-		collider->SetMesh(&groundModel);
+		collider->SetMesh(&groundModel);*/
 	}
 
 	EnemyManager::GetInstance()->Start(10, &gameObjectManager);
 	FieldObjectManager::GetInstance()->Start(&gameObjectManager);
+	FieldObjectManager::GetInstance()->SetGroundMesh(groundModel);
 
 	collisionManager.AddTagCombination("player", "enemy");
 	collisionManager.AddTagCombination("player", "ground");

@@ -6,7 +6,9 @@
 #include"TestTreeComponent.h"
 
 GE::Math::Vector3 TestTreeComponent::position = { 0,700,-10000 };
+int TestTreeComponent::goalCollect = 10;
 int TestTreeComponent::collectCount;
+bool TestTreeComponent::isCollect;
 
 TestTreeComponent::TestTreeComponent()
 {
@@ -26,12 +28,21 @@ void TestTreeComponent::Start()
 	transform->position = position;
 	transform->scale = { 100,100,100 };
 	collectCount = 0;
+	isCollect = false;
 
 }
 
 void TestTreeComponent::Update(float deltaTime)
 {
+	if (collectCount < goalCollect)
+	{
 
+
+	}
+	else
+	{
+		isCollect = true;
+	}
 }
 
 void TestTreeComponent::Draw()
