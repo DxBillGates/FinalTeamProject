@@ -155,6 +155,12 @@ bool Title::GetSelect(Title::States s)
 	return false;
 }
 
+void Title::ClearGameObject()
+{
+	sprites.clear();
+	textures.clear();
+}
+
 
 //タイトル用テクスチャ
 void TitleTex::Awake()

@@ -29,8 +29,9 @@ Game::~Game()
 bool Game::LoadContents()
 {
 	Application::LoadContents();
-	auto* testScene = sceneManager.AddScene(new SampleScene("SampleScene"));
-	sceneManager.AddScene(new Clear("ClearScene"));
+
+	auto* testScene = sceneManager.AddScene(new SampleScene("SampleScene",sceneManager.GetSceneInitializer()));
+	sceneManager.AddScene(new Clear("ClearScene", sceneManager.GetSceneInitializer()));
 	sceneManager.ChangeScene("SampleScene");
 
 	return true;
@@ -39,6 +40,9 @@ bool Game::LoadContents()
 bool Game::Initialize()
 {
 	Application::Initialize();
+
+	// fpsÇÃï\é¶êÿë÷
+	timer.SetIsShow(false);
 	return true;
 }
 

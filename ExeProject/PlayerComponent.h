@@ -7,47 +7,48 @@ class PlayerComponent : public GE::Component
 {
 public:
 	static float current_speed;		//現在のスピード
-	static float normal_speed;			//通常時のスピード
+	static float normal_speed;		//通常時のスピード
 private:
 	static GE::Math::Vector3 gravity;	//重力
-	static float rayHitSecond;	//照準を合わせる長さ（秒数）
+	static float rayHitSecond;		//照準を合わせる長さ（秒数）
 	static int hitStopTime;
-	static float body_direction_LerpTime; //秒数
 	static float damageSpeed;
-	static float pushStartTime;//キーを押してから操作できるようになるまでのカウント
+	static float pushStartTime;		//キーを押してから操作できるようになるまでのカウント
+	static float stayLandLerpTime;	//木に戻るラープ
+	static int collectMax;			//収集物の同時にもてる最大個数
+	static float body_direction_LerpTime; //秒数
 
 	GE::InputDevice* inputDevice;
 	GE::Math::Vector3 gyro;
 	GE::Math::Vector3 accelerometer;
 	GE::SkinMeshAnimator animator;
 
-	GE::Math::Vector3 body_direction;//体の向き計算用
+	bool isLockOnStart;				//ロックオン処理を呼ぶフラグ
+	bool isLockOn;					//ロックオンして発射待機中フラグ
+
 	float dashEasingCount;			//スピード遷移のカウント
-
-	bool isLockOnStart;			//ロックオン処理を呼ぶフラグ
-	bool isLockOn;				//ロックオンして発射待機中フラグ
-
-	float rayHitCount;	//何フレーム照準をあわせているか
+	float stayLandLerpEasingCount;	//着陸する遷移カウント
+	float rayHitCount;				//何フレーム照準をあわせているか
+	int collectCount;				//取集物を何個集めたか
+	int hitStopCount;				//ヒットストップカウント用
+	float startCouunt;				//開始時のカウント
+	int body_direction_LerpCount;	//元の姿勢に戻るときの遷移
 	struct LockOnEnemy
 	{
 		GE::GameObject* object = nullptr;
 		GE::Math::Vector3 direction;
 	};
 	LockOnEnemy lockOnEnemy;
-	//ヒットストップカウント用
-	int hitStopCount;
+	
 	//レティクルの位置
 	GE::Math::Vector2 center;
-	//元の姿勢に戻るときの遷移
-	int body_direction_LerpCount;
-
-	//開始時のカウント
-	float startCouunt;
-
+	
 	GE::Math::Quaternion quat;
-	GE::Math::Quaternion body_direction_LockOn;
+	GE::Math::Vector3 body_direction;				//体の向き計算用
+	GE::Math::Quaternion body_direction_LockOn;		//ロックオン時の体の向き計算用
+	bool is_rayCast_active;							//レイキャストの照準が使われてるか
 
-	bool is_rayCast_active;
+	GE::Math::Vector3 currentPosition;//巣に着陸するときのラープ用
 public:
 	enum class PlayerStatas
 	{
@@ -55,7 +56,8 @@ public:
 		MOVE,
 		DASH,
 		LOCKON_SHOOT,
-		STAY_LAND,
+		GO_TREE,
+		STAY_TREE,
 	};
 	PlayerStatas statas;				//Playerの状態
 	//RayCast用
@@ -89,6 +91,7 @@ private:
 	/// Keyboardで移動操作
 	/// </summary>
 	void KeyboardMoveControl();
+
 	/// <summary>
 	/// 前方にいて最も近い敵を求める
 	/// </summary>

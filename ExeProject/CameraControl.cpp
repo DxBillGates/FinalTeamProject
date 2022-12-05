@@ -40,7 +40,7 @@ void CameraControl::Update()
 
 	//カメラの更新
 	GE::Math::Vector3 newCameraPosition;
-	if (targetObject->GetComponent<PlayerComponent>()->statas == PlayerComponent::PlayerStatas::STAY_LAND)
+	if (targetObject->GetComponent<PlayerComponent>()->statas == PlayerComponent::PlayerStatas::STAY_TREE)
 	{
 		current_cameraDistance = 1000;
 		newCameraPosition = target
@@ -70,11 +70,9 @@ void CameraControl::Update()
 	{
 		LERP_VALUE = 0.035f * GE::GameSetting::Time::GetGameTime();
 	}
-	if (targetObject->GetComponent<PlayerComponent>()->statas != PlayerComponent::PlayerStatas::STOP_DEBUG)
-	{
-		position = GE::Math::Vector3::Lerp(beforeCameraPosition, newCameraPosition, LERP_VALUE) + cameraShake * GE::GameSetting::Time::GetGameTime();
-		target += cameraShake * GE::GameSetting::Time::GetGameTime();
-	}
+
+	position = GE::Math::Vector3::Lerp(beforeCameraPosition, newCameraPosition, LERP_VALUE) + cameraShake * GE::GameSetting::Time::GetGameTime();
+	target += cameraShake * GE::GameSetting::Time::GetGameTime();
 	//カメラシェイク
 	Shake();
 

@@ -11,6 +11,7 @@ GE::SkinMeshAnimator::SkinMeshAnimator(SkinMeshData* setSkinMeshData)
 	, isPlay(false)
 	, isLoop(false)
 	, isStartedFrame(false)
+	, isEnd(false)
 	, currentTime()
 {
 }
@@ -41,6 +42,7 @@ void GE::SkinMeshAnimator::PlayAnimation(int index, bool loopFlag)
 	isPlay = true;
 	isLoop = loopFlag;
 	isStartedFrame = true;
+	isEnd = false;
 }
 
 void GE::SkinMeshAnimator::PlayAnimation()
@@ -69,6 +71,8 @@ void GE::SkinMeshAnimator::Update(float deltaTime)
 {
 	if (isPlay == false)return;
 
+	isEnd = false;
+
 	// frameTime‚ÌC³
 	int fps = 1 / deltaTime;
 	if (fps >= 60)
@@ -84,6 +88,7 @@ void GE::SkinMeshAnimator::Update(float deltaTime)
 	if (isStartedFrame == true)
 	{
 		isStartedFrame = false;
+		isEnd = true;
 		return;
 	}
 
@@ -100,6 +105,7 @@ void GE::SkinMeshAnimator::Update(float deltaTime)
 	if (currentTime >= currentPlayAnimationData->endTime)
 	{
 		currentTime = currentPlayAnimationData->endTime;
+		isEnd = true;
 	}
 }
 
@@ -135,4 +141,11 @@ void GE::SkinMeshAnimator::SetAnimationData(IGraphicsDeviceDx12* graphicsDevice,
 	cbufferCommand.descIndex = 0;
 	cbufferCommand.viewNumber = graphicsDevice->GetCBufferAllocater()->BindAndAttachData(0, &skinMeshInfo,sizeof(skinMeshInfo));
 	graphicsDevice->GetRenderQueue()->AddSetConstantBufferInfo(cbufferCommand);
+}
+
+bool GE::SkinMeshAnimator::IsEndAnimation()
+{
+	if (isPlay == false)return false;
+
+	return isEnd;
 }

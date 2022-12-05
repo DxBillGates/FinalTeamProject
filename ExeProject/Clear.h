@@ -18,10 +18,13 @@ private:
 public:
 	Clear();
 	Clear(const std::string& sceneName);
+	Clear(const std::string& sceneName, const GE::SceneInitializer& initializer);
 	~Clear();
 	void Initialize() override;
 	void Update(float deltaTime) override;
 	void Draw() override;
 	void LateDraw() override;
+	void Load() override;
+	void UnLoad() override;
 };
 

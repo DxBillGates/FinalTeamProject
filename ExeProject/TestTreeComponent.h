@@ -3,8 +3,11 @@
 
 class TestTreeComponent : public GE::Component
 {
-	
+private:
+	static int goalCollect;			//収集物の目標個数
 public:
+	static int collectCount;		//持って帰ってきた収集物の個数
+	static bool isCollect;			//指定個数集めたかどうか	
 	static GE::Math::Vector3 position;
 	TestTreeComponent();
 	void Awake();

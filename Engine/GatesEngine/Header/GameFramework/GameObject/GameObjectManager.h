@@ -36,6 +36,9 @@ namespace GE
 		void DestroyGameObject(const std::string& name);
 		void DestroyGameObject(GameObject* gameObject);
 
+		// 全ゲームオブジェクトを削除する
+		void DestroyGameObjects();
+
 		//// 全オブジェクトとレイキャスト
 		//bool Raycast(const Math::Vector3& pos, const Math::Vector3& dir,float length = 1000000,float* hitLength = nullptr);
 

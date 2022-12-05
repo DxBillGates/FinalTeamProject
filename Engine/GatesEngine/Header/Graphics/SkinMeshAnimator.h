@@ -12,6 +12,7 @@ namespace GE
 		bool isPlay;
 		bool isLoop;
 		bool isStartedFrame;
+		bool isEnd;
 
 		FbxTime currentTime;
 	public:
@@ -36,5 +37,7 @@ namespace GE
 
 		// 描画時に必要なアニメーションデータをシェーダーにバインド
 		void SetAnimationData(IGraphicsDeviceDx12* graphicsDevice,const Math::Matrix4x4& modelMatrix);
+
+		bool IsEndAnimation();
 	};
 }

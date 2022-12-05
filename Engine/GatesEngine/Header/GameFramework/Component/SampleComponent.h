@@ -12,7 +12,6 @@ namespace GE
 		Math::Vector3 random;
 		float speed;
 		Math::Vector3 gyro;
-		SkinMeshAnimator animator;
 	public:
 		SampleComponent();
 		~SampleComponent();

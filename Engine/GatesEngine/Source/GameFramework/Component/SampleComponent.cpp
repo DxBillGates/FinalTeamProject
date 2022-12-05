@@ -26,34 +26,11 @@ void GE::SampleComponent::Start()
 	inputDevice = InputDevice::GetInstance();
 	random = { RandomMaker::GetFloat(-1,1),RandomMaker::GetFloat(-1,1),RandomMaker::GetFloat(-1,1) };
 	speed = 1;
-	animator = SkinMeshManager::GetInstance()->Get("Bird");
-	animator.Initialize();
+	gameObject->SetColor(GE::Color(0.5f, 0.9f, 0.5f, 1.0f));
 }
 
 void GE::SampleComponent::Update(float deltaTime)
 {
-	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::D1))
-	{
-		animator.PlayAnimation(0);
-	}
-	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::D2))
-	{
-		animator.PlayAnimation(1);
-	}
-	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::D3))
-	{
-		animator.PlayAnimation(2);
-	}
-	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::D4))
-	{
-		animator.PlayAnimation(3);
-	}
-	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::D5))
-	{
-		animator.PlayAnimation(4);
-	}
-
-	animator.Update(deltaTime);
 }
 
 void GE::SampleComponent::Draw()
@@ -62,18 +39,16 @@ void GE::SampleComponent::Draw()
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
 	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
 
-	graphicsDevice->SetShader("DefaultSkinMeshShader");
+	graphicsDevice->SetShader("DefaultMeshShader");
 
-	transform->scale = DRAW_SIZE;
+	//transform->scale = DRAW_SIZE;
 	Math::Matrix4x4 modelMatrix = transform->GetMatrix();
-	Material material;
-	material.color = Color::White();
+	GE::Material material;
+	material.color = gameObject->GetColor();
 
-	animator.SetAnimationData(graphicsDevice, modelMatrix);
-
-	//renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
+	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(Material)) });
-	graphicsDevice->DrawMesh("Player");
+	graphicsDevice->DrawMesh("ground");
 }
 
 void GE::SampleComponent::LateDraw()

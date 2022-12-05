@@ -347,6 +347,9 @@
     <ClInclude Include="Header\Graphics\SkinMeshManager.h">
       <Filter>Header\Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Header\GameFramework\Component\MeshCollider.h">
+      <Filter>Header\GameFramework\Component</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Application\Application.cpp">
@@ -522,6 +525,9 @@
     </ClCompile>
     <ClCompile Include="Source\Graphics\SkinMeshAnimator.cpp">
       <Filter>Source\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GameFramework\Component\MeshCollider.cpp">
+      <Filter>Source\GameFramework\Component</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

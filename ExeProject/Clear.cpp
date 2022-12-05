@@ -11,11 +11,11 @@ Clear::Clear()
 Clear::Clear(const std::string& sceneName)
 	:Scene(sceneName)
 {
-	auto* Object = gameObjectManager.AddGameObject(new GE::GameObject("clear", "title"));
-	//titleObject->SetDrawAxisEnabled(true);
-	Object->GetTransform()->position = { GE::Window::GetWindowSize().x / 2,GE::Window::GetWindowSize().y / 2,0 };
-	Object->GetTransform()->scale = { 700,400,0 };
-	auto* clearComponent = Object->AddComponent<ClearTex>();
+}
+
+Clear::Clear(const std::string& sceneName, const GE::SceneInitializer& initializer)
+	: Scene(sceneName, initializer)
+{
 }
 
 Clear::~Clear()
@@ -48,6 +48,21 @@ void Clear::Draw()
 void Clear::LateDraw()
 {
 	gameObjectManager.LateDraw();
+}
+
+void Clear::Load()
+{
+	auto* Object = gameObjectManager.AddGameObject(new GE::GameObject("clear", "title"));
+	//titleObject->SetDrawAxisEnabled(true);
+	Object->GetTransform()->position = { GE::Window::GetWindowSize().x / 2,GE::Window::GetWindowSize().y / 2,0 };
+	Object->GetTransform()->scale = { 700,400,0 };
+	auto* clearComponent = Object->AddComponent<ClearTex>();
+}
+
+void Clear::UnLoad()
+{
+	// gameObjects‚ğíœ‚·‚é
+	Scene::UnLoad();
 }
 
 void ClearTex::Awake()

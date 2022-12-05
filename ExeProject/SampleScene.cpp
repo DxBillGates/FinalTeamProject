@@ -16,32 +16,25 @@ SampleScene::SampleScene()
 }
 
 SampleScene::SampleScene(const std::string& sceneName)
-	: Scene(sceneName)
+	: SampleScene(sceneName, {})
+{
+}
+
+SampleScene::SampleScene(const std::string& sceneName, const GE::SceneInitializer& initializer)
+	: Scene(sceneName, initializer)
 	, col1(nullptr)
 	, col2(nullptr)
 {
-	{
-		auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject("Player","player"));
-		auto* sampleComponent = testObject->AddComponent<PlayerComponent>();
+	using namespace GE;
+	auto meshManager = graphicsDevice->GetMeshManager();
+	auto device = graphicsDevice->GetDevice();
+	auto cmdList = graphicsDevice->GetCmdList();
 
-		auto* playerCollider = testObject->AddComponent < GE::SphereCollider >();
-		playerCollider->SetCenter({ 0,0,0 });
-		playerCollider->SetSize({ 2 });
-		col1 = playerCollider;
-	}
 
-	{
-		/*auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject("test2","testTag"));
-		testObject->GetTransform()->position = { 1300,0,0 };
-		testObject->SetDrawAxisEnabled(true);
-		auto* sampleComponent = testObject->AddComponent<GE::SampleComponent>();*/
-	}
-
-	EnemyManager::GetInstance()->Start(10, &gameObjectManager);
-	FieldObjectManager::GetInstance()->Start(&gameObjectManager);
-
-	collisionManager.AddTagCombination("player", "enemy");
-	//collisionManager.AddTagCombination("player", "birdEnemy");
+	MeshCreater::LoadObjModelData("Resources/Model/groundTest", groundModel);
+	Mesh* mesh = new Mesh();
+	mesh->Create(device, cmdList, groundModel);
+	meshManager->Add(mesh, "ground");
 }
 
 SampleScene::~SampleScene()
@@ -68,6 +61,12 @@ void SampleScene::Update(float deltaTime)
 		changeSceneInfo.flag = true;
 		changeSceneInfo.initNextSceneFlag = true;
 	}
+	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::Y))
+	{
+		changeSceneInfo.name = "SampleScene";
+		changeSceneInfo.flag = true;
+		changeSceneInfo.initNextSceneFlag = true;
+	}
 }
 
 void SampleScene::Draw()
@@ -78,4 +77,55 @@ void SampleScene::Draw()
 void SampleScene::LateDraw()
 {
 	gameObjectManager.LateDraw();
+}
+
+void SampleScene::Load()
+{
+	{
+		auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject("Player", "player"));
+		auto* sampleComponent = testObject->AddComponent<PlayerComponent>();
+
+		auto* playerCollider = testObject->AddComponent < GE::SphereCollider >();
+		playerCollider->SetCenter({ 0,0,0 });
+		playerCollider->SetSize({ 20 });
+		col1 = playerCollider;
+
+	}
+
+	{
+		auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject("test2", "testTag"));
+		testObject->GetTransform()->position = { 1300,0,0 };
+		testObject->SetDrawAxisEnabled(true);
+		auto* sampleCollider = testObject->AddComponent<GE::BoxCollider>();
+		//auto* sampleComponent = testObject->AddComponent<GE::SampleComponent>();
+		sampleCollider->SetCenter({ 0,0,0 });
+		sampleCollider->SetSize({ 2 });
+		sampleCollider->SetType(GE::ColliderType::OBB);
+		col2 = sampleCollider;
+	}
+
+	{
+		/*auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject("ground", "ground"));
+		testObject->GetTransform()->scale = { 25000 };
+		auto collider = testObject->AddComponent<GE::MeshCollider>();
+		auto* sampleComponent = testObject->AddComponent<GE::SampleComponent>();
+		collider->SetMesh(&groundModel);*/
+	}
+
+	EnemyManager::GetInstance()->Start(10, &gameObjectManager);
+	FieldObjectManager::GetInstance()->Start(&gameObjectManager);
+	FieldObjectManager::GetInstance()->SetGroundMesh(groundModel);
+
+	collisionManager.AddTagCombination("player", "enemy");
+	collisionManager.AddTagCombination("player", "ground");
+	collisionManager.AddTagCombination("player", "tree");
+	//collisionManager.AddTagCombination("player", "birdEnemy");
+}
+
+void SampleScene::UnLoad()
+{
+	Title::GetInstance()->ClearGameObject();
+
+	// gameObjects‚ğíœ‚·‚é
+	Scene::UnLoad();
 }
