@@ -23,10 +23,11 @@ void TimeLimit::Update()
 
 void TimeLimit::Create(std::string gui_tag, std::string tex_tag, GE::GameObjectManager* gameObjectManager)
 {
-	auto* titleObject = gameObjectManager->AddGameObject(new GE::GameObject(gui_tag, "time"));
-	auto* titleComponent = titleObject->AddComponent<TimeTex>();
-	titleComponent->tag = tex_tag;
-	titleObject->GetTransform()->position = { 1200,500,0 };
+	auto* timeObject = gameObjectManager->AddGameObject(new GE::GameObject(gui_tag, "time"));
+	auto* timeComponent = timeObject->AddComponent<TimeTex>();
+	timeComponent->tag = tex_tag;
+	timeObject->GetTransform()->position = { 1200,500,0 };
+	timeObject->GetTransform()->scale = { 20,10,0 };;
 }
 
 void TimeTex::Start()
