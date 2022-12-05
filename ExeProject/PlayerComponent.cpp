@@ -325,6 +325,11 @@ void PlayerComponent::Control(float deltaTime)
 				//Flapping
 				animator.PlayAnimation(1, false);
 			}
+			else
+			{
+				//‰¼”ò‚Ñ~‚è
+				transform->position += transform->GetForward() * 1000.0f * deltaTime * GE::GameSetting::Time::GetGameTime() - gravity * 5.0f;
+			}
 		}
 		break;
 	default:
