@@ -13,7 +13,7 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 	this->gameObjectManager = gameObjectManager;
 	//地形
 	{
-		auto* object = gameObjectManager->AddGameObject(new GE::GameObject("Ground", "ground"));
+		auto* object = gameObjectManager->AddGameObject(new GE::GameObject("Ground", "none"));
 		auto* sampleComponent = object->AddComponent<Ground>();
 	}
 	//スタートの止まり木
@@ -22,6 +22,6 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 		auto* sampleComponent = object->AddComponent<TestTreeComponent>();
 		auto* collider = object->AddComponent < GE::SphereCollider >();
 		collider->SetCenter({ 0,0,0 });
-		collider->SetSize({ 500 });
+		collider->SetSize({ 10 });
 	}
 }
