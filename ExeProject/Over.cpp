@@ -1,34 +1,33 @@
-#include "Clear.h"
-
+#include "Over.h"
 #include <GatesEngine/Header/Util/Utility.h          >
 #include <GatesEngine/Header/Graphics\Window.h       >
 
-Clear::Clear()
-	:Clear("ClearScene")
+Over::Over()
+	:Over("OverScene")
 {
 }
 
-Clear::Clear(const std::string& sceneName)
-	:Scene(sceneName)
+Over::Over(const std::string& sceneName)
+	: Scene(sceneName)
 {
 }
 
-Clear::Clear(const std::string& sceneName, const GE::SceneInitializer& initializer)
+Over::Over(const std::string& sceneName, const GE::SceneInitializer& initializer)
 	: Scene(sceneName, initializer)
 {
 }
 
-Clear::~Clear()
+Over::~Over()
 {
 }
 
-void Clear::Initialize()
+void Over::Initialize()
 {
 	gameObjectManager.Awake();
 	gameObjectManager.Start();
 }
 
-void Clear::Update(float deltaTime)
+void Over::Update(float deltaTime)
 {
 	gameObjectManager.Update(deltaTime);
 
@@ -40,44 +39,44 @@ void Clear::Update(float deltaTime)
 	}
 }
 
-void Clear::Draw()
+void Over::Draw()
 {
 	gameObjectManager.Draw();
 }
 
-void Clear::LateDraw()
+void Over::LateDraw()
 {
 	gameObjectManager.LateDraw();
 }
 
-void Clear::Load()
+void Over::Load()
 {
-	auto* Object = gameObjectManager.AddGameObject(new GE::GameObject("clear", "clear"));
+	auto* Object = gameObjectManager.AddGameObject(new GE::GameObject("over", "over"));
 	//titleObject->SetDrawAxisEnabled(true);
 	Object->GetTransform()->position = { GE::Window::GetWindowSize().x / 2,GE::Window::GetWindowSize().y / 2,0 };
 	Object->GetTransform()->scale = { 700,400,0 };
-	auto* clearComponent = Object->AddComponent<ClearTex>();
+	auto* clearComponent = Object->AddComponent<OverTex>();
 }
 
-void Clear::UnLoad()
+void Over::UnLoad()
 {
 	// gameObjects‚ðíœ‚·‚é
 	Scene::UnLoad();
 }
 
-void ClearTex::Awake()
+void OverTex::Awake()
 {
 }
 
-void ClearTex::Start()
+void OverTex::Start()
 {
 }
 
-void ClearTex::Update(float deltaTime)
+void OverTex::Update(float deltaTime)
 {
 }
 
-void ClearTex::LateDraw()
+void OverTex::LateDraw()
 {
 	const float SPRITE_SIZE = 30;
 
@@ -112,6 +111,6 @@ void ClearTex::LateDraw()
 	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
 	renderQueue->AddSetConstantBufferInfo({ 4,cbufferAllocater->BindAndAttachData(4, &textureAnimationInfo,sizeof(GE::TextureAnimationInfo)) });
-	renderQueue->AddSetShaderResource({ 5,graphicsDevice->GetTextureManager()->Get("texture_clear")->GetSRVNumber() });
+	renderQueue->AddSetShaderResource({ 5,graphicsDevice->GetTextureManager()->Get("texture_over")->GetSRVNumber() });
 	graphicsDevice->DrawMesh("2DPlane");
 }

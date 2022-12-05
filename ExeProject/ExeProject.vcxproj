@@ -174,6 +174,7 @@
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="NormalEnemy.cpp" />
+    <ClCompile Include="Over.cpp" />
     <ClCompile Include="PlayerComponent.cpp" />
     <ClCompile Include="SampleScene.cpp" />
     <ClCompile Include="TestTreeComponent.cpp" />
@@ -191,6 +192,7 @@
     <ClInclude Include="Ground.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="NormalEnemy.h" />
+    <ClInclude Include="Over.h" />
     <ClInclude Include="PlayerComponent.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="SampleScene.h" />

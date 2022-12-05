@@ -61,6 +61,12 @@ void SampleScene::Update(float deltaTime)
 		changeSceneInfo.flag = true;
 		changeSceneInfo.initNextSceneFlag = true;
 	}
+	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::E))
+	{
+		changeSceneInfo.name = "OverScene";
+		changeSceneInfo.flag = true;
+		changeSceneInfo.initNextSceneFlag = true;
+	}
 	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::Y))
 	{
 		changeSceneInfo.name = "SampleScene";
