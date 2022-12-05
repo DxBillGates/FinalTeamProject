@@ -16,7 +16,8 @@ private:
 	static float damageSpeed;
 	static float pushStartTime;		//キーを押してから操作できるようになるまでのカウント
 	static float stayLandLerpTime;	//木に戻るラープ
-	static int collectMax;			//収集物の目標個数
+	static int goalCollect;			//収集物の目標個数
+	static int collectMax;			//収集物の同時にもてる最大個数
 	static float body_direction_LerpTime; //秒数
 
 	GE::InputDevice* inputDevice;
@@ -24,13 +25,11 @@ private:
 	GE::Math::Vector3 accelerometer;
 	GE::SkinMeshAnimator animator;
 
-	float dashEasingCount;			//スピード遷移のカウント
-
-	float stayLandLerpEasingCount;	//着陸する遷移カウント
-
 	bool isLockOnStart;				//ロックオン処理を呼ぶフラグ
 	bool isLockOn;					//ロックオンして発射待機中フラグ
 
+	float dashEasingCount;			//スピード遷移のカウント
+	float stayLandLerpEasingCount;	//着陸する遷移カウント
 	float rayHitCount;				//何フレーム照準をあわせているか
 	int collectCount;				//取集物を何個集めたか
 	int hitStopCount;				//ヒットストップカウント用
@@ -48,8 +47,8 @@ private:
 	
 	GE::Math::Quaternion quat;
 	GE::Math::Vector3 body_direction;				//体の向き計算用
-	GE::Math::Quaternion body_direction_LockOn;
-	bool is_rayCast_active;
+	GE::Math::Quaternion body_direction_LockOn;		//ロックオン時の体の向き計算用
+	bool is_rayCast_active;							//レイキャストの照準が使われてるか
 
 	GE::Math::Vector3 currentPosition;//巣に着陸するときのラープ用
 public:
@@ -94,6 +93,10 @@ private:
 	/// Keyboardで移動操作
 	/// </summary>
 	void KeyboardMoveControl();
+	/// <summary>
+	/// 収集物の制御
+	/// </summary>
+	void CollectControl();
 	/// <summary>
 	/// 前方にいて最も近い敵を求める
 	/// </summary>

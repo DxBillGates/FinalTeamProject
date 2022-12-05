@@ -20,6 +20,7 @@ float PlayerComponent::rayHitSecond = 144.0f;				//ƒƒbƒNƒIƒ“‚·‚éÆ€‚ğ‡‚í‚¹‚é’
 float PlayerComponent::normal_speed = 2000.0f;				//’Êí‚ÌƒXƒs[ƒh
 float PlayerComponent::current_speed = normal_speed;		//Œ»İ‚ÌƒXƒs[ƒh
 float PlayerComponent::damageSpeed = 5000.0f;				//“G‚Éƒqƒbƒg‚µ‚½‚Æ‚«‚Éƒ_ƒ[ƒW‚ª“ü‚éƒXƒs[ƒh
+int PlayerComponent::goalCollect = 10;
 int PlayerComponent::collectMax = 3;
 
 PlayerComponent::PlayerComponent()
@@ -87,12 +88,9 @@ void PlayerComponent::Update(float deltaTime)
 	}
 	//‘€ì
 	Control(deltaTime);
-	//ûW•¨ƒJƒEƒ“ƒg
-	if (collectCount > collectMax)
-	{
-		//ƒNƒŠƒAƒtƒ‰ƒO
-		isCollect = true;
-	}
+	//ûW•¨‚Ì§Œä
+	CollectControl();
+
 	CameraControl::GetInstance()->SetTargetObject(gameObject);
 	CameraControl::GetInstance()->Update();
 
@@ -197,7 +195,7 @@ void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 		else
 		{
 			//ûW•¨ +1
-			collectCount++;
+			collectCount < goalCollect ? collectCount++ : 0;
 		}
 		hitStopCount = 0;
 		CameraControl::GetInstance()->ShakeStart({ 70,70 }, 30);
@@ -390,6 +388,15 @@ void PlayerComponent::KeyboardMoveControl()
 	GE::Math::Vector3 bodyDirectionMax;
 	bodyDirectionMax = { 1.0f,100000,0.75f };
 	body_direction = GE::Math::Vector3::Min(-bodyDirectionMax, GE::Math::Vector3::Max(bodyDirectionMax, body_direction));
+}
+void PlayerComponent::CollectControl()
+{
+	//ûW•¨ƒJƒEƒ“ƒg
+	if (collectCount > goalCollect)
+	{
+		//ƒNƒŠƒAƒtƒ‰ƒO
+		isCollect = true;
+	}
 }
 void PlayerComponent::SearchNearEnemy()
 {

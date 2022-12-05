@@ -1,7 +1,7 @@
-#include <GatesEngine/Header/Util/Utility.h          >
-#include <GatesEngine/Header/Util/Random.h           >
-#include <GatesEngine/Header/Graphics\Window.h       >
-#include <GatesEngine/Header/GUI\GUIManager.h        >
+#include <GatesEngine/Header/Util/Utility.h>
+#include <GatesEngine/Header/Util/Random.h>
+#include <GatesEngine/Header/Graphics\Window.h>
+#include <GatesEngine/Header/GUI\GUIManager.h>
 
 #include"TestTreeComponent.h"
 
