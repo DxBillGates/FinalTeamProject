@@ -38,6 +38,6 @@ public:
 	void Update();
 
 	//テクスチャ生成
-	void Create(std::string gui_tag, std::string tex_tag, GE::GameObjectManager* gameObjectManager);
+	void Create(std::string gui_tag, std::string tex_tag, GE::GameObjectManager* gameObjectManager,float shift);
 };
 

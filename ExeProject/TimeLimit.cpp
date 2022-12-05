@@ -10,7 +10,9 @@ TimeLimit::TimeLimit(const int& timer)
 
 void TimeLimit::Start(GE::GameObjectManager* gameObjectManager)
 {
-	Create("time", "texture_Number", gameObjectManager);
+	Create("minutes", "texture_Number", gameObjectManager,0);
+	Create("tenSeconds", "texture_Number", gameObjectManager, 100);
+	Create("oneSeconds", "texture_Number", gameObjectManager, 200);
 }
 
 void TimeLimit::Update()
@@ -21,13 +23,13 @@ void TimeLimit::Update()
 	oneSeconds = timer / fps % 60 % 10;//秒数の一の位の計算
 }
 
-void TimeLimit::Create(std::string gui_tag, std::string tex_tag, GE::GameObjectManager* gameObjectManager)
+void TimeLimit::Create(std::string gui_tag, std::string tex_tag, GE::GameObjectManager* gameObjectManager, float shift)
 {
 	auto* timeObject = gameObjectManager->AddGameObject(new GE::GameObject(gui_tag, "time"));
 	auto* timeComponent = timeObject->AddComponent<TimeTex>();
 	timeComponent->tag = tex_tag;
-	timeObject->GetTransform()->position = { 1200,500,0 };
-	timeObject->GetTransform()->scale = { 20,10,0 };;
+	timeObject->GetTransform()->position = { 1500 + shift,900,0 };
+	timeObject->GetTransform()->scale = { 400,100,0 };;
 }
 
 void TimeTex::Start()
@@ -51,9 +53,11 @@ void TimeTex::LateDraw()
 	graphicsDevice->SetShader("DefaultSpriteWithTextureShader");
 	
 	// 描画位置とかサイズとかの設定
-	auto windowSize = GE::Window::GetWindowSize();
-	GE::Math::Matrix4x4 modelMatrix = GE::Math::Matrix4x4::Scale({ windowSize.x,windowSize.y,0 });
-	modelMatrix *= GE::Math::Matrix4x4::Translate({ 0,0,0 });
+	//auto windowSize = GE::Window::GetWindowSize();
+	//GE::Math::Matrix4x4 modelMatrix = GE::Math::Matrix4x4::Scale({ windowSize.x,windowSize.y,0 });
+	GE::Math::Matrix4x4 modelMatrix = GE::Math::Matrix4x4::Scale({ 0 });
+	//modelMatrix *= GE::Math::Matrix4x4::Translate({ 0,0,0 });
+	modelMatrix = transform->GetMatrix();
 	
 	// 画像の色変えたりするよう
 	GE::Material material;
