@@ -165,9 +165,6 @@ void PlayerComponent::OnCollision(GE::GameObject* other)
 		return;
 	}
 
-	hitStopCount = 0;
-	CameraControl::GetInstance()->ShakeStart({ 70,70 }, 30);
-
 	if (other == lockOnEnemy.object)
 	{
 		lockOnEnemy.object = nullptr;
