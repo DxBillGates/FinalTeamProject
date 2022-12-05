@@ -22,6 +22,6 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 		auto* sampleComponent = object->AddComponent<TestTreeComponent>();
 		auto* collider = object->AddComponent < GE::SphereCollider >();
 		collider->SetCenter({ 0,0,0 });
-		collider->SetSize({ 500 });
+		collider->SetSize({ 10 });
 	}
 }

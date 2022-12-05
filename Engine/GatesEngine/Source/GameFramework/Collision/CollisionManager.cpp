@@ -231,7 +231,7 @@ bool GE::CollisionManager::CheckSphere(ICollider* col1, ICollider* col2)
 	Math::Vector3 scale2 = col2->GetBounds().size * col2->GetParent()->scale;
 
 	float distance = Math::Vector3::Distance(center1, center2);
-	return (distance * distance <= scale1.x * scale2.x);
+	return (distance * distance <= (scale1.x / 2 + scale2.x / 2) * (scale1.x / 2 + scale2.x / 2));
 }
 
 bool GE::CollisionManager::CheckAABB(ICollider* col1, ICollider* col2)
