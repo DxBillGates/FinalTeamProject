@@ -32,7 +32,8 @@ void Clear::Update(float deltaTime)
 {
 	gameObjectManager.Update(deltaTime);
 
-	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE))
+	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE)
+		|| inputDevice->GetJoyconR()->GetButton(GE::JoyconButtonData::A))
 	{
 		changeSceneInfo.name = "SampleScene";
 		changeSceneInfo.flag = true;

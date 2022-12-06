@@ -3,12 +3,13 @@
 #include"EnemyManager.h"
 #include"FieldObjectManager.h"
 #include"TestTreeComponent.h"
+#include"Title.h"
+
 #include <GatesEngine/Header\GameFramework\Component\SampleComponent.h>
 #include <GatesEngine/Header\GameFramework\Component\SphereCollider.h>
 #include <GatesEngine/Header\GameFramework\Component\BoxCollider.h>
 #include <GatesEngine/Header\GameFramework\Collision\CollisionManager.h>
 #include <GatesEngine/Header/Application/Application.h>
-#include"Title.h"
 
 SampleScene::SampleScene()
 	: SampleScene("SampleScene")
@@ -55,12 +56,15 @@ void SampleScene::Update(float deltaTime)
 	collisionManager.Update();
 	Title::GetInstance()->Update();
 
-	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::Q))
+	//クリア移行条件
+	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::Q)
+		|| TestTreeComponent::isCollect)
 	{
 		changeSceneInfo.name = "ClearScene";
 		changeSceneInfo.flag = true;
 		changeSceneInfo.initNextSceneFlag = true;
 	}
+	//ゲームオーバー移行条件
 	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::E))
 	{
 		changeSceneInfo.name = "OverScene";
