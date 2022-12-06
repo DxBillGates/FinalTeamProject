@@ -5,8 +5,15 @@ namespace GE
 	{
 		struct Vector2
 		{
-			float x;
-			float y;
+			union
+			{
+				struct
+				{
+					float x;
+					float y;
+				};
+				float value[2];
+			};
 
 			/// <summary>
 			/// ゼロ初期化のコンストラクタ
