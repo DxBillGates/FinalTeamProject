@@ -22,6 +22,7 @@ float PlayerComponent::normal_speed = 2000.0f;						//通常時のスピード
 float PlayerComponent::current_speed = normal_speed;				//現在のスピード
 float PlayerComponent::damageSpeed = 5000.0f;						//敵にヒットしたときにダメージが入るスピード
 int PlayerComponent::collectMax = 3;
+float PlayerComponent::worldRadius = 20000.0f;
 
 PlayerComponent::PlayerComponent()
 	: inputDevice(nullptr)
@@ -47,6 +48,7 @@ void PlayerComponent::Start()
 	dashEasingCount = 0.0;
 	startCouunt = 0.0f;
 	collectCount = 0;
+	statasChangeCount = 0;
 
 	hitStopCount = hitStopTime;
 	stayLandLerpEasingCount = stayLandLerpTime;
@@ -80,10 +82,7 @@ void PlayerComponent::Update(float deltaTime)
 			GE::GameSetting::Time::SetGameTime(0.01);
 			hitStopCount++;
 		}
-		else
-		{
-			GE::GameSetting::Time::SetGameTime(1.0);
-		}
+		else { GE::GameSetting::Time::SetGameTime(1.0); }
 	}
 	//操作
 	Control(deltaTime);
@@ -96,8 +95,14 @@ void PlayerComponent::Update(float deltaTime)
 	{
 		statas != PlayerStatas::STOP_DEBUG ? statas = PlayerStatas::STOP_DEBUG : statas = PlayerStatas::MOVE;
 	}
+	//めり込んだらD9キーで木に強制送還
+	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::D9))
+	{
+		stayLandLerpEasingCount = 0.0f;
+		currentPosition = transform->position;
+		statas = PlayerStatas::GO_TREE;
+	}
 	animator.Update(deltaTime);
-
 }
 
 void PlayerComponent::Draw()
@@ -181,12 +186,16 @@ void PlayerComponent::OnCollision(GE::GameObject* other)
 
 void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 {
-	if (other->GetTag() == "ground")
+	if (statas != PlayerStatas::GO_TREE)
 	{
-		body_direction.x *= -1.0f;
-		body_direction.y *= -1.0f;
-		statas = PlayerStatas::CRASH;
-		return;
+		if (other->GetTag() == "ground")
+		{
+			body_direction.y -= 3.14f;
+			statas = PlayerStatas::CRASH;
+
+			CameraControl::GetInstance()->ShakeStart({ 70,70 }, 30);
+			return;
+		}
 	}
 	//GE::Utility::Printf("PlayerComponent OnCollisionEnter\n");
 	if (other->GetTag() == "enemy")
@@ -238,6 +247,17 @@ bool PlayerComponent::IsSpeedy()
 }
 void PlayerComponent::Control(float deltaTime)
 {
+	const float distance = abs(GE::Math::Vector3::Distance(transform->position, TestTreeComponent::position));
+	printf("%f\n", distance);
+	if (statas != PlayerStatas::CRASH)
+	{
+		if (worldRadius < distance)
+		{
+			//LookDirection(GE::Math::Vector3(TestTreeComponent::position - transform->position).Normalize());
+			body_direction.y -= 3.14f;
+			statas = PlayerStatas::CRASH;
+		}
+	}
 	bool loop = false;
 	switch (statas)
 	{
@@ -246,8 +266,10 @@ void PlayerComponent::Control(float deltaTime)
 	case PlayerComponent::PlayerStatas::MOVE:
 		transform->position += transform->GetForward() * current_speed * deltaTime * GE::GameSetting::Time::GetGameTime() - gravity;
 		//Key押したらPlayerState::DASHに変わる
-		if (InputManager::GetInstance()->GetActionButton()) { statas = PlayerStatas::DASH; }
-
+		if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE) || accelerometer.Length() > 2.f)
+		{
+			statas = PlayerStatas::DASH;
+		}
 		if (InputManager::GetInstance()->GetLockonButton())
 		{
 			isLockOnStart = true;
@@ -263,6 +285,26 @@ void PlayerComponent::Control(float deltaTime)
 		break;
 	case PlayerComponent::PlayerStatas::DASH:
 		Dash(10000, 100.0, deltaTime, transform->GetForward());
+		break;
+	case PlayerComponent::PlayerStatas::CRASH:
+		//ダッシュから切り替わった時用初期化
+		current_speed = normal_speed;
+
+		//body_direction.z += 0.05 * GE::GameSetting::Time::GetGameTime();
+		//体の向き
+		transform->rotation =
+			GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), body_direction.y)
+			* GE::Math::Quaternion(GE::Math::Vector3(0, 0, 1), body_direction.z)
+			* GE::Math::Quaternion(GE::Math::Vector3(1, 0, 0), body_direction.x);
+		//移動
+		transform->position += transform->GetForward() * 500 * deltaTime * GE::GameSetting::Time::GetGameTime() - gravity;
+
+		if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE)|| accelerometer.Length() > 2.f)
+		{
+			
+			animator.PlayAnimation(2, false);
+			statas = PlayerStatas::MOVE;
+		}
 		break;
 	case PlayerComponent::PlayerStatas::LOCKON_SHOOT:
 
@@ -300,7 +342,7 @@ void PlayerComponent::Control(float deltaTime)
 	case PlayerComponent::PlayerStatas::STAY_TREE:
 		if (startCouunt == 0.0f)
 		{
-			if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE))
+			if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE) || accelerometer.Length() > 2.f)
 			{
 				startCouunt++;
 				//MoveFromStop
@@ -326,13 +368,11 @@ void PlayerComponent::Control(float deltaTime)
 	default:
 		break;
 	}
-	//キーボードで移動操作
-	KeyboardMoveControl();
 
-	if (statas == PlayerStatas::MOVE && accelerometer.Length() > 2.f)
+	if (statas != PlayerStatas::CRASH)
 	{
-		//GE::Utility::Printf("%f\n", accelerometer.Length());
-		statas = PlayerStatas::DASH;
+		//キーボードで移動操作
+		KeyboardMoveControl();
 	}
 }
 void PlayerComponent::KeyboardMoveControl()
@@ -466,16 +506,7 @@ void PlayerComponent::Dash(float dash_speed, float dash_time, float deltaTime, G
 	if (dashEasingCount < dash_time) { dashEasingCount += 1 * GE::GameSetting::Time::GetGameTime(); }
 	else { statas = PlayerStatas::MOVE; dashEasingCount = 0.0f; body_direction_LerpCount = 0; animator.PlayAnimation(1, false); }
 
-	//スピードの遷移
-	CameraControl::GetInstance()->DashCam(dashEasingCount, dash_time);
-	GE::Math::Vector3 forward = { 0,0,1 };
-	float dot;
-	float theta;
-	dot = GE::Math::Vector3::Dot(forward, direction);
-	theta = std::acosf(dot);
-	GE::Math::Vector3 cross = GE::Math::Vector3::Cross(forward, direction).Normalize();
-	body_direction_LockOn = { cross,theta };
-	transform->rotation = body_direction_LockOn;
+	LookDirection(direction);
 
 	transform->position += transform->GetForward() * current_speed * deltaTime * GE::GameSetting::Time::GetGameTime();
 }
@@ -510,7 +541,19 @@ void PlayerComponent::RayCast(float deltaTime)
 	{
 		isLockOnStart = true;
 	}
-}//EaseIn関係がよくわからなかったから一時的に追加
+}
+void PlayerComponent::LookDirection(GE::Math::Vector3 direction)
+{
+	GE::Math::Vector3 forward = { 0,0,1 };
+	float dot;
+	float theta;
+	dot = GE::Math::Vector3::Dot(forward, direction);
+	theta = std::acosf(dot);
+	GE::Math::Vector3 cross = GE::Math::Vector3::Cross(forward, direction).Normalize();
+	body_direction_LockOn = { cross,theta };
+	transform->rotation = body_direction_LockOn;
+}
+//EaseIn関係がよくわからなかったから一時的に追加
 const float PlayerComponent::easeIn(const float start, const float end, float time)
 {
 	return start * (1.0f - time * time) + end * time * time;

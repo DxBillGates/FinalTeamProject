@@ -18,6 +18,7 @@ private:
 	static float stayLandLerpTime;	//木に戻るラープ
 	static int collectMax;			//収集物の同時にもてる最大個数
 	static float body_direction_LerpTime; //秒数
+	static float worldRadius;
 
 	GE::InputDevice* inputDevice;
 	GE::Math::Vector3 gyro;
@@ -34,6 +35,8 @@ private:
 	int hitStopCount;				//ヒットストップカウント用
 	float startCouunt;				//開始時のカウント
 	int body_direction_LerpCount;	//元の姿勢に戻るときの遷移
+
+	int statasChangeCount;			//インプットが次のPlayerStatasでも動かないように1フレーム繰越すよう
 	struct LockOnEnemy
 	{
 		GE::GameObject* object = nullptr;
@@ -116,6 +119,8 @@ private:
 	/// 
 	/// </summary>
 	void RayCast(float deltaTime);
+	
+	void LookDirection(GE::Math::Vector3 direction);
 	//EaseIn関係がよくわからなかったから一時的に追加
 	const float easeIn(const float start, const float end, float time);
 };

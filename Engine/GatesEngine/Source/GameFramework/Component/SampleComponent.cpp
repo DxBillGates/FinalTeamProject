@@ -50,7 +50,6 @@ void GE::SampleComponent::Draw()
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(Material)) });
 	graphicsDevice->DrawMesh("ground");
 }
-
 void GE::SampleComponent::LateDraw()
 {
 	const float SPRITE_SIZE = 100/3;
