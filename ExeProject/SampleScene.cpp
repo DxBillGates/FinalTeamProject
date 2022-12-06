@@ -31,7 +31,6 @@ SampleScene::SampleScene(const std::string& sceneName)
 		col1 = playerCollider;
 		//タイトルセット
 		Title::GetInstance()->Start(&gameObjectManager, testObject);
-		
 
 	}
 
@@ -44,8 +43,8 @@ SampleScene::SampleScene(const std::string& sceneName)
 
 	EnemyManager::GetInstance()->Start(10, &gameObjectManager);
 	FieldObjectManager::GetInstance()->Start(&gameObjectManager);
-	time = new TimeLimit(1);
-	time->Start(&gameObjectManager);
+	TimeLimit::GetInstance()->Start(&gameObjectManager);
+
 
 	collisionManager.AddTagCombination("player", "enemy");
 	//collisionManager.AddTagCombination("player", "birdEnemy");
@@ -67,6 +66,7 @@ void SampleScene::Update(float deltaTime)
 	gameObjectManager.Update(deltaTime);
 	collisionManager.Update();
 	Title::GetInstance()->Update();
+	TimeLimit::GetInstance()->Update();
 }
 
 void SampleScene::Draw()

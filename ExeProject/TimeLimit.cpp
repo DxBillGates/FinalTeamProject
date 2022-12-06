@@ -3,24 +3,43 @@
 #include <GatesEngine/Header/Util/Utility.h          >
 #include <GatesEngine/Header/Graphics\Window.h       >
 
-TimeLimit::TimeLimit(const int& timer)
+TimeLimit* TimeLimit::GetInstance()
 {
-	this->timer = timer * 60 * fps;//•ª”‚ğ•b”‚É’¼‚µ‚Ä144fps‚©‚¯‚é
+	static TimeLimit instance;
+	return &instance;
+}
+
+TimeLimit::TimeLimit()
+{
+	timer = timer * 60 * frameRate;//•ª”‚ğ•b”‚É’¼‚µ‚Ä144fps‚©‚¯‚é
 }
 
 void TimeLimit::Start(GE::GameObjectManager* gameObjectManager)
 {
+	timer = 3;//§ŒÀŠÔ(•ªw’è)
+	minutes = timer / frameRate / 60;//•ª”‚ÌŒvZ
+	tenSeconds = timer / frameRate % 60 / 10;//•b”‚Ì\‚ÌˆÊ‚ÌŒvZ
+	oneSeconds = timer / frameRate % 60 % 10;//•b”‚Ìˆê‚ÌˆÊ‚ÌŒvZ
+	timeOver = false;
+
 	Create("minutes", "texture_Number", gameObjectManager,0);
-	Create("tenSeconds", "texture_Number", gameObjectManager, 100);
-	Create("oneSeconds", "texture_Number", gameObjectManager, 200);
+	/*Create("tenSeconds", "texture_Number", gameObjectManager, 100);
+	Create("oneSeconds", "texture_Number", gameObjectManager, 200);*/
 }
 
 void TimeLimit::Update()
 {
-	timer--;//ƒJƒEƒ“ƒgƒ_ƒEƒ“
-	minutes = timer / fps / 60;//•ª”‚ÌŒvZ
-	tenSeconds = timer / fps % 60 / 10;//•b”‚Ì\‚ÌˆÊ‚ÌŒvZ
-	oneSeconds = timer / fps % 60 % 10;//•b”‚Ìˆê‚ÌˆÊ‚ÌŒvZ
+	if (timer <= 0)
+	{
+		timeOver = true;
+	}
+	else
+	{
+		timer--;//ƒJƒEƒ“ƒgƒ_ƒEƒ“
+		minutes = timer / frameRate / 60;//•ª”‚ÌŒvZ
+		tenSeconds = timer / frameRate % 60 / 10;//•b”‚Ì\‚ÌˆÊ‚ÌŒvZ
+		oneSeconds = timer / frameRate % 60 % 10;//•b”‚Ìˆê‚ÌˆÊ‚ÌŒvZ
+	}
 }
 
 void TimeLimit::Create(std::string gui_tag, std::string tex_tag, GE::GameObjectManager* gameObjectManager, float shift)
@@ -29,7 +48,7 @@ void TimeLimit::Create(std::string gui_tag, std::string tex_tag, GE::GameObjectM
 	auto* timeComponent = timeObject->AddComponent<TimeTex>();
 	timeComponent->tag = tex_tag;
 	timeObject->GetTransform()->position = { 1500 + shift,900,0 };
-	timeObject->GetTransform()->scale = { 400,100,0 };;
+	timeObject->GetTransform()->scale = { 400,100,0 };
 }
 
 void TimeTex::Start()

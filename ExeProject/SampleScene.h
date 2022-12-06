@@ -7,7 +7,6 @@ class SampleScene : public GE::Scene
 {
 private:
 	GE::ICollider* col1, * col2;
-	TimeLimit* time = nullptr;
 public:
 	SampleScene();
 	SampleScene(const std::string& sceneName);
