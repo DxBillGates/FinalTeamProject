@@ -11,9 +11,16 @@ public:
 	GE::Math::Quaternion rotation;
 	std::string tag;
 
-	GE::ITexture* tex;
-	float pivotSize;
-	int clipSize;
+	float pivotPos;
+
+	enum class TimeName
+	{
+		minutes,
+		tenSeconds,
+		oneSeconds,
+	};
+
+	TimeName tName;
 
 public:
 
@@ -33,6 +40,8 @@ private:
 	const int frameRate = 144;//フレームレート
 	bool timeOver = false;
 
+	std::vector<GE::GameObject*>times;
+
 public:
 	std::string tag;
 public:
@@ -42,12 +51,12 @@ public:
 	void Start(GE::GameObjectManager* gameObjectManager);
 	void Update();
 
-	int GetMinutes() { return minutes; }
-	int GetTenSeconds() { return tenSeconds; }
-	int GetOneSeconds() { return oneSeconds; }
-	bool GetTimeOver() { return timeOver; }
+	const int& GetMinutes() { return minutes; }
+	const int& GetTenSeconds() { return tenSeconds; }
+	const int& GetOneSeconds() { return oneSeconds; }
+	const bool& GetTimeOver() { return timeOver; }
 
 	//テクスチャ生成
-	void Create(std::string gui_tag, std::string tex_tag, GE::GameObjectManager* gameObjectManager,float shift);
+	void Create(const std::string& gui_tag, const std::string& tex_tag, GE::GameObjectManager* gameObjectManager,float shift,int pivot);
 };
 
