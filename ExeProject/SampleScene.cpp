@@ -83,7 +83,6 @@ void SampleScene::Load()
 		playerCollider->SetCenter({ 0,0,0 });
 		playerCollider->SetSize({ 20 });
 		col1 = playerCollider;
-
 	}
 
 	{

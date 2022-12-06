@@ -20,7 +20,7 @@ void EnemyManager::Start(const int count, GE::GameObjectManager* gameObjectManag
 		normalEnemyCollider->SetSize({ 2 });
 		nEnemies.push_back(enemy);
 	}
-	for (int i = 0; i < 10; ++i)
+	for (int i = 0; i < 0; ++i)
 	{
 		auto* bEnemy = gameObjectManager->AddGameObject(new GE::GameObject("BirdEnemy", "enemy"));
 		auto* bComponent = bEnemy->AddComponent<BirdEnemy>();

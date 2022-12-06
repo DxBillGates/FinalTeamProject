@@ -11,6 +11,8 @@
 #include "CameraControl.h"
 #include "TestTreeComponent.h"
 
+float PlayerComponent::frameRate;
+
 GE::Math::Vector3 PlayerComponent::onTheTreePosition = { 0,180,0 };	//木の上で体の高さ調整用
 int PlayerComponent::hitStopTime = 20;								// ヒットストップの長さ
 float PlayerComponent::body_direction_LerpTime = 50.0f;				//ダッシュ後体の角度の遷移
@@ -18,12 +20,11 @@ float PlayerComponent::pushStartTime = 100.0f;						//キーを押してから操作できる
 float PlayerComponent::stayLandLerpTime = 200.0f;					//木に着陸するラープ長さ
 GE::Math::Vector3 PlayerComponent::gravity = { 0,0.5,0 };			//重力
 float PlayerComponent::rayHitSecond = 144.0f;						//ロックオンする照準を合わせる長さ
-float PlayerComponent::normal_speed = 2000.0f;						//通常時のスピード
+float PlayerComponent::normal_speed = 20.0f;						//通常時のスピード
 float PlayerComponent::current_speed = normal_speed;				//現在のスピード
-float PlayerComponent::damageSpeed = 5000.0f;						//敵にヒットしたときにダメージが入るスピード
+float PlayerComponent::damageSpeed = 50.0f;						//敵にヒットしたときにダメージが入るスピード
 int PlayerComponent::collectMax = 3;
 float PlayerComponent::worldRadius = 20000.0f;
-
 PlayerComponent::PlayerComponent()
 	: inputDevice(nullptr)
 {
@@ -66,10 +67,11 @@ void PlayerComponent::Start()
 	animator = GE::SkinMeshManager::GetInstance()->Get("Bird");
 	animator.Initialize();
 	animator.PlayAnimation(3, false);
-
 }
 void PlayerComponent::Update(float deltaTime)
 {
+	frameRate = 1.0f / deltaTime;
+
 	InputManager::GetInstance()->Update();
 	const auto& cameraInfo = graphicsDevice->GetMainCamera()->GetCameraInfo();
 	GE::Math::GetScreenToRay(center, &rayPos, &rayDir, cameraInfo.viewMatrix, cameraInfo.projMatrix, GE::Math::Matrix4x4::GetViewportMatrix(GE::Window::GetWindowSize()));
@@ -85,8 +87,7 @@ void PlayerComponent::Update(float deltaTime)
 		else { GE::GameSetting::Time::SetGameTime(1.0); }
 	}
 	//操作
-	Control(deltaTime);
-
+	Control(144.0f/frameRate);
 	CameraControl::GetInstance()->SetTargetObject(gameObject);
 	CameraControl::GetInstance()->Update();
 
@@ -248,7 +249,6 @@ bool PlayerComponent::IsSpeedy()
 void PlayerComponent::Control(float deltaTime)
 {
 	const float distance = abs(GE::Math::Vector3::Distance(transform->position, TestTreeComponent::position));
-	printf("%f\n", distance);
 	if (statas != PlayerStatas::CRASH)
 	{
 		if (worldRadius < distance)
@@ -284,7 +284,7 @@ void PlayerComponent::Control(float deltaTime)
 		LockOn();
 		break;
 	case PlayerComponent::PlayerStatas::DASH:
-		Dash(10000, 100.0, deltaTime, transform->GetForward());
+		Dash(100.0f, 100.0f, deltaTime, transform->GetForward());
 		break;
 	case PlayerComponent::PlayerStatas::CRASH:
 		//ダッシュから切り替わった時用初期化
@@ -297,11 +297,10 @@ void PlayerComponent::Control(float deltaTime)
 			* GE::Math::Quaternion(GE::Math::Vector3(0, 0, 1), body_direction.z)
 			* GE::Math::Quaternion(GE::Math::Vector3(1, 0, 0), body_direction.x);
 		//移動
-		transform->position += transform->GetForward() * 500 * deltaTime * GE::GameSetting::Time::GetGameTime() - gravity;
+		transform->position += transform->GetForward() * 50 * deltaTime * GE::GameSetting::Time::GetGameTime() - gravity;
 
-		if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE)|| accelerometer.Length() > 2.f)
+		if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE) || accelerometer.Length() > 2.f)
 		{
-			
 			animator.PlayAnimation(2, false);
 			statas = PlayerStatas::MOVE;
 		}
@@ -317,8 +316,7 @@ void PlayerComponent::Control(float deltaTime)
 			}
 			else { isLockOn = false; }
 		}
-
-		Dash(10000, 200, deltaTime, lockOnEnemy.direction, loop);
+		Dash(100.f, 100.f, deltaTime, lockOnEnemy.direction, loop);
 		break;
 	case PlayerComponent::PlayerStatas::GO_TREE:
 		if (stayLandLerpEasingCount < stayLandLerpTime)
@@ -334,7 +332,6 @@ void PlayerComponent::Control(float deltaTime)
 			//収集物お持ち帰り
 			TestTreeComponent::collectCount += collectCount;
 			collectCount = 0;
-
 			//着陸
 			statas = PlayerStatas::STAY_TREE;
 		}
@@ -361,7 +358,7 @@ void PlayerComponent::Control(float deltaTime)
 			else
 			{
 				//仮飛び降り
-				transform->position += transform->GetForward() * 1000.0f * deltaTime * GE::GameSetting::Time::GetGameTime() - gravity * 5.0f;
+				transform->position += transform->GetForward() * 20.0f * deltaTime * GE::GameSetting::Time::GetGameTime() - gravity * 5.0f;
 			}
 		}
 		break;

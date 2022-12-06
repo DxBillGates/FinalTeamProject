@@ -8,6 +8,7 @@ class PlayerComponent : public GE::Component
 public:
 	static float current_speed;		//現在のスピード
 	static float normal_speed;		//通常時のスピード
+	static float frameRate;
 private:
 	static GE::Math::Vector3 onTheTreePosition;	//木の上で体の高さ調整用
 	static GE::Math::Vector3 gravity;	//重力
