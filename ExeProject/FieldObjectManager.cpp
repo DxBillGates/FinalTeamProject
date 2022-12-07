@@ -84,7 +84,8 @@ void FieldObjectManager::LoadPosition(const std::string& filename, std::vector<G
 	}
 	file.close();
 	//ファイルの座標セット
-	for (int i = 0; i < pos.size(); i++)
+	int index = pos.size() < objs.size() ? pos.size() : objs.size();
+	for (int i = 0; i < index; i++)
 	{
 		objs[i]->GetTransform()->position = pos[i];
 	}

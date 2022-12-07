@@ -14,7 +14,7 @@ void EnemyManager::Start(const int count, GE::GameObjectManager* gameObjectManag
 {
 	this->count = count;
 	this->gameObjectManager = gameObjectManager;
-	for (int i = 0; i < 6; ++i)
+	for (int i = 0; i < 7; ++i)
 	{
 		auto* enemy = gameObjectManager->AddGameObject(new GE::GameObject("Enemy", "enemy"));
 		auto* sampleComponent = enemy->AddComponent<NormalEnemy>();
@@ -67,7 +67,8 @@ void EnemyManager::LoadPosition(const std::string& filename, std::vector<GE::Gam
 	}
 	file.close();
 	//ファイルの座標セット
-	for (int i = 0; i < pos.size(); i++)
+	int index = pos.size() < enemies.size() ? pos.size() : enemies.size();
+	for (int i = 0; i < index; i++)
 	{
 		enemies[i]->GetTransform()->position = pos[i];
 	}
