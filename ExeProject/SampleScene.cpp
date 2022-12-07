@@ -46,6 +46,8 @@ void SampleScene::Initialize()
 
 	gameObjectManager.Awake();
 	gameObjectManager.Start();
+	//ノーマルエネミー座標ファイル読み込み、座標反映
+	EnemyManager::GetInstance()->LoadPosition("Resources/normalEnemies.txt", EnemyManager::GetInstance()->GetNormalEnemies());
 }
 
 void SampleScene::Update(float deltaTime)
@@ -59,6 +61,13 @@ void SampleScene::Update(float deltaTime)
 		changeSceneInfo.flag = true;
 		changeSceneInfo.name = "SampleScene";
 		changeSceneInfo.initNextSceneFlag = true;
+	}
+
+	// LCtr + S で敵の位置保存
+	if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::LCONTROL) &&
+		inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::S))
+	{
+		EnemyManager::GetInstance()->SaveCurrentPosition("Resources/normalEnemies.txt", EnemyManager::GetInstance()->GetNormalEnemies());
 	}
 }
 

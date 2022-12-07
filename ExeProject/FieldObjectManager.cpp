@@ -3,6 +3,9 @@
 #include "FieldObject.h"
 #include <GatesEngine/Header/GameFramework/Component/SphereCollider.h>
 #include <GatesEngine/Header/GameFramework/Component/MeshCollider.h>
+#include<fstream>
+#include<sstream>
+#include<cassert>
 
 FieldObjectManager* FieldObjectManager::GetInstance()
 {
@@ -46,4 +49,60 @@ void FieldObjectManager::SetGroundMesh(GE::MeshData<GE::Vertex_UV_Normal> mesh)
 	object->GetTransform()->position = { 1000,0,-15000 };
 	object->GetTransform()->scale = { 2 };
 	object->GetTransform()->rotation = GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), -5.0f);
+}
+
+void FieldObjectManager::LoadPosition(const std::string& filename, std::vector<GE::GameObject*>objs)
+{
+	std::vector<GE::Math::Vector3>pos;
+
+	std::ifstream file;
+	// .objファイルを開く
+	file.open(filename);
+	//ファイルが開けなかったらとまる
+	if (file.fail()) {
+		assert(0);
+	}
+
+	// 1行ずつ読み込む
+	std::string line;
+	while (getline(file, line)) {
+
+		// 1行分の文字列
+		std::istringstream line_stream(line);
+
+		// 半角スペース区切りで行の先頭文字列を取得
+		std::string key;
+		getline(line_stream, key, ' ');
+
+		if (key == "pos") {
+			GE::Math::Vector3 position{};
+			line_stream >> position.x;
+			line_stream >> position.y;
+			line_stream >> position.z;
+			pos.emplace_back(position);
+		}
+	}
+	file.close();
+	//ファイルの座標セット
+	for (int i = 0; i < pos.size(); i++)
+	{
+		objs[i]->GetTransform()->position = pos[i];
+	}
+}
+
+void FieldObjectManager::SaveCurrentPosition(const std::string& filename, std::vector<GE::GameObject*>objs)
+{
+	std::ofstream writing_file;
+	writing_file.open(filename, std::ios::out);
+	//内容初期化
+	writing_file.clear();
+	if (!writing_file.is_open()) { assert(0); }
+
+	for (int i = 0; i < objs.size(); i++)
+	{
+		GE::Math::Vector3 pos = objs[i]->GetTransform()->position;
+		writing_file << "pos " << pos.x << " " << pos.y << " " << pos.z << std::endl;
+	}
+
+	writing_file.close();
 }
