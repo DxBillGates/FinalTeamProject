@@ -85,14 +85,14 @@ void Title::Select()
 	//上下選択(スタート,オプション、exit
 	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::UP)
 		|| inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::W)
-		|| inputDevice->GetJoyconL()->GetButton(GE::JoyconButtonData::UP))
+		|| inputDevice->GetJoyconL()->GetTriggerButton(GE::JoyconButtonData::UP))
 	{
 		a = (states + (States::serectNum - 1)) % States::serectNum;
 		states = (Title::States)a;
 	}
 	else if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::DOWN)
 		|| inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::S)
-		|| inputDevice->GetJoyconL()->GetButton(GE::JoyconButtonData::DOWN))
+		|| inputDevice->GetJoyconL()->GetTriggerButton(GE::JoyconButtonData::DOWN))
 	{
 		a = (states + 1) % States::serectNum;
 		states = (Title::States)a;
@@ -101,7 +101,7 @@ void Title::Select()
 	//左右選択(ステージ
 	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::RIGHT)
 		|| inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::D)
-		|| inputDevice->GetJoyconL()->GetButton(GE::JoyconButtonData::RIGHT))
+		|| inputDevice->GetJoyconL()->GetTriggerButton(GE::JoyconButtonData::RIGHT))
 	{
 		a = (stage + (Stage::stageNum - 1)) % Stage::stageNum;
 		stage = (Title::Stage)a;
@@ -109,7 +109,7 @@ void Title::Select()
 	}
 	else if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::LEFT)
 		|| inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::A)
-		|| inputDevice->GetJoyconL()->GetButton(GE::JoyconButtonData::LEFT))
+		|| inputDevice->GetJoyconL()->GetTriggerButton(GE::JoyconButtonData::LEFT))
 	{
 		a = (stage + 1) % Stage::stageNum;
 		stage = (Title::Stage)a;
@@ -118,7 +118,7 @@ void Title::Select()
 
 	//決定
 	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE)
-		|| inputDevice->GetJoyconR()->GetButton(GE::JoyconButtonData::B))
+		|| inputDevice->GetJoyconR()->GetTriggerButton(GE::JoyconButtonData::B))
 	{
 		switch (states)
 		{
