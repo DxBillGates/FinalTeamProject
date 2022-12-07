@@ -35,20 +35,20 @@ void GE::SampleComponent::Update(float deltaTime)
 
 void GE::SampleComponent::Draw()
 {
-	const float DRAW_SIZE = 100;
-	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
-	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
+	//const float DRAW_SIZE = 100;
+	//GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
+	//GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
 
-	graphicsDevice->SetShader("DefaultMeshShader");
+	//graphicsDevice->SetShader("DefaultMeshShader");
 
-	//transform->scale = DRAW_SIZE;
-	Math::Matrix4x4 modelMatrix = transform->GetMatrix();
-	GE::Material material;
-	material.color = gameObject->GetColor();
+	////transform->scale = DRAW_SIZE;
+	//Math::Matrix4x4 modelMatrix = transform->GetMatrix();
+	//GE::Material material;
+	//material.color = gameObject->GetColor();
 
-	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
-	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(Material)) });
-	graphicsDevice->DrawMesh("ground");
+	//renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
+	//renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(Material)) });
+	//graphicsDevice->DrawMesh("ground");
 }
 
 void GE::SampleComponent::LateDraw()
@@ -62,7 +62,7 @@ void GE::SampleComponent::LateDraw()
 
 	GE::Math::Matrix4x4 modelMatrix = GE::Math::Matrix4x4::Scale({ SPRITE_SIZE });
 	GE::Math::Vector2 mousePos = inputDevice->GetMouse()->GetClientMousePos();
-	//GE::Utility::Printf("%d,%d\n",(int)mousePos.x, (int)mousePos.y);
+	GE::Utility::Printf("%d,%d\n",(int)mousePos.x, (int)mousePos.y);
 
 	modelMatrix *= GE::Math::Matrix4x4::Translate({ mousePos.x,mousePos.y,0 });
 	Material material;

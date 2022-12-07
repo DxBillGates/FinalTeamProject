@@ -173,6 +173,8 @@
     <ClCompile Include="Ground.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MiniMap.cpp" />
+    <ClCompile Include="MiniMapViewer.cpp" />
     <ClCompile Include="NormalEnemy.cpp" />
     <ClCompile Include="PlayerComponent.cpp" />
     <ClCompile Include="SampleScene.cpp" />
@@ -190,6 +192,8 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="Ground.h" />
     <ClInclude Include="InputManager.h" />
+    <ClInclude Include="MiniMap.h" />
+    <ClInclude Include="MiniMapViewer.h" />
     <ClInclude Include="NormalEnemy.h" />
     <ClInclude Include="PlayerComponent.h" />
     <ClInclude Include="resource.h" />

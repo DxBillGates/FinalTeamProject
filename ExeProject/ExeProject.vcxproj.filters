@@ -87,6 +87,12 @@
     <ClCompile Include="Clear.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
+    <ClCompile Include="MiniMap.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="MiniMapViewer.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BirdEnemy.h">
@@ -135,6 +141,12 @@
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
     <ClInclude Include="Clear.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="MiniMap.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="MiniMapViewer.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
   </ItemGroup>
