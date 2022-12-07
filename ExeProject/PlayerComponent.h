@@ -116,4 +116,6 @@ private:
 	void RayCast(float deltaTime);
 	//EaseInŠÖŒW‚ª‚æ‚­‚í‚©‚ç‚È‚©‚Á‚½‚©‚çˆêŽž“I‚É’Ç‰Á
 	const float easeIn(const float start, const float end, float time);
+public:
+	GE::Math::Vector3 GetDirection();
 };

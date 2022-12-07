@@ -108,6 +108,7 @@ void SampleScene::Load()
 	{
 		auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject("miniMap", "miniMap"));
 		auto* sampleComponent = testObject->AddComponent<MiniMapViewer>();
+		sampleComponent->SetPlayer(gameObjectManager.FindGameObject("Player")->GetComponent<PlayerComponent>());
 	}
 
 	EnemyManager::GetInstance()->Start(10, &gameObjectManager);
