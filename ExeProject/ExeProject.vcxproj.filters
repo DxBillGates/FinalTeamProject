@@ -57,9 +57,6 @@
     <ClCompile Include="Game.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Ground.cpp">
-      <Filter>ソースファイル</Filter>
-    </ClCompile>
     <ClCompile Include="InputManager.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
@@ -75,13 +72,16 @@
     <ClCompile Include="SampleScene.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
-    <ClCompile Include="TestTreeComponent.cpp">
+    <ClCompile Include="StartTree.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
     <ClCompile Include="TimeLimit.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
     <ClCompile Include="Title.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="FieldObject.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -104,9 +104,6 @@
     <ClInclude Include="Game.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Ground.h">
-      <Filter>ヘッダーファイル</Filter>
-    </ClInclude>
     <ClInclude Include="InputManager.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
@@ -119,7 +116,7 @@
     <ClInclude Include="SampleScene.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
-    <ClInclude Include="TestTreeComponent.h">
+    <ClInclude Include="StartTree.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
     <ClInclude Include="TimeLimit.h">
@@ -129,6 +126,9 @@
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="FieldObject.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
   </ItemGroup>

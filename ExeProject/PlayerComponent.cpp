@@ -9,7 +9,7 @@
 #include"EnemyManager.h"
 #include "InputManager.h"
 #include "CameraControl.h"
-#include "TestTreeComponent.h"
+#include "StartTree.h"
 
 float PlayerComponent::frameRate;
 
@@ -24,7 +24,7 @@ float PlayerComponent::normal_speed = 20.0f;						//通常時のスピード
 float PlayerComponent::current_speed = normal_speed;				//現在のスピード
 float PlayerComponent::damageSpeed = 50.0f;						//敵にヒットしたときにダメージが入るスピード
 int PlayerComponent::collectMax = 3;
-float PlayerComponent::worldRadius = 20000.0f;
+float PlayerComponent::worldRadius = 38000.0f;
 PlayerComponent::PlayerComponent()
 	: inputDevice(nullptr)
 {
@@ -40,7 +40,7 @@ void PlayerComponent::Start()
 {
 	GE::Utility::Printf("PlayerComponent Start()\n");
 	inputDevice = GE::InputDevice::GetInstance();
-	transform->position = TestTreeComponent::position + onTheTreePosition;
+	transform->position = StartTree::position + onTheTreePosition;
 	transform->scale = { 10,10,10 };
 
 	statas = PlayerStatas::STAY_TREE;
@@ -87,7 +87,7 @@ void PlayerComponent::Update(float deltaTime)
 		else { GE::GameSetting::Time::SetGameTime(1.0); }
 	}
 	//操作
-	Control(144.0f/frameRate);
+	Control(144.0f / frameRate);
 	CameraControl::GetInstance()->SetTargetObject(gameObject);
 	CameraControl::GetInstance()->Update();
 
@@ -191,10 +191,7 @@ void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 	{
 		if (other->GetTag() == "ground")
 		{
-			body_direction.y -= 3.14f;
-			statas = PlayerStatas::CRASH;
-
-			CameraControl::GetInstance()->ShakeStart({ 70,70 }, 30);
+			Reflection();
 			return;
 		}
 	}
@@ -248,14 +245,15 @@ bool PlayerComponent::IsSpeedy()
 }
 void PlayerComponent::Control(float deltaTime)
 {
-	const float distance = abs(GE::Math::Vector3::Distance(transform->position, TestTreeComponent::position));
+	const float distance = abs(GE::Math::Vector3::Distance(transform->position, StartTree::position));
+	printf("%f\n", distance);
+
 	if (statas != PlayerStatas::CRASH)
 	{
 		if (worldRadius < distance)
 		{
 			//LookDirection(GE::Math::Vector3(TestTreeComponent::position - transform->position).Normalize());
-			body_direction.y -= 3.14f;
-			statas = PlayerStatas::CRASH;
+			Reflection();
 		}
 	}
 	bool loop = false;
@@ -290,19 +288,20 @@ void PlayerComponent::Control(float deltaTime)
 		//ダッシュから切り替わった時用初期化
 		current_speed = normal_speed;
 
-		//body_direction.z += 0.05 * GE::GameSetting::Time::GetGameTime();
+		body_direction.z += 0.05 * GE::GameSetting::Time::GetGameTime();
 		//体の向き
 		transform->rotation =
 			GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), body_direction.y)
 			* GE::Math::Quaternion(GE::Math::Vector3(0, 0, 1), body_direction.z)
 			* GE::Math::Quaternion(GE::Math::Vector3(1, 0, 0), body_direction.x);
 		//移動
-		transform->position += transform->GetForward() * 50 * deltaTime * GE::GameSetting::Time::GetGameTime() - gravity;
+		transform->position += transform->GetForward() * 2.0f * deltaTime * GE::GameSetting::Time::GetGameTime();
 
 		if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE) || accelerometer.Length() > 2.f)
 		{
 			animator.PlayAnimation(2, false);
 			statas = PlayerStatas::MOVE;
+			transform->rotation = GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), body_direction.y) * GE::Math::Quaternion(GE::Math::Vector3(0, 0, 1), body_direction.z) * GE::Math::Quaternion(GE::Math::Vector3(1, 0, 0), body_direction.x);
 		}
 		break;
 	case PlayerComponent::PlayerStatas::LOCKON_SHOOT:
@@ -322,7 +321,7 @@ void PlayerComponent::Control(float deltaTime)
 		if (stayLandLerpEasingCount < stayLandLerpTime)
 		{
 			stayLandLerpEasingCount++;
-			transform->position = GE::Math::Vector3::Lerp(currentPosition, TestTreeComponent::position + onTheTreePosition, stayLandLerpEasingCount / stayLandLerpTime);
+			transform->position = GE::Math::Vector3::Lerp(currentPosition, StartTree::position + onTheTreePosition, stayLandLerpEasingCount / stayLandLerpTime);
 		}
 		else
 		{
@@ -330,7 +329,7 @@ void PlayerComponent::Control(float deltaTime)
 			//stayアニメーション
 			animator.PlayAnimation(3, false);
 			//収集物お持ち帰り
-			TestTreeComponent::collectCount += collectCount;
+			StartTree::collectCount += collectCount;
 			collectCount = 0;
 			//着陸
 			statas = PlayerStatas::STAY_TREE;
@@ -421,7 +420,6 @@ void PlayerComponent::KeyboardMoveControl()
 	if (InputManager::GetInstance()->GetCurrentInputDeviceState() != InputManager::InputDeviceState::JOYCON)return;
 	const float GYRO_OFFSET = 0.05f;
 	GE::Math::Vector3 quatVector = { quat.x,quat.y,quat.z, };
-
 
 	body_direction.x += quatVector.x / 20.f;
 	body_direction.y += quatVector.y / 20.f;
@@ -549,6 +547,12 @@ void PlayerComponent::LookDirection(GE::Math::Vector3 direction)
 	GE::Math::Vector3 cross = GE::Math::Vector3::Cross(forward, direction).Normalize();
 	body_direction_LockOn = { cross,theta };
 	transform->rotation = body_direction_LockOn;
+}
+void PlayerComponent::Reflection()
+{
+	body_direction.y -= 3.14f;
+	statas = PlayerStatas::CRASH;
+	CameraControl::GetInstance()->ShakeStart({ 70,70 }, 30);
 }
 //EaseIn関係がよくわからなかったから一時的に追加
 const float PlayerComponent::easeIn(const float start, const float end, float time)

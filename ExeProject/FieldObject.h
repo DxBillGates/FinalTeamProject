@@ -1,12 +1,13 @@
 #pragma once
 #include <GatesEngine/Header/GameFramework/Component/Component.h>
 
-class Ground : public GE::Component
+class FieldObject : public GE::Component
 {
 
 public:
-	GE::Math::Vector3 position;
-	Ground();
+	std::string modelName="Cube";
+	std::string shaderName="DefaultMeshShader";
+	FieldObject();
 	void Awake();
 	void Start();
 	void Update(float deltaTime);

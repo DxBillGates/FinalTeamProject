@@ -122,6 +122,8 @@ private:
 	void RayCast(float deltaTime);
 	
 	void LookDirection(GE::Math::Vector3 direction);
+
+	void Reflection();
 	//EaseInŠÖŒW‚ª‚æ‚­‚í‚©‚ç‚È‚©‚Á‚½‚©‚çˆêŽž“I‚É’Ç‰Á
 	const float easeIn(const float start, const float end, float time);
 };

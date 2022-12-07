@@ -3,24 +3,24 @@
 #include <GatesEngine/Header/Graphics\Window.h>
 #include <GatesEngine/Header/GUI\GUIManager.h>
 
-#include"TestTreeComponent.h"
+#include"StartTree.h"
 
-GE::Math::Vector3 TestTreeComponent::position = { 0,1400,-10000 };
-int TestTreeComponent::goalCollect = 10;
-int TestTreeComponent::collectCount;
-bool TestTreeComponent::isCollect;
+GE::Math::Vector3 StartTree::position = { 0,1400,-10000 };
+int StartTree::goalCollect = 10;
+int StartTree::collectCount;
+bool StartTree::isCollect;
 
-TestTreeComponent::TestTreeComponent()
+StartTree::StartTree()
 {
 
 }
 
-void TestTreeComponent::Awake()
+void StartTree::Awake()
 {
 	GE::Utility::Printf("TestTreeComponent Awake()\n");
 }
 
-void TestTreeComponent::Start()
+void StartTree::Start()
 {
 	GE::Utility::Printf("TestTreeComponent Start()\n");
 
@@ -32,7 +32,7 @@ void TestTreeComponent::Start()
 
 }
 
-void TestTreeComponent::Update(float deltaTime)
+void StartTree::Update(float deltaTime)
 {
 	if (collectCount < goalCollect)
 	{
@@ -45,7 +45,7 @@ void TestTreeComponent::Update(float deltaTime)
 	}
 }
 
-void TestTreeComponent::Draw()
+void StartTree::Draw()
 {
 
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
@@ -62,22 +62,22 @@ void TestTreeComponent::Draw()
 	graphicsDevice->DrawMesh("Tree1");
 }
 
-void TestTreeComponent::LateDraw()
+void StartTree::LateDraw()
 {
 
 }
 
-void TestTreeComponent::OnCollision(GE::GameObject* other)
+void StartTree::OnCollision(GE::GameObject* other)
 {
 	//GE::Utility::Printf("TestTreeComponent OnCollision(GameObject* other) : hit\n");
 }
 
-void TestTreeComponent::OnCollision(GE::ICollider* hitCollider)
+void StartTree::OnCollision(GE::ICollider* hitCollider)
 {
 	//GE::Utility::Printf("TestTreeComponent OnCollision(ICollider* other) : hit\n");
 }
 
-void TestTreeComponent::OnGui()
+void StartTree::OnGui()
 {
 
 }

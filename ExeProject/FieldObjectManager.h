@@ -1,11 +1,9 @@
 #pragma once
-#include"NormalEnemy.h"
-#include"Ground.h"
 #include <GatesEngine/Header/GameFramework/GameObject/GameObjectManager.h> 
 #include <GatesEngine/Header/GameFramework/GameObject/GameObject.h> 
 #include <GatesEngine/Header/Util/Random.h>
 #include <GatesEngine/Header/Graphics/MeshData.h>
-
+#include <GatesEngine/Header/Graphics/VertexData.h>
 
 
 class FieldObjectManager

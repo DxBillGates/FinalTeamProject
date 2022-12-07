@@ -2,7 +2,6 @@
 #include "PlayerComponent.h"
 #include"EnemyManager.h"
 #include"FieldObjectManager.h"
-#include"TestTreeComponent.h"
 #include <GatesEngine/Header\GameFramework\Component\SampleComponent.h>
 #include <GatesEngine/Header\GameFramework\Component\SphereCollider.h>
 #include <GatesEngine/Header\GameFramework\Component\BoxCollider.h>

@@ -167,15 +167,15 @@
     <ClCompile Include="CameraControl.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="EnemyManager.cpp" />
+    <ClCompile Include="FieldObject.cpp" />
     <ClCompile Include="FieldObjectManager.cpp" />
     <ClCompile Include="Game.cpp" />
-    <ClCompile Include="Ground.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="NormalEnemy.cpp" />
     <ClCompile Include="PlayerComponent.cpp" />
     <ClCompile Include="SampleScene.cpp" />
-    <ClCompile Include="TestTreeComponent.cpp" />
+    <ClCompile Include="StartTree.cpp" />
     <ClCompile Include="TimeLimit.cpp" />
     <ClCompile Include="Title.cpp" />
   </ItemGroup>
@@ -184,15 +184,15 @@
     <ClInclude Include="CameraControl.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="EnemyManager.h" />
+    <ClInclude Include="FieldObject.h" />
     <ClInclude Include="FieldObjectManager.h" />
     <ClInclude Include="Game.h" />
-    <ClInclude Include="Ground.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="NormalEnemy.h" />
     <ClInclude Include="PlayerComponent.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="SampleScene.h" />
-    <ClInclude Include="TestTreeComponent.h" />
+    <ClInclude Include="StartTree.h" />
     <ClInclude Include="TimeLimit.h" />
     <ClInclude Include="Title.h" />
   </ItemGroup>
