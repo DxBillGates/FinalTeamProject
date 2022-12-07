@@ -8,6 +8,7 @@
 #include <GatesEngine/Header\GameFramework\Collision\CollisionManager.h>
 #include <GatesEngine/Header/Application/Application.h>
 #include"Title.h"
+#include"TimeLimit.h"
 
 SampleScene::SampleScene()
 	: SampleScene("SampleScene")
@@ -55,6 +56,7 @@ void SampleScene::Update(float deltaTime)
 	gameObjectManager.Update(deltaTime);
 	collisionManager.Update();
 	Title::GetInstance()->Update();
+	TimeLimit::GetInstance()->Update();
 
 	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::Y))
 	{
@@ -116,6 +118,7 @@ void SampleScene::Load()
 	EnemyManager::GetInstance()->Start(10, &gameObjectManager);
 	FieldObjectManager::GetInstance()->Start(&gameObjectManager);
 	FieldObjectManager::GetInstance()->SetGroundMesh(groundModel);
+	TimeLimit::GetInstance()->Start(&gameObjectManager);
 
 	collisionManager.AddTagCombination("player", "enemy");
 	collisionManager.AddTagCombination("player", "ground");
