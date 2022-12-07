@@ -25,6 +25,7 @@ float PlayerComponent::current_speed = normal_speed;				//現在のスピード
 float PlayerComponent::damageSpeed = 50.0f;						//敵にヒットしたときにダメージが入るスピード
 int PlayerComponent::collectMax = 3;
 float PlayerComponent::worldRadius = 38000.0f;
+float PlayerComponent::lockOnLength = 10000.0f;
 PlayerComponent::PlayerComponent()
 	: inputDevice(nullptr)
 {
@@ -86,6 +87,7 @@ void PlayerComponent::Update(float deltaTime)
 		}
 		else { GE::GameSetting::Time::SetGameTime(1.0); }
 	}
+
 	//操作
 	Control(144.0f / frameRate);
 	CameraControl::GetInstance()->SetTargetObject(gameObject);
@@ -282,18 +284,14 @@ void PlayerComponent::Control(float deltaTime)
 		LockOn();
 		break;
 	case PlayerComponent::PlayerStatas::DASH:
-		Dash(100.0f, 100.0f, deltaTime, transform->GetForward());
+		Dash(100.0f, 80.0f, deltaTime, transform->GetForward());
 		break;
 	case PlayerComponent::PlayerStatas::CRASH:
 		//ダッシュから切り替わった時用初期化
 		current_speed = normal_speed;
 
 		body_direction.z += 0.05 * GE::GameSetting::Time::GetGameTime();
-		//体の向き
-		transform->rotation =
-			GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), body_direction.y)
-			* GE::Math::Quaternion(GE::Math::Vector3(0, 0, 1), body_direction.z)
-			* GE::Math::Quaternion(GE::Math::Vector3(1, 0, 0), body_direction.x);
+
 		//移動
 		transform->position += transform->GetForward() * 2.0f * deltaTime * GE::GameSetting::Time::GetGameTime();
 
@@ -301,7 +299,7 @@ void PlayerComponent::Control(float deltaTime)
 		{
 			animator.PlayAnimation(2, false);
 			statas = PlayerStatas::MOVE;
-			transform->rotation = GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), body_direction.y) * GE::Math::Quaternion(GE::Math::Vector3(0, 0, 1), body_direction.z) * GE::Math::Quaternion(GE::Math::Vector3(1, 0, 0), body_direction.x);
+			body_direction.z = 0.0f;
 		}
 		break;
 	case PlayerComponent::PlayerStatas::LOCKON_SHOOT:
@@ -365,14 +363,6 @@ void PlayerComponent::Control(float deltaTime)
 		break;
 	}
 
-	if (statas != PlayerStatas::CRASH)
-	{
-		//キーボードで移動操作
-		KeyboardMoveControl();
-	}
-}
-void PlayerComponent::KeyboardMoveControl()
-{
 	GE::Math::Quaternion BODY_DIRECTION =
 		GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), body_direction.y)
 		* GE::Math::Quaternion(GE::Math::Vector3(0, 0, 1), body_direction.z)
@@ -385,6 +375,14 @@ void PlayerComponent::KeyboardMoveControl()
 	}
 	else { transform->rotation = BODY_DIRECTION; }
 
+	if (statas != PlayerStatas::CRASH)
+	{
+		//キーボードで移動操作
+		KeyboardMoveControl();
+	}
+}
+void PlayerComponent::KeyboardMoveControl()
+{
 	GE::Math::Vector3 inputAxis = InputManager::GetInstance()->GetAxis(0, InputManager::InputCtrlAxisState::GYROSCOPE);
 
 	if (inputAxis.x != 0)
@@ -392,7 +390,7 @@ void PlayerComponent::KeyboardMoveControl()
 		body_direction.y += 0.01 * inputAxis.x * GE::GameSetting::Time::GetGameTime();
 		body_direction.z -= 0.005 * inputAxis.x * GE::GameSetting::Time::GetGameTime();
 
-		body_direction.z = (body_direction.z > 0.3f || body_direction.z < -0.3) ? 0.3f * ((body_direction.z > 0) ? 1 : -1) : body_direction.z;
+		body_direction.z = abs(body_direction.z) > 0.3f ? 0.3f * ((body_direction.z > 0) ? 1 : -1) : body_direction.z;
 	}
 	else
 	{
@@ -402,7 +400,7 @@ void PlayerComponent::KeyboardMoveControl()
 	if (inputAxis.y != 0)
 	{
 		body_direction.x -= 0.005 * inputAxis.y * GE::GameSetting::Time::GetGameTime();
-		body_direction.x = (body_direction.x > 1.57f || body_direction.x < -1.57f) ? 1.57f * ((body_direction.x > 0) ? 1 : -1) : body_direction.x;
+		body_direction.x = abs(body_direction.x) > 1.57f ? 1.57f * ((body_direction.x > 0) ? 1 : -1) : body_direction.x;
 	}
 	else
 	{
@@ -442,8 +440,9 @@ void PlayerComponent::SearchNearEnemy()
 		GE::Math::Vector3 enemyDirection = enemies[i]->GetTransform()->position - transform->position;
 		//色初期化
 		enemies[i]->SetColor(GE::Color::Red());
-		//生きているか＆前側にいる中で最も近い敵
-		if (enemies[i]->GetComponent<Enemy>()->statas != Enemy::Statas::DEAD)
+		//生きているか＆前側にいる中で最も近い敵&&LockOnLengthより近い距離か
+		if (enemies[i]->GetComponent<Enemy>()->statas != Enemy::Statas::DEAD
+			&& distance < lockOnLength)
 		{
 			if (GE::Math::Vector3::Dot(transform->GetForward(), enemyDirection.Normalize()) > 0.8)
 			{

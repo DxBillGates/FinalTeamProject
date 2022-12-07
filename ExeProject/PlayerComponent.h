@@ -19,7 +19,8 @@ private:
 	static float stayLandLerpTime;	//木に戻るラープ
 	static int collectMax;			//収集物の同時にもてる最大個数
 	static float body_direction_LerpTime; //秒数
-	static float worldRadius;
+	static float worldRadius;				//世界の大きさの半径(端っこの壁までの距離)
+	static float lockOnLength;				//敵をロックオンできる距離
 
 	GE::InputDevice* inputDevice;
 	GE::Math::Vector3 gyro;

@@ -63,7 +63,7 @@ void CameraControl::Update()
 	//カメラの向き
 	GE::Math::Vector3 direction = GE::Math::Vector3(target - position).Normalize();
 
-	float LERP_VALUE = 0.01f * GE::GameSetting::Time::GetGameTime();
+	float LERP_VALUE = 0.02f * GE::GameSetting::Time::GetGameTime();
 	//ダッシュ時
 	if (targetObject->GetComponent<PlayerComponent>()->statas == PlayerComponent::PlayerStatas::DASH
 		|| targetObject->GetComponent<PlayerComponent>()->statas == PlayerComponent::PlayerStatas::LOCKON_SHOOT)
