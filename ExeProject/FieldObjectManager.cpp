@@ -27,13 +27,13 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 	}
 	//•Ç‰¼
 	{
-		auto* object = gameObjectManager->AddGameObject(new GE::GameObject("skydome", "skydome"));
+		/*auto* object = gameObjectManager->AddGameObject(new GE::GameObject("skydome", "skydome"));
 		auto* sampleComponent = object->AddComponent<FieldObject>();
 		object->GetComponent<FieldObject>()->modelName = "Skydome";
 		object->GetComponent<FieldObject>()->shaderName = "DefaultMeshShader";
 		object->SetColor(GE::Color(1.f, 1.f, 1.f, 0.4f));
 		object->GetTransform()->position = StartTree::position;
-		object->GetTransform()->scale = { 400 };
+		object->GetTransform()->scale = { 400 };*/
 	}
 }
 
