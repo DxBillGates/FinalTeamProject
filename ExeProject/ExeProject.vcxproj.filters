@@ -81,8 +81,6 @@
     <ClCompile Include="Title.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
-    <ClCompile Include="FieldObject.cpp">
-    </ClCompile>
     <ClCompile Include="Clear.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
@@ -90,6 +88,9 @@
       <Filter>ソースファイル</Filter>
     </ClCompile>
     <ClCompile Include="Collect.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="FieldObject.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -136,8 +137,6 @@
     <ClInclude Include="resource.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
-    <ClInclude Include="FieldObject.h">
-    </ClInclude>
     <ClInclude Include="Clear.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
@@ -145,6 +144,9 @@
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
     <ClInclude Include="Collect.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="FieldObject.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
   </ItemGroup>
