@@ -247,6 +247,11 @@ void PlayerComponent::OnGui()
 
 	GE::Math::Vector3 inputAxis = InputManager::GetInstance()->GetAxis();
 	ImGui::InputFloat3("inputAxis", inputAxis.value);
+
+	auto joycon = inputDevice->GetJoyconL();
+	if (joycon == nullptr)return;
+	GE::Math::Vector2 value = { (float)joycon->GetStick().x,(float)joycon->GetStick().y };
+	ImGui::InputFloat2("joyStick", value.value);
 }
 bool PlayerComponent::IsSpeedy()
 {
