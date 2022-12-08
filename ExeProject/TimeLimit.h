@@ -14,7 +14,7 @@ public:
 	float pivotPos;
 	float texSize;
 
-	enum TimeName
+	enum class TimeName
 	{
 		minutes,
 		tenSeconds,
@@ -36,11 +36,11 @@ class TimeLimit
 {
 private:
 	int timer = 3;//制限時間(分指定)
-	int minutes = 0;//分数の描画用変数
-	int tenSeconds = 0;//秒数の十の位の描画用変数
-	int oneSeconds = 0;//秒数の一の位の描画用変数
-	const int frameRate = 144;//フレームレート
-	bool timeOver = false;
+	int minutes = 0;//分数の計算変数
+	int tenSeconds = 0;//秒数の計算変数(十の位)
+	int oneSeconds = 0;//秒数の計算変数(一の位)
+	const int frameRate = 144;//ゲームのフレームレート
+	bool timeOver = false;//タイムオーバーフラグ
 
 public:
 	std::string tag;
@@ -51,10 +51,10 @@ public:
 	void Start(GE::GameObjectManager* gameObjectManager);
 	void Update();
 
-	const int& GetMinutes() { return minutes; }
-	const int& GetTenSeconds() { return tenSeconds; }
-	const int& GetOneSeconds() { return oneSeconds; }
-	const bool& GetTimeOver() { return timeOver; }
+	const int& GetMinutes() { return minutes; }//分数のゲット関数
+	const int& GetTenSeconds() { return tenSeconds; }//秒数のゲット関数(十の位)
+	const int& GetOneSeconds() { return oneSeconds; }//秒数のゲット関数(一の位)
+	const bool& GetTimeOver() { return timeOver; }//タイムオーバーフラグのゲット関数
 
 	//テクスチャ生成
 	void Create(const std::string& gui_tag, const std::string& tex_tag, GE::GameObjectManager* gameObjectManager, float posX, float scaleX, int animeNum);

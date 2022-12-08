@@ -16,17 +16,18 @@ TimeLimit::TimeLimit()
 
 void TimeLimit::Start(GE::GameObjectManager* gameObjectManager)
 {
-	timer = 3;
+	timer = 3;//制限時間(分指定)
 	timer = timer * 60 * frameRate;//分数を秒数に直して144fpsかける
 	minutes = timer / frameRate / 60;//分数の計算
-	tenSeconds = timer / frameRate % 60 / 10;//秒数の十の位の計算
-	oneSeconds = timer / frameRate % 60 % 10;//秒数の一の位の計算
-	timeOver = false;
+	tenSeconds = timer / frameRate % 60 / 10;//秒数の計算(十の位)
+	oneSeconds = timer / frameRate % 60 % 10;//秒数の計算(一の位)
+	timeOver = false;//タイムオーバーフラグ
 
-	Create("minutes", "texture_Number", gameObjectManager,80,100,0);
-	Create("symbol", "texture_symbol", gameObjectManager, 160, 50, 3);
-	Create("tenSeconds", "texture_Number", gameObjectManager, 240, 100, 1);
-	Create("oneSeconds", "texture_Number", gameObjectManager, 340, 100, 2);
+	//各テクスチャ生成
+	Create("minutes", "texture_Number", gameObjectManager,80,100,0);//分数のテクスチャ生成
+	Create("symbol", "texture_symbol", gameObjectManager, 160, 50, 3);//分数と秒数の間のテクスチャ生成
+	Create("tenSeconds", "texture_Number", gameObjectManager, 240, 100, 1);//秒数のテクスチャ生成(十の位)
+	Create("oneSeconds", "texture_Number", gameObjectManager, 340, 100, 2);//秒数のテクスチャ生成(一の位)
 }
 
 void TimeLimit::Update()
@@ -39,8 +40,8 @@ void TimeLimit::Update()
 	{
 		timer--;//カウントダウン
 		minutes = timer / frameRate / 60;//分数の計算
-		tenSeconds = timer / frameRate % 60 / 10;//秒数の十の位の計算
-		oneSeconds = timer / frameRate % 60 % 10;//秒数の一の位の計算
+		tenSeconds = timer / frameRate % 60 / 10;//秒数の計算(十の位)
+		oneSeconds = timer / frameRate % 60 % 10;//秒数の計算(一の位)
 	}
 }
 
@@ -49,9 +50,9 @@ void TimeLimit::Create(const std::string& gui_tag, const std::string& tex_tag, G
 	auto* timeObject = gameObjectManager->AddGameObject(new GE::GameObject(gui_tag, "time"));
 	auto* timeComponent = timeObject->AddComponent<TimeTex>();
 	timeComponent->tag = tex_tag;
-	timeComponent->num = timeNum;
-	timeObject->GetTransform()->position = { posX,970,0 };
-	timeObject->GetTransform()->scale = { scaleX,100,0 };
+	timeComponent->num = timeNum;//TimeTexのswitch文の切り替え
+	timeObject->GetTransform()->position = { posX,850,0 };//ポジション指定
+	timeObject->GetTransform()->scale = { scaleX,100,0 };//サイズ指定
 }
 
 void TimeTex::Start()
@@ -62,21 +63,21 @@ void TimeTex::Update(float deltaTime)
 {
 	switch (num)
 	{
-	case TimeName::minutes:
-		pivotPos = TimeLimit::GetInstance()->GetMinutes();
-		texSize = 320;
+	case (int)TimeName::minutes://分数の描画情報
+		pivotPos = TimeLimit::GetInstance()->GetMinutes();//数字画像の描画開始位置の代入
+		texSize = 320;//画像サイズ
 		break;
-	case TimeName::tenSeconds:
-		pivotPos = TimeLimit::GetInstance()->GetTenSeconds();
-		texSize = 320;
+	case (int)TimeName::tenSeconds://秒数の描画情報(十の位)
+		pivotPos = TimeLimit::GetInstance()->GetTenSeconds();//数字画像の描画開始位置の代入
+		texSize = 320;//画像サイズ
 		break;
-	case TimeName::oneSeconds:
-		pivotPos = TimeLimit::GetInstance()->GetOneSeconds();
-		texSize = 320;
+	case (int)TimeName::oneSeconds://秒数の描画情報(一の位)
+		pivotPos = TimeLimit::GetInstance()->GetOneSeconds();//数字画像の描画開始位置の代入
+		texSize = 320;//画像サイズ
 		break;
 	default:
-		pivotPos = 0;
-		texSize = 64;
+		pivotPos = 0;//数字画像の描画開始位置の代入
+		texSize = 64;//画像サイズ
 		break;
 	}
 }
