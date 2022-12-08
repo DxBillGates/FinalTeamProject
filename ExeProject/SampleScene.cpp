@@ -9,6 +9,7 @@
 #include <GatesEngine/Header/Application/Application.h>
 #include"Title.h"
 #include"TimeLimit.h"
+#include"MiniMapViewer.h"
 
 SampleScene::SampleScene()
 	: SampleScene("SampleScene")
@@ -108,11 +109,9 @@ void SampleScene::Load()
 	}
 
 	{
-		/*auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject("ground", "ground"));
-		testObject->GetTransform()->scale = { 25000 };
-		auto collider = testObject->AddComponent<GE::MeshCollider>();
-		auto* sampleComponent = testObject->AddComponent<GE::SampleComponent>();
-		collider->SetMesh(&groundModel);*/
+		auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject("miniMap", "miniMap"));
+		auto* sampleComponent = testObject->AddComponent<MiniMapViewer>();
+		sampleComponent->SetPlayer(gameObjectManager.FindGameObject("Player")->GetComponent<PlayerComponent>());
 	}
 
 	EnemyManager::GetInstance()->Start(10, &gameObjectManager);
