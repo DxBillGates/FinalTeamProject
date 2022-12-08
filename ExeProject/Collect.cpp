@@ -19,10 +19,10 @@ void Collect::Start(GE::GameObjectManager* gameObjectManager)
 	collectCount = 0;
 	maxCollect = 5;
 	//各テクスチャ生成
-	Create("chick", "texture_Chick", gameObjectManager, 80, 100, 3);
-	Create("collect", "texture_Number", gameObjectManager, 190, 100, 0);
-	Create("symbol", "texture_symbol", gameObjectManager, 270, 50, 2);//数と数の間のテクスチャ生成
-	Create("maxCollect", "texture_Number", gameObjectManager, 340, 100, 1);
+	Create("chick", "texture_Chick", gameObjectManager, 80, 100, 3);//雛のテクスチャ生成
+	Create("collect", "texture_Number", gameObjectManager, 190, 100, 0);//収集物のテクスチャ生成
+	Create("symbol", "texture_symbol", gameObjectManager, 270, 50, 2);//スラッシュのテクスチャ生成
+	Create("maxCollect", "texture_Number", gameObjectManager, 340, 100, 1);//収集物(最大数)のテクスチャ生成
 }
 
 void Collect::Update(const int& count)
@@ -48,17 +48,17 @@ void CollectTex::Update(float deltaTime)
 {
 	switch (num)
 	{
-	case (int)CollectName::collect:
+	case (int)CollectName::collect://収集物の描画情報
 		pivotPosX = Collect::GetInstance()->GetCollectCount();//画像の描画開始位置の代入
 		texSizeX = 320;//画像サイズ
 		clipSizeX = 32;
 		break;
-	case (int)CollectName::maxCollect:
+	case (int)CollectName::maxCollect://収集物(最大数)の描画情報
 		pivotPosX = Collect::GetInstance()->GetMaxCollect();//画像の描画開始位置の代入
 		texSizeX = 320;//画像サイズ
 		clipSizeX = 32;
 		break;
-	case (int)CollectName::symbol:
+	case (int)CollectName::symbol://スラッシュの描画情報
 		pivotPosX = 1;//画像の描画開始位置の代入
 		texSizeX = 64;//画像サイズ
 		clipSizeX = 32;

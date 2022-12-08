@@ -64,20 +64,20 @@ void TimeTex::Update(float deltaTime)
 	switch (num)
 	{
 	case (int)TimeName::minutes://分数の描画情報
-		pivotPos = TimeLimit::GetInstance()->GetMinutes();//数字画像の描画開始位置の代入
-		texSize = 320;//画像サイズ
+		pivotPosX = TimeLimit::GetInstance()->GetMinutes();//画像の描画開始位置の代入
+		texSizeX = 320;//画像サイズ
 		break;
 	case (int)TimeName::tenSeconds://秒数の描画情報(十の位)
-		pivotPos = TimeLimit::GetInstance()->GetTenSeconds();//数字画像の描画開始位置の代入
-		texSize = 320;//画像サイズ
+		pivotPosX = TimeLimit::GetInstance()->GetTenSeconds();//画像の描画開始位置の代入
+		texSizeX = 320;//画像サイズ
 		break;
 	case (int)TimeName::oneSeconds://秒数の描画情報(一の位)
-		pivotPos = TimeLimit::GetInstance()->GetOneSeconds();//数字画像の描画開始位置の代入
-		texSize = 320;//画像サイズ
+		pivotPosX = TimeLimit::GetInstance()->GetOneSeconds();//画像の描画開始位置の代入
+		texSizeX = 320;//画像サイズ
 		break;
 	default:
-		pivotPos = 0;//数字画像の描画開始位置の代入
-		texSize = 64;//画像サイズ
+		pivotPosX = 0;//画像の描画開始位置の代入
+		texSizeX = 64;//画像サイズ
 		break;
 	}
 }
@@ -115,12 +115,12 @@ void TimeTex::LateDraw()
 	GE::ITexture* texture = graphicsDevice->GetTextureManager()->Get(tag);
 
 	// 画像の元サイズ
-	textureAnimationInfo.textureSize = {texSize,64};
+	textureAnimationInfo.textureSize = {texSizeX,64};
 	// 元画像のサイズからどうやって切り抜くか　例) 元サイズが100*100で半分だけ表示したいなら{50,100}にする
 	// textureSizeと一緒にすると切り抜かれずに描画される
 	textureAnimationInfo.clipSize = {32,64};
 	// 切り抜く際の左上座標 例) {0,0}なら元画像の左上 texture->GetSize()なら右下になる
-	textureAnimationInfo.pivot = { pivotPos,0 };
+	textureAnimationInfo.pivot = { pivotPosX,0 };
 
 	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
 	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });

@@ -22,7 +22,6 @@ public:
 		symbol,
 	};
 
-	//CollectName tName;
 	int num = 0;
 
 public:
@@ -36,8 +35,8 @@ public:
 class Collect
 {
 private:
-	int maxCollect = 5;
-	int collectCount = 0;
+	int collectCount = 0;//ûW•¨
+	int maxCollect = 5;//ûW•¨(Å‘å”)
 
 public:
 	std::string tag;
