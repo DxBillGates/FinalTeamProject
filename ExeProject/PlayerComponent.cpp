@@ -15,16 +15,16 @@
 float PlayerComponent::frameRate;
 
 GE::Math::Vector3 PlayerComponent::onTheTreePosition = { 0,300,0 };	//木の上で体の高さ調整用
-int PlayerComponent::hitStopTime = 20;								// ヒットストップの長さ
+int PlayerComponent::hitStopTime = 15;								// ヒットストップの長さ
 float PlayerComponent::body_direction_LerpTime = 50.0f;				//ダッシュ後体の角度の遷移
-float PlayerComponent::pushStartTime = 100.0f;						//キーを押してから操作できるようになるまでのカウント
-float PlayerComponent::stayLandLerpTime = 200.0f;					//木に着陸するラープ長さ
+float PlayerComponent::pushStartTime = 20.0f;						//キーを押してから操作できるようになるまでのカウント
+float PlayerComponent::stayLandLerpTime = 150.0f;					//木に着陸するラープ長さ
 GE::Math::Vector3 PlayerComponent::gravity = { 0,0.5,0 };			//重力
 float PlayerComponent::rayHitSecond = 144.0f;						//ロックオンする照準を合わせる長さ
 float PlayerComponent::normal_speed = 20.0f;						//通常時のスピード
 float PlayerComponent::current_speed = normal_speed;				//現在のスピード
-float PlayerComponent::damageSpeed = 50.0f;						//敵にヒットしたときにダメージが入るスピード
-int PlayerComponent::collectMax = 3;
+float PlayerComponent::damageSpeed = 0.0f;						//敵にヒットしたときにダメージが入るスピード
+int PlayerComponent::collectMax = 5;
 float PlayerComponent::worldRadius = 38000.0f;
 float PlayerComponent::lockOnLength = 10000.0f;
 
