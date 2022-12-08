@@ -96,6 +96,11 @@ void GE::GameObjectManager::Destroy()
 			{
 				if (destroyObject == gameObject)
 				{
+					if (gameObject == inspectorGui.CurrentSelectGameObject())
+					{
+						inspectorGui.SetCurrentSelectGameObject(nullptr);
+					}
+
 					gameObject->OnDestroy();
 					delete gameObject;
 					gameObject = nullptr;

@@ -7,6 +7,11 @@ void GE::GUI::Inspector::SetCurrentSelectGameObject(GameObject* gameObject)
 	currentSelectGameObject = gameObject;
 }
 
+GE::GameObject* GE::GUI::Inspector::CurrentSelectGameObject()
+{
+	return currentSelectGameObject;
+}
+
 void GE::GUI::Inspector::OnGui()
 {
 	ImGui::Begin("Inspector");
