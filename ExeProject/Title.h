@@ -57,8 +57,6 @@ public:
 
 	float alpha = 0.0f;
 private:
-	//選択
-	void Select();
 	//テクスチャ生成
 	void Create(std::string gui_tag, std::string tex_tag, GE::GameObjectManager* gameObjectManager, GE::IGraphicsDeviceDx12* device);
 public:
@@ -67,6 +65,9 @@ public:
 	~Title() = default;
 	void operator=(const Title& obj) = delete;
 	Title(const Title& obj) = delete;
+
+	//選択
+	void Select();
 
 	//初期設定
 	void Awake(GE::GameObjectManager* gameObjectManager, GE::IGraphicsDeviceDx12* device);

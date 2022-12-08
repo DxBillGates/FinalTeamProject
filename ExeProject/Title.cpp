@@ -72,7 +72,7 @@ void Title::Update()
 	//タイトル状態なら、選択可能
 	if (!decided)
 	{
-		Select();
+		//Select();
 		alpha += 0.003f;
 		//選択中のテクスチャ色変え
 		sprites[states]->GetGameObject()->SetColor(GE::Color::Red());
@@ -81,6 +81,10 @@ void Title::Update()
 
 void Title::Select()
 {
+	if (decided) {
+		return;
+	}
+
 	int a;
 	//上下選択(スタート,オプション、exit
 	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::UP)

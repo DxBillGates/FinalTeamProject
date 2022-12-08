@@ -54,6 +54,7 @@ void SampleScene::Initialize()
 
 void SampleScene::Update(float deltaTime)
 {
+	Title::GetInstance()->Select();
 	gameObjectManager.Update(deltaTime);
 	collisionManager.Update();
 	Title::GetInstance()->Update();

@@ -344,9 +344,16 @@ void PlayerComponent::Control(float deltaTime)
 		if (startCouunt == 0.0f)
 		{
 			if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE)
-				|| accelerometer.Length() > 2.f
-				&& Title::GetInstance()->GetSelect(Title::States::start))
+				|| accelerometer.Length() > 2.f)
 			{
+				Title::GetInstance()->states = Title::States::serectNum;
+				startCouunt++;
+				//MoveFromStop
+				animator.PlayAnimation(2, false);
+			}
+			else if (Title::GetInstance()->GetSelect(Title::States::start))
+			{
+				Title::GetInstance()->states = Title::States::serectNum;
 				startCouunt++;
 				//MoveFromStop
 				animator.PlayAnimation(2, false);
