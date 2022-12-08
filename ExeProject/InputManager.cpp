@@ -111,13 +111,13 @@ bool InputManager::GetActionButton(bool isJoyconAcc)
 	switch (currentInputDeviceState)
 	{
 	case InputManager::InputDeviceState::KEYBOARD:
-		if (keyboard->CheckHitKey(GE::Keys::SPACE))return true;
+		if (keyboard->CheckPressTrigger(GE::Keys::SPACE))return true;
 		break;
 	case InputManager::InputDeviceState::XCTRL:
-		if (xctrl->CheckHitButton(GE::XInputControllerButton::XINPUT_A))return true;
+		if (xctrl->CheckHitButtonTrigger(GE::XInputControllerButton::XINPUT_A))return true;
 		break;
 	case InputManager::InputDeviceState::JOYCON:
-		if (joyconR->GetButton(GE::JoyconButtonData::B) && isJoyconAcc == false)return true;
+		if (joyconR->GetTriggerButton(GE::JoyconButtonData::B) && isJoyconAcc == false)return true;
 
 		GE::Vector3Int16 acc = joyconL->GetAccelerometer();
 		Vector3 accVector = { (float)acc.x,(float)acc.y,(float)acc.z };

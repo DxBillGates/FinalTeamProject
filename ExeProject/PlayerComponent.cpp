@@ -281,10 +281,7 @@ void PlayerComponent::Control(float deltaTime)
 	case PlayerComponent::PlayerStatas::MOVE:
 		transform->position += transform->GetForward() * current_speed * deltaTime * GE::GameSetting::Time::GetGameTime() - gravity;
 		//Key‰Ÿ‚µ‚½‚çPlayerState::DASH‚É•Ï‚í‚é
-		if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE) || accelerometer.Length() > 2.f)
-		{
-			statas = PlayerStatas::DASH;
-		}
+		if (InputManager::GetInstance()->GetActionButton()) { statas = PlayerStatas::DASH; }
 		if (InputManager::GetInstance()->GetLockonButton())
 		{
 			isLockOnStart = true;
@@ -310,7 +307,7 @@ void PlayerComponent::Control(float deltaTime)
 		//ˆÚ“®
 		transform->position += transform->GetForward() * 2.0f * deltaTime * GE::GameSetting::Time::GetGameTime();
 
-		if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE) || accelerometer.Length() > 2.f)
+		if (InputManager::GetInstance()->GetActionButton())
 		{
 			animator.PlayAnimation(2, false);
 			statas = PlayerStatas::MOVE;
