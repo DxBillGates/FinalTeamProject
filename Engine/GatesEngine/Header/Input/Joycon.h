@@ -1,6 +1,7 @@
 #pragma once
 #include <cstdint>
 #include "HidDevice.h"
+#include "..\Util\Math\Vector2.h"
 
 namespace GE
 {
@@ -220,6 +221,6 @@ namespace GE
 		Vector3Int16 GetAccelerometer();
 		Vector3Int16 GetGyroscope();
 		
-		Vector2Int16 GetStick();
+		GE::Math::Vector2 GetStick();
 	};
 }
