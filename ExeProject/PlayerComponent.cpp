@@ -24,7 +24,7 @@ float PlayerComponent::rayHitSecond = 144.0f;						//ƒƒbƒNƒIƒ“‚·‚éÆ€‚ğ‡‚í‚¹‚
 float PlayerComponent::normal_speed = 20.0f;						//’Êí‚ÌƒXƒs[ƒh
 float PlayerComponent::current_speed = normal_speed;				//Œ»İ‚ÌƒXƒs[ƒh
 float PlayerComponent::damageSpeed = 0.0f;						//“G‚Éƒqƒbƒg‚µ‚½‚Æ‚«‚Éƒ_ƒ[ƒW‚ª“ü‚éƒXƒs[ƒh
-int PlayerComponent::collectMax = 5;
+int PlayerComponent::collectMax = 10;
 float PlayerComponent::worldRadius = 38000.0f;
 float PlayerComponent::lockOnLength = 10000.0f;
 
