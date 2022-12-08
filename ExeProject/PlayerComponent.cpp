@@ -349,7 +349,7 @@ void PlayerComponent::Control(float deltaTime)
 		{
 			if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE)
 				|| accelerometer.Length() > 2.f
-				|| Title::GetInstance()->GetDecid())
+				&& Title::GetInstance()->GetSelect(Title::States::start))
 			{
 				startCouunt++;
 				//MoveFromStop
