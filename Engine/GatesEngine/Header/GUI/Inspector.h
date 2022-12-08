@@ -11,6 +11,7 @@ namespace GE
 			GameObject* currentSelectGameObject;
 		public:
 			void SetCurrentSelectGameObject(GameObject* gameObject);
+			GameObject* CurrentSelectGameObject();
 			void OnGui();
 		};
 	}

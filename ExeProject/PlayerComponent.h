@@ -2,6 +2,7 @@
 #include <GatesEngine/Header/GameFramework/Component/Component.h>
 #include <GatesEngine/Header/Input/InputDevice.h>
 #include <GatesEngine/Header/Graphics/SkinMeshAnimator.h>
+#include <GatesEngine/Header/Audio/AudioManager.h>
 
 class PlayerComponent : public GE::Component
 {
@@ -22,6 +23,7 @@ private:
 	static float worldRadius;				//世界の大きさの半径(端っこの壁までの距離)
 	static float lockOnLength;				//敵をロックオンできる距離
 
+	GE::AudioManager* audioManager;
 	GE::InputDevice* inputDevice;
 	GE::Math::Vector3 gyro;
 	GE::Math::Vector3 accelerometer;
@@ -45,10 +47,10 @@ private:
 		GE::Math::Vector3 direction;
 	};
 	LockOnEnemy lockOnEnemy;
-	
+
 	//レティクルの位置
 	GE::Math::Vector2 center;
-	
+
 	GE::Math::Quaternion quat;
 	GE::Math::Vector3 body_direction;				//体の向き計算用
 	GE::Math::Quaternion body_direction_LockOn;		//ロックオン時の体の向き計算用
@@ -121,10 +123,13 @@ private:
 	/// 
 	/// </summary>
 	void RayCast(float deltaTime);
-	
+
 	void LookDirection(GE::Math::Vector3 direction);
 
 	void Reflection();
 	//EaseIn関係がよくわからなかったから一時的に追加
 	const float easeIn(const float start, const float end, float time);
+public:
+	GE::Math::Vector3 GetDirection();
+	void SetAudioManager(GE::AudioManager* a);
 };

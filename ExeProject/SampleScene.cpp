@@ -8,8 +8,9 @@
 #include <GatesEngine/Header\GameFramework\Collision\CollisionManager.h>
 #include <GatesEngine/Header/Application/Application.h>
 #include"Title.h"
-#include"TimeLimit.h"
 #include"StartTree.h"
+#include"TimeLimit.h"
+#include"MiniMapViewer.h"
 
 SampleScene::SampleScene()
 	: SampleScene("SampleScene")
@@ -59,23 +60,15 @@ void SampleScene::Update(float deltaTime)
 	collisionManager.Update();
 	Title::GetInstance()->Update();
 	TimeLimit::GetInstance()->Update();
-
 	//クリア以降条件
 	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::Q)
-		||StartTree::isCollect)
+		|| StartTree::isCollect)
 	{
 		changeSceneInfo.flag = true;
 		changeSceneInfo.name = "ClearScene";
 		changeSceneInfo.initNextSceneFlag = true;
 	}
-	//ゲームオーバー以降条件
-	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::E)
-		|| TimeLimit::GetInstance()->GetTimeOver())
-	{
-		changeSceneInfo.flag = true;
-		changeSceneInfo.name = "OverScene";
-		changeSceneInfo.initNextSceneFlag = true;
-	}
+
 	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::Y))
 	{
 		changeSceneInfo.flag = true;
@@ -106,7 +99,7 @@ void SampleScene::Load()
 	{
 		auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject("Player", "player"));
 		auto* sampleComponent = testObject->AddComponent<PlayerComponent>();
-
+		testObject->GetComponent<PlayerComponent>()->SetAudioManager(audioManager);
 		auto* playerCollider = testObject->AddComponent < GE::SphereCollider >();
 		playerCollider->SetCenter({ 0,0,0 });
 		playerCollider->SetSize({ 20 });
@@ -126,11 +119,9 @@ void SampleScene::Load()
 	}
 
 	{
-		/*auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject("ground", "ground"));
-		testObject->GetTransform()->scale = { 25000 };
-		auto collider = testObject->AddComponent<GE::MeshCollider>();
-		auto* sampleComponent = testObject->AddComponent<GE::SampleComponent>();
-		collider->SetMesh(&groundModel);*/
+		auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject("miniMap", "miniMap"));
+		auto* sampleComponent = testObject->AddComponent<MiniMapViewer>();
+		sampleComponent->SetPlayer(gameObjectManager.FindGameObject("Player")->GetComponent<PlayerComponent>());
 	}
 
 	EnemyManager::GetInstance()->Start(10, &gameObjectManager);

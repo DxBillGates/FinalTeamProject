@@ -14,19 +14,20 @@
 
 float PlayerComponent::frameRate;
 
-GE::Math::Vector3 PlayerComponent::onTheTreePosition = { 0,180,0 };	//木の上で体の高さ調整用
-int PlayerComponent::hitStopTime = 20;								// ヒットストップの長さ
+GE::Math::Vector3 PlayerComponent::onTheTreePosition = { 0,300,0 };	//木の上で体の高さ調整用
+int PlayerComponent::hitStopTime = 15;								// ヒットストップの長さ
 float PlayerComponent::body_direction_LerpTime = 50.0f;				//ダッシュ後体の角度の遷移
-float PlayerComponent::pushStartTime = 100.0f;						//キーを押してから操作できるようになるまでのカウント
-float PlayerComponent::stayLandLerpTime = 200.0f;					//木に着陸するラープ長さ
+float PlayerComponent::pushStartTime = 20.0f;						//キーを押してから操作できるようになるまでのカウント
+float PlayerComponent::stayLandLerpTime = 150.0f;					//木に着陸するラープ長さ
 GE::Math::Vector3 PlayerComponent::gravity = { 0,0.5,0 };			//重力
 float PlayerComponent::rayHitSecond = 144.0f;						//ロックオンする照準を合わせる長さ
 float PlayerComponent::normal_speed = 20.0f;						//通常時のスピード
 float PlayerComponent::current_speed = normal_speed;				//現在のスピード
-float PlayerComponent::damageSpeed = 50.0f;						//敵にヒットしたときにダメージが入るスピード
-int PlayerComponent::collectMax = 3;
+float PlayerComponent::damageSpeed = 0.0f;						//敵にヒットしたときにダメージが入るスピード
+int PlayerComponent::collectMax = 10;
 float PlayerComponent::worldRadius = 38000.0f;
 float PlayerComponent::lockOnLength = 10000.0f;
+
 PlayerComponent::PlayerComponent()
 	: inputDevice(nullptr)
 {
@@ -74,6 +75,7 @@ void PlayerComponent::Update(float deltaTime)
 {
 	frameRate = 1.0f / deltaTime;
 
+	//testBGM->Start();
 	InputManager::GetInstance()->Update();
 	const auto& cameraInfo = graphicsDevice->GetMainCamera()->GetCameraInfo();
 	GE::Math::GetScreenToRay(center, &rayPos, &rayDir, cameraInfo.viewMatrix, cameraInfo.projMatrix, GE::Math::Matrix4x4::GetViewportMatrix(GE::Window::GetWindowSize()));
@@ -200,6 +202,7 @@ void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 	{
 		if (other->GetTag() == "ground")
 		{
+			audioManager->Use("hitWall")->Start();
 			Reflection();
 			return;
 		}
@@ -214,6 +217,7 @@ void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 		}
 		else
 		{
+			audioManager->Use("catch2")->Start();
 			//収集物 +1
 			collectCount < collectMax ? collectCount++ : 0;
 		}
@@ -243,6 +247,11 @@ void PlayerComponent::OnGui()
 
 	GE::Math::Vector3 inputAxis = InputManager::GetInstance()->GetAxis();
 	ImGui::InputFloat3("inputAxis", inputAxis.value);
+
+	auto joycon = inputDevice->GetJoyconL();
+	if (joycon == nullptr)return;
+	GE::Math::Vector2 value = { (float)joycon->GetStick().x,(float)joycon->GetStick().y };
+	ImGui::InputFloat2("joyStick", value.value);
 }
 bool PlayerComponent::IsSpeedy()
 {
@@ -255,7 +264,6 @@ bool PlayerComponent::IsSpeedy()
 void PlayerComponent::Control(float deltaTime)
 {
 	const float distance = abs(GE::Math::Vector3::Distance(transform->position, StartTree::position));
-	printf("%f\n", distance);
 
 	if (statas != PlayerStatas::CRASH)
 	{
@@ -307,6 +315,7 @@ void PlayerComponent::Control(float deltaTime)
 			animator.PlayAnimation(2, false);
 			statas = PlayerStatas::MOVE;
 			body_direction.z = 0.0f;
+			audioManager->Use("flapping1")->Start();
 		}
 		break;
 	case PlayerComponent::PlayerStatas::LOCKON_SHOOT:
@@ -325,7 +334,7 @@ void PlayerComponent::Control(float deltaTime)
 	case PlayerComponent::PlayerStatas::GO_TREE:
 		if (stayLandLerpEasingCount < stayLandLerpTime)
 		{
-			stayLandLerpEasingCount++;
+			stayLandLerpEasingCount += deltaTime * GE::GameSetting::Time::GetGameTime();
 			transform->position = GE::Math::Vector3::Lerp(currentPosition, StartTree::position + onTheTreePosition, stayLandLerpEasingCount / stayLandLerpTime);
 		}
 		else
@@ -357,9 +366,10 @@ void PlayerComponent::Control(float deltaTime)
 				startCouunt++;
 				//MoveFromStop
 				animator.PlayAnimation(2, false);
+				audioManager->Use("flapping1")->Start();
 			}
 		}
-		else if (startCouunt < 2.0f) { startCouunt++; }//1フレーム更新しないとIsEndがTrueのままになるからいったんこれで…
+		else if (startCouunt < 2.0f) { startCouunt++; }//1フレーム更新しないとSkinMeshAnimator::IsEndがTrueのままになるからいったんこれで…
 		else
 		{
 			if (animator.IsEndAnimation())
@@ -501,7 +511,11 @@ void PlayerComponent::LockOn()
 void PlayerComponent::Dash(float dash_speed, float dash_time, float deltaTime, GE::Math::Vector3 direction, bool loop)
 {
 	//FlyAnimation
-	if (dashEasingCount == 0.0f) { animator.PlayAnimation(0, false); }
+	if (dashEasingCount == 0.0f) {
+		animator.PlayAnimation(0, false);
+		audioManager->Use("flapping1")->Start();
+		audioManager->Use("air1")->Start();
+	}
 
 	if (loop)
 	{
@@ -573,4 +587,14 @@ void PlayerComponent::Reflection()
 const float PlayerComponent::easeIn(const float start, const float end, float time)
 {
 	return start * (1.0f - time * time) + end * time * time;
+}
+
+GE::Math::Vector3 PlayerComponent::GetDirection()
+{
+	return body_direction;
+}
+
+void PlayerComponent::SetAudioManager(GE::AudioManager* a)
+{
+	audioManager = a;
 }
