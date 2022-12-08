@@ -1,172 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-	<ItemGroup>
-		<FxCompile Include="Resources\Shader\DefaultLinePixelShader.hlsl">
-			<Filter>シェーダーファイル</Filter>
-		</FxCompile>
-		<FxCompile Include="Resources\Shader\DefaultLineVertexShader.hlsl">
-			<Filter>シェーダーファイル</Filter>
-		</FxCompile>
-		<FxCompile Include="Resources\Shader\DefaultMeshPixelShader.hlsl">
-			<Filter>シェーダーファイル</Filter>
-		</FxCompile>
-		<FxCompile Include="Resources\Shader\DefaultMeshVertexShader.hlsl">
-			<Filter>シェーダーファイル</Filter>
-		</FxCompile>
-		<FxCompile Include="Resources\Shader\DefaultMeshWithTexturePixelShader.hlsl">
-			<Filter>シェーダーファイル</Filter>
-		</FxCompile>
-		<FxCompile Include="Resources\Shader\DefaultSkinMeshVertexShader.hlsl">
-			<Filter>シェーダーファイル</Filter>
-		</FxCompile>
-		<FxCompile Include="Resources\Shader\DefaultSpritePixelShader.hlsl">
-			<Filter>シェーダーファイル</Filter>
-		</FxCompile>
-		<FxCompile Include="Resources\Shader\DefaultSpriteVertexShader.hlsl">
-			<Filter>シェーダーファイル</Filter>
-		</FxCompile>
-		<FxCompile Include="Resources\Shader\DefaultSpriteWithTexturePixelShader.hlsl">
-			<Filter>シェーダーファイル</Filter>
-		</FxCompile>
-		<FxCompile Include="Resources\Shader\DefaultSpriteWithTextureVertexShader.hlsl">
-			<Filter>シェーダーファイル</Filter>
-		</FxCompile>
-		<FxCompile Include="Resources\Shader\GaussBlurPixelShader.hlsl">
-			<Filter>シェーダーファイル</Filter>
-		</FxCompile>
-		<FxCompile Include="Resources\Shader\SpriteTextureForPostEffectPixelShader.hlsl">
-			<Filter>シェーダーファイル</Filter>
-		</FxCompile>
-	</ItemGroup>
-	<ItemGroup>
-		<ClCompile Include="BirdEnemy.cpp">
-			<Filter>ソースファイル</Filter>
-		</ClCompile>
-		<ClCompile Include="CameraControl.cpp">
-			<Filter>ソースファイル</Filter>
-		</ClCompile>
-		<ClCompile Include="Enemy.cpp">
-			<Filter>ソースファイル</Filter>
-		</ClCompile>
-		<ClCompile Include="EnemyManager.cpp">
-			<Filter>ソースファイル</Filter>
-		</ClCompile>
-		<ClCompile Include="FieldObjectManager.cpp">
-			<Filter>ソースファイル</Filter>
-		</ClCompile>
-		<ClCompile Include="Game.cpp">
-			<Filter>ソースファイル</Filter>
-		</ClCompile>
-		<ClCompile Include="InputManager.cpp">
-			<Filter>ソースファイル</Filter>
-		</ClCompile>
-		<ClCompile Include="main.cpp">
-			<Filter>ソースファイル</Filter>
-		</ClCompile>
-		<ClCompile Include="NormalEnemy.cpp">
-			<Filter>ソースファイル</Filter>
-		</ClCompile>
-		<ClCompile Include="PlayerComponent.cpp">
-			<Filter>ソースファイル</Filter>
-		</ClCompile>
-		<ClCompile Include="SampleScene.cpp">
-			<Filter>ソースファイル</Filter>
-		</ClCompile>
-		<ClCompile Include="StartTree.cpp">
-			<Filter>ソースファイル</Filter>
-		</ClCompile>
-		<ClCompile Include="TimeLimit.cpp">
-			<Filter>ソースファイル</Filter>
-		</ClCompile>
-		<ClCompile Include="Title.cpp">
-			<Filter>ソースファイル</Filter>
-		</ClCompile>
-		<ClCompile Include="FieldObject.cpp">
-		</ClCompile>
-		<ClCompile Include="Clear.cpp">
-			<Filter>ソースファイル</Filter>
-		</ClCompile>
-		<ClCompile Include="Over.cpp">
-			<Filter>ソースファイル</Filter>
-		</ClCompile>
-	</ItemGroup>
-	<ItemGroup>
-		<ClInclude Include="BirdEnemy.h">
-			<Filter>ヘッダーファイル</Filter>
-		</ClInclude>
-		<ClInclude Include="CameraControl.h">
-			<Filter>ヘッダーファイル</Filter>
-		</ClInclude>
-		<ClInclude Include="EnemyManager.h">
-			<Filter>ヘッダーファイル</Filter>
-		</ClInclude>
-		<ClInclude Include="Enemy.h">
-			<Filter>ヘッダーファイル</Filter>
-		</ClInclude>
-		<ClInclude Include="FieldObjectManager.h">
-			<Filter>ヘッダーファイル</Filter>
-		</ClInclude>
-		<ClInclude Include="Game.h">
-			<Filter>ヘッダーファイル</Filter>
-		</ClInclude>
-		<ClInclude Include="InputManager.h">
-			<Filter>ヘッダーファイル</Filter>
-		</ClInclude>
-		<ClInclude Include="NormalEnemy.h">
-			<Filter>ヘッダーファイル</Filter>
-		</ClInclude>
-		<ClInclude Include="PlayerComponent.h">
-			<Filter>ヘッダーファイル</Filter>
-		</ClInclude>
-		<ClInclude Include="SampleScene.h">
-			<Filter>ヘッダーファイル</Filter>
-		</ClInclude>
-		<ClInclude Include="StartTree.h">
-			<Filter>ヘッダーファイル</Filter>
-		</ClInclude>
-		<ClInclude Include="TimeLimit.h">
-			<Filter>ヘッダーファイル</Filter>
-		</ClInclude>
-		<ClInclude Include="Title.h">
-			<Filter>ヘッダーファイル</Filter>
-		</ClInclude>
-		<ClInclude Include="resource.h">
-			<Filter>ヘッダーファイル</Filter>
-		</ClInclude>
-		<ClInclude Include="FieldObject.h">
-		</ClInclude>
-		<ClInclude Include="Clear.h">
-			<Filter>ヘッダーファイル</Filter>
-		</ClInclude>
-		<ClInclude Include="Over.h">
-			<Filter>ヘッダーファイル</Filter>
-		</ClInclude>
-	</ItemGroup>
-	<ItemGroup>
-		<ResourceCompile Include="ExeProject.rc" />
-	</ItemGroup>
-	<ItemGroup>
-		<Image Include="AppIcon.ico" />
-	</ItemGroup>
-	<ItemGroup>
-		<None Include="Resources\Shader\DefaultShader.hlsli">
-			<Filter>シェーダーファイル</Filter>
-		</None>
-		<None Include="Resources\Shader\GaussBlurShaderHeader.hlsli">
-			<Filter>シェーダーファイル</Filter>
-		</None>
-	</ItemGroup>
-	<ItemGroup>
-		<Filter Include="シェーダーファイル">
-			<UniqueIdentifier>{c974415a-41b5-49b8-a13b-7abd6de00c77}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="ヘッダーファイル">
-			<UniqueIdentifier>{da01331a-27c6-4de2-9d06-42083dfdeba2}</UniqueIdentifier>
-		</Filter>
-		<Filter Include="ソースファイル">
-			<UniqueIdentifier>{bbec98bc-d805-4223-ad80-83c256bc279a}</UniqueIdentifier>
-		</Filter>
-	</ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shader\DefaultLinePixelShader.hlsl">
       <Filter>シェーダーファイル</Filter>
@@ -224,9 +57,6 @@
     <ClCompile Include="Game.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Ground.cpp">
-      <Filter>ソースファイル</Filter>
-    </ClCompile>
     <ClCompile Include="InputManager.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
@@ -242,7 +72,177 @@
     <ClCompile Include="SampleScene.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
-    <ClCompile Include="TestTreeComponent.cpp">
+    <ClCompile Include="StartTree.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="TimeLimit.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Title.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="FieldObject.cpp">
+    </ClCompile>
+    <ClCompile Include="Clear.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Over.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Collect.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="BirdEnemy.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraControl.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyManager.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="FieldObjectManager.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="InputManager.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="NormalEnemy.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerComponent.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="SampleScene.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="StartTree.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeLimit.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Title.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="FieldObject.h">
+    </ClInclude>
+    <ClInclude Include="Clear.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Over.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Collect.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ExeProject.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="AppIcon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Shader\DefaultShader.hlsli">
+      <Filter>シェーダーファイル</Filter>
+    </None>
+    <None Include="Resources\Shader\GaussBlurShaderHeader.hlsli">
+      <Filter>シェーダーファイル</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="シェーダーファイル">
+      <UniqueIdentifier>{c974415a-41b5-49b8-a13b-7abd6de00c77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダーファイル">
+      <UniqueIdentifier>{da01331a-27c6-4de2-9d06-42083dfdeba2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソースファイル">
+      <UniqueIdentifier>{bbec98bc-d805-4223-ad80-83c256bc279a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Resources\Shader\DefaultLinePixelShader.hlsl">
+      <Filter>シェーダーファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shader\DefaultLineVertexShader.hlsl">
+      <Filter>シェーダーファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shader\DefaultMeshPixelShader.hlsl">
+      <Filter>シェーダーファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shader\DefaultMeshVertexShader.hlsl">
+      <Filter>シェーダーファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shader\DefaultMeshWithTexturePixelShader.hlsl">
+      <Filter>シェーダーファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shader\DefaultSkinMeshVertexShader.hlsl">
+      <Filter>シェーダーファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shader\DefaultSpritePixelShader.hlsl">
+      <Filter>シェーダーファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shader\DefaultSpriteVertexShader.hlsl">
+      <Filter>シェーダーファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shader\DefaultSpriteWithTexturePixelShader.hlsl">
+      <Filter>シェーダーファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shader\DefaultSpriteWithTextureVertexShader.hlsl">
+      <Filter>シェーダーファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shader\GaussBlurPixelShader.hlsl">
+      <Filter>シェーダーファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shader\SpriteTextureForPostEffectPixelShader.hlsl">
+      <Filter>シェーダーファイル</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="BirdEnemy.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraControl.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyManager.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="FieldObjectManager.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="InputManager.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="NormalEnemy.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerComponent.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="SampleScene.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
     <ClCompile Include="TimeLimit.cpp">
@@ -280,9 +280,6 @@
     <ClInclude Include="Game.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Ground.h">
-      <Filter>ヘッダーファイル</Filter>
-    </ClInclude>
     <ClInclude Include="InputManager.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
@@ -293,9 +290,6 @@
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
     <ClInclude Include="SampleScene.h">
-      <Filter>ヘッダーファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="TestTreeComponent.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
     <ClInclude Include="TimeLimit.h">

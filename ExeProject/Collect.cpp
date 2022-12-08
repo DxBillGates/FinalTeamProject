@@ -1,106 +1,96 @@
-#include "TimeLimit.h"
+#include "Collect.h"
 
 #include <GatesEngine/Header/Util/Utility.h          >
 #include <GatesEngine/Header/Graphics\Window.h       >
 #include<GatesEngine/Header/Graphics/Texture.h>
 
-TimeLimit* TimeLimit::GetInstance()
+Collect* Collect::GetInstance()
 {
-	static TimeLimit instance;
+	static Collect instance;
 	return &instance;
 }
 
-TimeLimit::TimeLimit()
+Collect::Collect()
 {
 }
 
-void TimeLimit::Start(GE::GameObjectManager* gameObjectManager)
+void Collect::Start(GE::GameObjectManager* gameObjectManager)
 {
-	timer = 3;//制限時間(分指定)
-	timer = timer * 60 * frameRate;//分数を秒数に直して144fpsかける
-	minutes = timer / frameRate / 60;//分数の計算
-	tenSeconds = timer / frameRate % 60 / 10;//秒数の計算(十の位)
-	oneSeconds = timer / frameRate % 60 % 10;//秒数の計算(一の位)
-	timeOver = false;//タイムオーバーフラグ
-
+	collectCount = 0;//収集物
+	maxCollect = 5;//収集物(最大数)
 	//各テクスチャ生成
-	Create("minutes", "texture_Number", gameObjectManager,80,100,0);//分数のテクスチャ生成
-	Create("symbol", "texture_symbol", gameObjectManager, 160, 50, 3);//分数と秒数の間のテクスチャ生成
-	Create("tenSeconds", "texture_Number", gameObjectManager, 240, 100, 1);//秒数のテクスチャ生成(十の位)
-	Create("oneSeconds", "texture_Number", gameObjectManager, 340, 100, 2);//秒数のテクスチャ生成(一の位)
+	Create("chick", "texture_Chick", gameObjectManager, 80, 100, 3);//雛のテクスチャ生成
+	Create("collect", "texture_Number", gameObjectManager, 190, 100, 0);//収集物のテクスチャ生成
+	Create("symbol", "texture_symbol", gameObjectManager, 270, 50, 2);//スラッシュのテクスチャ生成
+	Create("maxCollect", "texture_Number", gameObjectManager, 340, 100, 1);//収集物(最大数)のテクスチャ生成
 }
 
-void TimeLimit::Update()
+void Collect::Update(const int& count, const int& goalCollect)
 {
-	if (timer <= 0)
-	{
-		timeOver = true;
-	}
-	else
-	{
-		timer--;//カウントダウン
-		minutes = timer / frameRate / 60;//分数の計算
-		tenSeconds = timer / frameRate % 60 / 10;//秒数の計算(十の位)
-		oneSeconds = timer / frameRate % 60 % 10;//秒数の計算(一の位)
-	}
+	collectCount = count;
+	maxCollect = goalCollect;
 }
 
-void TimeLimit::Create(const std::string& gui_tag, const std::string& tex_tag, GE::GameObjectManager* gameObjectManager, float posX, float scaleX, int timeNum)
+void Collect::Create(const std::string& gui_tag, const std::string& tex_tag, GE::GameObjectManager* gameObjectManager, float posX, float scaleX, int collectNum)
 {
-	auto* timeObject = gameObjectManager->AddGameObject(new GE::GameObject(gui_tag, "time"));
-	auto* timeComponent = timeObject->AddComponent<TimeTex>();
-	timeComponent->tag = tex_tag;
-	timeComponent->num = timeNum;//TimeTexのswitch文の切り替え
-	timeObject->GetTransform()->position = { posX,850,0 };//ポジション指定
-	timeObject->GetTransform()->scale = { scaleX,100,0 };//サイズ指定
+	auto* collectObject = gameObjectManager->AddGameObject(new GE::GameObject(gui_tag, "collect"));
+	auto* collectComponent = collectObject->AddComponent<CollectTex>();
+	collectComponent->tag = tex_tag;
+	collectComponent->num = collectNum;//CollectTexのswitch文の切り替え
+	collectObject->GetTransform()->position = { posX,950,0 };//ポジション指定
+	collectObject->GetTransform()->scale = { scaleX,100,0 };//サイズ指定
 }
 
-void TimeTex::Start()
+void CollectTex::Start()
 {
 }
 
-void TimeTex::Update(float deltaTime)
+void CollectTex::Update(float deltaTime)
 {
 	switch (num)
 	{
-	case (int)TimeName::minutes://分数の描画情報
-		pivotPosX = TimeLimit::GetInstance()->GetMinutes();//画像の描画開始位置の代入
+	case (int)CollectName::collect://収集物の描画情報
+		pivotPosX = Collect::GetInstance()->GetCollectCount();//画像の描画開始位置の代入
 		texSizeX = 320;//画像サイズ
+		clipSizeX = 32;
 		break;
-	case (int)TimeName::tenSeconds://秒数の描画情報(十の位)
-		pivotPosX = TimeLimit::GetInstance()->GetTenSeconds();//画像の描画開始位置の代入
+	case (int)CollectName::maxCollect://収集物(最大数)の描画情報
+		pivotPosX = Collect::GetInstance()->GetMaxCollect();//画像の描画開始位置の代入
 		texSizeX = 320;//画像サイズ
+		clipSizeX = 32;
 		break;
-	case (int)TimeName::oneSeconds://秒数の描画情報(一の位)
-		pivotPosX = TimeLimit::GetInstance()->GetOneSeconds();//画像の描画開始位置の代入
-		texSizeX = 320;//画像サイズ
+	case (int)CollectName::symbol://スラッシュの描画情報
+		pivotPosX = 1;//画像の描画開始位置の代入
+		texSizeX = 64;//画像サイズ
+		clipSizeX = 32;
 		break;
 	default:
 		pivotPosX = 0;//画像の描画開始位置の代入
 		texSizeX = 64;//画像サイズ
+		clipSizeX = 64;
 		break;
 	}
 }
 
-void TimeTex::LateDraw()
+void CollectTex::LateDraw()
 {
 	// 描画するためのGraphicsDeviceを取得しとくように！
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
 	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
-	
+
 	// レンダーキューを2d用に切り替える
 	graphicsDevice->SetCurrentRenderQueue(false);
 
 	// テクスチャ描画用のシェーダーをセット
 	graphicsDevice->SetShader("DefaultSpriteWithTextureShader");
-	
+
 	// 描画位置とかサイズとかの設定
 	//auto windowSize = GE::Window::GetWindowSize();
 	//GE::Math::Matrix4x4 modelMatrix = GE::Math::Matrix4x4::Scale({ windowSize.x,windowSize.y,0 });
 	GE::Math::Matrix4x4 modelMatrix = GE::Math::Matrix4x4::Scale({ 0 });
 	//modelMatrix *= GE::Math::Matrix4x4::Translate({ 0,0,0 });
 	modelMatrix = transform->GetMatrix();
-	
+
 	// 画像の色変えたりするよう
 	GE::Material material;
 	material.color = GE::Color::White();
@@ -115,10 +105,10 @@ void TimeTex::LateDraw()
 	GE::ITexture* texture = graphicsDevice->GetTextureManager()->Get(tag);
 
 	// 画像の元サイズ
-	textureAnimationInfo.textureSize = {texSizeX,64};
+	textureAnimationInfo.textureSize = { texSizeX,64 };
 	// 元画像のサイズからどうやって切り抜くか　例) 元サイズが100*100で半分だけ表示したいなら{50,100}にする
 	// textureSizeと一緒にすると切り抜かれずに描画される
-	textureAnimationInfo.clipSize = {32,64};
+	textureAnimationInfo.clipSize = { clipSizeX,64 };
 	// 切り抜く際の左上座標 例) {0,0}なら元画像の左上 texture->GetSize()なら右下になる
 	textureAnimationInfo.pivot = { pivotPosX,0 };
 

@@ -251,12 +251,17 @@ bool GE::Application::LoadContents()
 	textureManager->Add(nullTexture, "texture_symbol");
 
 	nullTexture = new Texture();
+
 	nullTexture->Load("Game_Clear.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "texture_clear");
 
 	nullTexture = new Texture();
 	nullTexture->Load("Game_Over.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "texture_over");
+
+	nullTexture = new Texture();
+	nullTexture->Load("Chick.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "texture_Chick");
 
 	// shader compile
 	Shader defaultMeshVertexShader, defaultMeshPixelShader;
