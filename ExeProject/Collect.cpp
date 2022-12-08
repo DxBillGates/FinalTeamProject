@@ -16,8 +16,8 @@ Collect::Collect()
 
 void Collect::Start(GE::GameObjectManager* gameObjectManager)
 {
-	collectCount = 0;
-	maxCollect = 5;
+	collectCount = 0;//収集物
+	maxCollect = 5;//収集物(最大数)
 	//各テクスチャ生成
 	Create("chick", "texture_Chick", gameObjectManager, 80, 100, 3);//雛のテクスチャ生成
 	Create("collect", "texture_Number", gameObjectManager, 190, 100, 0);//収集物のテクスチャ生成
