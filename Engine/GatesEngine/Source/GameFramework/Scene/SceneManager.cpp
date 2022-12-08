@@ -34,6 +34,7 @@ void GE::SceneManager::Update(float deltaTime)
 	ChangeScene(changeSceneInfo.name);
 
 	if (!changeSceneInfo.initNextSceneFlag)return;
+	changeSceneInfo = ChangeSceneInfo();
 
 	changeSceneInfo = ChangeSceneInfo();
 

@@ -73,5 +73,14 @@ public:
 	void Update();
 
 	bool GetDecid() { return decided; }
+
+	/// <summary>
+	/// 選択結果
+	/// </summary>
+	/// <param name="s">指定内容</param>
+	/// <returns>指定内容がタイトルで選択されたか</returns>
+	bool GetSelect(Title::States s);
+
+	void ClearGameObject();
 };
 

@@ -165,6 +165,7 @@
   <ItemGroup>
     <ClCompile Include="BirdEnemy.cpp" />
     <ClCompile Include="CameraControl.cpp" />
+    <ClCompile Include="Clear.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="EnemyManager.cpp" />
     <ClCompile Include="FieldObject.cpp" />
@@ -173,6 +174,7 @@
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="NormalEnemy.cpp" />
+    <ClCompile Include="Over.cpp" />
     <ClCompile Include="PlayerComponent.cpp" />
     <ClCompile Include="SampleScene.cpp" />
     <ClCompile Include="StartTree.cpp" />
@@ -182,6 +184,7 @@
   <ItemGroup>
     <ClInclude Include="BirdEnemy.h" />
     <ClInclude Include="CameraControl.h" />
+    <ClInclude Include="Clear.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="EnemyManager.h" />
     <ClInclude Include="FieldObject.h" />
@@ -189,6 +192,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="NormalEnemy.h" />
+    <ClInclude Include="Over.h" />
     <ClInclude Include="PlayerComponent.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="SampleScene.h" />

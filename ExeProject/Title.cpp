@@ -22,29 +22,30 @@ void Title::Awake(GE::GameObjectManager* gameObjectManager, GE::IGraphicsDeviceD
 
 	//テクスチャたちの生成、初期設定
 	Create("title_stage1", "texture_stage1", gameObjectManager, device);
-	sprites.back()->position = { 1170.0f,400.0f,0.0f };
+	sprites.back()->position = { GE::Window::GetWindowSize().x - 400,GE::Window::GetWindowSize().y / 2,0.0f };
 	sprites.back()->scale = { 300,300,0 };
 	//ステージ用テクスチャ追加
 	textures.push_back(device->GetTextureManager()->Get("texture_stage2"));
 	Create("title_option", "texture_option", gameObjectManager, device);
-	sprites.back()->position = { 1170.0f,500.0f,0.0f };
+	sprites.back()->position = { GE::Window::GetWindowSize().x - 400,GE::Window::GetWindowSize().y / 2 + 100,0.0f };
 	sprites.back()->scale = { 300,300,0 };
 	Create("title_exit", "texture_exit", gameObjectManager, device);
-	sprites.back()->position = { 1170.0f,600.0f,0.0f };
+	sprites.back()->position = { GE::Window::GetWindowSize().x - 400,GE::Window::GetWindowSize().y / 2 + 200,0.0f };
 	sprites.back()->scale = { 300,300,0 };
 
 	Create("title_name", "texture_title", gameObjectManager, device);
-	sprites.back()->position = { 1000.0f,220.0f,0.0f };
+	sprites.back()->position = { GE::Window::GetWindowSize().x - 500,GE::Window::GetWindowSize().y / 2 - 200,0.0f };
 	sprites.back()->scale = { 500,500,0 };
 	Create("title_nextL", "texture_next", gameObjectManager, device);
-	sprites.back()->position = { 70.0f,400.0f,0.0f };
+	sprites.back()->position = { 70.0f,GE::Window::GetWindowSize().y / 2,0.0f };
 	sprites.back()->scale = { 150,150,0 };
 	Create("title_nextR", "texture_next", gameObjectManager, device);
-	sprites.back()->position = { 1460.0f,400.0f,0.0f };
+	sprites.back()->position = { GE::Window::GetWindowSize().x - 70,GE::Window::GetWindowSize().y / 2,0.0f };
 	sprites.back()->rotation = GE::Math::Quaternion::Euler({ 0, 0, 180 });
 	sprites.back()->scale = { 150,150,0 };
 
 	alpha = 0.0f;
+	decided = false;
 }
 
 void Title::Create(std::string gui_tag, std::string tex_tag, GE::GameObjectManager* gameObjectManager, GE::IGraphicsDeviceDx12* device)
@@ -73,9 +74,9 @@ void Title::Update()
 	{
 		Select();
 		alpha += 0.003f;
+		//選択中のテクスチャ色変え
+		sprites[states]->GetGameObject()->SetColor(GE::Color::Red());
 	}
-	//選択中のテクスチャ色変え
-	sprites[states]->GetGameObject()->SetColor(GE::Color::Red());
 }
 
 void Title::Select()
@@ -83,13 +84,15 @@ void Title::Select()
 	int a;
 	//上下選択(スタート,オプション、exit
 	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::UP)
-		|| inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::W))
+		|| inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::W)
+		|| inputDevice->GetJoyconL()->GetTriggerButton(GE::JoyconButtonData::UP))
 	{
 		a = (states + (States::serectNum - 1)) % States::serectNum;
 		states = (Title::States)a;
 	}
 	else if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::DOWN)
-		|| inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::S))
+		|| inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::S)
+		|| inputDevice->GetJoyconL()->GetTriggerButton(GE::JoyconButtonData::DOWN))
 	{
 		a = (states + 1) % States::serectNum;
 		states = (Title::States)a;
@@ -97,14 +100,16 @@ void Title::Select()
 
 	//左右選択(ステージ
 	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::RIGHT)
-		|| inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::D))
+		|| inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::D)
+		|| inputDevice->GetJoyconL()->GetTriggerButton(GE::JoyconButtonData::RIGHT))
 	{
 		a = (stage + (Stage::stageNum - 1)) % Stage::stageNum;
 		stage = (Title::Stage)a;
 		sprites[Title::States::start]->SetTexture(textures[stage]);
 	}
 	else if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::LEFT)
-		|| inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::A))
+		|| inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::A)
+		|| inputDevice->GetJoyconL()->GetTriggerButton(GE::JoyconButtonData::LEFT))
 	{
 		a = (stage + 1) % Stage::stageNum;
 		stage = (Title::Stage)a;
@@ -112,7 +117,8 @@ void Title::Select()
 	}
 
 	//決定
-	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE))
+	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE)
+		|| inputDevice->GetJoyconR()->GetTriggerButton(GE::JoyconButtonData::B))
 	{
 		switch (states)
 		{
@@ -141,6 +147,25 @@ void Title::Select()
 		decided = true;
 	}
 }
+
+bool Title::GetSelect(Title::States s)
+{
+	if (decided)
+	{
+		if (s == states)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+void Title::ClearGameObject()
+{
+	sprites.clear();
+	textures.clear();
+}
+
 
 //タイトル用テクスチャ
 void TitleTex::Awake()

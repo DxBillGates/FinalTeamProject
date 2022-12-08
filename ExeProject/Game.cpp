@@ -1,6 +1,7 @@
 #include "Game.h"
 #include "SampleScene.h"
-
+#include "Clear.h"
+#include "Over.h"
 #include <GatesEngine/Header/Util/Random.h>
 #include <GatesEngine/Header/Util/Utility.h>
 #include <GatesEngine/Header/Graphics/CBufferStruct.h>
@@ -28,7 +29,10 @@ Game::~Game()
 bool Game::LoadContents()
 {
 	Application::LoadContents();
+
 	auto* testScene = sceneManager.AddScene(new SampleScene("SampleScene",sceneManager.GetSceneInitializer()));
+	sceneManager.AddScene(new Clear("ClearScene", sceneManager.GetSceneInitializer()));
+	sceneManager.AddScene(new Over("OverScene", sceneManager.GetSceneInitializer()));
 	sceneManager.ChangeScene("SampleScene");
 
 	return true;
