@@ -21,7 +21,6 @@ public:
 		oneSeconds,
 	};
 
-	TimeName tName;
 	int num = 0;
 
 public:
@@ -57,6 +56,6 @@ public:
 	const bool& GetTimeOver() { return timeOver; }//タイムオーバーフラグのゲット関数
 
 	//テクスチャ生成
-	void Create(const std::string& gui_tag, const std::string& tex_tag, GE::GameObjectManager* gameObjectManager, float posX, float scaleX, int animeNum);
+	void Create(const std::string& gui_tag, const std::string& tex_tag, GE::GameObjectManager* gameObjectManager, float posX, float scaleX, int timeNum);
 };
 

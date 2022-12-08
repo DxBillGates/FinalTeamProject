@@ -10,6 +10,7 @@
 #include"Title.h"
 #include"TimeLimit.h"
 #include"MiniMapViewer.h"
+#include"Collect.h"
 
 SampleScene::SampleScene()
 	: SampleScene("SampleScene")
@@ -58,6 +59,7 @@ void SampleScene::Update(float deltaTime)
 	collisionManager.Update();
 	Title::GetInstance()->Update();
 	TimeLimit::GetInstance()->Update();
+	Collect::GetInstance()->Update(0);
 
 	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::Y))
 	{
@@ -118,6 +120,7 @@ void SampleScene::Load()
 	FieldObjectManager::GetInstance()->Start(&gameObjectManager);
 	FieldObjectManager::GetInstance()->SetGroundMesh(groundModel);
 	TimeLimit::GetInstance()->Start(&gameObjectManager);
+	Collect::GetInstance()->Start(&gameObjectManager);
 
 	collisionManager.AddTagCombination("player", "enemy");
 	collisionManager.AddTagCombination("player", "ground");
