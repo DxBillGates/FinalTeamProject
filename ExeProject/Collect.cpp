@@ -25,9 +25,10 @@ void Collect::Start(GE::GameObjectManager* gameObjectManager)
 	Create("maxCollect", "texture_Number", gameObjectManager, 340, 100, 1);//収集物(最大数)のテクスチャ生成
 }
 
-void Collect::Update(const int& count)
+void Collect::Update(const int& count, const int& goalCollect)
 {
 	collectCount = count;
+	maxCollect = goalCollect;
 }
 
 void Collect::Create(const std::string& gui_tag, const std::string& tex_tag, GE::GameObjectManager* gameObjectManager, float posX, float scaleX, int collectNum)

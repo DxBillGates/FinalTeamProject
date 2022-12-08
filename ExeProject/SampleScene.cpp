@@ -59,7 +59,7 @@ void SampleScene::Update(float deltaTime)
 	collisionManager.Update();
 	Title::GetInstance()->Update();
 	TimeLimit::GetInstance()->Update();
-	Collect::GetInstance()->Update(0);
+	Collect::GetInstance()->Update(StartTree::collectCount,StartTree::goalCollect);
 
 	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::Y))
 	{

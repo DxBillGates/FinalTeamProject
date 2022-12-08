@@ -4,6 +4,7 @@
 #include <GatesEngine/Header/Util/Random.h>
 #include <GatesEngine/Header/Graphics/MeshData.h>
 #include <GatesEngine/Header/Graphics/VertexData.h>
+#include "StartTree.h"
 
 
 class FieldObjectManager

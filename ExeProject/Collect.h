@@ -45,7 +45,7 @@ public:
 	Collect();
 
 	void Start(GE::GameObjectManager* gameObjectManager);
-	void Update(const int& count);
+	void Update(const int& count, const int& goalCollect);
 
 	const int& GetCollectCount() { return collectCount; }
 	const int& GetMaxCollect() { return maxCollect; }
