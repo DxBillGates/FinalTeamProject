@@ -146,6 +146,7 @@ void SampleScene::Load()
 void SampleScene::UnLoad()
 {
 	Title::GetInstance()->ClearGameObject();
+	EnemyManager::GetInstance()->Clear();
 	// gameObjects‚ğíœ‚·‚é
 	Scene::UnLoad();
 }
