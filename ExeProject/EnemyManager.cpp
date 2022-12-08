@@ -91,6 +91,12 @@ void EnemyManager::SaveCurrentPosition(const std::string& filename, std::vector<
 	writing_file.close();
 }
 
+void EnemyManager::Clear()
+{
+	nEnemies.clear();
+	birdEnemies.clear();
+}
+
 std::vector<GE::GameObject*> EnemyManager::GetAllEnemies()
 {
 	std::vector<GE::GameObject*> result;

@@ -10,6 +10,7 @@
 #include "InputManager.h"
 #include "CameraControl.h"
 #include "StartTree.h"
+#include "Title.h"
 
 float PlayerComponent::frameRate;
 
@@ -108,6 +109,12 @@ void PlayerComponent::Update(float deltaTime)
 		statas = PlayerStatas::GO_TREE;
 	}
 	animator.Update(deltaTime);
+
+	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::P))
+	{
+		//ŽûW•¨ +1
+		StartTree::collectCount += 1;
+	}
 }
 
 void PlayerComponent::Draw()
@@ -338,7 +345,9 @@ void PlayerComponent::Control(float deltaTime)
 	case PlayerComponent::PlayerStatas::STAY_TREE:
 		if (startCouunt == 0.0f)
 		{
-			if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE) || accelerometer.Length() > 2.f)
+			if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE) 
+				|| accelerometer.Length() > 2.f
+				||Title::GetInstance()->GetDecid())
 			{
 				startCouunt++;
 				//MoveFromStop
