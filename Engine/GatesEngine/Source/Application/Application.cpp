@@ -251,7 +251,6 @@ bool GE::Application::LoadContents()
 	textureManager->Add(nullTexture, "texture_symbol");
 
 	nullTexture = new Texture();
-
 	nullTexture->Load("Game_Clear.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "texture_clear");
 

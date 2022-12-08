@@ -61,6 +61,7 @@ void SampleScene::Update(float deltaTime)
 	collisionManager.Update();
 	Title::GetInstance()->Update();
 	TimeLimit::GetInstance()->Update();
+	Collect::GetInstance()->Update(StartTree::collectCount,StartTree::goalCollect);
 
 	//ƒNƒŠƒAˆÈ~ðŒ
 	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::Q)

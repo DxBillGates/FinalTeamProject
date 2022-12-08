@@ -6,7 +6,7 @@
 #include"StartTree.h"
 
 GE::Math::Vector3 StartTree::position = { 0,1400,-10000 };
-int StartTree::goalCollect = 9;
+int StartTree::goalCollect = 5;
 int StartTree::collectCount;
 bool StartTree::isCollect;
 
