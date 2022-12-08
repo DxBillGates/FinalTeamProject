@@ -9,6 +9,7 @@
 #include <GatesEngine/Header/Application/Application.h>
 #include"Title.h"
 #include"TimeLimit.h"
+#include"StartTree.h"
 
 SampleScene::SampleScene()
 	: SampleScene("SampleScene")
@@ -58,6 +59,22 @@ void SampleScene::Update(float deltaTime)
 	Title::GetInstance()->Update();
 	TimeLimit::GetInstance()->Update();
 
+	//クリア以降条件
+	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::Q)
+		||StartTree::isCollect)
+	{
+		changeSceneInfo.flag = true;
+		changeSceneInfo.name = "ClearScene";
+		changeSceneInfo.initNextSceneFlag = true;
+	}
+	//ゲームオーバー以降条件
+	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::E)
+		|| TimeLimit::GetInstance()->GetTimeOver())
+	{
+		changeSceneInfo.flag = true;
+		changeSceneInfo.name = "OverScene";
+		changeSceneInfo.initNextSceneFlag = true;
+	}
 	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::Y))
 	{
 		changeSceneInfo.flag = true;
@@ -128,6 +145,7 @@ void SampleScene::Load()
 
 void SampleScene::UnLoad()
 {
+	Title::GetInstance()->ClearGameObject();
 	// gameObjectsを削除する
 	Scene::UnLoad();
 }
