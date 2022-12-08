@@ -64,19 +64,19 @@ void TimeTex::Update(float deltaTime)
 	switch (num)
 	{
 	case (int)TimeName::minutes://分数の描画情報
-		pivotPos = TimeLimit::GetInstance()->GetMinutes();//画像の描画開始位置の代入
+		pivotPos = TimeLimit::GetInstance()->GetMinutes();//数字画像の描画開始位置の代入
 		texSize = 320;//画像サイズ
 		break;
 	case (int)TimeName::tenSeconds://秒数の描画情報(十の位)
-		pivotPos = TimeLimit::GetInstance()->GetTenSeconds();//画像の描画開始位置の代入
+		pivotPos = TimeLimit::GetInstance()->GetTenSeconds();//数字画像の描画開始位置の代入
 		texSize = 320;//画像サイズ
 		break;
 	case (int)TimeName::oneSeconds://秒数の描画情報(一の位)
-		pivotPos = TimeLimit::GetInstance()->GetOneSeconds();//画像の描画開始位置の代入
+		pivotPos = TimeLimit::GetInstance()->GetOneSeconds();//数字画像の描画開始位置の代入
 		texSize = 320;//画像サイズ
 		break;
 	default:
-		pivotPos = 0;//画像の描画開始位置の代入
+		pivotPos = 0;//数字画像の描画開始位置の代入
 		texSize = 64;//画像サイズ
 		break;
 	}
