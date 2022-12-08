@@ -558,3 +558,8 @@ const float PlayerComponent::easeIn(const float start, const float end, float ti
 {
 	return start * (1.0f - time * time) + end * time * time;
 }
+
+GE::Math::Vector3 PlayerComponent::GetDirection()
+{
+	return body_direction;
+}
