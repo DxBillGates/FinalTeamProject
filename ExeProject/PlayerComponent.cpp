@@ -409,7 +409,7 @@ void PlayerComponent::Control(float deltaTime)
 }
 void PlayerComponent::KeyboardMoveControl()
 {
-	GE::Math::Vector3 inputAxis = InputManager::GetInstance()->GetAxis(0, InputManager::InputCtrlAxisState::GYROSCOPE);
+	GE::Math::Vector3 inputAxis = InputManager::GetInstance()->GetAxis(0, InputManager::InputCtrlAxisState::STICK);
 
 	if (inputAxis.x != 0)
 	{
@@ -432,22 +432,22 @@ void PlayerComponent::KeyboardMoveControl()
 	{
 		abs(body_direction.x) < 0.01 ? body_direction.x = 0 : body_direction.x > 0.0 ? body_direction.x -= 0.01 * GE::GameSetting::Time::GetGameTime() : body_direction.x += 0.01 * GE::GameSetting::Time::GetGameTime();
 	}
-	// ジョイコン操作中の際の姿勢制御
-	GE::Joycon* joycon = inputDevice->GetJoyconL();
-	if (joycon == nullptr)return;
-	GE::Vector3Int16 gyroData = joycon->GetGyroscope();
-	gyro = { (float)gyroData.y,(float)-gyroData.z,(float)-gyroData.x };
+	//// ジョイコン操作中の際の姿勢制御
+	//GE::Joycon* joycon = inputDevice->GetJoyconL();
+	//if (joycon == nullptr)return;
+	//GE::Vector3Int16 gyroData = joycon->GetGyroscope();
+	//gyro = { (float)gyroData.y,(float)-gyroData.z,(float)-gyroData.x };
 
-	// コントローラーから姿勢を更新し続ける
-	quat *= GE::Math::Quaternion(gyro.Normalize(), GE::Math::ConvertToRadian(gyro.Length() * 1.f / 144.f));
+	//// コントローラーから姿勢を更新し続ける
+	//quat *= GE::Math::Quaternion(gyro.Normalize(), GE::Math::ConvertToRadian(gyro.Length() * 1.f / 144.f));
 
-	if (InputManager::GetInstance()->GetCurrentInputDeviceState() != InputManager::InputDeviceState::JOYCON)return;
-	const float GYRO_OFFSET = 0.05f;
-	GE::Math::Vector3 quatVector = { quat.x,quat.y,quat.z, };
-
-	body_direction.x += quatVector.x / 20.f;
-	body_direction.y += quatVector.y / 20.f;
-	body_direction.z += quatVector.z / 20.f;
+	//if (InputManager::GetInstance()->GetCurrentInputDeviceState() != InputManager::InputDeviceState::JOYCON)return;
+	//const float GYRO_OFFSET = 0.05f;
+	//GE::Math::Vector3 quatVector = { quat.x,quat.y,quat.z, };
+	// 
+	//body_direction.x += quatVector.x / 20.f;
+	//body_direction.y += quatVector.y / 20.f;
+	//body_direction.z += quatVector.z / 20.f;
 
 	GE::Math::Vector3 bodyDirectionMax;
 	bodyDirectionMax = { 1.0f,100000,0.75f };

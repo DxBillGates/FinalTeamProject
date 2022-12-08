@@ -226,7 +226,16 @@ GE::Vector3Int16 GE::Joycon::GetGyroscope()
 	return gyroscope;
 }
 
-GE::Vector2Int16 GE::Joycon::GetStick()
+GE::Math::Vector2 GE::Joycon::GetStick()
 {
-	return stickData;
+	Vector2Int16 stickDataOffset = { 2000,2200 };
+	GE::Math::Vector2 returnValue;
+	returnValue.x = stickData.x - stickDataOffset.x;
+	returnValue.x /= 1300;
+	if (std::fabsf(returnValue.x) <= 0.1f)returnValue.x = 0;
+	returnValue.y = stickData.y - stickDataOffset.y;
+	returnValue.y /= 1100;
+	returnValue.y *= -1;
+	if (std::fabsf(returnValue.y) <= 0.1f)returnValue.y = 0;
+	return returnValue;
 }
