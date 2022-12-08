@@ -17,6 +17,7 @@ TimeLimit::TimeLimit()
 
 void TimeLimit::Start(GE::GameObjectManager* gameObjectManager)
 {
+	timer = 1;
 	timer = timer * 60 * frameRate;//•ª”‚ğ•b”‚É’¼‚µ‚Ä144fps‚©‚¯‚é
 	minutes = timer / frameRate / 60;//•ª”‚ÌŒvZ
 	tenSeconds = timer / frameRate % 60 / 10;//•b”‚Ì\‚ÌˆÊ‚ÌŒvZ
