@@ -12,20 +12,21 @@ TimeLimit* TimeLimit::GetInstance()
 
 TimeLimit::TimeLimit()
 {
-	
 }
 
 void TimeLimit::Start(GE::GameObjectManager* gameObjectManager)
 {
+	timer = 3;
 	timer = timer * 60 * frameRate;//分数を秒数に直して144fpsかける
 	minutes = timer / frameRate / 60;//分数の計算
 	tenSeconds = timer / frameRate % 60 / 10;//秒数の十の位の計算
 	oneSeconds = timer / frameRate % 60 % 10;//秒数の一の位の計算
 	timeOver = false;
 
-	Create("minutes", "texture_Number", gameObjectManager,0,0);
-	Create("tenSeconds", "texture_Number", gameObjectManager, 100,1);
-	Create("oneSeconds", "texture_Number", gameObjectManager, 200,2);
+	Create("minutes", "texture_Number", gameObjectManager,80,100,0);
+	Create("symbol", "texture_symbol", gameObjectManager, 160, 50, 3);
+	Create("tenSeconds", "texture_Number", gameObjectManager, 240, 100, 1);
+	Create("oneSeconds", "texture_Number", gameObjectManager, 340, 100, 2);
 }
 
 void TimeLimit::Update()
@@ -43,15 +44,14 @@ void TimeLimit::Update()
 	}
 }
 
-void TimeLimit::Create(const std::string& gui_tag, const std::string& tex_tag, GE::GameObjectManager* gameObjectManager, float shift,int pivot)
+void TimeLimit::Create(const std::string& gui_tag, const std::string& tex_tag, GE::GameObjectManager* gameObjectManager, float posX, float scaleX, int timeNum)
 {
 	auto* timeObject = gameObjectManager->AddGameObject(new GE::GameObject(gui_tag, "time"));
 	auto* timeComponent = timeObject->AddComponent<TimeTex>();
 	timeComponent->tag = tex_tag;
-	timeComponent->pivotPos = pivot;
-	times.push_back(timeObject);
-	timeObject->GetTransform()->position = { 100 + shift,950,0 };
-	timeObject->GetTransform()->scale = { 100,100,0 };
+	timeComponent->num = timeNum;
+	timeObject->GetTransform()->position = { posX,970,0 };
+	timeObject->GetTransform()->scale = { scaleX,100,0 };
 }
 
 void TimeTex::Start()
@@ -60,16 +60,23 @@ void TimeTex::Start()
 
 void TimeTex::Update(float deltaTime)
 {
-	switch (tName)
+	switch (num)
 	{
 	case TimeName::minutes:
 		pivotPos = TimeLimit::GetInstance()->GetMinutes();
+		texSize = 320;
+		break;
 	case TimeName::tenSeconds:
 		pivotPos = TimeLimit::GetInstance()->GetTenSeconds();
+		texSize = 320;
+		break;
 	case TimeName::oneSeconds:
 		pivotPos = TimeLimit::GetInstance()->GetOneSeconds();
-
+		texSize = 320;
+		break;
 	default:
+		pivotPos = 0;
+		texSize = 64;
 		break;
 	}
 }
@@ -107,7 +114,7 @@ void TimeTex::LateDraw()
 	GE::ITexture* texture = graphicsDevice->GetTextureManager()->Get(tag);
 
 	// 画像の元サイズ
-	textureAnimationInfo.textureSize = {320,64};
+	textureAnimationInfo.textureSize = {texSize,64};
 	// 元画像のサイズからどうやって切り抜くか　例) 元サイズが100*100で半分だけ表示したいなら{50,100}にする
 	// textureSizeと一緒にすると切り抜かれずに描画される
 	textureAnimationInfo.clipSize = {32,64};

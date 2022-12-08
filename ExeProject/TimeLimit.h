@@ -12,8 +12,9 @@ public:
 	std::string tag;
 
 	float pivotPos;
+	float texSize;
 
-	enum class TimeName
+	enum TimeName
 	{
 		minutes,
 		tenSeconds,
@@ -21,6 +22,7 @@ public:
 	};
 
 	TimeName tName;
+	int num = 0;
 
 public:
 
@@ -40,8 +42,6 @@ private:
 	const int frameRate = 144;//フレームレート
 	bool timeOver = false;
 
-	std::vector<GE::GameObject*>times;
-
 public:
 	std::string tag;
 public:
@@ -57,6 +57,6 @@ public:
 	const bool& GetTimeOver() { return timeOver; }
 
 	//テクスチャ生成
-	void Create(const std::string& gui_tag, const std::string& tex_tag, GE::GameObjectManager* gameObjectManager,float shift,int pivot);
+	void Create(const std::string& gui_tag, const std::string& tex_tag, GE::GameObjectManager* gameObjectManager, float posX, float scaleX, int animeNum);
 };
 
