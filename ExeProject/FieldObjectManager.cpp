@@ -35,6 +35,16 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 		object->GetTransform()->position = StartTree::position;
 		object->GetTransform()->scale = { 400 };*/
 	}
+	//‘ƒ
+	{
+		auto* object = gameObjectManager->AddGameObject(new GE::GameObject("nest", "nest"));
+		auto* sampleComponent = object->AddComponent<FieldObject>();
+		object->GetComponent<FieldObject>()->modelName = "Nest";
+		object->GetComponent<FieldObject>()->shaderName = "DefaultMeshShader";
+		object->SetColor(GE::Color(0.8f, 0.6f, 0.6f, 1.f));
+		object->GetTransform()->position = StartTree::position+GE::Math::Vector3(0,100,0);
+		object->GetTransform()->scale = { 200,300,200 };
+	}
 }
 
 void FieldObjectManager::SetGroundMesh(GE::MeshData<GE::Vertex_UV_Normal> mesh)

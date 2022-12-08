@@ -14,7 +14,7 @@
 
 float PlayerComponent::frameRate;
 
-GE::Math::Vector3 PlayerComponent::onTheTreePosition = { 0,180,0 };	//木の上で体の高さ調整用
+GE::Math::Vector3 PlayerComponent::onTheTreePosition = { 0,300,0 };	//木の上で体の高さ調整用
 int PlayerComponent::hitStopTime = 20;								// ヒットストップの長さ
 float PlayerComponent::body_direction_LerpTime = 50.0f;				//ダッシュ後体の角度の遷移
 float PlayerComponent::pushStartTime = 100.0f;						//キーを押してから操作できるようになるまでのカウント
@@ -329,7 +329,7 @@ void PlayerComponent::Control(float deltaTime)
 	case PlayerComponent::PlayerStatas::GO_TREE:
 		if (stayLandLerpEasingCount < stayLandLerpTime)
 		{
-			stayLandLerpEasingCount++;
+			stayLandLerpEasingCount += deltaTime * GE::GameSetting::Time::GetGameTime();
 			transform->position = GE::Math::Vector3::Lerp(currentPosition, StartTree::position + onTheTreePosition, stayLandLerpEasingCount / stayLandLerpTime);
 		}
 		else

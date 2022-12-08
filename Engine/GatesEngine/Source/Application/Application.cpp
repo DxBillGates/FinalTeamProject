@@ -203,6 +203,12 @@ bool GE::Application::LoadContents()
 	mesh = new Mesh();
 	mesh->Create(device, cmdList, modelDataGroundTest);
 	meshManager->Add(mesh, "GroundTest");
+	
+	MeshData<Vertex_UV_Normal> modelDataNest;
+	MeshCreater::LoadObjModelData("Resources/Model/nest", modelDataNest);
+	mesh = new Mesh();
+	mesh->Create(device, cmdList, modelDataNest);
+	meshManager->Add(mesh, "Nest");
 
 	meshManager->Add(FbxLoader::Load("Bird", &graphicsDevice), "Player");
 
@@ -251,7 +257,6 @@ bool GE::Application::LoadContents()
 	nullTexture = new Texture();
 	nullTexture->Load("Game_Over.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "texture_over");
-
 
 	// shader compile
 	Shader defaultMeshVertexShader, defaultMeshPixelShader;
@@ -347,7 +352,6 @@ bool GE::Application::LoadContents()
 	resultRenderTexture->Create(device, shaderResourceHeap, mainWindow.GetWindowSize(), Color::Blue());
 	resultDepthTexture->Create(device, shaderResourceHeap, mainWindow.GetWindowSize());
 	layerManager->Add(new Layer(resultRenderTexture, resultDepthTexture), "resultLayer");
-
 
 	return true;
 }
