@@ -343,9 +343,9 @@ void PlayerComponent::Control(float deltaTime)
 	case PlayerComponent::PlayerStatas::STAY_TREE:
 		if (startCouunt == 0.0f)
 		{
-			if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE) 
+			if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE)
 				|| accelerometer.Length() > 2.f
-				||Title::GetInstance()->GetDecid())
+				&& Title::GetInstance()->GetSelect(Title::States::start))
 			{
 				startCouunt++;
 				//MoveFromStop

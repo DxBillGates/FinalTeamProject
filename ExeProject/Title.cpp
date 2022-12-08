@@ -144,6 +144,9 @@ void Title::Select()
 		default:
 			break;
 		}
+
+		//α用どこを選んでもスタート
+		states = States::start;
 		decided = true;
 	}
 }
