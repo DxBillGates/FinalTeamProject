@@ -23,7 +23,7 @@ private:
 	static float worldRadius;				//¢ŠE‚Ì‘å‚«‚³‚Ì”¼Œa(’[‚Á‚±‚Ì•Ç‚Ü‚Å‚Ì‹——£)
 	static float lockOnLength;				//“G‚ğƒƒbƒNƒIƒ“‚Å‚«‚é‹——£
 
-	static GE::AudioManager* audioManager;
+	GE::AudioManager* audioManager;
 	GE::InputDevice* inputDevice;
 	GE::Math::Vector3 gyro;
 	GE::Math::Vector3 accelerometer;
@@ -131,5 +131,5 @@ private:
 	const float easeIn(const float start, const float end, float time);
 public:
 	GE::Math::Vector3 GetDirection();
-	static void SetAudioManager(GE::AudioManager* a);
+	void SetAudioManager(GE::AudioManager* a);
 };

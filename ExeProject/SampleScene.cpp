@@ -8,6 +8,7 @@
 #include <GatesEngine/Header\GameFramework\Collision\CollisionManager.h>
 #include <GatesEngine/Header/Application/Application.h>
 #include"Title.h"
+#include"StartTree.h"
 #include"TimeLimit.h"
 #include"MiniMapViewer.h"
 
@@ -58,6 +59,14 @@ void SampleScene::Update(float deltaTime)
 	collisionManager.Update();
 	Title::GetInstance()->Update();
 	TimeLimit::GetInstance()->Update();
+	//クリア以降条件
+	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::Q)
+		|| StartTree::isCollect)
+	{
+		changeSceneInfo.flag = true;
+		changeSceneInfo.name = "ClearScene";
+		changeSceneInfo.initNextSceneFlag = true;
+	}
 
 	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::Y))
 	{
@@ -89,7 +98,7 @@ void SampleScene::Load()
 	{
 		auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject("Player", "player"));
 		auto* sampleComponent = testObject->AddComponent<PlayerComponent>();
-
+		testObject->GetComponent<PlayerComponent>()->SetAudioManager(audioManager);
 		auto* playerCollider = testObject->AddComponent < GE::SphereCollider >();
 		playerCollider->SetCenter({ 0,0,0 });
 		playerCollider->SetSize({ 20 });
@@ -113,8 +122,6 @@ void SampleScene::Load()
 		auto* sampleComponent = testObject->AddComponent<MiniMapViewer>();
 		sampleComponent->SetPlayer(gameObjectManager.FindGameObject("Player")->GetComponent<PlayerComponent>());
 	}
-	//音マネセット
-	PlayerComponent::SetAudioManager(audioManager);
 
 	EnemyManager::GetInstance()->Start(10, &gameObjectManager);
 	FieldObjectManager::GetInstance()->Start(&gameObjectManager);
@@ -129,6 +136,8 @@ void SampleScene::Load()
 
 void SampleScene::UnLoad()
 {
+	Title::GetInstance()->ClearGameObject();
+	EnemyManager::GetInstance()->Clear();
 	// gameObjectsを削除する
 	Scene::UnLoad();
 }

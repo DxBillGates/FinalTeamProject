@@ -30,6 +30,30 @@ bool Game::LoadContents()
 {
 	Application::LoadContents();
 
+	//Œø‰Ê‰¹hit_wall
+	{
+		auto* audioData = audioManager.AddAudioData(new GE::AudioData("Resources/Audio/hit_wall.wav"), "hitWall");
+		auto* audio = audioManager.AddAudio(new GE::Audio(audioData, "hitWall"));
+		audio->SetVolume(0.3f);
+	}
+	//Œø‰Ê‰¹air
+	{
+		auto* audioData = audioManager.AddAudioData(new GE::AudioData("Resources/Audio/air.wav"), "air1");
+		auto* audio = audioManager.AddAudio(new GE::Audio(audioData, "air1"));
+		audio->SetVolume(0.3f);
+	}
+	//Œø‰Ê‰¹catch
+	{
+		auto* audioData = audioManager.AddAudioData(new GE::AudioData("Resources/Audio/catch2.wav"), "catch2");
+		auto* audio = audioManager.AddAudio(new GE::Audio(audioData, "catch2"));
+		audio->SetVolume(0.3f);
+	}
+	//Œø‰Ê‰¹flapping
+	{
+		auto* audioData = audioManager.AddAudioData(new GE::AudioData("Resources/Audio/flapping.wav"), "flapping1");
+		auto* audio = audioManager.AddAudio(new GE::Audio(audioData, "flapping1"));
+		audio->SetVolume(0.3f);
+	}
 	auto* testScene = sceneManager.AddScene(new SampleScene("SampleScene",sceneManager.GetSceneInitializer()));
 	sceneManager.AddScene(new Clear("ClearScene", sceneManager.GetSceneInitializer()));
 	sceneManager.AddScene(new Over("OverScene", sceneManager.GetSceneInitializer()));

@@ -28,7 +28,6 @@ int PlayerComponent::collectMax = 3;
 float PlayerComponent::worldRadius = 38000.0f;
 float PlayerComponent::lockOnLength = 10000.0f;
 
-GE::AudioManager* PlayerComponent::audioManager;
 PlayerComponent::PlayerComponent()
 	: inputDevice(nullptr)
 {
@@ -76,6 +75,7 @@ void PlayerComponent::Update(float deltaTime)
 {
 	frameRate = 1.0f / deltaTime;
 
+	//testBGM->Start();
 	InputManager::GetInstance()->Update();
 	const auto& cameraInfo = graphicsDevice->GetMainCamera()->GetCameraInfo();
 	GE::Math::GetScreenToRay(center, &rayPos, &rayDir, cameraInfo.viewMatrix, cameraInfo.projMatrix, GE::Math::Matrix4x4::GetViewportMatrix(GE::Window::GetWindowSize()));
@@ -202,6 +202,7 @@ void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 	{
 		if (other->GetTag() == "ground")
 		{
+			audioManager->Use("hitWall")->Start();
 			Reflection();
 			return;
 		}
@@ -216,6 +217,7 @@ void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 		}
 		else
 		{
+			audioManager->Use("catch2")->Start();
 			//収集物 +1
 			collectCount < collectMax ? collectCount++ : 0;
 		}
@@ -257,7 +259,6 @@ bool PlayerComponent::IsSpeedy()
 void PlayerComponent::Control(float deltaTime)
 {
 	const float distance = abs(GE::Math::Vector3::Distance(transform->position, StartTree::position));
-	printf("%f\n", distance);
 
 	if (statas != PlayerStatas::CRASH)
 	{
@@ -309,6 +310,7 @@ void PlayerComponent::Control(float deltaTime)
 			animator.PlayAnimation(2, false);
 			statas = PlayerStatas::MOVE;
 			body_direction.z = 0.0f;
+			audioManager->Use("flapping1")->Start();
 		}
 		break;
 	case PlayerComponent::PlayerStatas::LOCKON_SHOOT:
@@ -345,16 +347,17 @@ void PlayerComponent::Control(float deltaTime)
 	case PlayerComponent::PlayerStatas::STAY_TREE:
 		if (startCouunt == 0.0f)
 		{
-			if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE) 
+			if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE)
 				|| accelerometer.Length() > 2.f
-				||Title::GetInstance()->GetDecid())
+				|| Title::GetInstance()->GetDecid())
 			{
 				startCouunt++;
 				//MoveFromStop
 				animator.PlayAnimation(2, false);
+				audioManager->Use("flapping1")->Start();
 			}
 		}
-		else if (startCouunt < 2.0f) { startCouunt++; }//1フレーム更新しないとIsEndがTrueのままになるからいったんこれで…
+		else if (startCouunt < 2.0f) { startCouunt++; }//1フレーム更新しないとSkinMeshAnimator::IsEndがTrueのままになるからいったんこれで…
 		else
 		{
 			if (animator.IsEndAnimation())
@@ -496,7 +499,11 @@ void PlayerComponent::LockOn()
 void PlayerComponent::Dash(float dash_speed, float dash_time, float deltaTime, GE::Math::Vector3 direction, bool loop)
 {
 	//FlyAnimation
-	if (dashEasingCount == 0.0f) { animator.PlayAnimation(0, false); }
+	if (dashEasingCount == 0.0f) {
+		animator.PlayAnimation(0, false);
+		audioManager->Use("flapping1")->Start();
+		audioManager->Use("air1")->Start();
+	}
 
 	if (loop)
 	{
