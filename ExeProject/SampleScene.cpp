@@ -113,6 +113,8 @@ void SampleScene::Load()
 		auto* sampleComponent = testObject->AddComponent<MiniMapViewer>();
 		sampleComponent->SetPlayer(gameObjectManager.FindGameObject("Player")->GetComponent<PlayerComponent>());
 	}
+	//音マネセット
+	PlayerComponent::SetAudioManager(audioManager);
 
 	EnemyManager::GetInstance()->Start(10, &gameObjectManager);
 	FieldObjectManager::GetInstance()->Start(&gameObjectManager);

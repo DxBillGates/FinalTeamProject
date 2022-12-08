@@ -17,7 +17,7 @@
 #include "..\..\Header\Graphics\FbxLoader.h"
 
 GE::Application::Application()
-	: Application(Math::Vector2(1920,1080), Math::Vector2(1920, 1080))
+	: Application(Math::Vector2(1920, 1080), Math::Vector2(1920, 1080))
 {
 }
 
@@ -52,7 +52,7 @@ GE::Application::Application(const WindowData& windowData, const Math::Vector2& 
 }
 
 GE::Application::Application(const Math::Vector2& size, const GE::Math::Vector2& resolution, const std::string& title, WindowMode mode)
-	: Application(WindowData(NULL,NULL,NULL,size,title,mode),resolution)
+	: Application(WindowData(NULL, NULL, NULL, size, title, mode), resolution)
 {
 }
 
@@ -68,6 +68,8 @@ bool GE::Application::LoadContents()
 {
 	// sample bgm ロード＆再生
 	auto* testBGMData = audioManager.AddAudioData(new AudioData("Resources/Audio/testBGM_sharou.wav"), "testBGMData");
+	auto* hitWallSound = audioManager.AddAudioData(new AudioData("Resources/Audio/hit_wall.wav"), "hitwall1");
+
 	auto* testBGM = audioManager.AddAudio(new Audio(testBGMData, "testBGM"));
 	//testBGM->Start();
 	testBGM->SetVolume(0.05f);
@@ -102,7 +104,7 @@ bool GE::Application::LoadContents()
 
 	// グリッド生成
 	MeshData<Vertex_Color> meshDataGrid;
-	MeshCreater::CreateGrid(meshDataGrid,100.0,100000);
+	MeshCreater::CreateGrid(meshDataGrid, 100.0, 100000);
 	mesh = new Mesh();
 	mesh->Create(device, cmdList, meshDataGrid);
 	meshManager->Add(mesh, "Grid");
@@ -185,7 +187,7 @@ bool GE::Application::LoadContents()
 	mesh = new Mesh();
 	mesh->Create(device, cmdList, modelDataTorus);
 	meshManager->Add(mesh, "Torus");
-	
+
 	MeshData<Vertex_UV_Normal> modelDataBird1;
 	MeshCreater::LoadObjModelData(objModelPath + "bird1", modelDataBird1);
 	mesh = new Mesh();
@@ -260,7 +262,7 @@ bool GE::Application::LoadContents()
 	defaultSpritePixelShader.CompileShaderFileWithoutFormat(L"DefaultSpritePixelShader", "ps_5_0");
 	Shader gaussBlurPixelShader;
 	gaussBlurPixelShader.CompileShaderFileWithoutFormat(L"GaussBlurPixelShader", "ps_5_0");
-	Shader defaultSpriteWithTextureVertexShader,defaultSpriteWithTexturePixelShader;
+	Shader defaultSpriteWithTextureVertexShader, defaultSpriteWithTexturePixelShader;
 	defaultSpriteWithTextureVertexShader.CompileShaderFileWithoutFormat(L"DefaultSpriteWithTextureVertexShader", "vs_5_0");
 	defaultSpriteWithTexturePixelShader.CompileShaderFileWithoutFormat(L"DefaultSpriteWithTexturePixelShader", "ps_5_0");
 	Shader spriteTextureForPosteffectPixelShader;
@@ -281,7 +283,7 @@ bool GE::Application::LoadContents()
 	rootSignatureManager->Add(cbv5srv1RootSignature, "CBV5SRV1");
 	// cbv16srv16ルートシグネチャ
 	RootSignature* testRootSignature = new RootSignature();
-	testRootSignature->Create(device, {16,16,0});
+	testRootSignature->Create(device, { 16,16,0 });
 	rootSignatureManager->Add(testRootSignature, "CBV16SRV16");
 
 	// demo graphicsPipeline作成
@@ -329,9 +331,9 @@ bool GE::Application::LoadContents()
 
 	RenderTexture* demoRenderTexture = new RenderTexture();
 	DepthTexture* demoDepthTexture = new DepthTexture();
-	demoRenderTexture->Create(device,shaderResourceHeap, mainWindow.GetWindowSize(), Color::Blue());
+	demoRenderTexture->Create(device, shaderResourceHeap, mainWindow.GetWindowSize(), Color::Blue());
 	demoDepthTexture->Create(device, shaderResourceHeap, mainWindow.GetWindowSize());
-	layerManager->Add(new Layer(demoRenderTexture,demoDepthTexture),"demoLayer");
+	layerManager->Add(new Layer(demoRenderTexture, demoDepthTexture), "demoLayer");
 
 	RenderTexture* resultRenderTexture = new RenderTexture();
 	DepthTexture* resultDepthTexture = new DepthTexture();

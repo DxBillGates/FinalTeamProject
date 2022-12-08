@@ -26,6 +26,8 @@ float PlayerComponent::damageSpeed = 50.0f;						//“G‚Éƒqƒbƒg‚µ‚½‚Æ‚«‚Éƒ_ƒ[ƒW‚
 int PlayerComponent::collectMax = 3;
 float PlayerComponent::worldRadius = 38000.0f;
 float PlayerComponent::lockOnLength = 10000.0f;
+
+GE::AudioManager* PlayerComponent::audioManager;
 PlayerComponent::PlayerComponent()
 	: inputDevice(nullptr)
 {
@@ -562,4 +564,9 @@ const float PlayerComponent::easeIn(const float start, const float end, float ti
 GE::Math::Vector3 PlayerComponent::GetDirection()
 {
 	return body_direction;
+}
+
+void PlayerComponent::SetAudioManager(GE::AudioManager* a)
+{
+	audioManager = a;
 }
