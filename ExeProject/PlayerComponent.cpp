@@ -186,7 +186,7 @@ void PlayerComponent::OnCollision(GE::GameObject* other)
 		}
 		else
 		{
-			if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE))
+			if (InputManager::GetInstance()->GetActionButton())
 			{
 				stayLandLerpEasingCount = 0.0f;
 				currentPosition = transform->position;
@@ -326,7 +326,7 @@ void PlayerComponent::Control(float deltaTime)
 			}
 			else { isLockOn = false; }
 		}
-		Dash(100.f, 100.f, deltaTime, lockOnEnemy.direction, loop);
+		Dash(100.f, 20.f, deltaTime, lockOnEnemy.direction, loop);
 		break;
 	case PlayerComponent::PlayerStatas::GO_TREE:
 		if (stayLandLerpEasingCount < stayLandLerpTime)
@@ -349,8 +349,7 @@ void PlayerComponent::Control(float deltaTime)
 	case PlayerComponent::PlayerStatas::STAY_TREE:
 		if (startCouunt == 0.0f)
 		{
-			if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE)
-				|| accelerometer.Length() > 2.f)
+			if (InputManager::GetInstance()->GetActionButton())
 			{
 				Title::GetInstance()->states = Title::States::serectNum;
 				startCouunt++;
@@ -410,8 +409,8 @@ void PlayerComponent::KeyboardMoveControl()
 
 	if (inputAxis.x != 0)
 	{
-		body_direction.y += 0.01 * inputAxis.x * GE::GameSetting::Time::GetGameTime();
-		body_direction.z -= 0.005 * inputAxis.x * GE::GameSetting::Time::GetGameTime();
+		body_direction.y += 0.02 * inputAxis.x * GE::GameSetting::Time::GetGameTime();
+		body_direction.z -= 0.006 * inputAxis.x * GE::GameSetting::Time::GetGameTime();
 
 		body_direction.z = abs(body_direction.z) > 0.3f ? 0.3f * ((body_direction.z > 0) ? 1 : -1) : body_direction.z;
 	}
