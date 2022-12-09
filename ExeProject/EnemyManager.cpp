@@ -35,7 +35,8 @@ void EnemyManager::Start(GE::GameObjectManager* gameObjectManager)
 
 void EnemyManager::LoadPosition(const std::string& filename)
 {
-	std::vector<GE::Math::Vector3>pos;
+	std::vector<GE::Math::Vector3>ne;
+	std::vector<GE::Math::Vector3>be;
 
 	std::ifstream file;
 	// .objファイルを開く
@@ -61,15 +62,27 @@ void EnemyManager::LoadPosition(const std::string& filename)
 			line_stream >> position.x;
 			line_stream >> position.y;
 			line_stream >> position.z;
-			pos.emplace_back(position);
+			ne.emplace_back(position);
+		}
+		else if (key == "birdEnemy") {
+			GE::Math::Vector3 position{};
+			line_stream >> position.x;
+			line_stream >> position.y;
+			line_stream >> position.z;
+			be.emplace_back(position);
 		}
 	}
 	file.close();
 	//ファイルの座標セット
-	int index = pos.size() < nEnemies.size() ? pos.size() : nEnemies.size();
+	int index = ne.size() < nEnemies.size() ? ne.size() : nEnemies.size();
 	for (int i = 0; i < index; i++)
 	{
-		nEnemies[i]->GetTransform()->position = pos[i];
+		nEnemies[i]->GetTransform()->position = ne[i];
+	}
+	index = be.size() < birdEnemies.size() ? be.size() : birdEnemies.size();
+	for (int i = 0; i < index; i++)
+	{
+		birdEnemies[i]->GetTransform()->position = be[i];
 	}
 }
 
@@ -85,6 +98,12 @@ void EnemyManager::SaveCurrentPosition(const std::string& filename)
 	{
 		GE::Math::Vector3 pos = nEnemies[i]->GetTransform()->position;
 		writing_file << "normalEnemy " << pos.x << " " << pos.y << " " << pos.z << std::endl;
+	}
+	
+	for (int i = 0; i < birdEnemies.size(); i++)
+	{
+		GE::Math::Vector3 pos = birdEnemies[i]->GetTransform()->position;
+		writing_file << "birdEnemy " << pos.x << " " << pos.y << " " << pos.z << std::endl;
 	}
 
 	writing_file.close();

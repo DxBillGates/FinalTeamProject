@@ -99,7 +99,7 @@ void PlayerComponent::Update(float deltaTime)
 	//D0押したら移動停止＊デバッグ用
 	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::D0))
 	{
-		statas != PlayerStatas::STOP_DEBUG ? statas = PlayerStatas::STOP_DEBUG : statas = PlayerStatas::MOVE;
+		statas != PlayerStatas::DEBUG ? statas = PlayerStatas::DEBUG : statas = PlayerStatas::MOVE;
 	}
 	//めり込んだらD9キーで木に強制送還
 	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::D9))
@@ -171,7 +171,7 @@ void PlayerComponent::LateDraw()
 
 void PlayerComponent::OnCollision(GE::GameObject* other)
 {
-	GE::Utility::Printf("PlayerComponent OnCollision(GameObject* other) : hit\n");
+	//GE::Utility::Printf("PlayerComponent OnCollision(GameObject* other) : hit\n");
 
 	if (other == lockOnEnemy.object)
 	{
@@ -269,14 +269,13 @@ void PlayerComponent::Control(float deltaTime)
 	{
 		if (worldRadius < distance)
 		{
-			//LookDirection(GE::Math::Vector3(TestTreeComponent::position - transform->position).Normalize());
 			Reflection();
 		}
 	}
 	bool loop = false;
 	switch (statas)
 	{
-	case PlayerComponent::PlayerStatas::STOP_DEBUG:
+	case PlayerComponent::PlayerStatas::DEBUG:
 		break;
 	case PlayerComponent::PlayerStatas::MOVE:
 		transform->position += transform->GetForward() * current_speed * deltaTime * GE::GameSetting::Time::GetGameTime() - gravity;

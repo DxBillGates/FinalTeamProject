@@ -60,7 +60,7 @@ private:
 public:
 	enum class PlayerStatas
 	{
-		STOP_DEBUG,		//‚»‚Ìê‚É’â~
+		DEBUG	,		//‚»‚Ìê‚É’â~
 		MOVE,			//’ÊíˆÚ“®
 		DASH,			//ƒ_ƒbƒVƒ…
 		CRASH,			//•Ç‚ÉŒƒ“Ë‚µ‚Ä’Ä—
