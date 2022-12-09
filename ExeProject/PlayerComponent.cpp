@@ -410,7 +410,7 @@ void PlayerComponent::KeyboardMoveControl()
 	if (inputAxis.x != 0)
 	{
 		body_direction.y += 0.02 * inputAxis.x * GE::GameSetting::Time::GetGameTime();
-		body_direction.z -= 0.006 * inputAxis.x * GE::GameSetting::Time::GetGameTime();
+		body_direction.z -= 0.008 * inputAxis.x * GE::GameSetting::Time::GetGameTime();
 
 		body_direction.z = abs(body_direction.z) > 0.3f ? 0.3f * ((body_direction.z > 0) ? 1 : -1) : body_direction.z;
 	}
