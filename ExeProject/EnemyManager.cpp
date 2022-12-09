@@ -10,9 +10,8 @@ EnemyManager* EnemyManager::GetInstance()
 	return &instance;
 }
 
-void EnemyManager::Start(const int count, GE::GameObjectManager* gameObjectManager)
+void EnemyManager::Start(GE::GameObjectManager* gameObjectManager)
 {
-	this->count = count;
 	this->gameObjectManager = gameObjectManager;
 	for (int i = 0; i < 7; ++i)
 	{
@@ -34,7 +33,7 @@ void EnemyManager::Start(const int count, GE::GameObjectManager* gameObjectManag
 	}
 }
 
-void EnemyManager::LoadPosition(const std::string& filename, std::vector<GE::GameObject*>enemies)
+void EnemyManager::LoadPosition(const std::string& filename)
 {
 	std::vector<GE::Math::Vector3>pos;
 
@@ -57,7 +56,7 @@ void EnemyManager::LoadPosition(const std::string& filename, std::vector<GE::Gam
 		std::string key;
 		getline(line_stream, key, ' ');
 
-		if (key == "pos") {
+		if (key == "normalEnemy") {
 			GE::Math::Vector3 position{};
 			line_stream >> position.x;
 			line_stream >> position.y;
@@ -67,14 +66,14 @@ void EnemyManager::LoadPosition(const std::string& filename, std::vector<GE::Gam
 	}
 	file.close();
 	//ファイルの座標セット
-	int index = pos.size() < enemies.size() ? pos.size() : enemies.size();
+	int index = pos.size() < nEnemies.size() ? pos.size() : nEnemies.size();
 	for (int i = 0; i < index; i++)
 	{
-		enemies[i]->GetTransform()->position = pos[i];
+		nEnemies[i]->GetTransform()->position = pos[i];
 	}
 }
 
-void EnemyManager::SaveCurrentPosition(const std::string& filename, std::vector<GE::GameObject*>enemies)
+void EnemyManager::SaveCurrentPosition(const std::string& filename)
 {
 	std::ofstream writing_file;
 	writing_file.open(filename, std::ios::out);
@@ -82,10 +81,10 @@ void EnemyManager::SaveCurrentPosition(const std::string& filename, std::vector<
 	writing_file.clear();
 	if (!writing_file.is_open()) { assert(0); }
 
-	for (int i = 0; i < enemies.size(); i++)
+	for (int i = 0; i < nEnemies.size(); i++)
 	{
-		GE::Math::Vector3 pos = enemies[i]->GetTransform()->position;
-		writing_file << "pos " << pos.x << " " << pos.y << " " << pos.z << std::endl;
+		GE::Math::Vector3 pos = nEnemies[i]->GetTransform()->position;
+		writing_file << "normalEnemy " << pos.x << " " << pos.y << " " << pos.z << std::endl;
 	}
 
 	writing_file.close();

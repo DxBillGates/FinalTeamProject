@@ -51,7 +51,7 @@ void SampleScene::Initialize()
 	gameObjectManager.Awake();
 	gameObjectManager.Start();
 	//ノーマルエネミー座標ファイル読み込み、座標反映
-	EnemyManager::GetInstance()->LoadPosition("Resources/normalEnemies.txt", EnemyManager::GetInstance()->GetNormalEnemies());
+	EnemyManager::GetInstance()->LoadPosition("Resources/enemies.txt");
 }
 
 void SampleScene::Update(float deltaTime)
@@ -92,7 +92,7 @@ void SampleScene::Update(float deltaTime)
 	if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::LCONTROL) &&
 		inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::S))
 	{
-		EnemyManager::GetInstance()->SaveCurrentPosition("Resources/normalEnemies.txt", EnemyManager::GetInstance()->GetNormalEnemies());
+		EnemyManager::GetInstance()->SaveCurrentPosition("Resources/enemies.txt");
 	}
 }
 
@@ -136,7 +136,7 @@ void SampleScene::Load()
 		sampleComponent->SetPlayer(gameObjectManager.FindGameObject("Player")->GetComponent<PlayerComponent>());
 	}
 
-	EnemyManager::GetInstance()->Start(10, &gameObjectManager);
+	EnemyManager::GetInstance()->Start(&gameObjectManager);
 	FieldObjectManager::GetInstance()->Start(&gameObjectManager);
 	FieldObjectManager::GetInstance()->SetGroundMesh(groundModel);
 	TimeLimit::GetInstance()->Start(&gameObjectManager);
