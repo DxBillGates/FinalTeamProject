@@ -186,81 +186,11 @@ bool GE::Application::LoadContents()
 	mesh->Create(device, cmdList, modelDataTorus);
 	meshManager->Add(mesh, "Torus");
 
-	MeshData<Vertex_UV_Normal> modelDataBird1;
-	MeshCreater::LoadObjModelData(objModelPath + "bird1", modelDataBird1);
-	mesh = new Mesh();
-	mesh->Create(device, cmdList, modelDataBird1);
-	meshManager->Add(mesh, "Bird1");
-
-	MeshData<Vertex_UV_Normal> modelDataTree1;
-	MeshCreater::LoadObjModelData("Resources/Model/ki", modelDataTree1);
-	mesh = new Mesh();
-	mesh->Create(device, cmdList, modelDataTree1);
-	meshManager->Add(mesh, "Tree1");
-
-	MeshData<Vertex_UV_Normal> modelDataGroundTest;
-	MeshCreater::LoadObjModelData("Resources/Model/groundTest", modelDataGroundTest);
-	mesh = new Mesh();
-	mesh->Create(device, cmdList, modelDataGroundTest);
-	meshManager->Add(mesh, "GroundTest");
-	
-	MeshData<Vertex_UV_Normal> modelDataNest;
-	MeshCreater::LoadObjModelData("Resources/Model/nest", modelDataNest);
-	mesh = new Mesh();
-	mesh->Create(device, cmdList, modelDataNest);
-	meshManager->Add(mesh, "Nest");
-
-	meshManager->Add(FbxLoader::Load("Bird", &graphicsDevice), "Player");
-
 	// texture load
 	auto* textureManager = graphicsDevice.GetTextureManager();
 	Texture* nullTexture = new Texture();
 	nullTexture->Load("texture_null.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "texture_null");
-
-	nullTexture = new Texture();
-	nullTexture->Load("title.png", device, shaderResourceHeap);
-	textureManager->Add(nullTexture, "texture_title");
-
-	nullTexture = new Texture();
-	nullTexture->Load("stage1.png", device, shaderResourceHeap);
-	textureManager->Add(nullTexture, "texture_stage1");
-
-	nullTexture = new Texture();
-	nullTexture->Load("stage2.png", device, shaderResourceHeap);
-	textureManager->Add(nullTexture, "texture_stage2");
-
-	nullTexture = new Texture();
-	nullTexture->Load("option.png", device, shaderResourceHeap);
-	textureManager->Add(nullTexture, "texture_option");
-
-	nullTexture = new Texture();
-	nullTexture->Load("exit.png", device, shaderResourceHeap);
-	textureManager->Add(nullTexture, "texture_exit");
-
-	nullTexture = new Texture();
-	nullTexture->Load("next.png", device, shaderResourceHeap);
-	textureManager->Add(nullTexture, "texture_next");
-
-	nullTexture = new Texture();
-	nullTexture->Load("Number.png", device, shaderResourceHeap);
-	textureManager->Add(nullTexture, "texture_Number");
-
-	nullTexture = new Texture();
-	nullTexture->Load("symbol.png", device, shaderResourceHeap);
-	textureManager->Add(nullTexture, "texture_symbol");
-
-	nullTexture = new Texture();
-	nullTexture->Load("Game_Clear.png", device, shaderResourceHeap);
-	textureManager->Add(nullTexture, "texture_clear");
-
-	nullTexture = new Texture();
-	nullTexture->Load("Game_Over.png", device, shaderResourceHeap);
-	textureManager->Add(nullTexture, "texture_over");
-
-	nullTexture = new Texture();
-	nullTexture->Load("Chick.png", device, shaderResourceHeap);
-	textureManager->Add(nullTexture, "texture_Chick");
 
 	// shader compile
 	Shader defaultMeshVertexShader, defaultMeshPixelShader;
