@@ -26,12 +26,13 @@ void NormalEnemy::Start()
 	angle = GE::RandomMaker::GetFloat(0.0f, 20.0f);//敵の始動位置の調整
 	gameObject->SetColor(GE::Color::Red());
 }
+
 void NormalEnemy::Update(float deltaTime)
 {
 	const GE::Math::Axis& axis = transform->GetMatrix().GetAxis();
 	float range = 1.0f;//ホバリングの幅
 	angle += 1.0 * GE::GameSetting::Time::GetGameTime() * deltaTime;//ホバリングの速さ
-	transform->position = (transform->position + GE::Math::Vector3(0.0f, sinf(angle) * range * GE::GameSetting::Time::GetGameTime(), 0.0f));
+	transform->position = (transform->position + GE::Math::Vector3(0.0f, sinf(angle) * range * GE::GameSetting::Time::GetGameTime(), sinf(angle) * 2 * GE::GameSetting::Time::GetGameTime()));
 }
 
 void NormalEnemy::Draw()

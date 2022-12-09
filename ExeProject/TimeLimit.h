@@ -38,7 +38,7 @@ private:
 	int minutes = 0;//分数の計算変数
 	int tenSeconds = 0;//秒数の計算変数(十の位)
 	int oneSeconds = 0;//秒数の計算変数(一の位)
-	const int frameRate = 144;//ゲームのフレームレート
+	int frameRate = 144;//ゲームのフレームレート
 	bool timeOver = false;//タイムオーバーフラグ
 
 public:
