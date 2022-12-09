@@ -71,6 +71,13 @@ void SampleScene::Update(float deltaTime)
 		changeSceneInfo.name = "ClearScene";
 		changeSceneInfo.initNextSceneFlag = true;
 	}
+	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::E)
+		|| TimeLimit::GetInstance()->GetTimeOver())
+	{
+		changeSceneInfo.flag = true;
+		changeSceneInfo.name = "OverScene";
+		changeSceneInfo.initNextSceneFlag = true;
+	}
 
 	Collect::GetInstance()->Update(StartTree::collectCount,StartTree::goalCollect);
 
