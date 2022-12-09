@@ -98,7 +98,6 @@ bool Game::LoadContents()
 	}
 	auto* textureManager = graphicsDevice.GetTextureManager();
 	Texture* nullTexture = new Texture();
-	nullTexture = new Texture();
 	nullTexture->Load("title.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "texture_title");
 
