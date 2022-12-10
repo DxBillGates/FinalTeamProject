@@ -26,11 +26,15 @@ void GE::MeshCollider::SetMesh(MeshData<Vertex_UV_Normal>* meshData)
 		triangle.pos2 = (*vertices)[(*indices)[(UINT64)i + 1]].point;
 		triangle.pos3 = (*vertices)[(*indices)[(UINT64)i + 2]].point;
 
+		Math::Vector3 p1p2 = triangle.pos2 - triangle.pos1;
+		Math::Vector3 p1p3 = triangle.pos3 - triangle.pos1;
+		triangle.normal = Math::Vector3::Cross(p1p2, p1p3).Normalize();
+
 		meshs.push_back(triangle);
 	}
 }
 
-bool GE::MeshCollider::CheckHit(ICollider* collider)
+bool GE::MeshCollider::CheckHit(ICollider* collider, Math::Vector3& hitNormal)
 {
 	Math::Matrix4x4 matrix = gameObject->GetTransform()->GetMatrix();
 
@@ -43,6 +47,7 @@ bool GE::MeshCollider::CheckHit(ICollider* collider)
 
 		if (CollisionManager::CheckSphereToTriangle(collider, triangle))
 		{
+			hitNormal = triangle.normal;
 			return true;
 		}
 	}

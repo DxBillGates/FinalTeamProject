@@ -34,6 +34,8 @@ namespace GE
 		ICollider* firstCollider;
 
 		Color materialColor;
+
+		Math::Vector3 hitNormal;
 	public:
 		GameObject(const std::string& name = "unknown", const std::string& tag = "none");
 		~GameObject();
@@ -56,6 +58,7 @@ namespace GE
 		// 一番最初に追加されたコライダーを返す
 		ICollider* GetCollider();
 		Color GetColor();
+		Math::Vector3 GetHitNormal();
 
 		void SetGameObjectManager(GameObjectManager* manager);
 		void SetParent(GameObject* object);
@@ -66,6 +69,7 @@ namespace GE
 		static void SetGraphicsDevice(IGraphicsDeviceDx12* gDevice);
 		static bool IsSetGraphicsDevice();
 		void SetColor(const Color& color);
+		void SetHitNormal(const Math::Vector3& normal);
 
 		template<typename T>
 		T* AddComponent();

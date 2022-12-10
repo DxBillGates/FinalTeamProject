@@ -1,6 +1,7 @@
 #include "..\..\..\Header\GameFramework\Collision\CollisionManager.h"
 #include "..\..\..\Header\GameFramework\GameObject\GameObject.h"
 #include "..\..\..\Header\GameFramework\Component\MeshCollider.h"
+#include "..\..\..\Header\GameFramework\Component\SphereCollider.h"
 
 #include <array>
 #include <cmath>
@@ -523,7 +524,11 @@ bool GE::CollisionManager::CheckSphereToRay(ICollider* sphere, const Math::Vecto
 bool GE::CollisionManager::CheckSphereToMesh(ICollider* sphere, ICollider* mesh)
 {
 	MeshCollider* meshCollider = dynamic_cast<MeshCollider*>(mesh);
+	SphereCollider* sphereCollider = dynamic_cast<SphereCollider*>(sphere);
+	Math::Vector3 hitNormal;
+
 	bool result = false;
-	result = meshCollider->CheckHit(sphere);
+	result = meshCollider->CheckHit(sphere,hitNormal);
+	if (result == true)sphereCollider->GetGameObject()->SetHitNormal(hitNormal);
 	return result;
 }
