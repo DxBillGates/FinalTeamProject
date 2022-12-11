@@ -175,6 +175,11 @@ GE::Color GE::GameObject::GetColor()
 	return materialColor;
 }
 
+GE::Math::Vector3 GE::GameObject::GetHitNormal()
+{
+	return hitNormal;
+}
+
 void GE::GameObject::SetGameObjectManager(GameObjectManager* manager)
 {
 	gameObjectManager = manager;
@@ -218,6 +223,11 @@ bool GE::GameObject::IsSetGraphicsDevice()
 void GE::GameObject::SetColor(const Color& color)
 {
 	materialColor = color;
+}
+
+void GE::GameObject::SetHitNormal(const Math::Vector3& normal)
+{
+	hitNormal = normal;
 }
 
 GE::GameObjectManager* GE::GameObject::GetGameObjectManager()

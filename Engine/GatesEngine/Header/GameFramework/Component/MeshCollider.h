@@ -14,6 +14,6 @@ namespace GE
 		~MeshCollider();
 		void Awake() override;
 		void SetMesh(MeshData<Vertex_UV_Normal>* meshData);
-		bool CheckHit(ICollider* collider);
+		bool CheckHit(ICollider* collider,Math::Vector3& hitNormal);
 	};
 }
