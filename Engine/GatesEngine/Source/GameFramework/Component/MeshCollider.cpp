@@ -45,6 +45,10 @@ bool GE::MeshCollider::CheckHit(ICollider* collider, Math::Vector3& hitNormal)
 		triangle.pos2 = Math::Matrix4x4::Transform(mesh.pos2, matrix);
 		triangle.pos3 = Math::Matrix4x4::Transform(mesh.pos3, matrix);
 
+		Math::Vector3 p1p2 = triangle.pos2 - triangle.pos1;
+		Math::Vector3 p1p3 = triangle.pos3 - triangle.pos1;
+		triangle.normal = Math::Vector3::Cross(p1p2, p1p3).Normalize();
+
 		if (CollisionManager::CheckSphereToTriangle(collider, triangle))
 		{
 			hitNormal = triangle.normal;
