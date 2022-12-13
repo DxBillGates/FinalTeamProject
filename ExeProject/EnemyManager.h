@@ -26,7 +26,7 @@ public:
 	//現在の敵たちの座標をファイルに保存
 	void SaveCurrentPosition(const std::string& filename);
 
-	void Clear();
+	void UnLoad();
 	std::vector<GE::GameObject*> GetNormalEnemies() { return nEnemies; }
 	std::vector<GE::GameObject*> GetBirdEnemies() { return birdEnemies; }
 	std::vector<GE::GameObject*> GetAllEnemies();

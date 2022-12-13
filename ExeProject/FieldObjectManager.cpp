@@ -47,10 +47,14 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 	}
 	//通常の木
 	{
-		auto* object = gameObjectManager->AddGameObject(new GE::GameObject("fieldtree", "fieldtree"));
-		auto* sampleComponent = object->AddComponent<NormalTree>();
-		object->GetTransform()->position = {};
-		object->GetTransform()->scale = { 200 };
+		for (int i = 0; i < 7; ++i)
+		{
+			auto* object = gameObjectManager->AddGameObject(new GE::GameObject("fieldtree", "fieldtree"));
+			auto* sampleComponent = object->AddComponent<FieldTree>();
+			object->GetTransform()->position = {};
+			object->GetTransform()->scale = { 400 };
+			fieldTree.push_back(object);
+		}
 	}
 }
 
@@ -71,9 +75,12 @@ void FieldObjectManager::SetGroundMesh(GE::MeshData<GE::Vertex_UV_Normal> mesh)
 void FieldObjectManager::LoadPosition(const std::string& filename)
 {
 	std::vector<GE::Math::Vector3>pos;
+	std::vector<GE::Math::Vector3>rot;
+	std::vector<float> scale;
+	std::vector<GE::Color> col;
 
 	std::ifstream file;
-	// .objファイルを開く
+	//ファイルを開く
 	file.open(filename);
 	//ファイルが開けなかったらとまる
 	if (file.fail()) {
@@ -92,11 +99,25 @@ void FieldObjectManager::LoadPosition(const std::string& filename)
 		getline(line_stream, key, ' ');
 
 		if (key == "FieldTree") {
-			GE::Math::Vector3 position{};
-			line_stream >> position.x;
-			line_stream >> position.y;
-			line_stream >> position.z;
-			pos.emplace_back(position);
+			GE::Math::Vector3 result{};
+			line_stream >> result.x;
+			line_stream >> result.y;
+			line_stream >> result.z;
+			pos.emplace_back(result);
+
+			line_stream >> result.x;
+			line_stream >> result.y;
+			line_stream >> result.z;
+			rot.emplace_back(result);
+
+			line_stream >> result.x;
+			scale.emplace_back(result.x);
+
+			line_stream >> result.x;
+			line_stream >> result.y;
+			line_stream >> result.z;
+			GE::Color c = { result.x,result.y,result.z,1.0f };
+			col.emplace_back(c);
 		}
 	}
 	file.close();
@@ -105,6 +126,8 @@ void FieldObjectManager::LoadPosition(const std::string& filename)
 	for (int i = 0; i < index; i++)
 	{
 		fieldTree[i]->GetTransform()->position = pos[i];
+		fieldTree[i]->GetComponent<FieldTree>()->rotation_euler = rot[i];
+		fieldTree[i]->GetComponent<FieldTree>()->scale = scale[i];
 	}
 }
 
@@ -119,8 +142,20 @@ void FieldObjectManager::SaveCurrentPosition(const std::string& filename)
 	for (int i = 0; i < fieldTree.size(); i++)
 	{
 		GE::Math::Vector3 pos = fieldTree[i]->GetTransform()->position;
-		writing_file << "FieldTree " << pos.x << " " << pos.y << " " << pos.z << std::endl;
+		float scale = fieldTree[i]->GetComponent<FieldTree>()->scale;
+		GE::Math::Vector3 rota = fieldTree[i]->GetComponent<FieldTree>()->rotation_euler;
+		GE::Color col = fieldTree[i]->GetColor();
+
+		writing_file << "FieldTree " << pos.x << " " << pos.y << " " << pos.z <<
+			" " << rota.x << " " << rota.y << " " << rota.z <<
+			" " << scale <<
+			" " << col.r << " " << col.g << " " << col.b << " " << col.a << std::endl;
 	}
 
 	writing_file.close();
+}
+
+void FieldObjectManager::UnLoad()
+{
+	fieldTree.clear();
 }

@@ -24,8 +24,10 @@ public:
 	void SetGroundMesh(GE::MeshData<GE::Vertex_UV_Normal> mesh);
 	//ファイルに保存されている座標取得
 	void LoadPosition(const std::string& filename);
-	//現在の敵たちの座標をファイルに保存
+	//現在の座標をファイルに保存
 	void SaveCurrentPosition(const std::string& filename);
+
+	void UnLoad();
 
 };
 

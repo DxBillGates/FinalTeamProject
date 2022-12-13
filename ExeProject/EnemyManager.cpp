@@ -39,7 +39,7 @@ void EnemyManager::LoadPosition(const std::string& filename)
 	std::vector<GE::Math::Vector3>be;
 
 	std::ifstream file;
-	// .objファイルを開く
+	//ファイルを開く
 	file.open(filename);
 	//ファイルが開けなかったらとまる
 	if (file.fail()) {
@@ -109,7 +109,7 @@ void EnemyManager::SaveCurrentPosition(const std::string& filename)
 	writing_file.close();
 }
 
-void EnemyManager::Clear()
+void EnemyManager::UnLoad()
 {
 	nEnemies.clear();
 	birdEnemies.clear();

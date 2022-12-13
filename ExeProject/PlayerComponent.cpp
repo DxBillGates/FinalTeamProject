@@ -250,7 +250,6 @@ void PlayerComponent::OnGui()
 
 	GE::Math::Vector3 inputAxis = InputManager::GetInstance()->GetAxis();
 	ImGui::InputFloat3("inputAxis", inputAxis.value);
-	ImGui::InputFloat3("bb", body_direction.value);
 	auto joycon = inputDevice->GetJoyconL();
 	if (joycon == nullptr)return;
 	GE::Math::Vector2 value = { (float)joycon->GetStick().x,(float)joycon->GetStick().y };

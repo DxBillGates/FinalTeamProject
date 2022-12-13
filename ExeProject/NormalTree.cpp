@@ -5,26 +5,29 @@
 
 #include "NormalTree.h"
 
-NormalTree::NormalTree()
+FieldTree::FieldTree()
 {
 
 }
 
-void NormalTree::Awake()
+void FieldTree::Awake()
 {
 	GE::Utility::Printf("NormalTree Awake()\n");
 }
 
-void NormalTree::Start()
+void FieldTree::Start()
 {
 	GE::Utility::Printf("NormalTree Start()\n");
+	rotation_euler = {};
+	scale = 100;
 }
-void NormalTree::Update(float deltaTime)
+void FieldTree::Update(float deltaTime)
 {
-
+	transform->rotation = GE::Math::Quaternion::Euler(rotation_euler);
+	transform->scale = { scale };
 }
 
-void NormalTree::Draw()
+void FieldTree::Draw()
 {
 
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
@@ -46,22 +49,23 @@ void NormalTree::Draw()
 	graphicsDevice->DrawMesh("tree_leaf1");
 }
 
-void NormalTree::LateDraw()
+void FieldTree::LateDraw()
 {
 
 }
 
-void NormalTree::OnCollision(GE::GameObject* other)
+void FieldTree::OnCollision(GE::GameObject* other)
 {
 	GE::Utility::Printf("NormalTree OnCollision(GameObject* other) : hit\n");
 }
 
-void NormalTree::OnCollision(GE::ICollider* hitCollider)
+void FieldTree::OnCollision(GE::ICollider* hitCollider)
 {
 	GE::Utility::Printf("NormalTree OnCollision(ICollider* other) : hit\n");
 }
 
-void NormalTree::OnGui()
+void FieldTree::OnGui()
 {
-
+	ImGui::InputFloat3("Rotation_Euler", rotation_euler.value);
+	ImGui::InputFloat("Scale", &scale);
 }

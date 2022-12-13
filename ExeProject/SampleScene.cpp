@@ -52,6 +52,7 @@ void SampleScene::Initialize()
 	gameObjectManager.Start();
 	//ノーマルエネミー座標ファイル読み込み、座標反映
 	EnemyManager::GetInstance()->LoadPosition("Resources/enemies.txt");
+	FieldObjectManager::GetInstance()->LoadPosition("Resources/tree.txt");
 }
 
 void SampleScene::Update(float deltaTime)
@@ -93,6 +94,7 @@ void SampleScene::Update(float deltaTime)
 		inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::S))
 	{
 		EnemyManager::GetInstance()->SaveCurrentPosition("Resources/enemies.txt");
+		FieldObjectManager::GetInstance()->SaveCurrentPosition("Resources/tree.txt");
 	}
 }
 
@@ -151,7 +153,8 @@ void SampleScene::Load()
 void SampleScene::UnLoad()
 {
 	Title::GetInstance()->ClearGameObject();
-	EnemyManager::GetInstance()->Clear();
+	EnemyManager::GetInstance()->UnLoad();
+	FieldObjectManager::GetInstance()->UnLoad();
 	// gameObjectsを削除する
 	Scene::UnLoad();
 }
