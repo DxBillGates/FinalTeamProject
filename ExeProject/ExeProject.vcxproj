@@ -177,6 +177,7 @@
     <ClCompile Include="MiniMap.cpp" />
     <ClCompile Include="MiniMapViewer.cpp" />
     <ClCompile Include="NormalEnemy.cpp" />
+    <ClCompile Include="NormalTree.cpp" />
     <ClCompile Include="Over.cpp" />
     <ClCompile Include="PlayerComponent.cpp" />
     <ClCompile Include="SampleScene.cpp" />
@@ -198,6 +199,7 @@
     <ClInclude Include="MiniMap.h" />
     <ClInclude Include="MiniMapViewer.h" />
     <ClInclude Include="NormalEnemy.h" />
+    <ClInclude Include="NormalTree.h" />
     <ClInclude Include="Over.h" />
     <ClInclude Include="PlayerComponent.h" />
     <ClInclude Include="resource.h" />

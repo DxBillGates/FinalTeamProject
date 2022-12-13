@@ -1,13 +1,13 @@
 #pragma once
 #include <GatesEngine/Header/GameFramework/Component/Component.h>
 
-class FieldObject : public GE::Component
+class NormalTree : public GE::Component
 {
 
 public:
-	std::string modelName = "Cube";
-	std::string shaderName = "DefaultMeshShader";
-	FieldObject();
+	GE::Color body_Color = { 1.0f,0.5f,0.1f,1.0f };
+	GE::Color leaf_Color = { 0.1f,1.0f,0.4f,1.0f };
+	NormalTree();
 	void Awake();
 	void Start();
 	void Update(float deltaTime);

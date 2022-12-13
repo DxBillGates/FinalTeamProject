@@ -37,7 +37,6 @@ void FieldObject::Draw()
 	material.color = gameObject->GetColor();
 	GE::Math::Matrix4x4 modelMatrix = transform->GetMatrix();
 
-
 	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
 	graphicsDevice->DrawMesh(modelName);

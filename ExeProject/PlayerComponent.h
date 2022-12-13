@@ -99,7 +99,7 @@ private:
 	/// <summary>
 	/// Keyboard‚ÅˆÚ“®‘€ì
 	/// </summary>
-	void KeyboardMoveControl();
+	void KeyboardMoveControl(float deltaTime);
 
 	/// <summary>
 	/// ‘O•û‚É‚¢‚ÄÅ‚à‹ß‚¢“G‚ğ‹‚ß‚é
@@ -129,6 +129,9 @@ private:
 	void Reflection();
 	//EaseInŠÖŒW‚ª‚æ‚­‚í‚©‚ç‚È‚©‚Á‚½‚©‚çˆê“I‚É’Ç‰Á
 	const float easeIn(const float start, const float end, float time);
+
+	const GE::Math::Vector3 Repulsion(GE::Math::Vector3 direction, GE::Math::Vector3 normal, float power);
+
 public:
 	GE::Math::Vector3 GetDirection();
 	void SetAudioManager(GE::AudioManager* a);

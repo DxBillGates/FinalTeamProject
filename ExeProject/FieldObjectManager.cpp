@@ -1,5 +1,6 @@
 #include "FieldObjectManager.h"
 #include "FieldObject.h"
+#include "NormalTree.h"
 #include <GatesEngine/Header/GameFramework/Component/SphereCollider.h>
 #include <GatesEngine/Header/GameFramework/Component/MeshCollider.h>
 #include<fstream>
@@ -41,8 +42,15 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 		object->GetComponent<FieldObject>()->modelName = "Nest";
 		object->GetComponent<FieldObject>()->shaderName = "DefaultMeshShader";
 		object->SetColor(GE::Color(0.8f, 0.6f, 0.6f, 1.f));
-		object->GetTransform()->position = StartTree::position+GE::Math::Vector3(0,100,0);
+		object->GetTransform()->position = StartTree::position + GE::Math::Vector3(0, 100, 0);
 		object->GetTransform()->scale = { 200,300,200 };
+	}
+	//通常の木
+	{
+		auto* object = gameObjectManager->AddGameObject(new GE::GameObject("fieldtree", "fieldtree"));
+		auto* sampleComponent = object->AddComponent<NormalTree>();
+		object->GetTransform()->position = {};
+		object->GetTransform()->scale = { 200 };
 	}
 }
 
@@ -57,10 +65,10 @@ void FieldObjectManager::SetGroundMesh(GE::MeshData<GE::Vertex_UV_Normal> mesh)
 	object->SetColor(GE::Color(0.5f, 0.9f, 0.5f, 1.0f));
 	object->GetTransform()->position = { 1000,0,-15000 };
 	object->GetTransform()->scale = { 2 };
-	object->GetTransform()->rotation = GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), -5.0f);
+	//object->GetTransform()->rotation = GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), -5.0f);
 }
 
-void FieldObjectManager::LoadPosition(const std::string& filename, std::vector<GE::GameObject*>objs)
+void FieldObjectManager::LoadPosition(const std::string& filename)
 {
 	std::vector<GE::Math::Vector3>pos;
 
@@ -83,7 +91,7 @@ void FieldObjectManager::LoadPosition(const std::string& filename, std::vector<G
 		std::string key;
 		getline(line_stream, key, ' ');
 
-		if (key == "pos") {
+		if (key == "FieldTree") {
 			GE::Math::Vector3 position{};
 			line_stream >> position.x;
 			line_stream >> position.y;
@@ -93,14 +101,14 @@ void FieldObjectManager::LoadPosition(const std::string& filename, std::vector<G
 	}
 	file.close();
 	//ファイルの座標セット
-	int index = pos.size() < objs.size() ? pos.size() : objs.size();
+	int index = pos.size() < fieldTree.size() ? pos.size() : fieldTree.size();
 	for (int i = 0; i < index; i++)
 	{
-		objs[i]->GetTransform()->position = pos[i];
+		fieldTree[i]->GetTransform()->position = pos[i];
 	}
 }
 
-void FieldObjectManager::SaveCurrentPosition(const std::string& filename, std::vector<GE::GameObject*>objs)
+void FieldObjectManager::SaveCurrentPosition(const std::string& filename)
 {
 	std::ofstream writing_file;
 	writing_file.open(filename, std::ios::out);
@@ -108,10 +116,10 @@ void FieldObjectManager::SaveCurrentPosition(const std::string& filename, std::v
 	writing_file.clear();
 	if (!writing_file.is_open()) { assert(0); }
 
-	for (int i = 0; i < objs.size(); i++)
+	for (int i = 0; i < fieldTree.size(); i++)
 	{
-		GE::Math::Vector3 pos = objs[i]->GetTransform()->position;
-		writing_file << "pos " << pos.x << " " << pos.y << " " << pos.z << std::endl;
+		GE::Math::Vector3 pos = fieldTree[i]->GetTransform()->position;
+		writing_file << "FieldTree " << pos.x << " " << pos.y << " " << pos.z << std::endl;
 	}
 
 	writing_file.close();
