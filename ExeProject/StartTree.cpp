@@ -5,7 +5,6 @@
 
 #include"StartTree.h"
 
-GE::Math::Vector3 StartTree::position = { 0,1400,-10000 };
 int StartTree::goalCollect = 5;
 int StartTree::collectCount;
 bool StartTree::isCollect;
@@ -25,8 +24,7 @@ void StartTree::Start()
 	GE::Utility::Printf("TestTreeComponent Start()\n");
 
 	gameObject->SetColor(GE::Color::Red());
-	transform->position = position;
-	transform->scale = { 200,200,200 };
+	transform->scale = { 1 };
 	collectCount = 0;
 	isCollect = false;
 
@@ -37,12 +35,13 @@ void StartTree::Update(float deltaTime)
 	if (collectCount < goalCollect)
 	{
 
-
 	}
 	else
 	{
 		isCollect = true;
 	}
+
+	transform->rotation = GE::Math::Quaternion::Euler(rotation_euler);
 }
 
 void StartTree::Draw()
@@ -54,12 +53,17 @@ void StartTree::Draw()
 	graphicsDevice->SetShader("DefaultMeshShader");
 
 	GE::Material material;
-	material.color = gameObject->GetColor();
+	material.color = body_Color;
 	GE::Math::Matrix4x4 modelMatrix = transform->GetMatrix();
 
 	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
-	graphicsDevice->DrawMesh("Tree1");
+	graphicsDevice->DrawMesh("Tree2");
+
+	material.color = leaf_Color;
+	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
+	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
+	graphicsDevice->DrawMesh("Tree_Leaf2");
 }
 
 void StartTree::LateDraw()
@@ -79,5 +83,5 @@ void StartTree::OnCollision(GE::ICollider* hitCollider)
 
 void StartTree::OnGui()
 {
-
+	ImGui::InputFloat3("Rotation_Euler", rotation_euler.value);
 }

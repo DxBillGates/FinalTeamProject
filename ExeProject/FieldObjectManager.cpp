@@ -7,6 +7,8 @@
 #include<sstream>
 #include<cassert>
 
+GE::Math::Vector3 FieldObjectManager::FieldObjectManager::StartPosition;
+
 FieldObjectManager* FieldObjectManager::GetInstance()
 {
 	static FieldObjectManager instance;
@@ -24,6 +26,7 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 		auto* collider = object->AddComponent < GE::SphereCollider >();
 		collider->SetCenter({ 0,0,0 });
 		collider->SetSize({ 10 });
+		startTree = object;
 	}
 	//壁仮
 	{
@@ -42,8 +45,8 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 		object->GetComponent<FieldObject>()->modelName = "Nest";
 		object->GetComponent<FieldObject>()->shaderName = "DefaultMeshShader";
 		object->SetColor(GE::Color(0.8f, 0.6f, 0.6f, 1.f));
-		object->GetTransform()->position = StartTree::position + GE::Math::Vector3(0, 100, 0);
 		object->GetTransform()->scale = { 200,300,200 };
+		nest = object;
 	}
 	//通常の木
 	{
@@ -53,6 +56,7 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 			auto* sampleComponent = object->AddComponent<FieldTree>();
 			object->GetTransform()->position = {};
 			object->GetTransform()->scale = { 400 };
+
 			fieldTree.push_back(object);
 		}
 	}
@@ -74,10 +78,9 @@ void FieldObjectManager::SetGroundMesh(GE::MeshData<GE::Vertex_UV_Normal> mesh)
 
 void FieldObjectManager::LoadPosition(const std::string& filename)
 {
-	std::vector<GE::Math::Vector3>pos;
-	std::vector<GE::Math::Vector3>rot;
-	std::vector<float> scale;
-	std::vector<GE::Color> col;
+	std::vector<obj> ft;
+	obj st;
+	obj nst;
 
 	std::ifstream file;
 	//ファイルを開く
@@ -99,36 +102,85 @@ void FieldObjectManager::LoadPosition(const std::string& filename)
 		getline(line_stream, key, ' ');
 
 		if (key == "FieldTree") {
-			GE::Math::Vector3 result{};
-			line_stream >> result.x;
-			line_stream >> result.y;
-			line_stream >> result.z;
-			pos.emplace_back(result);
+			obj result;
+			line_stream >> result.pos.x;
+			line_stream >> result.pos.y;
+			line_stream >> result.pos.z;
 
-			line_stream >> result.x;
-			line_stream >> result.y;
-			line_stream >> result.z;
-			rot.emplace_back(result);
+			line_stream >> result.rot.x;
+			line_stream >> result.rot.y;
+			line_stream >> result.rot.z;
 
-			line_stream >> result.x;
-			scale.emplace_back(result.x);
+			line_stream >> result.scale.x;
+			line_stream >> result.scale.y;
+			line_stream >> result.scale.z;
 
-			line_stream >> result.x;
-			line_stream >> result.y;
-			line_stream >> result.z;
-			GE::Color c = { result.x,result.y,result.z,1.0f };
-			col.emplace_back(c);
+			line_stream >> result.col.r;
+			line_stream >> result.col.g;
+			line_stream >> result.col.b;
+			result.col.a = 1.0f;
+			ft.emplace_back(result);
+		}
+		else if (key == "StartTree")
+		{
+			obj result;
+			line_stream >> result.pos.x;
+			line_stream >> result.pos.y;
+			line_stream >> result.pos.z;
+
+			line_stream >> result.rot.x;
+			line_stream >> result.rot.y;
+			line_stream >> result.rot.z;
+
+			line_stream >> result.scale.x;
+			line_stream >> result.scale.y;
+			line_stream >> result.scale.z;
+
+			line_stream >> result.col.r;
+			line_stream >> result.col.g;
+			line_stream >> result.col.b;
+			result.col.a = 1.0f;
+			st = result;
+		}
+		else if (key == "Nest")
+		{
+			obj result;
+			line_stream >> result.pos.x;
+			line_stream >> result.pos.y;
+			line_stream >> result.pos.z;
+
+			line_stream >> result.rot.x;
+			line_stream >> result.rot.y;
+			line_stream >> result.rot.z;
+
+			line_stream >> result.scale.x;
+			line_stream >> result.scale.y;
+			line_stream >> result.scale.z;
+
+			line_stream >> result.col.r;
+			line_stream >> result.col.g;
+			line_stream >> result.col.b;
+			result.col.a = 1.0f;
+			nst = result;
 		}
 	}
 	file.close();
 	//ファイルの座標セット
-	int index = pos.size() < fieldTree.size() ? pos.size() : fieldTree.size();
+	int index = ft.size() < fieldTree.size() ? ft.size() : fieldTree.size();
 	for (int i = 0; i < index; i++)
 	{
-		fieldTree[i]->GetTransform()->position = pos[i];
-		fieldTree[i]->GetComponent<FieldTree>()->rotation_euler = rot[i];
-		fieldTree[i]->GetComponent<FieldTree>()->scale = scale[i];
+		fieldTree[i]->GetTransform()->position = ft[i].pos;
+		fieldTree[i]->GetComponent<FieldTree>()->rotation_euler = ft[i].rot;
+		fieldTree[i]->GetComponent<FieldTree>()->scale = ft[i].scale.x;
 	}
+	//開始時の木
+	startTree->GetTransform()->position = st.pos;
+	startTree->GetComponent<StartTree>()->rotation_euler = st.rot;
+	startTree->GetTransform()->scale = st.scale;
+	//巣
+	nest->GetTransform()->position = nst.pos;
+	nest->GetTransform()->scale = nst.scale;
+	StartPosition = nst.pos;
 }
 
 void FieldObjectManager::SaveCurrentPosition(const std::string& filename)
@@ -138,7 +190,7 @@ void FieldObjectManager::SaveCurrentPosition(const std::string& filename)
 	//内容初期化
 	writing_file.clear();
 	if (!writing_file.is_open()) { assert(0); }
-
+	//普通の木
 	for (int i = 0; i < fieldTree.size(); i++)
 	{
 		GE::Math::Vector3 pos = fieldTree[i]->GetTransform()->position;
@@ -148,9 +200,29 @@ void FieldObjectManager::SaveCurrentPosition(const std::string& filename)
 
 		writing_file << "FieldTree " << pos.x << " " << pos.y << " " << pos.z <<
 			" " << rota.x << " " << rota.y << " " << rota.z <<
-			" " << scale <<
+			" " << scale << " " << scale << " " << scale <<
 			" " << col.r << " " << col.g << " " << col.b << " " << col.a << std::endl;
 	}
+	//開始時の木
+	GE::Math::Vector3 pos = startTree->GetTransform()->position;
+	GE::Math::Vector3 scale = startTree->GetTransform()->scale;
+	GE::Math::Vector3 rota = startTree->GetComponent<StartTree>()->rotation_euler;
+	GE::Color col = startTree->GetColor();
+
+	writing_file << "StartTree " << pos.x << " " << pos.y << " " << pos.z <<
+		" " << rota.x << " " << rota.y << " " << rota.z <<
+		" " << scale.x << " " << scale.y << " " << scale.z <<
+		" " << col.r << " " << col.g << " " << col.b << " " << col.a << std::endl;
+
+	//巣
+	pos = nest->GetTransform()->position;
+	scale = nest->GetTransform()->scale;
+	col = startTree->GetColor();
+
+	writing_file << "Nest " << pos.x << " " << pos.y << " " << pos.z <<
+		" " << rota.x << " " << rota.y << " " << rota.z <<
+		" " << scale.x << " " << scale.y << " " << scale.z <<
+		" " << col.r << " " << col.g << " " << col.b << " " << col.a << std::endl;
 
 	writing_file.close();
 }

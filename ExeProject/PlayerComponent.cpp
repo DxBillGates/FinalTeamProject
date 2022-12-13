@@ -9,7 +9,7 @@
 #include"EnemyManager.h"
 #include "InputManager.h"
 #include "CameraControl.h"
-#include "StartTree.h"
+#include "FieldObjectManager.h"
 #include "Title.h"
 
 float PlayerComponent::frameRate;
@@ -43,12 +43,12 @@ void PlayerComponent::Start()
 {
 	GE::Utility::Printf("PlayerComponent Start()\n");
 	inputDevice = GE::InputDevice::GetInstance();
-	transform->position = StartTree::position + onTheTreePosition;
+	transform->position = FieldObjectManager::StartPosition + onTheTreePosition;
 	transform->scale = { 10,10,10 };
 
 	statas = PlayerStatas::STAY_TREE;
 
-	body_direction = { 0,0,0 };
+	body_direction = { 0,-1.57f,0 };
 	dashEasingCount = 0.0;
 	startCouunt = 0.0f;
 	collectCount = 0;
@@ -265,7 +265,7 @@ bool PlayerComponent::IsSpeedy()
 }
 void PlayerComponent::Control(float deltaTime)
 {
-	const float distance = abs(GE::Math::Vector3::Distance(transform->position, StartTree::position));
+	const float distance = abs(GE::Math::Vector3::Distance(transform->position, FieldObjectManager::StartPosition));
 	if (statas != PlayerStatas::CRASH)
 	{
 		if (worldRadius < distance)
@@ -331,7 +331,7 @@ void PlayerComponent::Control(float deltaTime)
 		if (stayLandLerpEasingCount < stayLandLerpTime)
 		{
 			stayLandLerpEasingCount += deltaTime * GE::GameSetting::Time::GetGameTime();
-			transform->position = GE::Math::Vector3::Lerp(currentPosition, StartTree::position + onTheTreePosition, stayLandLerpEasingCount / stayLandLerpTime);
+			transform->position = GE::Math::Vector3::Lerp(currentPosition, FieldObjectManager::StartPosition + onTheTreePosition, stayLandLerpEasingCount / stayLandLerpTime);
 		}
 		else
 		{
@@ -348,6 +348,7 @@ void PlayerComponent::Control(float deltaTime)
 	case PlayerComponent::PlayerStatas::STAY_TREE:
 		if (startCouunt == 0.0f)
 		{
+			transform->position = FieldObjectManager::StartPosition + onTheTreePosition;
 			if (InputManager::GetInstance()->GetActionButton())
 			{
 				Title::GetInstance()->states = Title::States::serectNum;

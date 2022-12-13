@@ -53,12 +53,6 @@ bool Game::LoadContents()
 	mesh->Create(device, cmdList, modelDataBird1);
 	meshManager->Add(mesh, "Bird1");
 
-	MeshData<Vertex_UV_Normal> modelDataTree1;
-	MeshCreater::LoadObjModelData("Resources/Model/ki", modelDataTree1);
-	mesh = new Mesh();
-	mesh->Create(device, cmdList, modelDataTree1);
-	meshManager->Add(mesh, "Tree1");
-
 	MeshData<Vertex_UV_Normal> modelDataGroundTest;
 	MeshCreater::LoadObjModelData("Resources/Model/groundTest", modelDataGroundTest);
 	mesh = new Mesh();
@@ -82,6 +76,18 @@ bool Game::LoadContents()
 	mesh = new Mesh();
 	mesh->Create(device, cmdList, modelTreeLeaf1);
 	meshManager->Add(mesh, "tree_leaf1");
+
+	MeshData<Vertex_UV_Normal> modelDataTree2;
+	MeshCreater::LoadObjModelData("Resources/Model/tree2", modelDataTree2);
+	mesh = new Mesh();
+	mesh->Create(device, cmdList, modelDataTree2);
+	meshManager->Add(mesh, "Tree2");
+
+	MeshData<Vertex_UV_Normal> modelTreeLeaf2;
+	MeshCreater::LoadObjModelData("Resources/Model/tree_leaf2", modelTreeLeaf2);
+	mesh = new Mesh();
+	mesh->Create(device, cmdList, modelTreeLeaf2);
+	meshManager->Add(mesh, "Tree_Leaf2");
 
 	meshManager->Add(FbxLoader::Load("Bird", &graphicsDevice), "Player");
 	//Œø‰Ê‰¹hit_wall

@@ -9,11 +9,21 @@
 
 class FieldObjectManager
 {
-
+public:
+	static GE::Math::Vector3 StartPosition;
 private:
+	struct  obj
+	{
+		GE::Math::Vector3 pos;
+		GE::Math::Vector3 rot;
+		GE::Math::Vector3 scale;
+		GE::Color col;
+	};
 	GE::GameObjectManager* gameObjectManager = nullptr;
-	//std::vector<GE::GameObject*> nEnemies;
 	std::vector<GE::GameObject*> fieldTree;
+	GE::GameObject* startTree = nullptr;
+	GE::GameObject* nest = nullptr;
+
 public:
 	static FieldObjectManager* GetInstance();
 	FieldObjectManager() = default;
