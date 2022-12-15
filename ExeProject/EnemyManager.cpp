@@ -35,8 +35,8 @@ void EnemyManager::Start(GE::GameObjectManager* gameObjectManager)
 
 void EnemyManager::LoadPosition(const std::string& filename)
 {
-	std::vector<GE::Math::Vector3>ne;
-	std::vector<GE::Math::Vector3>be;
+	std::vector<obj>ne;
+	std::vector<obj>be;
 
 	std::ifstream file;
 	//ファイルを開く
@@ -58,18 +58,44 @@ void EnemyManager::LoadPosition(const std::string& filename)
 		getline(line_stream, key, ' ');
 
 		if (key == "normalEnemy") {
-			GE::Math::Vector3 position{};
-			line_stream >> position.x;
-			line_stream >> position.y;
-			line_stream >> position.z;
-			ne.emplace_back(position);
+			obj result;
+			line_stream >> result.pos.x;
+			line_stream >> result.pos.y;
+			line_stream >> result.pos.z;
+
+			line_stream >> result.rot.x;
+			line_stream >> result.rot.y;
+			line_stream >> result.rot.z;
+
+			line_stream >> result.scale.x;
+			line_stream >> result.scale.y;
+			line_stream >> result.scale.z;
+
+			line_stream >> result.col.r;
+			line_stream >> result.col.g;
+			line_stream >> result.col.b;
+			result.col.a = 1.0f;
+			ne.emplace_back(result);
 		}
 		else if (key == "birdEnemy") {
-			GE::Math::Vector3 position{};
-			line_stream >> position.x;
-			line_stream >> position.y;
-			line_stream >> position.z;
-			be.emplace_back(position);
+			obj result;
+			line_stream >> result.pos.x;
+			line_stream >> result.pos.y;
+			line_stream >> result.pos.z;
+
+			line_stream >> result.rot.x;
+			line_stream >> result.rot.y;
+			line_stream >> result.rot.z;
+
+			line_stream >> result.scale.x;
+			line_stream >> result.scale.y;
+			line_stream >> result.scale.z;
+
+			line_stream >> result.col.r;
+			line_stream >> result.col.g;
+			line_stream >> result.col.b;
+			result.col.a = 1.0f;
+			be.emplace_back(result);
 		}
 	}
 	file.close();
@@ -77,12 +103,16 @@ void EnemyManager::LoadPosition(const std::string& filename)
 	int index = ne.size() < nEnemies.size() ? ne.size() : nEnemies.size();
 	for (int i = 0; i < index; i++)
 	{
-		nEnemies[i]->GetTransform()->position = ne[i];
+		nEnemies[i]->GetTransform()->position = ne[i].pos;
+		//nEnemies[i]->GetComponent<FieldTree>()->rotation_euler = ft[i].rot;
+		nEnemies[i]->GetTransform()->scale = ne[i].scale;
 	}
 	index = be.size() < birdEnemies.size() ? be.size() : birdEnemies.size();
 	for (int i = 0; i < index; i++)
 	{
-		birdEnemies[i]->GetTransform()->position = be[i];
+		birdEnemies[i]->GetTransform()->position = be[i].pos;
+		//nEnemies[i]->GetComponent<FieldTree>()->rotation_euler = ft[i].rot;
+		birdEnemies[i]->GetTransform()->scale = be[i].scale;
 	}
 }
 
@@ -97,13 +127,27 @@ void EnemyManager::SaveCurrentPosition(const std::string& filename)
 	for (int i = 0; i < nEnemies.size(); i++)
 	{
 		GE::Math::Vector3 pos = nEnemies[i]->GetTransform()->position;
-		writing_file << "normalEnemy " << pos.x << " " << pos.y << " " << pos.z << std::endl;
+		GE::Math::Vector3 scale = nEnemies[i]->GetTransform()->scale;
+		GE::Math::Vector3 rota = {};//nEnemies[i]->GetComponent<Enemy>()->rotation_euler;
+		GE::Color col = nEnemies[i]->GetColor();
+
+		writing_file << "normalEnemy " << pos.x << " " << pos.y << " " << pos.z <<
+			" " << rota.x << " " << rota.y << " " << rota.z <<
+			" " << scale.x << " " << scale.y << " " << scale.z <<
+			" " << col.r << " " << col.g << " " << col.b << " " << col.a << std::endl;
 	}
-	
+
 	for (int i = 0; i < birdEnemies.size(); i++)
 	{
 		GE::Math::Vector3 pos = birdEnemies[i]->GetTransform()->position;
-		writing_file << "birdEnemy " << pos.x << " " << pos.y << " " << pos.z << std::endl;
+		GE::Math::Vector3 scale = birdEnemies[i]->GetTransform()->scale;
+		GE::Math::Vector3 rota = {};// nEnemies[i]->GetComponent<Enemy>()->rotation_euler;
+		GE::Color col = birdEnemies[i]->GetColor();
+
+		writing_file << "birdEnemy " << pos.x << " " << pos.y << " " << pos.z <<
+			" " << rota.x << " " << rota.y << " " << rota.z <<
+			" " << scale.x << " " << scale.y << " " << scale.z <<
+			" " << col.r << " " << col.g << " " << col.b << " " << col.a << std::endl;
 	}
 
 	writing_file.close();

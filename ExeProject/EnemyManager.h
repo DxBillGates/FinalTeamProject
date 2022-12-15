@@ -10,6 +10,13 @@ class EnemyManager
 {
 
 private:
+	struct  obj
+	{
+		GE::Math::Vector3 pos;
+		GE::Math::Vector3 rot;
+		GE::Math::Vector3 scale;
+		GE::Color col;
+	};
 	GE::GameObjectManager* gameObjectManager = nullptr;
 	std::vector<GE::GameObject*> nEnemies;
 	std::vector<GE::GameObject*> birdEnemies;

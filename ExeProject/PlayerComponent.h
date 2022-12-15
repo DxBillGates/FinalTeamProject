@@ -29,6 +29,8 @@ private:
 	GE::Math::Vector3 accelerometer;
 	GE::SkinMeshAnimator animator;
 
+	bool isDraw;					//体を描画するか//デバッグ中に体邪魔だったら消せ
+
 	bool isLockOnStart;				//ロックオン処理を呼ぶフラグ
 	bool isLockOn;					//ロックオンして発射待機中フラグ
 

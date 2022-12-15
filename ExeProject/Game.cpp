@@ -88,6 +88,12 @@ bool Game::LoadContents()
 	mesh = new Mesh();
 	mesh->Create(device, cmdList, modelTreeLeaf2);
 	meshManager->Add(mesh, "Tree_Leaf2");
+	
+	MeshData<Vertex_UV_Normal> modelTreeLeaf3;
+	MeshCreater::LoadObjModelData("Resources/Model/tree_leaf3", modelTreeLeaf3);
+	mesh = new Mesh();
+	mesh->Create(device, cmdList, modelTreeLeaf3);
+	meshManager->Add(mesh, "Tree_Leaf3");
 
 	meshManager->Add(FbxLoader::Load("Bird", &graphicsDevice), "Player");
 	//Œø‰Ê‰¹hit_wall

@@ -14,7 +14,7 @@
 
 float PlayerComponent::frameRate;
 
-GE::Math::Vector3 PlayerComponent::onTheTreePosition = { 0,300,0 };	//木の上で体の高さ調整用
+GE::Math::Vector3 PlayerComponent::onTheTreePosition = { 0,250,200 };	//木の上で体の高さ調整用
 int PlayerComponent::hitStopTime = 15;								// ヒットストップの長さ
 float PlayerComponent::body_direction_LerpTime = 50.0f;				//ダッシュ後体の角度の遷移
 float PlayerComponent::pushStartTime = 20.0f;						//キーを押してから操作できるようになるまでのカウント
@@ -41,6 +41,7 @@ void PlayerComponent::Awake()
 
 void PlayerComponent::Start()
 {
+	isDraw = true;
 	GE::Utility::Printf("PlayerComponent Start()\n");
 	inputDevice = GE::InputDevice::GetInstance();
 	transform->position = FieldObjectManager::StartPosition + onTheTreePosition;
@@ -119,6 +120,8 @@ void PlayerComponent::Update(float deltaTime)
 
 void PlayerComponent::Draw()
 {
+	if (!isDraw)return;
+
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
 	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
 
@@ -178,7 +181,7 @@ void PlayerComponent::OnCollision(GE::GameObject* other)
 		lockOnEnemy.object = nullptr;
 	}
 
-	if (other->GetTag() == "tree")
+	if (other->GetTag() == "nest")
 	{
 		if (statas == PlayerStatas::STAY_TREE || statas == PlayerStatas::GO_TREE)
 		{
@@ -254,6 +257,7 @@ void PlayerComponent::OnGui()
 	if (joycon == nullptr)return;
 	GE::Math::Vector2 value = { (float)joycon->GetStick().x,(float)joycon->GetStick().y };
 	ImGui::InputFloat2("joyStick", value.value);
+	ImGui::Checkbox("IsDraw", &isDraw);
 }
 bool PlayerComponent::IsSpeedy()
 {

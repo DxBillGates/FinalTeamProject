@@ -21,11 +21,8 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 
 	//スタートの止まり木
 	{
-		auto* object = gameObjectManager->AddGameObject(new GE::GameObject("Tree", "tree"));
+		auto* object = gameObjectManager->AddGameObject(new GE::GameObject("StartTree", "StartTree"));
 		auto* sampleComponent = object->AddComponent<StartTree>();
-		auto* collider = object->AddComponent < GE::SphereCollider >();
-		collider->SetCenter({ 0,0,0 });
-		collider->SetSize({ 10 });
 		startTree = object;
 	}
 	//壁仮
@@ -46,6 +43,9 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 		object->GetComponent<FieldObject>()->shaderName = "DefaultMeshShader";
 		object->SetColor(GE::Color(0.8f, 0.6f, 0.6f, 1.f));
 		object->GetTransform()->scale = { 200,300,200 };
+		auto* collider = object->AddComponent < GE::SphereCollider >();
+		collider->SetCenter({ 0,0,0 });
+		collider->SetSize({ 10 });
 		nest = object;
 	}
 	//通常の木
@@ -73,7 +73,7 @@ void FieldObjectManager::SetGroundMesh(GE::MeshData<GE::Vertex_UV_Normal> mesh)
 	object->SetColor(GE::Color(0.5f, 0.9f, 0.5f, 1.0f));
 	object->GetTransform()->position = { 1000,0,-15000 };
 	object->GetTransform()->scale = { 2 };
-	//object->GetTransform()->rotation = GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), -5.0f);
+	object->GetTransform()->rotation = GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), -5.0f);
 }
 
 void FieldObjectManager::LoadPosition(const std::string& filename)
