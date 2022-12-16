@@ -45,7 +45,7 @@ void PlayerComponent::Start()
 	inputDevice = GE::InputDevice::GetInstance();
 	transform->position = StartTree::position + onTheTreePosition;
 	transform->scale = { 10,10,10 };
-
+	
 	statas = PlayerStatas::STAY_TREE;
 
 	body_direction = { 0,0,0 };
