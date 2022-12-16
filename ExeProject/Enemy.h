@@ -27,6 +27,8 @@ public:
 	virtual void LateDraw() override;
 	virtual void OnCollision(GE::GameObject* other) override;
 	virtual void OnCollision(GE::ICollider* hitCollider) override;
+	virtual void OnCollisionEnter(GE::GameObject* other)override;
+
 	virtual void OnGui() override;
 
 };

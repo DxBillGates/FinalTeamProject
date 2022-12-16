@@ -7,6 +7,7 @@
 
 #include"BirdEnemy.h"
 #include"PlayerComponent.h"
+#include"TimeLimit.h"
 
 BirdEnemy::BirdEnemy()
 {
@@ -71,19 +72,25 @@ void BirdEnemy::LateDraw()
 void BirdEnemy::OnCollision(GE::GameObject* other)
 {
 	GE::Utility::Printf("BirdEnemy OnCollision(GameObject* other) : hit\n");
-	if (statas == Statas::ALIVE)
-	{
-		if (PlayerComponent::IsSpeedy())//ˆê’èã‚Ì‘¬“x
-		{
-			statas = Statas::DEAD;
-			gameObject->Destroy();
-		}
-	}
+	
 }
 
 void BirdEnemy::OnCollision(GE::ICollider* hitCollider)
 {
 	GE::Utility::Printf("BirdEnemy OnCollision(ICollider* other) : hit\n");
+}
+
+void BirdEnemy::OnCollisionEnter(GE::GameObject* other)
+{
+	if (statas == Statas::ALIVE)
+	{
+		if (PlayerComponent::IsSpeedy())//ˆê’èã‚Ì‘¬“x
+		{
+			TimeLimit::GetInstance()->AddSeconds(10);
+			statas = Statas::DEAD;
+			gameObject->Destroy();
+		}
+	}
 }
 
 void BirdEnemy::OnGui()

@@ -49,7 +49,7 @@ public:
 
 	void Start(GE::GameObjectManager* gameObjectManager);
 	void Update();
-	void PlusTimer(const int& seconds);//時間追加したいときに呼ぶ関数
+	void AddSeconds(const int& seconds);//時間追加したいときに呼ぶ関数
 
 	const int& GetMinutes() { return minutes; }//分数のゲット関数
 	const int& GetTenSeconds() { return tenSeconds; }//秒数のゲット関数(十の位)

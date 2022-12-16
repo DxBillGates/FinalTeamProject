@@ -45,7 +45,7 @@ void TimeLimit::Update()
 	}
 }
 
-void TimeLimit::PlusTimer(const int& seconds)
+void TimeLimit::AddSeconds(const int& seconds)
 {
 	timer += seconds * frameRate;
 }
