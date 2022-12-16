@@ -45,7 +45,7 @@ void PlayerComponent::Start()
 	isDraw = true;
 	GE::Utility::Printf("PlayerComponent Start()\n");
 	inputDevice = GE::InputDevice::GetInstance();
-	transform->position = FieldObjectManager::StartPosition + onTheTreePosition;
+	transform->position = FieldObjectManager::GetInstance()->StartPosition + onTheTreePosition;
 	transform->scale = { 10,10,10 };
 
 	statas = PlayerStatas::STAY_TREE;
@@ -269,7 +269,7 @@ bool PlayerComponent::IsSpeedy()
 }
 void PlayerComponent::Control(float deltaTime)
 {
-	const float distance = abs(GE::Math::Vector3::Distance(transform->position, FieldObjectManager::StartPosition));
+	const float distance = abs(GE::Math::Vector3::Distance(transform->position, FieldObjectManager::GetInstance()->StartPosition));
 	if (statas != PlayerStatas::CRASH)
 	{
 		if (worldRadius < distance)
@@ -334,7 +334,7 @@ void PlayerComponent::Control(float deltaTime)
 		if (stayLandLerpEasingCount < stayLandLerpTime)
 		{
 			stayLandLerpEasingCount += deltaTime * GE::GameSetting::Time::GetGameTime();
-			transform->position = GE::Math::Vector3::Lerp(currentPosition, FieldObjectManager::StartPosition + onTheTreePosition, stayLandLerpEasingCount / stayLandLerpTime);
+			transform->position = GE::Math::Vector3::Lerp(currentPosition, FieldObjectManager::GetInstance()->StartPosition + onTheTreePosition, stayLandLerpEasingCount / stayLandLerpTime);
 		}
 		else
 		{
@@ -352,7 +352,7 @@ void PlayerComponent::Control(float deltaTime)
 	case PlayerComponent::PlayerStatas::STAY_TREE:
 		if (startCouunt == 0.0f)
 		{
-			transform->position = FieldObjectManager::StartPosition + onTheTreePosition;
+			transform->position = FieldObjectManager::GetInstance()->StartPosition + onTheTreePosition;
 			if (InputManager::GetInstance()->GetActionButton())
 			{
 				Title::GetInstance()->states = Title::States::serectNum;

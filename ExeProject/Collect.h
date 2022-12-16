@@ -42,7 +42,6 @@ public:
 	std::string tag;
 public:
 	static Collect* GetInstance();
-	Collect();
 
 	void Start(GE::GameObjectManager* gameObjectManager);
 	void Update(const int& count, const int& goalCollect);
@@ -52,5 +51,12 @@ public:
 
 	//テクスチャ生成
 	void Create(const std::string& gui_tag, const std::string& tex_tag, GE::GameObjectManager* gameObjectManager, float posX, float scaleX, int collectNum);
+private:
+	Collect() = default;
+	~Collect() = default;
+
+	// 代入、コピーの禁止
+	void operator=(const Collect& obj) = delete;
+	Collect(const Collect& obj) = delete;
 };
 
