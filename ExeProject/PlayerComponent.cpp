@@ -99,6 +99,7 @@ void PlayerComponent::Update(float deltaTime)
 	if (statas != PlayerStatas::DEBUG)
 	{
 		CameraControl::GetInstance()->Update();
+
 	}
 	if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::LCONTROL))
 	{
