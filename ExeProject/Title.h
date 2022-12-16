@@ -57,14 +57,15 @@ public:
 
 	float alpha = 0.0f;
 private:
+	Title() = default;
+	~Title() = default;
+	void operator=(const Title & obj) = delete;
+	Title(const Title & obj) = delete;
+
 	//テクスチャ生成
 	void Create(std::string gui_tag, std::string tex_tag, GE::GameObjectManager* gameObjectManager, GE::IGraphicsDeviceDx12* device);
 public:
 	static Title* GetInstance();
-	Title() = default;
-	~Title() = default;
-	void operator=(const Title& obj) = delete;
-	Title(const Title& obj) = delete;
 
 	//選択
 	void Select();
