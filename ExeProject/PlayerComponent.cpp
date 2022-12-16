@@ -308,14 +308,14 @@ void PlayerComponent::Control(float deltaTime)
 	case PlayerComponent::PlayerStatas::CRASH:
 		//ダッシュから切り替わった時用初期化
 		current_speed = normal_speed;
-
-		body_direction = {};
+		//体のオイラー角を取得してセット
+		body_direction = transform->rotation.Euler();
 		//移動
 		transform->position += transform->GetForward() * current_speed * deltaTime * GE::GameSetting::Time::GetGameTime();
 
 		if (InputManager::GetInstance()->GetActionButton())
 		{
-			animator.PlayAnimation(2, false);
+			animator.PlayAnimation(0, false);
 			statas = PlayerStatas::MOVE;
 			audioManager->Use("flapping1")->Start();
 		}
@@ -392,6 +392,17 @@ void PlayerComponent::Control(float deltaTime)
 	}
 	if (statas != PlayerStatas::CRASH)
 	{
+		GE::Math::Quaternion BODY_DIRECTION =
+			GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), body_direction.y)
+			* GE::Math::Quaternion(GE::Math::Vector3(0, 0, 1), body_direction.z)
+			* GE::Math::Quaternion(GE::Math::Vector3(1, 0, 0), body_direction.x);
+		//ダッシュ後体の角度の遷移
+		if (body_direction_LerpCount < body_direction_LerpTime)
+		{
+			body_direction_LerpCount += 1 * GE::GameSetting::Time::GetGameTime();
+			transform->rotation = GE::Math::Quaternion::Lerp(body_direction_LockOn, BODY_DIRECTION, body_direction_LerpCount / body_direction_LerpTime);
+		}
+		else { transform->rotation = BODY_DIRECTION; }
 		//キーボードで移動操作
 		KeyboardMoveControl(deltaTime);
 	}
@@ -400,25 +411,28 @@ void PlayerComponent::KeyboardMoveControl(float deltaTime)
 {
 	GE::Math::Vector3 inputAxis = InputManager::GetInstance()->GetAxis(0, InputManager::InputCtrlAxisState::STICK);
 
-	GE::Math::Vector3 rota = GE::Math::Vector3(0.01, 0.005, 0.006);// *inputAxis* deltaTime* GE::GameSetting::Time::GetGameTime();
+	GE::Math::Vector3 rota = GE::Math::Vector3(0.01 * inputAxis.x, 0.005 * inputAxis.y, 0.006 * inputAxis.x) * deltaTime * GE::GameSetting::Time::GetGameTime();
 	if (inputAxis.x != 0)
 	{
-		body_direction.x += inputAxis.x * deltaTime * GE::GameSetting::Time::GetGameTime();
+		body_direction.y += rota.x;
+		body_direction.z -= rota.z;
+
+		body_direction.z = abs(body_direction.z) > 0.3f ? 0.3f * ((body_direction.z > 0) ? 1 : -1) : body_direction.z;
 	}
 	else
 	{
+		abs(body_direction.z) < 0.005 ? body_direction.z = 0 : body_direction.z > 0.0 ? body_direction.z -= 0.005 * GE::GameSetting::Time::GetGameTime() : body_direction.z += 0.005 * GE::GameSetting::Time::GetGameTime();
 	}
 
 	if (inputAxis.y != 0)
 	{
-		body_direction.y += inputAxis.y * deltaTime * GE::GameSetting::Time::GetGameTime();
+		body_direction.x -= rota.y;
+		body_direction.x = abs(body_direction.x) > 1.57f ? 1.57f * ((body_direction.x > 0) ? 1 : -1) : body_direction.x;
 	}
 	else
 	{
-
+		abs(body_direction.x) < 0.01 ? body_direction.x = 0 : body_direction.x > 0.0 ? body_direction.x -= 0.01 * GE::GameSetting::Time::GetGameTime() : body_direction.x += 0.01 * GE::GameSetting::Time::GetGameTime();
 	}
-	//transform->rotation *= GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), rota.x) * GE::Math::Quaternion(GE::Math::Vector3(1, 0, 0), -rota.y);
-	transform->rotation = GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), rota.x * body_direction.x) * GE::Math::Quaternion(GE::Math::Vector3(1, 0, 0), -rota.y * body_direction.y);
 	//// ジョイコン操作中の際の姿勢制御
 	//GE::Joycon* joycon = inputDevice->GetJoyconL();
 	//if (joycon == nullptr)return;

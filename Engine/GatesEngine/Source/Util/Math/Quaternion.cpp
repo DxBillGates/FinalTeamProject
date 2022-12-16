@@ -179,9 +179,9 @@ Vector3 GE::Math::Quaternion::Euler()
 		angle.z = std::atan2f(matrix._21, matrix._11);
 	}
 
-	angle.x = ConvertToAngle(angle.x);
+	/*angle.x = ConvertToAngle(angle.x);
 	angle.y = ConvertToAngle(angle.y);
-	angle.z = ConvertToAngle(angle.z);
+	angle.z = ConvertToAngle(angle.z);*/
 
 	return angle;
 }
