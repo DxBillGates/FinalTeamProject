@@ -399,9 +399,10 @@ void PlayerComponent::KeyboardMoveControl(float deltaTime)
 {
 	GE::Math::Vector3 inputAxis = InputManager::GetInstance()->GetAxis(0, InputManager::InputCtrlAxisState::STICK);
 
-	GE::Math::Vector3 rota = GE::Math::Vector3(0.01, 0.005, 0.006) * inputAxis * deltaTime * GE::GameSetting::Time::GetGameTime();
+	GE::Math::Vector3 rota = GE::Math::Vector3(0.01, 0.005, 0.006);// *inputAxis* deltaTime* GE::GameSetting::Time::GetGameTime();
 	if (inputAxis.x != 0)
 	{
+		body_direction.x += inputAxis.x * deltaTime * GE::GameSetting::Time::GetGameTime();
 	}
 	else
 	{
@@ -409,11 +410,14 @@ void PlayerComponent::KeyboardMoveControl(float deltaTime)
 
 	if (inputAxis.y != 0)
 	{
+		body_direction.y += inputAxis.y * deltaTime * GE::GameSetting::Time::GetGameTime();
 	}
 	else
 	{
+
 	}
-	transform->rotation *= GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), rota.x) * GE::Math::Quaternion(GE::Math::Vector3(1, 0, 0), -rota.y);
+	//transform->rotation *= GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), rota.x) * GE::Math::Quaternion(GE::Math::Vector3(1, 0, 0), -rota.y);
+	transform->rotation = GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), rota.x * body_direction.x) * GE::Math::Quaternion(GE::Math::Vector3(1, 0, 0), -rota.y * body_direction.y);
 	//// ƒWƒ‡ƒCƒRƒ“‘€ì’†‚ÌÛ‚ÌŽp¨§Œä
 	//GE::Joycon* joycon = inputDevice->GetJoyconL();
 	//if (joycon == nullptr)return;
