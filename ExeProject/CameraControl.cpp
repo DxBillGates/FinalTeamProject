@@ -32,6 +32,7 @@ void CameraControl::Update()
 {
 	//ターゲトポジションセット
 	target = targetObject->GetTransform()->position;
+
 	//体の角度計算
 	if (abs(targetObject->GetTransform()->GetForward().y) < 0.6)
 	{

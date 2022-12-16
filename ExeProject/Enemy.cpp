@@ -39,6 +39,11 @@ void Enemy::OnCollision(GE::ICollider* hitCollider)
 {
 }
 
+void Enemy::OnCollisionEnter(GE::GameObject* other)
+{
+
+}
+
 void Enemy::OnGui()
 {
 }

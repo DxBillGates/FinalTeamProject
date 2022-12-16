@@ -16,7 +16,7 @@ TimeLimit::TimeLimit()
 
 void TimeLimit::Start(GE::GameObjectManager* gameObjectManager)
 {
-	timer = 3;//§ŒÀŠÔ(•ªw’è)
+	timer = 1;//§ŒÀŠÔ(•ªw’è)
 	timer = timer * 60 * frameRate;//•ª”‚ğ•b”‚É’¼‚µ‚Ä144fps‚©‚¯‚é
 	minutes = timer / frameRate / 60;//•ª”‚ÌŒvZ
 	tenSeconds = timer / frameRate % 60 / 10;//•b”‚ÌŒvZ(\‚ÌˆÊ)
@@ -43,6 +43,11 @@ void TimeLimit::Update()
 		tenSeconds = timer / frameRate % 60 / 10;//•b”‚ÌŒvZ(\‚ÌˆÊ)
 		oneSeconds = timer / frameRate % 60 % 10;//•b”‚ÌŒvZ(ˆê‚ÌˆÊ)
 	}
+}
+
+void TimeLimit::AddSeconds(const int& seconds)
+{
+	timer += seconds * frameRate;
 }
 
 void TimeLimit::Create(const std::string& gui_tag, const std::string& tex_tag, GE::GameObjectManager* gameObjectManager, float posX, float scaleX, int timeNum)
