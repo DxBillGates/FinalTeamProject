@@ -62,6 +62,7 @@ void SampleScene::Update(float deltaTime)
 	collisionManager.Update();
 	Title::GetInstance()->Update();
 	TimeLimit::GetInstance()->Update();
+	//TimeLimit::GetInstance()->PlusTimer(1);
 	Collect::GetInstance()->Update(StartTree::collectCount,StartTree::goalCollect);
 
 	//ƒNƒŠƒAˆÈ~ğŒ
