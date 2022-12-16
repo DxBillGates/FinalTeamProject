@@ -109,12 +109,23 @@ namespace GE
 			Matrix4x4 Rotation();
 
 			/// <summary>
+			/// クォータニオンからオイラー角に変換する
+			/// </summary>
+			/// <returns></returns>
+			Vector3 Euler();
+
+			/// <summary>
 			/// クォータニオンの軸を返す関数
 			/// </summary>
 			/// <param name="q">クォータニオン</param>
 			/// <returns>軸ベクトル</returns>
 			static Vector3 GetAxis(const Quaternion& q);
 
+			/// <summary>
+			/// オイラー角からクォータニオンを計算する
+			/// </summary>
+			/// <param name="angle"></param>
+			/// <returns></returns>
 			static Quaternion Euler(const Math::Vector3& angle);
 
 			Quaternion operator+();

@@ -155,6 +155,37 @@ Matrix4x4 GE::Math::Quaternion::Rotation()
 	return Quaternion::Rotation(*this);
 }
 
+Vector3 GE::Math::Quaternion::Euler()
+{
+	Matrix4x4 matrix = this->Rotation();
+	Vector3 angle;
+
+	if (matrix._32 != 1)
+	{
+		angle.x = std::asinf(-matrix._32);
+		angle.y = std::atan2f(matrix._31, matrix._33);
+		angle.z = std::atan2f(matrix._12, matrix._22);
+	}
+	else if (matrix._32 == 1)
+	{
+		angle.x = PI / 2;
+		angle.y = 0;
+		angle.z = std::atan2f(matrix._21, matrix._11);
+	}
+	else if (matrix._32 == -1)
+	{
+		angle.x = -PI / 2;
+		angle.y = 0;
+		angle.z = std::atan2f(matrix._21, matrix._11);
+	}
+
+	angle.x = ConvertToAngle(angle.x);
+	angle.y = ConvertToAngle(angle.y);
+	angle.z = ConvertToAngle(angle.z);
+
+	return angle;
+}
+
 Vector3 GE::Math::Quaternion::GetAxis(const Quaternion& q)
 {
 	Vector3 result;

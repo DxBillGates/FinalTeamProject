@@ -24,6 +24,8 @@ namespace GE
 		/// <returns>ƒ‰ƒWƒAƒ“</returns>
 		float ConvertToRadian(float value);
 
+		float ConvertToAngle(float value);
+
 		/// <summary>
 		/// üŒ`•âŠÔŠÖ”
 		/// </summary>

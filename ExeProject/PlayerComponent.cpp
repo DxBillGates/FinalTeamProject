@@ -252,6 +252,7 @@ void PlayerComponent::OnGui()
 	ImGui::DragFloat3("GyroVector", gyro.value, dragSpeed, -1, 1);
 	ImGui::InputFloat4("quat", quat.value);
 	ImGui::InputFloat3("accelerometer", accelerometer.value);
+	ImGui::InputFloat3("angle", transform->rotation.Euler().value);
 
 	GE::Math::Vector3 inputAxis = InputManager::GetInstance()->GetAxis();
 	ImGui::InputFloat3("inputAxis", inputAxis.value);
