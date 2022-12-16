@@ -11,6 +11,7 @@
 #include "CameraControl.h"
 #include "FieldObjectManager.h"
 #include "Title.h"
+#include "TimeLimit.h"
 
 float PlayerComponent::frameRate;
 
@@ -75,7 +76,7 @@ void PlayerComponent::Start()
 void PlayerComponent::Update(float deltaTime)
 {
 	frameRate = 1.0f / deltaTime;
-
+	const float f = 144.0f / frameRate;
 	//testBGM->Start();
 	InputManager::GetInstance()->Update();
 	const auto& cameraInfo = graphicsDevice->GetMainCamera()->GetCameraInfo();
@@ -87,37 +88,34 @@ void PlayerComponent::Update(float deltaTime)
 		if (hitStopCount < hitStopTime)
 		{
 			GE::GameSetting::Time::SetGameTime(0.01);
-			hitStopCount++;
+			hitStopCount += 1;
 		}
 		else { GE::GameSetting::Time::SetGameTime(1.0); }
 	}
 
 	//操作
-	Control(144.0f / frameRate);
+	Control(f);
 	CameraControl::GetInstance()->SetTargetObject(gameObject);
 	if (statas != PlayerStatas::DEBUG)
 	{
 		CameraControl::GetInstance()->Update();
 	}
-	//D0押したら移動停止＊デバッグ用
-	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::AT))
+	if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::LCONTROL))
 	{
-		statas != PlayerStatas::DEBUG ? statas = PlayerStatas::DEBUG : statas = PlayerStatas::MOVE;
-	}
-	//めり込んだらD9キーで木に強制送還
-	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::YEN))
-	{
-		stayLandLerpEasingCount = 0.0f;
-		currentPosition = transform->position;
-		statas = PlayerStatas::GO_TREE;
+		//D0押したら移動停止＊デバッグ用
+		if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::D0))
+		{
+			statas != PlayerStatas::DEBUG ? statas = PlayerStatas::DEBUG : statas = PlayerStatas::MOVE;
+		}
+		//めり込んだらD9キーで木に強制送還
+		if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::D9))
+		{
+			stayLandLerpEasingCount = 0.0f;
+			currentPosition = transform->position;
+			statas = PlayerStatas::GO_TREE;
+		}
 	}
 	animator.Update(deltaTime);
-
-	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::P))
-	{
-		//収集物 +1
-		StartTree::collectCount += 1;
-	}
 }
 
 void PlayerComponent::Draw()
@@ -345,6 +343,7 @@ void PlayerComponent::Control(float deltaTime)
 			animator.PlayAnimation(3, false);
 			//収集物お持ち帰り
 			StartTree::collectCount += collectCount;
+			TimeLimit::GetInstance()->AddSeconds(10 * collectCount);
 			collectCount = 0;
 			//着陸
 			statas = PlayerStatas::STAY_TREE;
@@ -451,7 +450,7 @@ void PlayerComponent::KeyboardMoveControl(float deltaTime)
 
 	GE::Math::Vector3 bodyDirectionMax;
 	bodyDirectionMax = { 1.0f,100000,0.75f };
-	//body_direction = GE::Math::Vector3::Min(-bodyDirectionMax, GE::Math::Vector3::Max(bodyDirectionMax, body_direction));
+	body_direction = GE::Math::Vector3::Min(-bodyDirectionMax, GE::Math::Vector3::Max(bodyDirectionMax, body_direction));
 }
 
 void PlayerComponent::SearchNearEnemy()
