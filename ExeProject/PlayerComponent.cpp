@@ -176,11 +176,6 @@ void PlayerComponent::OnCollision(GE::GameObject* other)
 {
 	//GE::Utility::Printf("PlayerComponent OnCollision(GameObject* other) : hit\n");
 
-	if (other == lockOnEnemy.object)
-	{
-		lockOnEnemy.object = nullptr;
-	}
-
 	if (other->GetTag() == "nest")
 	{
 		if (statas == PlayerStatas::STAY_TREE || statas == PlayerStatas::GO_TREE)
@@ -223,6 +218,10 @@ void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 		}
 		else
 		{
+			if (other == lockOnEnemy.object)
+			{
+				lockOnEnemy.object = nullptr;
+			}
 			audioManager->Use("catch2")->Start();
 			//ûW•¨ +1
 			collectCount < collectMax ? collectCount++ : 0;

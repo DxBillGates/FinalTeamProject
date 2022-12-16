@@ -2,6 +2,7 @@
 #include <GatesEngine/Header/GameFramework/Component/Component.h>
 #include <GatesEngine/Header\GameFramework/GameSetting.h>
 #include"PlayerComponent.h"
+#include"TimeLimit.h"
 
 class Enemy : public GE::Component
 {

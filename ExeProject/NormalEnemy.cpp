@@ -87,6 +87,7 @@ void NormalEnemy::OnCollision(GE::GameObject* other)
 	{
 		if (PlayerComponent::IsSpeedy())//ˆê’èã‚Ì‘¬“x
 		{
+			TimeLimit::GetInstance()->AddSeconds(10);
 			statas = Statas::DEAD;
 			gameObject->Destroy();
 		}

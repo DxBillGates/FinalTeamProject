@@ -7,7 +7,6 @@
 
 #include"BirdEnemy.h"
 #include"PlayerComponent.h"
-#include"TimeLimit.h"
 
 BirdEnemy::BirdEnemy()
 {
