@@ -155,7 +155,7 @@ Matrix4x4 GE::Math::Quaternion::Rotation()
 	return Quaternion::Rotation(*this);
 }
 
-Vector3 GE::Math::Quaternion::Euler()
+Vector3 GE::Math::Quaternion::EulerRadian()
 {
 	Matrix4x4 matrix = this->Rotation();
 	Vector3 angle;
@@ -178,6 +178,13 @@ Vector3 GE::Math::Quaternion::Euler()
 		angle.y = 0;
 		angle.z = std::atan2f(matrix._21, matrix._11);
 	}
+
+	return angle;
+}
+
+Vector3 GE::Math::Quaternion::EulerAngle()
+{
+	Vector3 angle = EulerRadian();
 
 	angle.x = ConvertToAngle(angle.x);
 	angle.y = ConvertToAngle(angle.y);

@@ -250,7 +250,6 @@ void PlayerComponent::OnGui()
 	ImGui::DragFloat3("GyroVector", gyro.value, dragSpeed, -1, 1);
 	ImGui::InputFloat4("quat", quat.value);
 	ImGui::InputFloat3("accelerometer", accelerometer.value);
-	ImGui::InputFloat3("angle", transform->rotation.Euler().value);
 
 	GE::Math::Vector3 inputAxis = InputManager::GetInstance()->GetAxis();
 	ImGui::InputFloat3("inputAxis", inputAxis.value);
@@ -307,7 +306,7 @@ void PlayerComponent::Control(float deltaTime)
 		//ダッシュから切り替わった時用初期化
 		current_speed = normal_speed;
 		//体のオイラー角を取得してセット
-		body_direction = transform->rotation.Euler();
+		body_direction = transform->rotation.EulerRadian();
 		//移動
 		transform->position += transform->GetForward() * current_speed * deltaTime * GE::GameSetting::Time::GetGameTime();
 

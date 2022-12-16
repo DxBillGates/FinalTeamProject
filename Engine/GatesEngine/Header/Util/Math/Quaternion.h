@@ -112,7 +112,9 @@ namespace GE
 			/// クォータニオンからオイラー角に変換する
 			/// </summary>
 			/// <returns></returns>
-			Vector3 Euler();
+			Vector3 EulerRadian();
+
+			Vector3 EulerAngle();
 
 			/// <summary>
 			/// クォータニオンの軸を返す関数
