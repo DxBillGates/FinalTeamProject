@@ -9,7 +9,7 @@ namespace GE
 	class AudioManager
 	{
 	private:
-		std::map<std::string,Audio*> audios;
+		std::map<std::string,std::vector<Audio*>> audios;
 		std::map <std::string, AudioData*> backupAudioDatas;
 	public:
 		AudioManager();

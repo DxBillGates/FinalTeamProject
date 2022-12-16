@@ -10,9 +10,12 @@ GE::AudioManager::AudioManager()
 
 GE::AudioManager::~AudioManager()
 {
-	for (auto& audio : audios)
+	for (auto& tagAudios : audios)
 	{
-		delete audio.second;
+		for (auto& audio : tagAudios.second)
+		{
+			delete audio;
+		}
 	}
 
 	for (auto& audioData : backupAudioDatas)
@@ -25,7 +28,7 @@ GE::AudioManager::~AudioManager()
 
 GE::Audio* GE::AudioManager::AddAudio(Audio * newAudio)
 {
-	audios.insert(std::make_pair(newAudio->GetTag(), newAudio));
+	audios[newAudio->GetTag()].emplace_back(newAudio);
 	return newAudio;
 }
 
@@ -42,5 +45,21 @@ GE::AudioData* GE::AudioManager::GetAudioData(std::string& tag)
 
 GE::Audio * GE::AudioManager::Use(const std::string& tag)
 {
-	return audios.at(tag);
+	// そもそもそのタグでオーディオが作られてないからnullptrを返す
+	if (audios.find(tag) == audios.end())return nullptr;
+
+	int audioCount = (int)audios[tag].size();
+
+	if (audioCount == 1)return audios[tag][0];
+
+	// そのタグで複数作られているなら再生されていない音を返す
+	for (auto& audio : audios[tag])
+	{
+		if (audio->GetIsPlay() == true)continue;
+
+		// 再生されてない音を取得
+		return audio;
+	}
+
+	return nullptr;
 }
