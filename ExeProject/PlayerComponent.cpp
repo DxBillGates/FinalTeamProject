@@ -340,6 +340,7 @@ void PlayerComponent::Control(float deltaTime)
 		}
 		else
 		{
+
 			startCouunt = 0.0f;
 			//stayアニメーション
 			animator.PlayAnimation(3, false);
