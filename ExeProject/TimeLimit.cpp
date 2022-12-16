@@ -10,9 +10,6 @@ TimeLimit* TimeLimit::GetInstance()
 	return &instance;
 }
 
-TimeLimit::TimeLimit()
-{
-}
 
 void TimeLimit::Start(GE::GameObjectManager* gameObjectManager)
 {

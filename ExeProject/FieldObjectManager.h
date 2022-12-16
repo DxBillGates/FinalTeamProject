@@ -26,10 +26,6 @@ private:
 
 public:
 	static FieldObjectManager* GetInstance();
-	FieldObjectManager() = default;
-	~FieldObjectManager() = default;
-	void operator=(const FieldObjectManager& obj) = delete;
-	FieldObjectManager(const FieldObjectManager& obj) = delete;
 	void Start(GE::GameObjectManager* gameObjectManager);
 	void SetGroundMesh(GE::MeshData<GE::Vertex_UV_Normal> mesh);
 	//ファイルに保存されている座標取得
@@ -38,6 +34,11 @@ public:
 	void SaveCurrentPosition(const std::string& filename);
 
 	void UnLoad();
+private:
+	FieldObjectManager() = default;
 
+	~FieldObjectManager() = default;
+	void operator=(const FieldObjectManager& obj) = delete;
+	FieldObjectManager(const FieldObjectManager& obj) = delete;
 };
 

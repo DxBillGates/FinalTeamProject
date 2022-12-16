@@ -8,6 +8,13 @@ float GE::Math::ConvertToRadian(float value)
 	return result;
 }
 
+float GE::Math::ConvertToAngle(float value)
+{
+	if (value == 0)return 0;
+	float result = 180.0f * value / PI;
+	return result;
+}
+
 float GE::Math::Lerp(float s, float e, float t)
 {
 	if (t >= 1)t = 1;

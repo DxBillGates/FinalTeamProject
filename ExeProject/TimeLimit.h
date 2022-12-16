@@ -45,8 +45,6 @@ public:
 	std::string tag;
 public:
 	static TimeLimit* GetInstance();
-	TimeLimit();
-
 	void Start(GE::GameObjectManager* gameObjectManager);
 	void Update();
 	void AddSeconds(const int& seconds);//時間追加したいときに呼ぶ関数
@@ -58,5 +56,12 @@ public:
 
 	//テクスチャ生成
 	void Create(const std::string& gui_tag, const std::string& tex_tag, GE::GameObjectManager* gameObjectManager, float posX, float scaleX, int timeNum);
+private:
+	TimeLimit() = default;
+	~TimeLimit() = default;
+
+	// 代入、コピーの禁止
+	void operator=(const TimeLimit& obj) = delete;
+	TimeLimit(const TimeLimit& obj) = delete;
 };
 

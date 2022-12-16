@@ -10,10 +10,6 @@ Collect* Collect::GetInstance()
 	return &instance;
 }
 
-Collect::Collect()
-{
-}
-
 void Collect::Start(GE::GameObjectManager* gameObjectManager)
 {
 	collectCount = 0;//ûW•¨

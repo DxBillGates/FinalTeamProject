@@ -23,10 +23,6 @@ private:
 
 public:
 	static EnemyManager* GetInstance();
-	EnemyManager() = default;
-	~EnemyManager() = default;
-	void operator=(const EnemyManager& obj) = delete;
-	EnemyManager(const EnemyManager& obj) = delete;
 	void Start(GE::GameObjectManager* gameObjectManager);
 	//ファイルに保存されている座標取得
 	void LoadPosition(const std::string& filename);
@@ -37,5 +33,10 @@ public:
 	std::vector<GE::GameObject*> GetNormalEnemies() { return nEnemies; }
 	std::vector<GE::GameObject*> GetBirdEnemies() { return birdEnemies; }
 	std::vector<GE::GameObject*> GetAllEnemies();
+private:
+	EnemyManager() = default;
+	~EnemyManager() = default;
+	void operator=(const EnemyManager& obj) = delete;
+	EnemyManager(const EnemyManager& obj) = delete;
 };
 

@@ -11,6 +11,7 @@
 #include "CameraControl.h"
 #include "FieldObjectManager.h"
 #include "Title.h"
+#include "TimeLimit.h"
 
 float PlayerComponent::frameRate;
 
@@ -44,7 +45,7 @@ void PlayerComponent::Start()
 	isDraw = true;
 	GE::Utility::Printf("PlayerComponent Start()\n");
 	inputDevice = GE::InputDevice::GetInstance();
-	transform->position = FieldObjectManager::StartPosition + onTheTreePosition;
+	transform->position = FieldObjectManager::GetInstance()->StartPosition + onTheTreePosition;
 	transform->scale = { 10,10,10 };
 
 	statas = PlayerStatas::STAY_TREE;
@@ -75,7 +76,7 @@ void PlayerComponent::Start()
 void PlayerComponent::Update(float deltaTime)
 {
 	frameRate = 1.0f / deltaTime;
-
+	const float f = 144.0f / frameRate;
 	//testBGM->Start();
 	InputManager::GetInstance()->Update();
 	const auto& cameraInfo = graphicsDevice->GetMainCamera()->GetCameraInfo();
@@ -87,35 +88,35 @@ void PlayerComponent::Update(float deltaTime)
 		if (hitStopCount < hitStopTime)
 		{
 			GE::GameSetting::Time::SetGameTime(0.01);
-			hitStopCount++;
+			hitStopCount += 1;
 		}
 		else { GE::GameSetting::Time::SetGameTime(1.0); }
 	}
 
 	//操作
-	Control(144.0f / frameRate);
+	Control(f);
 	CameraControl::GetInstance()->SetTargetObject(gameObject);
-	CameraControl::GetInstance()->Update();
+	if (statas != PlayerStatas::DEBUG)
+	{
+		CameraControl::GetInstance()->Update();
 
-	//D0押したら移動停止＊デバッグ用
-	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::AT))
-	{
-		statas != PlayerStatas::DEBUG ? statas = PlayerStatas::DEBUG : statas = PlayerStatas::MOVE;
 	}
-	//めり込んだらD9キーで木に強制送還
-	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::MINUS))
+	if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::LCONTROL))
 	{
-		stayLandLerpEasingCount = 0.0f;
-		currentPosition = transform->position;
-		statas = PlayerStatas::GO_TREE;
+		//D0押したら移動停止＊デバッグ用
+		if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::D0))
+		{
+			statas != PlayerStatas::DEBUG ? statas = PlayerStatas::DEBUG : statas = PlayerStatas::MOVE;
+		}
+		//めり込んだらD9キーで木に強制送還
+		if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::D9))
+		{
+			stayLandLerpEasingCount = 0.0f;
+			currentPosition = transform->position;
+			statas = PlayerStatas::GO_TREE;
+		}
 	}
 	animator.Update(deltaTime);
-
-	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::P))
-	{
-		//収集物 +1
-		StartTree::collectCount += 1;
-	}
 }
 
 void PlayerComponent::Draw()
@@ -249,6 +250,7 @@ void PlayerComponent::OnGui()
 	ImGui::DragFloat3("GyroVector", gyro.value, dragSpeed, -1, 1);
 	ImGui::InputFloat4("quat", quat.value);
 	ImGui::InputFloat3("accelerometer", accelerometer.value);
+	ImGui::InputFloat3("angle", transform->rotation.Euler().value);
 
 	GE::Math::Vector3 inputAxis = InputManager::GetInstance()->GetAxis();
 	ImGui::InputFloat3("inputAxis", inputAxis.value);
@@ -268,7 +270,7 @@ bool PlayerComponent::IsSpeedy()
 }
 void PlayerComponent::Control(float deltaTime)
 {
-	const float distance = abs(GE::Math::Vector3::Distance(transform->position, FieldObjectManager::StartPosition));
+	const float distance = abs(GE::Math::Vector3::Distance(transform->position, FieldObjectManager::GetInstance()->StartPosition));
 	if (statas != PlayerStatas::CRASH)
 	{
 		if (worldRadius < distance)
@@ -304,16 +306,15 @@ void PlayerComponent::Control(float deltaTime)
 	case PlayerComponent::PlayerStatas::CRASH:
 		//ダッシュから切り替わった時用初期化
 		current_speed = normal_speed;
-
-
+		//体のオイラー角を取得してセット
+		body_direction = transform->rotation.Euler();
 		//移動
 		transform->position += transform->GetForward() * current_speed * deltaTime * GE::GameSetting::Time::GetGameTime();
 
 		if (InputManager::GetInstance()->GetActionButton())
 		{
-			animator.PlayAnimation(2, false);
+			animator.PlayAnimation(0, false);
 			statas = PlayerStatas::MOVE;
-			body_direction.z = 0.0f;
 			audioManager->Use("flapping1")->Start();
 		}
 		break;
@@ -334,15 +335,17 @@ void PlayerComponent::Control(float deltaTime)
 		if (stayLandLerpEasingCount < stayLandLerpTime)
 		{
 			stayLandLerpEasingCount += deltaTime * GE::GameSetting::Time::GetGameTime();
-			transform->position = GE::Math::Vector3::Lerp(currentPosition, FieldObjectManager::StartPosition + onTheTreePosition, stayLandLerpEasingCount / stayLandLerpTime);
+			transform->position = GE::Math::Vector3::Lerp(currentPosition, FieldObjectManager::GetInstance()->StartPosition + onTheTreePosition, stayLandLerpEasingCount / stayLandLerpTime);
 		}
 		else
 		{
+
 			startCouunt = 0.0f;
 			//stayアニメーション
 			animator.PlayAnimation(3, false);
 			//収集物お持ち帰り
 			StartTree::collectCount += collectCount;
+			TimeLimit::GetInstance()->AddSeconds(10 * collectCount);
 			collectCount = 0;
 			//着陸
 			statas = PlayerStatas::STAY_TREE;
@@ -351,7 +354,7 @@ void PlayerComponent::Control(float deltaTime)
 	case PlayerComponent::PlayerStatas::STAY_TREE:
 		if (startCouunt == 0.0f)
 		{
-			transform->position = FieldObjectManager::StartPosition + onTheTreePosition;
+			transform->position = FieldObjectManager::GetInstance()->StartPosition + onTheTreePosition;
 			if (InputManager::GetInstance()->GetActionButton())
 			{
 				Title::GetInstance()->states = Title::States::serectNum;
@@ -400,7 +403,6 @@ void PlayerComponent::Control(float deltaTime)
 			transform->rotation = GE::Math::Quaternion::Lerp(body_direction_LockOn, BODY_DIRECTION, body_direction_LerpCount / body_direction_LerpTime);
 		}
 		else { transform->rotation = BODY_DIRECTION; }
-
 		//キーボードで移動操作
 		KeyboardMoveControl(deltaTime);
 	}
@@ -431,7 +433,6 @@ void PlayerComponent::KeyboardMoveControl(float deltaTime)
 	{
 		abs(body_direction.x) < 0.01 ? body_direction.x = 0 : body_direction.x > 0.0 ? body_direction.x -= 0.01 * GE::GameSetting::Time::GetGameTime() : body_direction.x += 0.01 * GE::GameSetting::Time::GetGameTime();
 	}
-
 	//// ジョイコン操作中の際の姿勢制御
 	//GE::Joycon* joycon = inputDevice->GetJoyconL();
 	//if (joycon == nullptr)return;
