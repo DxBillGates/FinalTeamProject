@@ -4,6 +4,9 @@
 #include <GatesEngine/Header/Graphics\Window.h       >
 #include<GatesEngine/Header/Graphics/Texture.h>
 
+#include"PlayerComponent.h"
+
+
 Collect* Collect::GetInstance()
 {
 	static Collect instance;
@@ -70,6 +73,8 @@ void CollectTex::Update(float deltaTime)
 
 void CollectTex::LateDraw()
 {
+	if (PlayerComponent::statas == PlayerComponent::PlayerStatas::TITLE)return;
+
 	// •`‰æ‚·‚é‚½‚ß‚ÌGraphicsDevice‚ðŽæ“¾‚µ‚Æ‚­‚æ‚¤‚ÉI
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
 	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();

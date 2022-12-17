@@ -26,11 +26,13 @@ void MiniMapViewer::Update(float deltaTime)
 	direction = player->GetDirection();
 	float directionDifference = oldAngle - direction.y;
 
-	miniMap.Update(deltaTime,directionDifference);
+	miniMap.Update(deltaTime, directionDifference);
 }
 
 void MiniMapViewer::LateDraw()
 {
+	if (PlayerComponent::statas == PlayerComponent::PlayerStatas::TITLE)return;
+
 	miniMap.Draw();
 }
 

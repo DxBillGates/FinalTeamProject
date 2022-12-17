@@ -41,13 +41,13 @@ void CameraControl::Update()
 
 	//カメラの更新
 	GE::Math::Vector3 newCameraPosition;
-	if (targetObject->GetComponent<PlayerComponent>()->statas == PlayerComponent::PlayerStatas::STAY_TREE)
+	if (PlayerComponent::statas == PlayerComponent::PlayerStatas::TITLE || PlayerComponent::statas == PlayerComponent::PlayerStatas::STAY_TREE)
 	{
-		current_cameraDistance = 1000;
-		newCameraPosition = target
-			- GE::Math::Vector3(targetObject->GetTransform()->GetForward().x * current_cameraDistance,
-				-300,
-				targetObject->GetTransform()->GetForward().z * current_cameraDistance);
+	current_cameraDistance = 1000;
+	newCameraPosition = target
+		- GE::Math::Vector3(targetObject->GetTransform()->GetForward().x * current_cameraDistance,
+			-300,
+			targetObject->GetTransform()->GetForward().z * current_cameraDistance);
 	}
 	else
 	{
@@ -66,8 +66,8 @@ void CameraControl::Update()
 
 	float LERP_VALUE = 0.02f * GE::GameSetting::Time::GetGameTime();
 	//ダッシュ時
-	if (targetObject->GetComponent<PlayerComponent>()->statas == PlayerComponent::PlayerStatas::DASH
-		|| targetObject->GetComponent<PlayerComponent>()->statas == PlayerComponent::PlayerStatas::LOCKON_SHOOT)
+	if (PlayerComponent::statas == PlayerComponent::PlayerStatas::DASH
+		|| PlayerComponent::statas == PlayerComponent::PlayerStatas::LOCKON_SHOOT)
 	{
 		LERP_VALUE = 0.035f * GE::GameSetting::Time::GetGameTime();
 	}

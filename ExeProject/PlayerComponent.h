@@ -62,7 +62,8 @@ private:
 public:
 	enum class PlayerStatas
 	{
-		DEBUG	,		//その場に停止
+		TITLE,		//タイトル、木で待機
+		DEBUG,			//その場に停止
 		MOVE,			//通常移動
 		DASH,			//ダッシュ
 		CRASH,			//壁に激突して墜落
@@ -70,7 +71,7 @@ public:
 		GO_TREE,		//巣の木に着陸中
 		STAY_TREE,		//木で待機
 	};
-	PlayerStatas statas;				//Playerの状態
+	static PlayerStatas statas;				//Playerの状態
 	//RayCast用
 	GE::Math::Vector3 rayPos, rayDir;
 

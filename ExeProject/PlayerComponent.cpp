@@ -14,7 +14,7 @@
 #include "TimeLimit.h"
 
 float PlayerComponent::frameRate;
-
+PlayerComponent::PlayerStatas PlayerComponent::statas;
 GE::Math::Vector3 PlayerComponent::onTheTreePosition = { 0,250,200 };	//木の上で体の高さ調整用
 int PlayerComponent::hitStopTime = 15;								// ヒットストップの長さ
 float PlayerComponent::body_direction_LerpTime = 50.0f;				//ダッシュ後体の角度の遷移
@@ -48,7 +48,7 @@ void PlayerComponent::Start()
 	transform->position = FieldObjectManager::GetInstance()->StartPosition + onTheTreePosition;
 	transform->scale = { 10,10,10 };
 
-	statas = PlayerStatas::STAY_TREE;
+	statas = PlayerStatas::TITLE;
 
 	body_direction = { 0,-1.57f,0 };
 	dashEasingCount = 0.0;
@@ -179,7 +179,7 @@ void PlayerComponent::OnCollision(GE::GameObject* other)
 
 	if (other->GetTag() == "nest")
 	{
-		if (statas == PlayerStatas::STAY_TREE || statas == PlayerStatas::GO_TREE)
+		if (statas == PlayerStatas::STAY_TREE || statas == PlayerStatas::GO_TREE || statas == PlayerStatas::TITLE)
 		{
 
 		}
@@ -280,6 +280,16 @@ void PlayerComponent::Control(float deltaTime)
 	bool loop = false;
 	switch (statas)
 	{
+	case PlayerComponent::PlayerStatas::TITLE:
+
+		transform->position = FieldObjectManager::GetInstance()->StartPosition + onTheTreePosition;
+		if (Title::GetInstance()->GetSelect(Title::States::start))
+		{
+			Title::GetInstance()->states = Title::States::serectNum;
+			statas = PlayerStatas::STAY_TREE;
+		}
+
+		break;
 	case PlayerComponent::PlayerStatas::DEBUG:
 		break;
 	case PlayerComponent::PlayerStatas::MOVE:
@@ -338,7 +348,6 @@ void PlayerComponent::Control(float deltaTime)
 		}
 		else
 		{
-
 			startCouunt = 0.0f;
 			//stayアニメーション
 			animator.PlayAnimation(3, false);
@@ -356,14 +365,6 @@ void PlayerComponent::Control(float deltaTime)
 			transform->position = FieldObjectManager::GetInstance()->StartPosition + onTheTreePosition;
 			if (InputManager::GetInstance()->GetActionButton())
 			{
-				Title::GetInstance()->states = Title::States::serectNum;
-				startCouunt++;
-				//MoveFromStop
-				animator.PlayAnimation(2, false);
-			}
-			else if (Title::GetInstance()->GetSelect(Title::States::start))
-			{
-				Title::GetInstance()->states = Title::States::serectNum;
 				startCouunt++;
 				//MoveFromStop
 				animator.PlayAnimation(2, false);
@@ -402,8 +403,12 @@ void PlayerComponent::Control(float deltaTime)
 			transform->rotation = GE::Math::Quaternion::Lerp(body_direction_LockOn, BODY_DIRECTION, body_direction_LerpCount / body_direction_LerpTime);
 		}
 		else { transform->rotation = BODY_DIRECTION; }
-		//キーボードで移動操作
-		KeyboardMoveControl(deltaTime);
+
+		if (statas != PlayerStatas::TITLE)
+		{
+			//キーボードで移動操作
+			KeyboardMoveControl(deltaTime);
+		}
 	}
 }
 void PlayerComponent::KeyboardMoveControl(float deltaTime)

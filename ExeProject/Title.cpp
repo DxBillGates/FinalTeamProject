@@ -28,14 +28,14 @@ void Title::Awake(GE::GameObjectManager* gameObjectManager, GE::IGraphicsDeviceD
 	textures.push_back(device->GetTextureManager()->Get("texture_stage2"));
 	Create("title_option", "texture_option", gameObjectManager, device);
 	sprites.back()->position = { GE::Window::GetWindowSize().x - 400,GE::Window::GetWindowSize().y / 2 + 100,0.0f };
-	sprites.back()->scale = { 300,300,0 };
+	sprites.back()->scale = { 300,100,0 };
 	Create("title_exit", "texture_exit", gameObjectManager, device);
 	sprites.back()->position = { GE::Window::GetWindowSize().x - 400,GE::Window::GetWindowSize().y / 2 + 200,0.0f };
-	sprites.back()->scale = { 300,300,0 };
+	sprites.back()->scale = { 300,100,0 };
 
 	Create("title_name", "texture_title", gameObjectManager, device);
-	sprites.back()->position = { GE::Window::GetWindowSize().x - 500,GE::Window::GetWindowSize().y / 2 - 200,0.0f };
-	sprites.back()->scale = { 500,500,0 };
+	sprites.back()->position = { GE::Window::GetWindowSize().x / 2.0f - 500,GE::Window::GetWindowSize().y / 2 - 300.0f,0 };
+	sprites.back()->scale = { 610,180,0 };
 	Create("title_nextL", "texture_next", gameObjectManager, device);
 	sprites.back()->position = { 70.0f,GE::Window::GetWindowSize().y / 2,0.0f };
 	sprites.back()->scale = { 150,150,0 };
