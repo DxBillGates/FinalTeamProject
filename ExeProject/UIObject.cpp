@@ -38,7 +38,7 @@ void UIObject::Update(float deltaTime)
 	{
 		GE::Math::Vector3 dir = cameraPosition - objects[i].transform.position;
 		dir.y = 0.0f;
-		objects[i].transform.rotation = LookDirection(dir.Normalize()) * GE::Math::Quaternion::Euler({ 90, 0, 0 });
+		objects[i].transform.rotation = LookDirection(dir.Normalize()) * GE::Math::Quaternion::Euler({ 90, 0, 180 });
 	}
 }
 

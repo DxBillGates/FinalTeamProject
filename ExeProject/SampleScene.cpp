@@ -54,7 +54,7 @@ void SampleScene::Initialize()
 	//ノーマルエネミー座標ファイル読み込み、座標反映
 	EnemyManager::GetInstance()->LoadPosition("Resources/enemies.txt");
 	FieldObjectManager::GetInstance()->LoadPosition("Resources/tree.txt");
-	UIObject::GetInstance()->AddObject("test", FieldObjectManager::GetInstance()->StartPosition + GE::Math::Vector3(0, 1400, 0), { 500 }, GE::Color(1, 1, 1, 1), "texture_null");
+	UIObject::GetInstance()->AddObject("test", FieldObjectManager::GetInstance()->StartPosition + GE::Math::Vector3(0, 1400, 0), { 500 }, GE::Color(1, 1, 1, 1), "texture_Chick");
 
 }
 
