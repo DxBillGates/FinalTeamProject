@@ -12,6 +12,7 @@
 #include"TimeLimit.h"
 #include"MiniMapViewer.h"
 #include"Collect.h"
+#include"UIObject.h"
 
 SampleScene::SampleScene()
 	: SampleScene("SampleScene")
@@ -53,6 +54,8 @@ void SampleScene::Initialize()
 	//ノーマルエネミー座標ファイル読み込み、座標反映
 	EnemyManager::GetInstance()->LoadPosition("Resources/enemies.txt");
 	FieldObjectManager::GetInstance()->LoadPosition("Resources/tree.txt");
+	UIObject::GetInstance()->AddObject("test", FieldObjectManager::GetInstance()->StartPosition + GE::Math::Vector3(0, 1400, 0), { 500 }, GE::Color(1, 1, 1, 1), "texture_null");
+
 }
 
 void SampleScene::Update(float deltaTime)
@@ -62,8 +65,8 @@ void SampleScene::Update(float deltaTime)
 	collisionManager.Update();
 	Title::GetInstance()->Update();
 	TimeLimit::GetInstance()->Update();
-	Collect::GetInstance()->Update(StartTree::collectCount,StartTree::goalCollect);
-
+	Collect::GetInstance()->Update(StartTree::collectCount, StartTree::goalCollect);
+	UIObject::GetInstance()->Update(deltaTime);
 	//クリア以降条件
 	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::Q)
 		|| StartTree::isCollect)
@@ -80,7 +83,7 @@ void SampleScene::Update(float deltaTime)
 		changeSceneInfo.initNextSceneFlag = true;
 	}
 
-	Collect::GetInstance()->Update(StartTree::collectCount,StartTree::goalCollect);
+	Collect::GetInstance()->Update(StartTree::collectCount, StartTree::goalCollect);
 
 	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::Y))
 	{
@@ -100,7 +103,9 @@ void SampleScene::Update(float deltaTime)
 
 void SampleScene::Draw()
 {
+
 	gameObjectManager.Draw();
+	UIObject::GetInstance()->Draw(graphicsDevice);
 }
 
 void SampleScene::LateDraw()
@@ -137,12 +142,13 @@ void SampleScene::Load()
 		auto* sampleComponent = testObject->AddComponent<MiniMapViewer>();
 		sampleComponent->SetPlayer(gameObjectManager.FindGameObject("Player")->GetComponent<PlayerComponent>());
 	}
-
 	EnemyManager::GetInstance()->Start(&gameObjectManager);
 	FieldObjectManager::GetInstance()->Start(&gameObjectManager);
 	FieldObjectManager::GetInstance()->SetGroundMesh(groundModel);
 	TimeLimit::GetInstance()->Start(&gameObjectManager);
 	Collect::GetInstance()->Start(&gameObjectManager);
+
+	UIObject::GetInstance()->Start();
 
 	collisionManager.AddTagCombination("player", "enemy");
 	collisionManager.AddTagCombination("player", "ground");
@@ -155,6 +161,7 @@ void SampleScene::UnLoad()
 	Title::GetInstance()->ClearGameObject();
 	EnemyManager::GetInstance()->UnLoad();
 	FieldObjectManager::GetInstance()->UnLoad();
+	UIObject::GetInstance()->UnLoad();
 	// gameObjectsを削除する
 	Scene::UnLoad();
 }

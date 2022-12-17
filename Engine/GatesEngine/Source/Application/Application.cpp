@@ -185,6 +185,12 @@ bool GE::Application::LoadContents()
 	mesh = new Mesh();
 	mesh->Create(device, cmdList, modelDataTorus);
 	meshManager->Add(mesh, "Torus");
+	
+	MeshData<Vertex_UV_Normal> modelDataPlane;
+	MeshCreater::LoadObjModelData(objModelPath + "plane", modelDataPlane);
+	mesh = new Mesh();
+	mesh->Create(device, cmdList, modelDataPlane);
+	meshManager->Add(mesh, "Plane");
 
 	// texture load
 	auto* textureManager = graphicsDevice.GetTextureManager();

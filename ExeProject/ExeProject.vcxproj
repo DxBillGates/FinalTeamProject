@@ -184,6 +184,7 @@
     <ClCompile Include="StartTree.cpp" />
     <ClCompile Include="TimeLimit.cpp" />
     <ClCompile Include="Title.cpp" />
+    <ClCompile Include="UIObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BirdEnemy.h" />
@@ -207,6 +208,7 @@
     <ClInclude Include="StartTree.h" />
     <ClInclude Include="TimeLimit.h" />
     <ClInclude Include="Title.h" />
+    <ClInclude Include="UIObject.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shader\DefaultShader.hlsli" />

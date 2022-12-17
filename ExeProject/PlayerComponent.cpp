@@ -96,12 +96,12 @@ void PlayerComponent::Update(float deltaTime)
 	//操作
 	Control(f);
 	CameraControl::GetInstance()->SetTargetObject(gameObject);
-	if (statas != PlayerStatas::DEBUG)
+	//if (statas != PlayerStatas::DEBUG)
 	{
 		CameraControl::GetInstance()->Update();
 
 	}
-	if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::LCONTROL))
+	if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::LCONTROL) || inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::RCONTROL))
 	{
 		//D0押したら移動停止＊デバッグ用
 		if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::D0))

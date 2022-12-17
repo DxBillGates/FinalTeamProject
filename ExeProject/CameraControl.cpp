@@ -2,7 +2,7 @@
 #include "PlayerComponent.h"
 #include <GatesEngine/Header\GameFramework/GameSetting.h>
 #include <GatesEngine/Header/Util/Random.h           >
-
+#include"UIObject.h"
 CameraControl* CameraControl::GetInstance()
 {
 	static CameraControl instance;
@@ -30,6 +30,7 @@ void CameraControl::Initialize()
 
 void CameraControl::Update()
 {
+	UIObject::GetInstance()->cameraPosition = position;
 	//ターゲトポジションセット
 	target = targetObject->GetTransform()->position;
 
