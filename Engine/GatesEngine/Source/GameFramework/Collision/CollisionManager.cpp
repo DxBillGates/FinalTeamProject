@@ -528,7 +528,13 @@ bool GE::CollisionManager::CheckSphereToMesh(ICollider* sphere, ICollider* mesh)
 	Math::Vector3 hitNormal;
 
 	bool result = false;
-	result = meshCollider->CheckHit(sphere,hitNormal);
-	if (result == true)sphereCollider->GetGameObject()->SetHitNormal(hitNormal);
+
+	if (CollisionManager::CheckSphereToOBB(sphereCollider, meshCollider->GetBoxCollider()))
+	{
+		meshCollider->GetBoxCollider()->Hit();
+		result = meshCollider->CheckHit(sphere, hitNormal);
+		if (result == true)sphereCollider->GetGameObject()->SetHitNormal(hitNormal);
+	}
+
 	return result;
 }
