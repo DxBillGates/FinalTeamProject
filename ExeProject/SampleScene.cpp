@@ -54,7 +54,7 @@ void SampleScene::Initialize()
 	//ノーマルエネミー座標ファイル読み込み、座標反映
 	EnemyManager::GetInstance()->LoadPosition("Resources/enemies.txt");
 	FieldObjectManager::GetInstance()->LoadPosition("Resources/tree.txt");
-	UIObject::GetInstance()->AddObject("test", FieldObjectManager::GetInstance()->StartPosition + GE::Math::Vector3(0, 1400, 0), { 500 }, GE::Color(1, 1, 1, 1), "texture_Chick");
+	UIObject::GetInstance()->Start();
 
 }
 
@@ -147,8 +147,6 @@ void SampleScene::Load()
 	FieldObjectManager::GetInstance()->SetGroundMesh(groundModel);
 	TimeLimit::GetInstance()->Start(&gameObjectManager);
 	Collect::GetInstance()->Start(&gameObjectManager);
-
-	UIObject::GetInstance()->Start();
 
 	collisionManager.AddTagCombination("player", "enemy");
 	collisionManager.AddTagCombination("player", "ground");

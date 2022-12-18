@@ -15,10 +15,19 @@ public:
 
 	GE::Math::Vector3 cameraPosition;
 private:
-	std::vector<Object> objects;
+	std::vector<Object> normalUI;
+	std::vector<Object> AnimationUI;
+
+	float pivotPosX;
+	float texSizeX;
+	float clipSizeX;
+
+	int num = 0;
+
+
 public:
 	static UIObject*GetInstance();
-	void AddObject(std::string tag, GE::Math::Vector3 positon, GE::Math::Vector3 scale, GE::Color color, std::string textureName);
+	Object AddObject(std::string tag, GE::Math::Vector3 positon, GE::Math::Vector3 scale, GE::Color color, std::string textureName);
 	void Start();
 	void Update(float deltaTime);
 	void Draw(GE::IGraphicsDeviceDx12* graphicsDevice);

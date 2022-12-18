@@ -42,13 +42,22 @@ void CameraControl::Update()
 
 	//ƒJƒƒ‰‚ÌXV
 	GE::Math::Vector3 newCameraPosition;
-	if (PlayerComponent::statas == PlayerComponent::PlayerStatas::TITLE || PlayerComponent::statas == PlayerComponent::PlayerStatas::STAY_TREE)
+	if (PlayerComponent::statas == PlayerComponent::PlayerStatas::TITLE )
 	{
-	current_cameraDistance = 1000;
+	current_cameraDistance = 2000;
 	newCameraPosition = target
 		- GE::Math::Vector3(targetObject->GetTransform()->GetForward().x * current_cameraDistance,
 			-300,
 			targetObject->GetTransform()->GetForward().z * current_cameraDistance);
+	}
+	else if (PlayerComponent::statas == PlayerComponent::PlayerStatas::STAY_TREE)
+	{
+		current_cameraDistance = 1000;
+
+		newCameraPosition = target
+			- GE::Math::Vector3(targetObject->GetTransform()->GetForward().x * current_cameraDistance,
+				-300,
+				targetObject->GetTransform()->GetForward().z * current_cameraDistance);
 	}
 	else
 	{
