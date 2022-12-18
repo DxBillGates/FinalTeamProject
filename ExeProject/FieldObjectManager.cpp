@@ -19,21 +19,17 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 {
 	this->gameObjectManager = gameObjectManager;
 
-	//スタートの止まり木
-	{
-		auto* object = gameObjectManager->AddGameObject(new GE::GameObject("StartTree", "StartTree"));
-		auto* sampleComponent = object->AddComponent<StartTree>();
-		startTree = object;
-	}
 	//壁仮
 	{
 		auto* object = gameObjectManager->AddGameObject(new GE::GameObject("skydome", "skydome"));
 		auto* sampleComponent = object->AddComponent<FieldObject>();
 		object->GetComponent<FieldObject>()->modelName = "Skydome";
-		object->GetComponent<FieldObject>()->shaderName = "DefaultMeshShader";
-		object->SetColor(GE::Color(1.f, 1.f, 1.f, 1.0f));
-		object->GetTransform()->position = StartPosition;
+		object->GetComponent<FieldObject>()->shaderName = "DefaultMeshWithTextureShader";
+		object->GetComponent<FieldObject>()->textureName = "sky_Windows";
+		object->SetColor(GE::Color(1.f, 1.f, 1.f, 0.5f));
 		object->GetTransform()->scale = { 400 };
+		object->GetTransform()->rotation = GE::Math::Quaternion::Euler(GE::Math::Vector3(180, 0, 0));
+		skydome = object;
 	}
 	//巣
 	{
@@ -74,6 +70,17 @@ void FieldObjectManager::SetGroundMesh(GE::MeshData<GE::Vertex_UV_Normal> mesh)
 	object->GetTransform()->position = { 1000,0,-15000 };
 	object->GetTransform()->scale = { 2 };
 	object->GetTransform()->rotation = GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), -5.0f);
+}
+
+void FieldObjectManager::SetStartTreeMesh(GE::MeshData<GE::Vertex_UV_Normal> mesh)
+{
+	//スタートの止まり木
+	auto* object = gameObjectManager->AddGameObject(new GE::GameObject("StartTree", "StartTree"));
+	auto* sampleComponent = object->AddComponent<StartTree>();
+	auto* collider = object->AddComponent < GE::MeshCollider >();
+	collider->SetMesh(&mesh);
+	startTree = object;
+
 }
 
 void FieldObjectManager::LoadPosition(const std::string& filename)
@@ -181,6 +188,7 @@ void FieldObjectManager::LoadPosition(const std::string& filename)
 	nest->GetTransform()->position = nst.pos;
 	nest->GetTransform()->scale = nst.scale;
 	StartPosition = nst.pos;
+	skydome->GetTransform()->position = StartPosition;
 }
 
 void FieldObjectManager::SaveCurrentPosition(const std::string& filename)

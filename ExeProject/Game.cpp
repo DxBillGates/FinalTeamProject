@@ -64,12 +64,12 @@ bool Game::LoadContents()
 	mesh = new Mesh();
 	mesh->Create(device, cmdList, modelDataNest);
 	meshManager->Add(mesh, "Nest");
-	
+
 	MeshData<Vertex_UV_Normal> modelTree1;
 	MeshCreater::LoadObjModelData("Resources/Model/tree1", modelTree1);
 	mesh = new Mesh();
 	mesh->Create(device, cmdList, modelTree1);
-	
+
 	meshManager->Add(mesh, "tree1");
 	MeshData<Vertex_UV_Normal> modelTreeLeaf1;
 	MeshCreater::LoadObjModelData("Resources/Model/tree_leaf1", modelTreeLeaf1);
@@ -88,7 +88,7 @@ bool Game::LoadContents()
 	mesh = new Mesh();
 	mesh->Create(device, cmdList, modelTreeLeaf2);
 	meshManager->Add(mesh, "Tree_Leaf2");
-	
+
 	MeshData<Vertex_UV_Normal> modelTreeLeaf3;
 	MeshCreater::LoadObjModelData("Resources/Model/tree_leaf3", modelTreeLeaf3);
 	mesh = new Mesh();
@@ -100,6 +100,8 @@ bool Game::LoadContents()
 	{
 		auto* audioData = audioManager.AddAudioData(new GE::AudioData("Resources/Audio/hit_wall.wav"), "hitWall");
 		auto* audio = audioManager.AddAudio(new GE::Audio(audioData, "hitWall"));
+		audio->SetVolume(0.3f);
+		audio = audioManager.AddAudio(new GE::Audio(audioData, "hitWall"));
 		audio->SetVolume(0.3f);
 	}
 	//Œø‰Ê‰¹air
@@ -113,11 +115,17 @@ bool Game::LoadContents()
 		auto* audioData = audioManager.AddAudioData(new GE::AudioData("Resources/Audio/catch2.wav"), "catch2");
 		auto* audio = audioManager.AddAudio(new GE::Audio(audioData, "catch2"));
 		audio->SetVolume(0.3f);
+		audio = audioManager.AddAudio(new GE::Audio(audioData, "catch2"));
+		audio->SetVolume(0.3f);
+		audio = audioManager.AddAudio(new GE::Audio(audioData, "catch2"));
+		audio->SetVolume(0.3f);
 	}
 	//Œø‰Ê‰¹flapping
 	{
 		auto* audioData = audioManager.AddAudioData(new GE::AudioData("Resources/Audio/flapping.wav"), "flapping1");
 		auto* audio = audioManager.AddAudio(new GE::Audio(audioData, "flapping1"));
+		audio->SetVolume(0.3f);
+		audio = audioManager.AddAudio(new GE::Audio(audioData, "flapping1"));
 		audio->SetVolume(0.3f);
 	}
 	auto* textureManager = graphicsDevice.GetTextureManager();
@@ -165,7 +173,11 @@ bool Game::LoadContents()
 	nullTexture->Load("Chick.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "texture_Chick");
 
-	auto* testScene = sceneManager.AddScene(new SampleScene("SampleScene",sceneManager.GetSceneInitializer()));
+	nullTexture = new Texture();
+	nullTexture->Load("sky_Windows.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "sky_Windows");
+
+	auto* testScene = sceneManager.AddScene(new SampleScene("SampleScene", sceneManager.GetSceneInitializer()));
 	sceneManager.AddScene(new Clear("ClearScene", sceneManager.GetSceneInitializer()));
 	sceneManager.AddScene(new Over("OverScene", sceneManager.GetSceneInitializer()));
 	sceneManager.ChangeScene("SampleScene");

@@ -39,6 +39,11 @@ void FieldObject::Draw()
 
 	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
+	if (shaderName == "DefaultMeshWithTextureShader")
+	{
+
+		renderQueue->AddSetShaderResource({ 4,graphicsDevice->GetTextureManager()->Get(textureName)->GetSRVNumber() });
+	}
 	graphicsDevice->DrawMesh(modelName);
 }
 

@@ -7,6 +7,7 @@ class FieldObject : public GE::Component
 public:
 	std::string modelName = "Cube";
 	std::string shaderName = "DefaultMeshShader";
+	std::string textureName = "texture_null";
 	FieldObject();
 	void Awake();
 	void Start();

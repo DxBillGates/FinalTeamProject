@@ -102,7 +102,7 @@ bool GE::Application::LoadContents()
 
 	// グリッド生成
 	MeshData<Vertex_Color> meshDataGrid;
-	MeshCreater::CreateGrid(meshDataGrid, 100.0, 100000);
+	MeshCreater::CreateGrid(meshDataGrid, 100.0, 2);
 	mesh = new Mesh();
 	mesh->Create(device, cmdList, meshDataGrid);
 	meshManager->Add(mesh, "Grid");
@@ -225,6 +225,7 @@ bool GE::Application::LoadContents()
 	rootSignatureManager->Add(defaultMeshWithOneSrvRootSignature, "CBV4SRV1");
 	// cbv5srv1ルートシグネチャ
 	RootSignature* cbv5srv1RootSignature = new RootSignature();
+	cbv5srv1RootSignature->Create(device, { DescriptorRangeType::CBV,DescriptorRangeType::CBV ,DescriptorRangeType::CBV ,DescriptorRangeType::CBV ,DescriptorRangeType::CBV ,DescriptorRangeType::SRV });
 	cbv5srv1RootSignature->Create(device, { DescriptorRangeType::CBV,DescriptorRangeType::CBV ,DescriptorRangeType::CBV ,DescriptorRangeType::CBV ,DescriptorRangeType::CBV ,DescriptorRangeType::SRV });
 	rootSignatureManager->Add(cbv5srv1RootSignature, "CBV5SRV1");
 	// cbv16srv16ルートシグネチャ

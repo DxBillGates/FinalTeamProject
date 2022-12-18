@@ -197,15 +197,11 @@ void PlayerComponent::OnCollision(GE::GameObject* other)
 
 void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 {
-	if (statas != PlayerStatas::GO_TREE)
+	if (statas != PlayerStatas::GO_TREE && statas != PlayerStatas::STAY_TREE && statas != PlayerStatas::TITLE)
 	{
-		if (other->GetTag() == "ground")
+		if (other->GetTag() == "ground" || other->GetTag() == "StartTree")
 		{
-			statas = PlayerStatas::CRASH;
-			audioManager->Use("hitWall")->Start();
-			LookDirection(Repulsion(transform->GetForward(), gameObject->GetHitNormal(), 2.0f));
-			//LookDirection(gameObject->GetHitNormal());
-			CameraControl::GetInstance()->ShakeStart({ 70,70 }, 30);
+			Reflection(gameObject->GetHitNormal());
 			return;
 		}
 	}
@@ -274,7 +270,7 @@ void PlayerComponent::Control(float deltaTime)
 	{
 		if (worldRadius < distance)
 		{
-			Reflection();
+			Reflection(GE::Math::Vector3(transform->position - FieldObjectManager::StartPosition).Normalize());
 		}
 	}
 	bool loop = false;
@@ -576,9 +572,12 @@ void PlayerComponent::LookDirection(GE::Math::Vector3 direction)
 	body_direction_LockOn = { cross,theta };
 	transform->rotation = body_direction_LockOn;
 }
-void PlayerComponent::Reflection()
+void PlayerComponent::Reflection(GE::Math::Vector3 normal)
 {
-
+	statas = PlayerStatas::CRASH;
+	audioManager->Use("hitWall")->Start();
+	LookDirection(Repulsion(transform->GetForward(), normal, 2.0f));
+	CameraControl::GetInstance()->ShakeStart({ 70,70 }, 30);
 }
 //EaseInŠÖŒW‚ª‚æ‚­‚í‚©‚ç‚È‚©‚Á‚½‚©‚çˆêŽž“I‚É’Ç‰Á
 const float PlayerComponent::easeIn(const float start, const float end, float time)

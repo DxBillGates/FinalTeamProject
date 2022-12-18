@@ -34,11 +34,18 @@ SampleScene::SampleScene(const std::string& sceneName, const GE::SceneInitialize
 	auto device = graphicsDevice->GetDevice();
 	auto cmdList = graphicsDevice->GetCmdList();
 
-
-	MeshCreater::LoadObjModelData("Resources/Model/groundTest", groundModel);
-	Mesh* mesh = new Mesh();
-	mesh->Create(device, cmdList, groundModel);
-	meshManager->Add(mesh, "ground");
+	{
+		MeshCreater::LoadObjModelData("Resources/Model/groundTest", groundModel);
+		Mesh* mesh = new Mesh();
+		mesh->Create(device, cmdList, groundModel);
+		meshManager->Add(mesh, "ground");
+	}
+	{
+		MeshCreater::LoadObjModelData("Resources/Model/tree2", startTreeModel);
+		Mesh* mesh = new Mesh();
+		mesh->Create(device, cmdList, startTreeModel);
+		meshManager->Add(mesh, "startTree");
+	}
 }
 
 SampleScene::~SampleScene()
@@ -145,11 +152,13 @@ void SampleScene::Load()
 	EnemyManager::GetInstance()->Start(&gameObjectManager);
 	FieldObjectManager::GetInstance()->Start(&gameObjectManager);
 	FieldObjectManager::GetInstance()->SetGroundMesh(groundModel);
+	FieldObjectManager::GetInstance()->SetStartTreeMesh(startTreeModel);
 	TimeLimit::GetInstance()->Start(&gameObjectManager);
 	Collect::GetInstance()->Start(&gameObjectManager);
 
 	collisionManager.AddTagCombination("player", "enemy");
 	collisionManager.AddTagCombination("player", "ground");
+	collisionManager.AddTagCombination("player", "StartTree");
 	collisionManager.AddTagCombination("player", "nest");
 	//collisionManager.AddTagCombination("player", "birdEnemy");
 }

@@ -23,11 +23,13 @@ private:
 	std::vector<GE::GameObject*> fieldTree;
 	GE::GameObject* startTree = nullptr;
 	GE::GameObject* nest = nullptr;
+	GE::GameObject* skydome = nullptr;
 
 public:
 	static FieldObjectManager* GetInstance();
 	void Start(GE::GameObjectManager* gameObjectManager);
 	void SetGroundMesh(GE::MeshData<GE::Vertex_UV_Normal> mesh);
+	void SetStartTreeMesh(GE::MeshData<GE::Vertex_UV_Normal> mesh);
 	//ファイルに保存されている座標取得
 	void LoadPosition(const std::string& filename);
 	//現在の座標をファイルに保存

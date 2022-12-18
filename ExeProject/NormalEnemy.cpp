@@ -37,7 +37,7 @@ void NormalEnemy::Update(float deltaTime)
 void NormalEnemy::Draw()
 {
 	if (statas == Statas::DEAD) { return; }
-
+	
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
 	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
 
