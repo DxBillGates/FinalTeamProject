@@ -204,6 +204,12 @@ void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 			Reflection(gameObject->GetHitNormal());
 			return;
 		}
+		else if (other->GetTag() == "tile")
+		{
+			Reflection(GE::Math::Vector3(0, 1, 0));
+			return;
+
+		}
 	}
 	//GE::Utility::Printf("PlayerComponent OnCollisionEnter\n");
 	if (other->GetTag() == "enemy")

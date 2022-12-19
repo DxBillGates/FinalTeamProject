@@ -30,6 +30,7 @@ public:
 	void Start(GE::GameObjectManager* gameObjectManager);
 	void SetGroundMesh(GE::MeshData<GE::Vertex_UV_Normal> mesh);
 	void SetStartTreeMesh(GE::MeshData<GE::Vertex_UV_Normal> mesh);
+	void SetTileMesh(GE::MeshData<GE::Vertex_UV_Normal> mesh);
 	//ファイルに保存されている座標取得
 	void LoadPosition(const std::string& filename);
 	//現在の座標をファイルに保存

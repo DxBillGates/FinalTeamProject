@@ -3,6 +3,7 @@
 #include "NormalTree.h"
 #include <GatesEngine/Header/GameFramework/Component/SphereCollider.h>
 #include <GatesEngine/Header/GameFramework/Component/MeshCollider.h>
+#include <GatesEngine/Header/GameFramework/Component/BoxCollider.h>
 #include<fstream>
 #include<sstream>
 #include<cassert>
@@ -55,6 +56,18 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 
 			fieldTree.push_back(object);
 		}
+	}
+	//
+	{
+		auto* object = gameObjectManager->AddGameObject(new GE::GameObject("tile", "tile"));
+		auto* sampleComponent = object->AddComponent<FieldObject>();
+		object->GetComponent<FieldObject>()->modelName = "Plane";
+		object->GetTransform()->scale = { 100000,1,100000 };
+		object->GetTransform()->position = { 0,-30.f,0 };
+		object->SetColor(GE::Color(0.2f, 0.5f, 0.2f, 1.0f));
+		auto* collider = object->AddComponent < GE::BoxCollider >();
+		collider->SetSize(GE::Math::Vector3(100000, 1, 100000));
+
 	}
 }
 

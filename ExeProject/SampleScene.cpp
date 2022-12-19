@@ -160,6 +160,7 @@ void SampleScene::Load()
 	collisionManager.AddTagCombination("player", "ground");
 	collisionManager.AddTagCombination("player", "StartTree");
 	collisionManager.AddTagCombination("player", "nest");
+	collisionManager.AddTagCombination("player", "tile");
 	//collisionManager.AddTagCombination("player", "birdEnemy");
 }
 
