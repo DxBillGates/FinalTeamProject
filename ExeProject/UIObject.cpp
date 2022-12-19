@@ -76,7 +76,19 @@ void UIObject::Draw(GE::IGraphicsDeviceDx12* graphicsDevice)
 		material.color = o.color;
 		renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
 		renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
-		renderQueue->AddSetShaderResource({ 4,graphicsDevice->GetTextureManager()->Get(o.textureName)->GetSRVNumber() });
+		renderQueue->AddSetShaderResource({ 5,graphicsDevice->GetTextureManager()->Get(o.textureName)->GetSRVNumber() });
+
+		// アニメーションの情報
+		GE::TextureAnimationInfo textureAnimationInfo;
+		// 画像の元サイズ
+		GE::Math::Vector2 textureSize = { 1,1 };
+		textureAnimationInfo.textureSize = textureSize;
+		// 元画像のサイズからどうやって切り抜くか　例) 元サイズが100*100で半分だけ表示したいなら{50,100}にする
+		// textureSizeと一緒にすると切り抜かれずに描画される
+		textureAnimationInfo.clipSize = { 1,1 };
+		// 切り抜く際の左上座標 例) {0,0}なら元画像の左上 texture->GetSize()なら右下になる
+		textureAnimationInfo.pivot = { 0,0 };
+		renderQueue->AddSetConstantBufferInfo({ 4,cbufferAllocater->BindAndAttachData(4, &textureAnimationInfo,sizeof(GE::TextureAnimationInfo)) });
 
 		graphicsDevice->DrawMesh("Plane");
 	}
