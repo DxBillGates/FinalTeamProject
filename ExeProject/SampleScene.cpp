@@ -72,7 +72,7 @@ void SampleScene::Update(float deltaTime)
 	collisionManager.Update();
 	Title::GetInstance()->Update();
 	TimeLimit::GetInstance()->Update();
-	Collect::GetInstance()->Update(StartTree::collectCount, StartTree::goalCollect);
+	//Collect::GetInstance()->Update(StartTree::collectCount, StartTree::goalCollect);
 	UIObject::GetInstance()->Update(deltaTime);
 	//ƒNƒŠƒAˆÈ~ðŒ
 	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::Q)
@@ -90,7 +90,7 @@ void SampleScene::Update(float deltaTime)
 		changeSceneInfo.initNextSceneFlag = true;
 	}
 
-	Collect::GetInstance()->Update(StartTree::collectCount, StartTree::goalCollect);
+	//Collect::GetInstance()->Update(StartTree::collectCount, StartTree::goalCollect);
 
 	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::Y))
 	{
@@ -154,7 +154,7 @@ void SampleScene::Load()
 	FieldObjectManager::GetInstance()->SetGroundMesh(groundModel);
 	FieldObjectManager::GetInstance()->SetStartTreeMesh(startTreeModel);
 	TimeLimit::GetInstance()->Start(&gameObjectManager);
-	Collect::GetInstance()->Start(&gameObjectManager);
+	//Collect::GetInstance()->Start(&gameObjectManager);
 
 	collisionManager.AddTagCombination("player", "enemy");
 	collisionManager.AddTagCombination("player", "ground");

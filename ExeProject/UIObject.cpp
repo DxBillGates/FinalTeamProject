@@ -23,41 +23,55 @@ UIObject::Object UIObject::AddObject(std::string tag, GE::Math::Vector3 positon,
 	return result;
 }
 
+UIObject::Object UIObject::AddAnimaiotnObject(std::string tag, GE::Math::Vector3 positon, GE::Math::Vector3 scale, GE::Color color, std::string textureName,
+	GE::Math::Vector2 texSize, GE::Math::Vector2 clipSize, GE::Math::Vector2 pivotPos)
+{
+	Object result;
+	result.tag = tag;
+	result.transform.position = positon;
+	result.transform.scale = scale;
+	result.color = color;
+	result.textureName = textureName;
+	result.texSize = texSize;
+	result.clipSize = clipSize;
+	result.pivotPos = pivotPos;
+	return result;
+}
+
 
 void UIObject::Start()
 {
 	GE::Utility::Printf("TestTreeComponent Start()\n");
-	normalUI.push_back(
+	object.push_back(
 		AddObject("test", FieldObjectManager::GetInstance()->StartPosition + GE::Math::Vector3(0, 1000, 0), { 500 }, GE::Color(1, 1, 1, 1), "texture_Chick")
 	);
-	/*AnimationUI.push_back(
-		AddObject("test", FieldObjectManager::GetInstance()->StartPosition + GE::Math::Vector3(0, 1000, 0), { 500 }, GE::Color(1, 1, 1, 1), "texture_Number")
-	);*/
 
+	object.push_back(
+		AddAnimaiotnObject("colect", FieldObjectManager::GetInstance()->StartPosition + GE::Math::Vector3(0, 600, 0), { 250 }, GE::Color(1, 1, 1, 1), "texture_Number", { 320,64 }, { 32,64 })
+	);
+	object.push_back(
+		AddAnimaiotnObject("symbol", {}, { 250 }, GE::Color(1, 1, 1, 1), "texture_symbol", { 64,64 }, { 32,64 }, { 1,0 })
+	);
+	object.push_back(
+		AddAnimaiotnObject("colectMax", {}, { 250 }, GE::Color(1, 1, 1, 1), "texture_Number", { 320,64 }, { 32,64 }, { 1,0 })
+	);
 }
 
 void UIObject::Update(float deltaTime)
 {
 	//常にカメラに正面を向ける
-	for (int i = 0; i < normalUI.size(); i++)
+	for (int i = 0; i < object.size(); i++)
 	{
-		GE::Math::Vector3 dir = cameraPosition - normalUI[i].transform.position;
+		GE::Math::Vector3 dir = cameraPosition - object[i].transform.position;
 		dir.y = 0.0f;
-		normalUI[i].transform.rotation = GE::Math::Quaternion::LookDirection(dir.Normalize()) * GE::Math::Quaternion::Euler({ 90, 0, 180 });
+		object[i].transform.rotation = GE::Math::Quaternion::LookDirection(dir.Normalize()) * GE::Math::Quaternion::Euler({ 90, 0, 180 });
 	}
 
-	//for (int i = 0; i < AnimationUI.size(); i++)
-	//{
-	//	GE::Math::Vector3 dir = cameraPosition - AnimationUI[i].transform.position;
-	//	dir.y = 0.0f;
-	//	AnimationUI[i].transform.rotation = LookDirection(dir.Normalize()) * GE::Math::Quaternion::Euler({ 90, 0, 180 });
-	//}
-
-
-	//	pivotPosX = StartTree::collectCount;
-	//	texSizeX = 320;//画像サイズ
-	//	clipSizeX = 32;
-	//	
+	//ごり押し
+	object[1].pivotPos = { (float)StartTree::collectCount,0 };
+	object[2].transform.position = object[1].transform.position + object[1].transform.GetRight() * object[1].transform.scale.x;
+	object[3].pivotPos = { (float)StartTree::goalCollect,0 };
+	object[3].transform.position = object[2].transform.position + object[2].transform.GetRight() * object[2].transform.scale.x;
 }
 
 void UIObject::Draw(GE::IGraphicsDeviceDx12* graphicsDevice)
@@ -69,7 +83,7 @@ void UIObject::Draw(GE::IGraphicsDeviceDx12* graphicsDevice)
 	graphicsDevice->SetShader("DefaultMeshWithTextureShader");
 
 
-	for (auto o : normalUI)
+	for (auto o : object)
 	{
 		GE::Math::Matrix4x4 modelMatrix = o.transform.GetMatrix();
 		GE::Material material;
@@ -81,39 +95,15 @@ void UIObject::Draw(GE::IGraphicsDeviceDx12* graphicsDevice)
 		// アニメーションの情報
 		GE::TextureAnimationInfo textureAnimationInfo;
 		// 画像の元サイズ
-		GE::Math::Vector2 textureSize = { 1,1 };
-		textureAnimationInfo.textureSize = textureSize;
+		textureAnimationInfo.textureSize = o.texSize;
 		// 元画像のサイズからどうやって切り抜くか　例) 元サイズが100*100で半分だけ表示したいなら{50,100}にする
 		// textureSizeと一緒にすると切り抜かれずに描画される
-		textureAnimationInfo.clipSize = { 1,1 };
+		textureAnimationInfo.clipSize = o.clipSize;
 		// 切り抜く際の左上座標 例) {0,0}なら元画像の左上 texture->GetSize()なら右下になる
-		textureAnimationInfo.pivot = { 0,0 };
+		textureAnimationInfo.pivot = o.pivotPos;
 		renderQueue->AddSetConstantBufferInfo({ 4,cbufferAllocater->BindAndAttachData(4, &textureAnimationInfo,sizeof(GE::TextureAnimationInfo)) });
 
 		graphicsDevice->DrawMesh("Plane");
-	}
-	//for (auto a : AnimationUI)
-	{
-		// アニメーションの情報
-		//GE::TextureAnimationInfo textureAnimationInfo;
-
-		//// 画像の元サイズ
-		//textureAnimationInfo.textureSize = { texSizeX,64 };
-		//// 元画像のサイズからどうやって切り抜くか　例) 元サイズが100*100で半分だけ表示したいなら{50,100}にする
-		//// textureSizeと一緒にすると切り抜かれずに描画される
-		//textureAnimationInfo.clipSize = { clipSizeX,64 };
-		//// 切り抜く際の左上座標 例) {0,0}なら元画像の左上 texture->GetSize()なら右下になる
-		//textureAnimationInfo.pivot = { pivotPosX,0 };
-
-		//GE::Math::Matrix4x4 modelMatrix = AnimationUI[0].transform.GetMatrix();
-		//GE::Material material;
-		//material.color = AnimationUI[0].color;
-		//renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
-		//renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
-		//renderQueue->AddSetConstantBufferInfo({ 4,cbufferAllocater->BindAndAttachData(4, &textureAnimationInfo,sizeof(GE::TextureAnimationInfo)) });
-		//renderQueue->AddSetShaderResource({5,graphicsDevice->GetTextureManager()->Get(AnimationUI[0].textureName)->GetSRVNumber() });
-
-		//graphicsDevice->DrawMesh("Plane");
 	}
 }
 
@@ -124,5 +114,19 @@ void UIObject::OnGui()
 
 void UIObject::UnLoad()
 {
-	normalUI.clear();
+	object.clear();
+}
+
+//この関数まだ使えないです。
+UIObject::Object UIObject::GetTagObject(std::string tag)
+{
+	for (auto o : object)
+	{
+		if (o.tag == tag)
+		{
+			return o;
+		}
+	}
+	//一致するタグが存在しないよ
+	return object[-1];
 }
