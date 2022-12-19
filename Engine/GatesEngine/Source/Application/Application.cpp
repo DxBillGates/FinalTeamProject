@@ -226,7 +226,6 @@ bool GE::Application::LoadContents()
 	// cbv5srv1ルートシグネチャ
 	RootSignature* cbv5srv1RootSignature = new RootSignature();
 	cbv5srv1RootSignature->Create(device, { DescriptorRangeType::CBV,DescriptorRangeType::CBV ,DescriptorRangeType::CBV ,DescriptorRangeType::CBV ,DescriptorRangeType::CBV ,DescriptorRangeType::SRV });
-	cbv5srv1RootSignature->Create(device, { DescriptorRangeType::CBV,DescriptorRangeType::CBV ,DescriptorRangeType::CBV ,DescriptorRangeType::CBV ,DescriptorRangeType::CBV ,DescriptorRangeType::SRV });
 	rootSignatureManager->Add(cbv5srv1RootSignature, "CBV5SRV1");
 	// cbv16srv16ルートシグネチャ
 	RootSignature* testRootSignature = new RootSignature();
@@ -237,7 +236,7 @@ bool GE::Application::LoadContents()
 	GraphicsPipelineInfo pipelineInfo = GraphicsPipelineInfo();
 	auto* graphicsPipelineManager = graphicsDevice.GetGraphicsPipelineManager();
 	GraphicsPipeline* defaultMeshPipline = new GraphicsPipeline({ &defaultMeshVertexShader,nullptr,nullptr,nullptr,&defaultMeshPixelShader });
-	defaultMeshPipline->Create(device, { GraphicsPipelineInputLayout::POSITION,GraphicsPipelineInputLayout::UV ,GraphicsPipelineInputLayout::NORMAL }, defaultMeshRootSignature, pipelineInfo);
+	defaultMeshPipline->Create(device, { GraphicsPipelineInputLayout::POSITION,GraphicsPipelineInputLayout::UV ,GraphicsPipelineInputLayout::NORMAL }, cbv5srv1RootSignature, pipelineInfo);
 	graphicsPipelineManager->Add(defaultMeshPipline, "DefaultMeshShader");
 	// skinMesh shader
 	GraphicsPipeline* defaultSkinMeshPipline = new GraphicsPipeline({ &defaultSkinMeshVertexShader,nullptr,nullptr,nullptr,&defaultMeshPixelShader });
@@ -251,7 +250,7 @@ bool GE::Application::LoadContents()
 	// texture draw shader
 	pipelineInfo.topologyType = GraphicsPipelinePrimitiveTopolotyType::TRIANGLE;
 	GraphicsPipeline* dafaultMeshWithTexturePipeline = new GraphicsPipeline({ &defaultMeshVertexShader,nullptr,nullptr,nullptr,&defaultMeshWithTexturePixelShader });
-	dafaultMeshWithTexturePipeline->Create(device, { GraphicsPipelineInputLayout::POSITION,GraphicsPipelineInputLayout::UV ,GraphicsPipelineInputLayout::NORMAL }, defaultMeshWithOneSrvRootSignature, pipelineInfo);
+	dafaultMeshWithTexturePipeline->Create(device, { GraphicsPipelineInputLayout::POSITION,GraphicsPipelineInputLayout::UV ,GraphicsPipelineInputLayout::NORMAL }, cbv5srv1RootSignature, pipelineInfo);
 	graphicsPipelineManager->Add(dafaultMeshWithTexturePipeline, "DefaultMeshWithTextureShader");
 	// default sprite shader
 	pipelineInfo.topologyType = GraphicsPipelinePrimitiveTopolotyType::TRIANGLE;
