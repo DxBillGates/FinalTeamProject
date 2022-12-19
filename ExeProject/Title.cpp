@@ -21,11 +21,11 @@ void Title::Awake(GE::GameObjectManager* gameObjectManager, GE::IGraphicsDeviceD
 	stage = Stage::stage1;
 
 	//テクスチャたちの生成、初期設定
-	Create("title_stage1", "texture_stage1", gameObjectManager, device);
+	Create("title_start", "texture_start", gameObjectManager, device);
 	sprites.back()->position = { GE::Window::GetWindowSize().x - 400,GE::Window::GetWindowSize().y / 2,0.0f };
-	sprites.back()->scale = { 300,300,0 };
+	sprites.back()->scale = { 300,100,0 };
 	//ステージ用テクスチャ追加
-	textures.push_back(device->GetTextureManager()->Get("texture_stage2"));
+	//textures.push_back(device->GetTextureManager()->Get("texture_stage2"));
 	Create("title_option", "texture_option", gameObjectManager, device);
 	sprites.back()->position = { GE::Window::GetWindowSize().x - 400,GE::Window::GetWindowSize().y / 2 + 100,0.0f };
 	sprites.back()->scale = { 300,100,0 };
@@ -36,13 +36,13 @@ void Title::Awake(GE::GameObjectManager* gameObjectManager, GE::IGraphicsDeviceD
 	Create("title_name", "texture_title", gameObjectManager, device);
 	sprites.back()->position = { GE::Window::GetWindowSize().x / 2.0f - 500,GE::Window::GetWindowSize().y / 2 - 300.0f,0 };
 	sprites.back()->scale = { 610,180,0 };
-	Create("title_nextL", "texture_next", gameObjectManager, device);
-	sprites.back()->position = { 70.0f,GE::Window::GetWindowSize().y / 2,0.0f };
-	sprites.back()->scale = { 150,150,0 };
-	Create("title_nextR", "texture_next", gameObjectManager, device);
-	sprites.back()->position = { GE::Window::GetWindowSize().x - 70,GE::Window::GetWindowSize().y / 2,0.0f };
-	sprites.back()->rotation = GE::Math::Quaternion::Euler({ 0, 0, 180 });
-	sprites.back()->scale = { 150,150,0 };
+	//Create("title_nextL", "texture_next", gameObjectManager, device);
+	//sprites.back()->position = { 70.0f,GE::Window::GetWindowSize().y / 2,0.0f };
+	//sprites.back()->scale = { 150,150,0 };
+	//Create("title_nextR", "texture_next", gameObjectManager, device);
+	//sprites.back()->position = { GE::Window::GetWindowSize().x - 70,GE::Window::GetWindowSize().y / 2,0.0f };
+	//sprites.back()->rotation = GE::Math::Quaternion::Euler({ 0, 0, 180 });
+	//sprites.back()->scale = { 150,150,0 };
 
 	alpha = 0.0f;
 	decided = false;
@@ -102,23 +102,23 @@ void Title::Select()
 		states = (Title::States)a;
 	}
 
-	//左右選択(ステージ
-	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::RIGHT)
-		|| inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::D)
-		|| inputDevice->GetJoyconL()->GetTriggerButton(GE::JoyconButtonData::RIGHT))
-	{
-		a = (stage + (Stage::stageNum - 1)) % Stage::stageNum;
-		stage = (Title::Stage)a;
-		sprites[Title::States::start]->SetTexture(textures[stage]);
-	}
-	else if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::LEFT)
-		|| inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::A)
-		|| inputDevice->GetJoyconL()->GetTriggerButton(GE::JoyconButtonData::LEFT))
-	{
-		a = (stage + 1) % Stage::stageNum;
-		stage = (Title::Stage)a;
-		sprites[Title::States::start]->SetTexture(textures[stage]);
-	}
+	////左右選択(ステージ
+	//if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::RIGHT)
+	//	|| inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::D)
+	//	|| inputDevice->GetJoyconL()->GetTriggerButton(GE::JoyconButtonData::RIGHT))
+	//{
+	//	a = (stage + (Stage::stageNum - 1)) % Stage::stageNum;
+	//	stage = (Title::Stage)a;
+	//	sprites[Title::States::start]->SetTexture(textures[stage]);
+	//}
+	//else if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::LEFT)
+	//	|| inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::A)
+	//	|| inputDevice->GetJoyconL()->GetTriggerButton(GE::JoyconButtonData::LEFT))
+	//{
+	//	a = (stage + 1) % Stage::stageNum;
+	//	stage = (Title::Stage)a;
+	//	sprites[Title::States::start]->SetTexture(textures[stage]);
+	//}
 
 	//決定
 	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE)

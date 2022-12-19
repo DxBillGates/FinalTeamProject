@@ -83,6 +83,8 @@ public:
 	/// <returns>指定内容がタイトルで選択されたか</returns>
 	bool GetSelect(Title::States s);
 
+	void Back() { decided = false; }
+
 	void ClearGameObject();
 };
 
