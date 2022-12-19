@@ -43,7 +43,7 @@ void UIObject::Update(float deltaTime)
 	{
 		GE::Math::Vector3 dir = cameraPosition - normalUI[i].transform.position;
 		dir.y = 0.0f;
-		normalUI[i].transform.rotation = LookDirection(dir.Normalize()) * GE::Math::Quaternion::Euler({ 90, 0, 180 });
+		normalUI[i].transform.rotation = GE::Math::Quaternion::LookDirection(dir.Normalize()) * GE::Math::Quaternion::Euler({ 90, 0, 180 });
 	}
 
 	//for (int i = 0; i < AnimationUI.size(); i++)
@@ -125,18 +125,4 @@ void UIObject::OnGui()
 void UIObject::UnLoad()
 {
 	normalUI.clear();
-}
-
-
-GE::Math::Quaternion UIObject::LookDirection(GE::Math::Vector3 direction)
-{
-	GE::Math::Vector3 dir = direction.Normalize();
-	GE::Math::Vector3 forward = { 0,0,1 };
-	float dot;
-	float theta;
-	dot = GE::Math::Vector3::Dot(forward, dir);
-	theta = std::acosf(dot);
-	GE::Math::Vector3 cross = GE::Math::Vector3::Cross(forward, dir).Normalize();
-	GE::Math::Quaternion result = { cross,theta };
-	return result;
 }

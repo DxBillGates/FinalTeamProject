@@ -101,7 +101,12 @@ namespace GE
 			/// <param name="q">クォータニオン</param>
 			/// <returns>回転行列</returns>
 			static Matrix4x4 Rotation(const Quaternion& q);
-
+			/// <summary>
+			/// 
+			/// </summary>
+			/// <param name="Vector3">向いてる方向のベクトル</param>
+			/// <returns></returns>
+			static Quaternion LookDirection(GE::Math::Vector3 direction);
 			/// <summary>
 			/// セットされてるクォータニオンから回転行列を作成する
 			/// </summary>

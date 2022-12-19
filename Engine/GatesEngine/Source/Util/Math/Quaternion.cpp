@@ -150,6 +150,19 @@ Matrix4x4 GE::Math::Quaternion::Rotation(const Quaternion& q)
 	return result;
 }
 
+GE::Math::Quaternion GE::Math::Quaternion::LookDirection(GE::Math::Vector3 direction)
+{
+	GE::Math::Vector3 dir = direction.Normalize();
+	GE::Math::Vector3 forward = { 0,0,1 };
+	float dot;
+	float theta;
+	dot = GE::Math::Vector3::Dot(forward, dir);
+	theta = std::acosf(dot);
+	GE::Math::Vector3 cross = GE::Math::Vector3::Cross(forward, dir).Normalize();
+	GE::Math::Quaternion result = { cross,theta };
+	return result;
+}
+
 Matrix4x4 GE::Math::Quaternion::Rotation()
 {
 	return Quaternion::Rotation(*this);

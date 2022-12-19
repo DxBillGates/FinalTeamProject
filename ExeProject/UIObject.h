@@ -39,6 +39,4 @@ private:
 	~UIObject() = default;
 	void operator=(const UIObject & obj) = delete;
 	UIObject(const UIObject & obj) = delete;
-
-	GE::Math::Quaternion LookDirection(GE::Math::Vector3 direction);
 };

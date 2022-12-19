@@ -530,7 +530,10 @@ void PlayerComponent::Dash(float dash_speed, float dash_time, float deltaTime, G
 	if (dashEasingCount < dash_time) { dashEasingCount += 1 * GE::GameSetting::Time::GetGameTime(); }
 	else { statas = PlayerStatas::MOVE; dashEasingCount = 0.0f; body_direction_LerpCount = 0; animator.PlayAnimation(1, false); }
 
-	LookDirection(direction);
+
+	body_direction_LockOn = GE::Math::Quaternion::LookDirection(direction);
+	transform->rotation = body_direction_LockOn;
+
 
 	transform->position += transform->GetForward() * current_speed * deltaTime * GE::GameSetting::Time::GetGameTime();
 }
@@ -566,23 +569,12 @@ void PlayerComponent::RayCast(float deltaTime)
 		isLockOnStart = true;
 	}
 }
-void PlayerComponent::LookDirection(GE::Math::Vector3 direction)
-{
-	GE::Math::Vector3 dir = direction.Normalize();
-	GE::Math::Vector3 forward = { 0,0,1 };
-	float dot;
-	float theta;
-	dot = GE::Math::Vector3::Dot(forward, dir);
-	theta = std::acosf(dot);
-	GE::Math::Vector3 cross = GE::Math::Vector3::Cross(forward, dir).Normalize();
-	body_direction_LockOn = { cross,theta };
-	transform->rotation = body_direction_LockOn;
-}
+
 void PlayerComponent::Reflection(GE::Math::Vector3 normal)
 {
 	statas = PlayerStatas::CRASH;
 	audioManager->Use("hitWall")->Start();
-	LookDirection(Repulsion(transform->GetForward(), normal, 2.0f));
+	transform->rotation = GE::Math::Quaternion::LookDirection(Repulsion(transform->GetForward(), normal, 2.0f));
 	CameraControl::GetInstance()->ShakeStart({ 70,70 }, 30);
 }
 //EaseInŠÖŒW‚ª‚æ‚­‚í‚©‚ç‚È‚©‚Á‚½‚©‚çˆêŽž“I‚É’Ç‰Á
