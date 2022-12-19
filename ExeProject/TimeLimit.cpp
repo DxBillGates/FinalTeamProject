@@ -4,6 +4,7 @@
 #include <GatesEngine/Header/Graphics\Window.h       >
 #include<GatesEngine/Header/Graphics/Texture.h>
 #include"PlayerComponent.h"
+#include <GatesEngine/Header/GameFramework/GameSetting.h>
 
 TimeLimit* TimeLimit::GetInstance()
 {
@@ -14,11 +15,9 @@ TimeLimit* TimeLimit::GetInstance()
 
 void TimeLimit::Start(GE::GameObjectManager* gameObjectManager)
 {
-	timer = 1;//制限時間(分指定)
-	timer = timer * 60 * frameRate;//分数を秒数に直して144fpsかける
-	minutes = timer / frameRate / 60;//分数の計算
-	tenSeconds = timer / frameRate % 60 / 10;//秒数の計算(十の位)
-	oneSeconds = timer / frameRate % 60 % 10;//秒数の計算(一の位)
+	const int DEFAULT_TIME = 1;//制限時間(分指定)
+	time = DEFAULT_TIME * 60;
+	minutes = tenSeconds = oneSeconds = 0; // 各時間値初期化
 	timeOver = false;//タイムオーバーフラグ
 
 	//各テクスチャ生成
@@ -30,24 +29,26 @@ void TimeLimit::Start(GE::GameObjectManager* gameObjectManager)
 
 void TimeLimit::Update()
 {
+
 	if (PlayerComponent::statas == PlayerComponent::PlayerStatas::TITLE)return;
 
-	if (timer <= 0)
+	if (time <= 0)
 	{
 		timeOver = true;
 	}
 	else
 	{
-		timer--;//カウントダウン
-		minutes = timer / frameRate / 60;//分数の計算
-		tenSeconds = timer / frameRate % 60 / 10;//秒数の計算(十の位)
-		oneSeconds = timer / frameRate % 60 % 10;//秒数の計算(一の位)
+		minutes = (int)time / 60;//分数の計算
+		tenSeconds = (int)time % 60 / 10;//秒数の計算(十の位)
+		oneSeconds = (int)time % 60 % 10;//秒数の計算(一の位)
 	}
+
+	time -= GE::GameSetting::Time::GetDeltaTime();
 }
 
 void TimeLimit::AddSeconds(const int& seconds)
 {
-	timer += seconds * frameRate;
+	time += seconds;
 }
 
 void TimeLimit::Create(const std::string& gui_tag, const std::string& tex_tag, GE::GameObjectManager* gameObjectManager, float posX, float scaleX, int timeNum)
