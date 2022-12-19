@@ -25,7 +25,17 @@ void CameraControl::Initialize()
 	range = {};
 	cameraShake = {};
 
-	graphicsDevice->GetMainCamera()->SetPosition({ 0,5000,-20000 });
+	nowProduct = 0;
+	//レーン追加
+	//鳥の前後がX軸、上下がY軸、左右がZ軸
+	AddLane({ 1200,9000,-9700 }, { -1200,10000,-9700 });
+	AddLane({ 400,6000,-9000 }, { 100,10000,-10500 });
+	AddLane({ 1000,9000,-6000 }, { 1000,10600,-10000 });
+	//カメラの開始位置を初めの始点に変更
+	position = pCam[nowProduct].start;
+	graphicsDevice->GetMainCamera()->SetPosition(position);
+
+	//graphicsDevice->GetMainCamera()->SetPosition({ 0,5000,-20000 });
 }
 
 void CameraControl::Update()
@@ -42,13 +52,18 @@ void CameraControl::Update()
 
 	//カメラの更新
 	GE::Math::Vector3 newCameraPosition;
-	if (PlayerComponent::statas == PlayerComponent::PlayerStatas::TITLE )
+	if (PlayerComponent::statas == PlayerComponent::PlayerStatas::TITLE)
 	{
-	current_cameraDistance = 2000;
-	newCameraPosition = target
-		- GE::Math::Vector3(targetObject->GetTransform()->GetForward().x * current_cameraDistance,
-			-300,
-			targetObject->GetTransform()->GetForward().z * current_cameraDistance);
+		current_cameraDistance = 2000;
+		//newCameraPosition = target
+		//	- GE::Math::Vector3(targetObject->GetTransform()->GetForward().x * current_cameraDistance,
+		//		-300,
+		//		targetObject->GetTransform()->GetForward().z * current_cameraDistance);
+					//現在地から終点まで
+		GE::Math::Vector3 num = pCam[nowProduct].end - position;
+		num = num.Normalize();
+		newCameraPosition = position + num * pCam[nowProduct].speed;
+
 	}
 	else if (PlayerComponent::statas == PlayerComponent::PlayerStatas::STAY_TREE)
 	{
@@ -83,6 +98,22 @@ void CameraControl::Update()
 	}
 
 	position = GE::Math::Vector3::Lerp(beforeCameraPosition, newCameraPosition, LERP_VALUE) + cameraShake * GE::GameSetting::Time::GetGameTime();
+
+	//タイトルのカメラ
+	if (PlayerComponent::statas == PlayerComponent::PlayerStatas::TITLE) {
+		//終点付近についたか(数値は誤差
+		if (position.x <= pCam[nowProduct].end.x + 5 && position.x >= pCam[nowProduct].end.x - 5
+			&& position.y <= pCam[nowProduct].end.y + 5 && position.y >= pCam[nowProduct].end.y - 5
+			&& position.z <= pCam[nowProduct].end.z + 5 && position.z >= pCam[nowProduct].end.z - 5)
+		{
+			//レーン移動
+			nowProduct = (nowProduct + 1) % pCam.size();
+			//カメラの位置を次の開始位置に飛ばす
+			position = pCam[nowProduct].start;
+			graphicsDevice->GetMainCamera()->SetPosition(position);
+		}
+	}
+
 	target += cameraShake * GE::GameSetting::Time::GetGameTime();
 	//カメラシェイク
 	Shake();
@@ -96,6 +127,14 @@ void CameraControl::DashCam(float dashEasingCount, float dash_time)
 	////カメラの距離遷移、遷移で離れて遷移で元に戻る
 	//current_cameraDistance = easeIn(normal_cameraDistance, dash_cameraDistance,
 	//	sin(GE::Math::Easing::Lerp(0, 3.14, dashEasingCount / dash_time)));
+}
+
+void CameraControl::AddLane(GE::Math::Vector3 start, GE::Math::Vector3 end, float speed)
+{
+	pCam.push_back(productionCamera());
+	pCam.back().start = start;
+	pCam.back().end = end;
+	pCam.back().speed = speed;
 }
 
 void CameraControl::Shake()

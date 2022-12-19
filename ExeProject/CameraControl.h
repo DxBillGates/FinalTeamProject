@@ -6,6 +6,13 @@
 class CameraControl
 {
 private:
+	struct productionCamera
+	{
+		GE::Math::Vector3 start;
+		GE::Math::Vector3 end;
+		float speed;
+	};
+
 	GE::IGraphicsDeviceDx12* graphicsDevice = nullptr;
 
 	GE::Math::Vector3 position;		//カメラ位置
@@ -13,6 +20,8 @@ private:
 	GE::GameObject* targetObject;
 
 	float dir;
+	int nowProduct;
+	std::vector<productionCamera> pCam;
 
 	float current_cameraDistance;//カメラとPlayerの距離
 	float normal_cameraDistance;//通常時カメラとPlayerの距離
@@ -52,6 +61,9 @@ private:
 	// 代入、コピーの禁止
 	void operator=(const CameraControl & obj) = delete;
 	CameraControl(const CameraControl & obj) = delete;
+
+	//レーン追加
+	void AddLane(GE::Math::Vector3 start, GE::Math::Vector3 end, float speed = 500);
 
 	void Shake();
 	//EaseIn関係がよくわからなかったから一時的に追加
