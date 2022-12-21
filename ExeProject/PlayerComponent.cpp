@@ -25,7 +25,7 @@ float PlayerComponent::rayHitSecond = 144.0f;						//ƒƒbƒNƒIƒ“‚·‚éÆ€‚ğ‡‚í‚¹‚
 float PlayerComponent::normal_speed = 20.0f;						//’Êí‚ÌƒXƒs[ƒh
 float PlayerComponent::current_speed = normal_speed;				//Œ»İ‚ÌƒXƒs[ƒh
 float PlayerComponent::damageSpeed = 0.0f;						//“G‚Éƒqƒbƒg‚µ‚½‚Æ‚«‚Éƒ_ƒ[ƒW‚ª“ü‚éƒXƒs[ƒh
-int PlayerComponent::collectMax = 10;
+int PlayerComponent::colectMax = 10;
 float PlayerComponent::worldRadius = 38000.0f;
 float PlayerComponent::lockOnLength = 10000.0f;
 
@@ -53,7 +53,16 @@ void PlayerComponent::Start()
 	body_direction = { 0,-1.57f,0 };
 	dashEasingCount = 0.0;
 	startCouunt = 0.0f;
-	collectCount = 0;
+	colectCount = 0;
+	//‘«‚Å‚Â‚©‚ñ‚Å‚¢‚éƒIƒuƒWƒFƒNƒg‚Ì‰Šú‰»
+	colectingObjs.resize(colectMax);
+	for (int i = 0; i < colectingObjs.size(); i++)
+	{
+		GE::Math::Vector3 random = { GE::RandomMaker::GetFloat(-50.0f,50.0f),GE::RandomMaker::GetFloat(100.0f,120.0f),GE::RandomMaker::GetFloat(-100.0f,0.0f) };
+		colectingObjs[i].LocalPosition = random;
+		colectingObjs[i].transform.scale = GE::RandomMaker::GetFloat(30.0f, 60.0f);
+	}
+
 	statasChangeCount = 0;
 
 	hitStopCount = hitStopTime;
@@ -96,6 +105,13 @@ void PlayerComponent::Update(float deltaTime)
 	//‘€ì
 	Control(f);
 	CameraControl::GetInstance()->SetTargetObject(gameObject);
+	//‘«‚Å‚Â‚©‚ñ‚Å‚¢‚éæW•¨‚ÌXV
+	for (int i = 0; i < colectCount; i++)
+	{
+		colectingObjs[i].transform.position = transform->position - transform->GetUp() * colectingObjs[i].LocalPosition.y
+			+ transform->GetForward() * colectingObjs[i].LocalPosition.z
+			+ transform->GetRight() * colectingObjs[i].LocalPosition.x;
+	}
 	//if (statas != PlayerStatas::DEBUG)
 	{
 		CameraControl::GetInstance()->Update();
@@ -127,8 +143,8 @@ void PlayerComponent::Draw()
 	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
 
 	graphicsDevice->SetShader("DefaultSkinMeshShader");
-
 	GE::Math::Matrix4x4 modelMatrix = transform->GetMatrix();
+
 	GE::Material material;
 	material.color = GE::Color::White();
 
@@ -139,37 +155,22 @@ void PlayerComponent::Draw()
 
 	graphicsDevice->DrawMesh("Player");
 
+	//Š‚µ‚Ä‚¢‚é‚¦‚³‚Ì•`‰æ
+	graphicsDevice->SetShader("DefaultMeshShader");
+	for (int i = 0; i < colectCount; i++)
+	{
+		modelMatrix = colectingObjs[i].transform.GetMatrix();
+
+		renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
+		renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
+		renderQueue->AddSetShaderResource({ 5,graphicsDevice->GetTextureManager()->Get(colectingObjs[i].textureName)->GetSRVNumber() });
+		graphicsDevice->DrawMesh("Sphere");
+
+	}
 }
 
 void PlayerComponent::LateDraw()
 {
-	if (!is_rayCast_active)
-	{
-		return;
-	}
-	const float SPRITE_SIZE = 30;
-
-	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
-	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
-
-	graphicsDevice->SetShader("DefaultSpriteWithTextureShader");
-
-	GE::Math::Matrix4x4 modelMatrix = GE::Math::Matrix4x4::Scale({ GE::Math::Lerp(SPRITE_SIZE,10,rayHitCount / rayHitSecond) });
-
-	modelMatrix *= GE::Math::Matrix4x4::RotationZ(rayHitCount);
-	modelMatrix *= GE::Math::Matrix4x4::Translate({ center.x,center.y,0 });
-	GE::Material material;
-	material.color = gameObject->GetColor();
-
-	GE::CameraInfo cameraInfo;
-	cameraInfo.viewMatrix = GE::Math::Matrix4x4::GetViewMatrixLookTo({ 0,1,0 }, { 0,0,1 }, { 0,1,0 });
-	cameraInfo.projMatrix = GE::Math::Matrix4x4::GetOrthographMatrix(GE::Window::GetWindowSize());
-
-	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
-	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
-	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
-	renderQueue->AddSetShaderResource({ 4,graphicsDevice->GetTextureManager()->Get("texture_null")->GetSRVNumber() });
-	graphicsDevice->DrawMesh("2DPlane");
 
 }
 
@@ -227,7 +228,7 @@ void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 			}
 			audioManager->Use("catch2")->Start();
 			//ûW•¨ +1
-			collectCount < collectMax ? collectCount++ : 0;
+			colectCount < colectMax ? colectCount++ : 0;
 		}
 		hitStopCount = 0;
 		CameraControl::GetInstance()->ShakeStart({ 70,70 }, 30);
@@ -354,9 +355,9 @@ void PlayerComponent::Control(float deltaTime)
 			//stayƒAƒjƒ[ƒVƒ‡ƒ“
 			animator.PlayAnimation(3, false);
 			//ûW•¨‚¨‚¿‹A‚è
-			StartTree::collectCount += collectCount;
-			TimeLimit::GetInstance()->AddSeconds(10 * collectCount);
-			collectCount = 0;
+			StartTree::collectCount += colectCount;
+			TimeLimit::GetInstance()->AddSeconds(10 * colectCount);
+			colectCount = 0;
 			//’…—¤
 			statas = PlayerStatas::STAY_TREE;
 		}
