@@ -25,6 +25,7 @@ namespace GE
 		void Awake();
 		void Start();
 		void Update(float deltaTime);
+		void DrawShadow();
 		void Draw();
 		void LateDraw();
 

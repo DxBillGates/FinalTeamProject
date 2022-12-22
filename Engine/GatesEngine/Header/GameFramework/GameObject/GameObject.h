@@ -42,6 +42,7 @@ namespace GE
 		void Awake();
 		void Start();
 		void Update(float deltaTime);
+		void DrawShadow();
 		void Draw();
 		void LateDraw();
 		void OnCollision(GameObject* other,bool enter = false,bool stay = false,bool exit = false);

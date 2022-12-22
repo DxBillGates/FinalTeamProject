@@ -69,6 +69,16 @@ void GE::GameObject::Update(float deltaTime)
 	}
 }
 
+void GE::GameObject::DrawShadow()
+{
+	graphicsDevice->SetCurrentRenderQueue();
+
+	for (auto& component : components)
+	{
+		component->DrawShadow();
+	}
+}
+
 void GE::GameObject::Draw()
 {
 	graphicsDevice->SetCurrentRenderQueue();

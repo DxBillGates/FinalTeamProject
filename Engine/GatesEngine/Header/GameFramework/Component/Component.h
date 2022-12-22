@@ -18,6 +18,7 @@ namespace GE
 		virtual void Awake() {}
 		virtual void Start() {}
 		virtual void Update(float deltaTime) {}
+		virtual void DrawShadow() {}
 		virtual void Draw() {}
 		virtual void LateDraw() {}
 

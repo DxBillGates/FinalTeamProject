@@ -287,6 +287,12 @@ bool GE::Application::LoadContents()
 	resultDepthTexture->Create(device, shaderResourceHeap, mainWindow.GetWindowSize());
 	layerManager->Add(new Layer(resultRenderTexture, resultDepthTexture), "resultLayer");
 
+	RenderTexture* shadowRenderTexture = new RenderTexture();
+	DepthTexture* shadowDepthTexture = new DepthTexture();
+	shadowRenderTexture->Create(device, shaderResourceHeap, { 1,1 }, Color::Black());
+	shadowDepthTexture->Create(device, shaderResourceHeap, mainWindow.GetWindowSize());
+	layerManager->Add(new Layer(shadowRenderTexture, shadowDepthTexture), "shadowLayer");
+
 	return true;
 }
 

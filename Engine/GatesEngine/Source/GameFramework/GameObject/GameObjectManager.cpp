@@ -60,6 +60,17 @@ void GE::GameObjectManager::Update(float deltaTime)
 	inspectorGui.OnGui();
 }
 
+void GE::GameObjectManager::DrawShadow()
+{
+	for (auto& objects : gameObjects)
+	{
+		for (auto& object : objects.second)
+		{
+			object->DrawShadow();
+		}
+	}
+}
+
 void GE::GameObjectManager::Draw()
 {
 	for (auto& objects : gameObjects)
