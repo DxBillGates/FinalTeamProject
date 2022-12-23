@@ -15,6 +15,7 @@ public:
 	void Awake();
 	void Start();
 	void Update(float deltaTime);
+	void DrawShadow() override;
 	void Draw();
 	void LateDraw();
 	void OnCollision(GE::GameObject* other);

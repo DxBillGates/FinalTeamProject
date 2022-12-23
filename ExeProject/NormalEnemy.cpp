@@ -3,6 +3,8 @@
 #include <GatesEngine/Header/Util/Random.h           >
 #include <GatesEngine/Header/Graphics\Window.h       >
 #include <GatesEngine/Header/GUI\GUIManager.h        >
+#include <GatesEngine/Header/GameFramework/GameObject/GameObjectManager.h>
+#include <GatesEngine/Header/GameFramework/Component/DirectionalLight.h>
 
 #include"NormalEnemy.h"
 
@@ -34,10 +36,10 @@ void NormalEnemy::Update(float deltaTime)
 	transform->position = (transform->position + GE::Math::Vector3(0.0f, sinf(angle) * range * GE::GameSetting::Time::GetGameTime(), 0.0f));
 }
 
-void NormalEnemy::Draw()
+void NormalEnemy::DrawShadow()
 {
 	if (statas == Statas::DEAD) { return; }
-	
+
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
 	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
 
@@ -47,6 +49,32 @@ void NormalEnemy::Draw()
 	material.color = gameObject->GetColor();
 
 	GE::Math::Matrix4x4 modelMatrix = transform->GetMatrix();
+
+	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
+	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
+	graphicsDevice->DrawMesh("Sphere");
+}
+
+void NormalEnemy::Draw()
+{
+	if (statas == Statas::DEAD) { return; }
+	
+	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
+	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
+
+	graphicsDevice->SetShader("DefaultMeshWithShadowShader");
+
+	renderQueue->AddSetShaderResource({ 17,graphicsDevice->GetLayerManager()->Get("shadowLayer")->GetDepthTexture()->GetSRVNumber() });
+
+	GE::Material material;
+	material.color = gameObject->GetColor();
+
+	GE::Math::Matrix4x4 modelMatrix = transform->GetMatrix();
+
+	GE::CameraInfo cameraInfo = graphicsDevice->GetMainCamera()->GetCameraInfo();
+	cameraInfo.lightMatrix = gameObject->GetGameObjectManager()->FindGameObjectWithTag("directionalLight", "directionalLight")->GetComponent<GE::DirectionalLight>()->GetVPMatrix();
+
+	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
 
 	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });

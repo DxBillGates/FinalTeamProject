@@ -16,7 +16,7 @@ float4 main(DefaultMeshVSOutput psInput) : SV_TARGET
 		float3 posFromLightVP = psInput.tpos.xyz / psInput.tpos.w;
 		float2 shadowUV = saturate((posFromLightVP.xy + float2(1, -1)) * float2(0.5, -0.5));
 		float4 depthFromLight = shadowTex.Sample(clampPointSampler, shadowUV);
-		shadowWeight = (depthFromLight.r < posFromLightVP.z - 0.01f) ? 0.7f : 1;
+		shadowWeight = (depthFromLight.r < posFromLightVP.z - 0.0025f) ? 0.5f : 1;
 	}
 
 	// diffuse

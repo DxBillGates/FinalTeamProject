@@ -37,12 +37,11 @@ GE::DirectionalLight::~DirectionalLight()
 
 void GE::DirectionalLight::Start()
 {
-	transform->rotation = GE::Math::Quaternion::Euler({90,0,0});
-
-	drawRange = { 20000,20000,20000 };
+	drawRange = { 20000,20000,30000 };
 	direction = { 0,0,1 };
 	up = { 0,-1,0 };
-	angleXY = { 90,0 };
+	angleXY = { 50,30 };
+	transform->rotation = Math::Quaternion::Euler({ angleXY.x,angleXY.y,0 });
 
 	lightMatrix = Math::Matrix4x4::GetViewMatrixLookTo(-direction * drawRange.z, direction, up);
 	projectionMatrix = Math::Matrix4x4::GetOrthographMatrix({ drawRange.x,drawRange.y },1,drawRange.z);
@@ -52,19 +51,24 @@ void GE::DirectionalLight::Start()
 
 void GE::DirectionalLight::Update(float deltaTime)
 {
+	const float MAX_RADIUS = 20000;
 	direction = CalclateDirection();
 	up = CalclateUp();
 
 	Math::Vector3 position = (target) ? target->position + -direction * drawRange.z : -direction * drawRange.z;
-	position = (position.Length() > drawRange.z || position.Length() < drawRange.z) ? position.Normalize() * drawRange : position;
+	//Math::Vector3 tempPosition = -direction * drawRange;
+	//position = (tempPosition.Length() > MAX_RADIUS || tempPosition.Length() < MAX_RADIUS) ? position.Normalize() * MAX_RADIUS : position;
+	transform->position = position;
+
 
 	lightMatrix = Math::Matrix4x4::GetViewMatrixLookTo(position, direction, up);
-	projectionMatrix = Math::Matrix4x4::GetOrthographMatrix({ drawRange.x,drawRange.y }, 1, drawRange.z);
+	projectionMatrix = Math::Matrix4x4::GetOrthographMatrix({ drawRange.x,drawRange.y }, 1, drawRange.z * 5);
 }
 
 void GE::DirectionalLight::OnGui()
 {
 	ImGui::DragFloat2("angle", angleXY.value);
+	ImGui::DragFloat3("drawRange", drawRange.value);
 	ImGui::Text("%.3f,%.3f,%.3f", direction.x,direction.y,direction.z);
 	ImGui::Text("%.3f,%.3f,%.3f", up.x, up.y, up.z);
 	transform->rotation = Math::Quaternion::Euler({ angleXY.x,angleXY.y,0 });

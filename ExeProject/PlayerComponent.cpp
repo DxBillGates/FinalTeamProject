@@ -4,6 +4,7 @@
 #include <GatesEngine/Header/GUI\GUIManager.h        >
 #include <GatesEngine/Header/GameFramework/Collision/CollisionManager.h>
 #include <GatesEngine/Header\GameFramework/GameSetting.h>
+#include <GatesEngine/Header/GameFramework/Component/DirectionalLight.h>
 
 #include"PlayerComponent.h"
 #include"EnemyManager.h"
@@ -154,7 +155,13 @@ void PlayerComponent::Draw()
 	animator.SetAnimationData(graphicsDevice, modelMatrix);
 
 	//renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
+	GE::CameraInfo cameraInfo = graphicsDevice->GetMainCamera()->GetCameraInfo();
+	cameraInfo.lightMatrix = gameObject->GetGameObjectManager()->FindGameObjectWithTag("directionalLight", "directionalLight")->GetComponent<GE::DirectionalLight>()->GetVPMatrix();
+
+	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
+	renderQueue->AddSetShaderResource({ 17,graphicsDevice->GetLayerManager()->Get("shadowLayer")->GetDepthTexture()->GetSRVNumber() });
+
 
 	graphicsDevice->DrawMesh("Player");
 

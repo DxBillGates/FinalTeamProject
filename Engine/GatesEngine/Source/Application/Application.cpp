@@ -240,8 +240,8 @@ bool GE::Application::LoadContents()
 	defaultMeshPipline->Create(device, { GraphicsPipelineInputLayout::POSITION,GraphicsPipelineInputLayout::UV ,GraphicsPipelineInputLayout::NORMAL }, cbv5srv1RootSignature, pipelineInfo);
 	graphicsPipelineManager->Add(defaultMeshPipline, "DefaultMeshShader");
 	// skinMesh shader
-	GraphicsPipeline* defaultSkinMeshPipline = new GraphicsPipeline({ &defaultSkinMeshVertexShader,nullptr,nullptr,nullptr,&defaultMeshPixelShader });
-	defaultSkinMeshPipline->Create(device, { GraphicsPipelineInputLayout::POSITION,GraphicsPipelineInputLayout::UV ,GraphicsPipelineInputLayout::NORMAL,GraphicsPipelineInputLayout::BONEINDEX,GraphicsPipelineInputLayout::BONEWEIGHT }, defaultMeshRootSignature, pipelineInfo);
+	GraphicsPipeline* defaultSkinMeshPipline = new GraphicsPipeline({ &defaultSkinMeshVertexShader,nullptr,nullptr,nullptr,&defaultMeshWithShadowPixelShader });
+	defaultSkinMeshPipline->Create(device, { GraphicsPipelineInputLayout::POSITION,GraphicsPipelineInputLayout::UV ,GraphicsPipelineInputLayout::NORMAL,GraphicsPipelineInputLayout::BONEINDEX,GraphicsPipelineInputLayout::BONEWEIGHT }, testRootSignature, pipelineInfo);
 	graphicsPipelineManager->Add(defaultSkinMeshPipline, "DefaultSkinMeshShader");
 	// line shader
 	pipelineInfo.topologyType = GraphicsPipelinePrimitiveTopolotyType::LINE;
@@ -295,8 +295,8 @@ bool GE::Application::LoadContents()
 
 	RenderTexture* shadowRenderTexture = new RenderTexture();
 	DepthTexture* shadowDepthTexture = new DepthTexture();
-	shadowRenderTexture->Create(device, shaderResourceHeap, mainWindow.GetWindowSize(), Color::Black());
-	shadowDepthTexture->Create(device, shaderResourceHeap, mainWindow.GetWindowSize());
+	shadowRenderTexture->Create(device, shaderResourceHeap, Math::Vector2(2048), Color::Black());
+	shadowDepthTexture->Create(device, shaderResourceHeap,  Math::Vector2(2048));
 	layerManager->Add(new Layer(shadowRenderTexture, shadowDepthTexture), "shadowLayer");
 
 	return true;

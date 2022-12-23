@@ -27,13 +27,37 @@ void FieldTree::Update(float deltaTime)
 	transform->scale = { scale };
 }
 
-void FieldTree::Draw()
+void FieldTree::DrawShadow()
 {
 
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
 	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
 
 	graphicsDevice->SetShader("DefaultMeshShader");
+
+	GE::Material material;
+	material.color = body_Color;
+	GE::Math::Matrix4x4 modelMatrix = transform->GetMatrix();
+
+	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
+	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
+	graphicsDevice->DrawMesh("tree1");
+
+	material.color = leaf_Color;
+	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
+	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
+	graphicsDevice->DrawMesh("tree_leaf1");
+}
+
+void FieldTree::Draw()
+{
+
+	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
+	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
+
+	graphicsDevice->SetShader("DefaultMeshWithShadowShader");
+
+	renderQueue->AddSetShaderResource({ 17,graphicsDevice->GetLayerManager()->Get("shadowLayer")->GetDepthTexture()->GetSRVNumber() });
 
 	GE::Material material;
 	material.color = body_Color;
