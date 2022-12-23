@@ -21,9 +21,13 @@ GE::Math::Vector3 GE::DirectionalLight::CalclateUp()
 
 GE::DirectionalLight::DirectionalLight()
 	: drawRange(0)
-	,lightMatrix(GE::Math::Matrix4x4::Identity())
+	, direction(0)
+	, up(0)
+	, angleXY(0)
+	, lightMatrix(GE::Math::Matrix4x4::Identity())
 	, projectionMatrix(GE::Math::Matrix4x4::Identity())
 	, vpMatrix(GE::Math::Matrix4x4::Identity())
+	, target(nullptr)
 {
 }
 
@@ -51,7 +55,10 @@ void GE::DirectionalLight::Update(float deltaTime)
 	direction = CalclateDirection();
 	up = CalclateUp();
 
-	lightMatrix = Math::Matrix4x4::GetViewMatrixLookTo(-direction * drawRange.z, direction, up);
+	Math::Vector3 position = (target) ? target->position + -direction * drawRange.z : -direction * drawRange.z;
+	position = (position.Length() > drawRange.z || position.Length() < drawRange.z) ? position.Normalize() * drawRange : position;
+
+	lightMatrix = Math::Matrix4x4::GetViewMatrixLookTo(position, direction, up);
 	projectionMatrix = Math::Matrix4x4::GetOrthographMatrix({ drawRange.x,drawRange.y }, 1, drawRange.z);
 }
 
@@ -65,7 +72,7 @@ void GE::DirectionalLight::OnGui()
 
 const GE::Math::Matrix4x4& GE::DirectionalLight::GetViewMatrix()
 {
-	return vpMatrix;
+	return lightMatrix;
 }
 
 const GE::Math::Matrix4x4& GE::DirectionalLight::GetProjectionMatrix()
@@ -76,4 +83,9 @@ const GE::Math::Matrix4x4& GE::DirectionalLight::GetProjectionMatrix()
 const GE::Math::Matrix4x4 GE::DirectionalLight::GetVPMatrix()
 {
 	return lightMatrix * projectionMatrix;
+}
+
+void GE::DirectionalLight::SetTarget(Transform* transform)
+{
+	target = transform;
 }

@@ -15,6 +15,8 @@ namespace GE
 		Math::Matrix4x4 projectionMatrix;
 		// light * proj 行列
 		Math::Matrix4x4 vpMatrix;
+
+		Transform* target;
 	private:
 		// 自身の回転値から方向ベクトルを取得
 		GE::Math::Vector3 CalclateDirection();
@@ -28,5 +30,6 @@ namespace GE
 		const Math::Matrix4x4& GetViewMatrix();
 		const Math::Matrix4x4& GetProjectionMatrix();
 		const Math::Matrix4x4 GetVPMatrix();
+		void SetTarget(Transform* transform);
 	};
 }

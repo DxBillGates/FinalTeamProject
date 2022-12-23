@@ -190,7 +190,8 @@ void SampleScene::Load()
 	{
 		auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject("directionalLight", "directionalLight"));
 		directionalLight = testObject->AddComponent<GE::DirectionalLight>();
-		testObject->GetTransform()->position = { 0,20000,-9170 };
+		directionalLight->SetTarget(gameObjectManager.FindGameObjectWithTag("Player", "player")->GetTransform());
+		testObject->GetTransform()->position = { 0,0,0 };
 	}
 }
 
