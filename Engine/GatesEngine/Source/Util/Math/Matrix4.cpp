@@ -276,7 +276,7 @@ GE::Math::Matrix4x4 GE::Math::Matrix4x4::GetOrthographMatrix(const Vector2& size
 	result =
 	{
 		2.0f / size.x,0,0,0,
-		0,-2.0f / size.y,0,0,
+		0,2.0f / size.y,0,0,
 		0,0,1 / (farClip - nearClip),0,
 		0,nearClip / (nearClip - farClip),0,1
 	};

@@ -80,6 +80,7 @@ public:
 	void Awake() override;
 	void Start() override;
 	void Update(float deltaTime) override;
+	void DrawShadow() override;
 	void Draw() override;
 	void LateDraw() override;
 	void OnCollision(GE::GameObject* other) override;

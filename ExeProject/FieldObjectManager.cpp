@@ -62,6 +62,7 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 		auto* object = gameObjectManager->AddGameObject(new GE::GameObject("tile", "tile"));
 		auto* sampleComponent = object->AddComponent<FieldObject>();
 		object->GetComponent<FieldObject>()->modelName = "Plane";
+		sampleComponent->shaderName = "DefaultMeshWithShadowShader";
 		object->GetTransform()->scale = { 100000,1,100000 };
 		object->GetTransform()->position = { 0,-30.f,0 };
 		object->SetColor(GE::Color(0.2f, 0.5f, 0.2f, 1.0f));
@@ -79,6 +80,7 @@ void FieldObjectManager::SetGroundMesh(GE::MeshData<GE::Vertex_UV_Normal> mesh)
 	auto* collider = object->AddComponent < GE::MeshCollider >();
 	collider->SetMesh(&mesh);
 	object->GetComponent<FieldObject>()->modelName = "GroundTest";
+	sampleComponent->shaderName = "DefaultMeshWithShadowShader";
 	object->SetColor(GE::Color(0.5f, 0.9f, 0.5f, 1.0f));
 	object->GetTransform()->position = { 1000,0,-15000 };
 	object->GetTransform()->scale = { 2 };

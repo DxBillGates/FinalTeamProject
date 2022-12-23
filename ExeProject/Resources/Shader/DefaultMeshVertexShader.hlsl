@@ -19,5 +19,6 @@ DefaultMeshVSOutput main(DefaultMeshVSInput vsInput)
 	float2 ancerPoint = pivot / (textureSize / clipSize);
 	float2 size = clipSize / textureSize;
 	output.uv = vsInput.uv * size + ancerPoint;
+	output.tpos = mul(lightMatrix, mul(billboard, mul(modelMatrix, vsInput.pos)));
 	return output;
 }

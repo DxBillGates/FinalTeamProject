@@ -19,6 +19,7 @@ struct DefaultMeshVSOutput
 	float4 svpos : SV_POSITION;
 	float2 uv : UV;
 	float3 normal : NORMAL;
+	float4 tpos : POSITION;
 	float4 worldPosition : WORLD_POSITION;
 };
 
@@ -47,7 +48,7 @@ struct DefaultLineVSOutput
 	float4 color : COLOR;
 };
 
-static const int MAX_BONE = 32;
+static const int MAX_BONE = 64;
 cbuffer ModelInfo : register(b0)
 {
 	matrix modelMatrix;
@@ -59,6 +60,7 @@ cbuffer CameraInfo : register(b1)
 	matrix viewMatrix;
 	matrix projMatrix;
 	matrix billboard;
+	matrix lightMatrix;
 	float4 cameraPos;
 	float4 cameraDir;
 }

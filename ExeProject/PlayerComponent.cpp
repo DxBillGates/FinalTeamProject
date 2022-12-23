@@ -119,6 +119,25 @@ void PlayerComponent::Update(float deltaTime)
 	animator.Update(deltaTime);
 }
 
+void PlayerComponent::DrawShadow()
+{
+	if (!isDraw)return;
+
+	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
+	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
+
+	graphicsDevice->SetShader("DefaultSkinMeshShader");
+
+	GE::Math::Matrix4x4 modelMatrix = transform->GetMatrix();
+	GE::Material material;
+	material.color = GE::Color::White();
+
+	animator.SetAnimationData(graphicsDevice, modelMatrix);
+	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
+
+	graphicsDevice->DrawMesh("Player");
+}
+
 void PlayerComponent::Draw()
 {
 	if (!isDraw)return;

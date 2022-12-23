@@ -213,7 +213,8 @@ bool GE::Application::LoadContents()
 	defaultSpriteWithTexturePixelShader.CompileShaderFileWithoutFormat(L"DefaultSpriteWithTexturePixelShader", "ps_5_0");
 	Shader spriteTextureForPosteffectPixelShader;
 	spriteTextureForPosteffectPixelShader.CompileShaderFileWithoutFormat(L"SpriteTextureForPosteffectPixelShader", "ps_5_0");
-
+	Shader defaultMeshWithShadowPixelShader;
+	defaultMeshWithShadowPixelShader.CompileShaderFileWithoutFormat(L"DefaultMeshWithShadowPixelShader", "ps_5_0");
 	// rootSignatureì¬
 	auto* rootSignatureManager = graphicsDevice.GetRootSignatureManager();
 	RootSignature* defaultMeshRootSignature = new RootSignature();
@@ -271,6 +272,11 @@ bool GE::Application::LoadContents()
 	GraphicsPipeline* gaussBlurPipeline = new GraphicsPipeline({ &defaultSpriteVertexShader,nullptr,nullptr,nullptr,&gaussBlurPixelShader });
 	gaussBlurPipeline->Create(device, { GraphicsPipelineInputLayout::POSITION,GraphicsPipelineInputLayout::UV }, cbv5srv1RootSignature, pipelineInfo);
 	graphicsPipelineManager->Add(gaussBlurPipeline, "GaussBlurShader");
+	// default mesh with shadow shader
+	pipelineInfo = GraphicsPipelineInfo();
+	GraphicsPipeline* defaultMeshWithShadowPipline = new GraphicsPipeline({ &defaultMeshVertexShader,nullptr,nullptr,nullptr,&defaultMeshWithShadowPixelShader });
+	defaultMeshWithShadowPipline->Create(device, { GraphicsPipelineInputLayout::POSITION,GraphicsPipelineInputLayout::UV ,GraphicsPipelineInputLayout::NORMAL }, testRootSignature, pipelineInfo);
+	graphicsPipelineManager->Add(defaultMeshWithShadowPipline, "DefaultMeshWithShadowShader");
 
 	// demo layerì¬
 	auto* layerManager = graphicsDevice.GetLayerManager();
@@ -289,7 +295,7 @@ bool GE::Application::LoadContents()
 
 	RenderTexture* shadowRenderTexture = new RenderTexture();
 	DepthTexture* shadowDepthTexture = new DepthTexture();
-	shadowRenderTexture->Create(device, shaderResourceHeap, { 1,1 }, Color::Black());
+	shadowRenderTexture->Create(device, shaderResourceHeap, mainWindow.GetWindowSize(), Color::Black());
 	shadowDepthTexture->Create(device, shaderResourceHeap, mainWindow.GetWindowSize());
 	layerManager->Add(new Layer(shadowRenderTexture, shadowDepthTexture), "shadowLayer");
 

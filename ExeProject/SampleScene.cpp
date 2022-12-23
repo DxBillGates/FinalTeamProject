@@ -110,7 +110,37 @@ void SampleScene::Update(float deltaTime)
 
 void SampleScene::Draw()
 {
+	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
+	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
+	GE::Camera* mainCamera = graphicsDevice->GetMainCamera();
 
+	GE::GameObject* directionLight = gameObjectManager.FindGameObjectWithTag("directionLight", "directionLight");
+	GE::GameObject* player = gameObjectManager.FindGameObjectWithTag("Player", "player");
+	GE::Transform* directionLightPos = directionLight->GetTransform();
+	directionLightPos->position.x = player->GetTransform()->position.x;
+	directionLightPos->position.y = directionLight->GetTransform()->position.y;
+	directionLightPos->position.z = player->GetTransform()->position.z;
+	GE::CameraInfo cameraInfo = mainCamera->GetCameraInfo();
+	GE::Math::Matrix4x4 lightMatrix = GE::Math::Matrix4x4::GetViewMatrixLookTo(directionLightPos->position, { 0,-1,0 }, { 0,0,1 });
+	cameraInfo.viewMatrix = lightMatrix;
+	cameraInfo.projMatrix = GE::Math::Matrix4x4::GetOrthographMatrix(GE::Math::Vector2(20000),1,20000);
+	cameraInfo.lightMatrix = lightMatrix * cameraInfo.projMatrix;
+
+	graphicsDevice->ClearLayer("shadowLayer");
+	graphicsDevice->SetLayer("shadowLayer");
+	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
+	gameObjectManager.DrawShadow();
+
+	graphicsDevice->ExecuteRenderQueue();
+	graphicsDevice->ExecuteCommands();
+
+	graphicsDevice->SetShaderResourceDescriptorHeap();
+	GE::DirectionalLightInfo directionalLight;
+	renderQueue->AddSetConstantBufferInfo({ 3,cbufferAllocater->BindAndAttachData(3, &directionalLight, sizeof(GE::DirectionalLightInfo)) });
+	cameraInfo = mainCamera->GetCameraInfo();
+	cameraInfo.lightMatrix = lightMatrix;
+	graphicsDevice->SetLayer("resultLayer");
+	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
 	gameObjectManager.Draw();
 	UIObject::GetInstance()->Draw(graphicsDevice);
 }
@@ -162,6 +192,11 @@ void SampleScene::Load()
 	collisionManager.AddTagCombination("player", "nest");
 	collisionManager.AddTagCombination("player", "tile");
 	//collisionManager.AddTagCombination("player", "birdEnemy");
+
+	{
+		auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject("directionLight", "directionLight"));
+		testObject->GetTransform()->position = { 0,20000,-9170 };
+	}
 }
 
 void SampleScene::UnLoad()

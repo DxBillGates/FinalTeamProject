@@ -50,6 +50,7 @@ DefaultMeshVSOutput main(DefaultSkinMeshVSInput input)
 	output.uv = input.uv;
 	output.normal = mul(billboard, mul(modelMatrix, float4(skinned.normal, 0))).xyz;
 	output.worldPosition = mul(modelMatrix, skinned.pos);
+	output.tpos = float4(0, 0, 0, 1);
 
 	return output;
 }
