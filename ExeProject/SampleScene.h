@@ -6,6 +6,7 @@
 #include <GatesEngine/Header/Graphics/VertexData.h>
 #include <GatesEngine/Header/Graphics/MeshCreater.h>
 #include <GatesEngine/Header/Graphics/Mesh.h>
+#include <GatesEngine/Header/GameFramework/Component/DirectionalLight.h>
 
 class SampleScene : public GE::Scene
 {
@@ -13,6 +14,7 @@ private:
 	GE::ICollider* col1, * col2;
 	GE::MeshData<GE::Vertex_UV_Normal> groundModel;
 	GE::MeshData<GE::Vertex_UV_Normal> startTreeModel;
+	GE::DirectionalLight* directionalLight;
 public:
 	SampleScene();
 	SampleScene(const std::string& sceneName);

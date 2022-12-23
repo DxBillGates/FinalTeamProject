@@ -304,6 +304,15 @@ GE::Math::Quaternion& GE::Math::Quaternion::operator*=(const Quaternion& q)
 	return *this;
 }
 
+bool GE::Math::Quaternion::operator==(const Quaternion& q1)
+{
+	if (this->x != q1.x)return false;
+	if (this->y != q1.y)return false;
+	if (this->z != q1.z)return false;
+	if (this->w != q1.w)return false;
+	return true;
+}
+
 GE::Math::Quaternion GE::Math::operator+(const Quaternion& q1, const Quaternion& q2)
 {
 	Quaternion result = q1;

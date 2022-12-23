@@ -13,6 +13,7 @@
 #include"MiniMapViewer.h"
 #include"Collect.h"
 #include"UIObject.h"
+#include <GatesEngine/Header/GameFramework/Component/DirectionalLight.h>
 
 SampleScene::SampleScene()
 	: SampleScene("SampleScene")
@@ -114,17 +115,10 @@ void SampleScene::Draw()
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
 	GE::Camera* mainCamera = graphicsDevice->GetMainCamera();
 
-	GE::GameObject* directionLight = gameObjectManager.FindGameObjectWithTag("directionLight", "directionLight");
-	GE::GameObject* player = gameObjectManager.FindGameObjectWithTag("Player", "player");
-	GE::Transform* directionLightPos = directionLight->GetTransform();
-	directionLightPos->position.x = player->GetTransform()->position.x;
-	directionLightPos->position.y = directionLight->GetTransform()->position.y;
-	directionLightPos->position.z = player->GetTransform()->position.z;
-	GE::CameraInfo cameraInfo = mainCamera->GetCameraInfo();
-	GE::Math::Matrix4x4 lightMatrix = GE::Math::Matrix4x4::GetViewMatrixLookTo(directionLightPos->position, { 0,-1,0 }, { 0,0,1 });
-	cameraInfo.viewMatrix = lightMatrix;
-	cameraInfo.projMatrix = GE::Math::Matrix4x4::GetOrthographMatrix(GE::Math::Vector2(20000),1,20000);
-	cameraInfo.lightMatrix = lightMatrix * cameraInfo.projMatrix;
+	GE::CameraInfo cameraInfo;
+	cameraInfo.viewMatrix = directionalLight->GetViewMatrix();
+	cameraInfo.projMatrix = directionalLight->GetProjectionMatrix();
+	cameraInfo.lightMatrix = directionalLight->GetVPMatrix();
 
 	graphicsDevice->ClearLayer("shadowLayer");
 	graphicsDevice->SetLayer("shadowLayer");
@@ -135,12 +129,12 @@ void SampleScene::Draw()
 	graphicsDevice->ExecuteCommands();
 
 	graphicsDevice->SetShaderResourceDescriptorHeap();
-	GE::DirectionalLightInfo directionalLight;
-	renderQueue->AddSetConstantBufferInfo({ 3,cbufferAllocater->BindAndAttachData(3, &directionalLight, sizeof(GE::DirectionalLightInfo)) });
+	GE::DirectionalLightInfo directionalLightInfo;
 	cameraInfo = mainCamera->GetCameraInfo();
-	cameraInfo.lightMatrix = lightMatrix;
+	cameraInfo.lightMatrix = directionalLight->GetVPMatrix();
 	graphicsDevice->SetLayer("resultLayer");
 	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
+	renderQueue->AddSetConstantBufferInfo({ 3,cbufferAllocater->BindAndAttachData(3, &directionalLightInfo, sizeof(GE::DirectionalLightInfo)) });
 	gameObjectManager.Draw();
 	UIObject::GetInstance()->Draw(graphicsDevice);
 }
@@ -194,7 +188,8 @@ void SampleScene::Load()
 	//collisionManager.AddTagCombination("player", "birdEnemy");
 
 	{
-		auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject("directionLight", "directionLight"));
+		auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject("directionalLight", "directionalLight"));
+		directionalLight = testObject->AddComponent<GE::DirectionalLight>();
 		testObject->GetTransform()->position = { 0,20000,-9170 };
 	}
 }

@@ -29,6 +29,7 @@
     <ClInclude Include="Header\GameFramework\Component\BoxCollider.h" />
     <ClInclude Include="Header\GameFramework\Component\Collider.h" />
     <ClInclude Include="Header\GameFramework\Component\Component.h" />
+    <ClInclude Include="Header\GameFramework\Component\DirectionalLight.h" />
     <ClInclude Include="Header\GameFramework\Component\MeshCollider.h" />
     <ClInclude Include="Header\GameFramework\Component\SampleComponent.h" />
     <ClInclude Include="Header\GameFramework\Component\SphereCollider.h" />
@@ -116,6 +117,7 @@
     <ClCompile Include="Source\GameFramework\Component\BoxCollider.cpp" />
     <ClCompile Include="Source\GameFramework\Component\Collider.cpp" />
     <ClCompile Include="Source\GameFramework\Component\Component.cpp" />
+    <ClCompile Include="Source\GameFramework\Component\DirectionalLight.cpp" />
     <ClCompile Include="Source\GameFramework\Component\MeshCollider.cpp" />
     <ClCompile Include="Source\GameFramework\Component\SampleComponent.cpp" />
     <ClCompile Include="Source\GameFramework\Component\SphereCollider.cpp" />

@@ -3,6 +3,7 @@
 #include <GatesEngine/Header/Graphics\Window.h       >
 #include <GatesEngine/Header/GUI\GUIManager.h        >
 #include <GatesEngine/Header/GameFramework/GameObject/GameObjectManager.h>
+#include <GatesEngine/Header/GameFramework/Component/DirectionalLight.h>
 
 #include"FieldObject.h"
 
@@ -91,13 +92,8 @@ void FieldObject::Draw()
 	}
 	if (shaderName == "DefaultMeshWithShadowShader")
 	{
-		GE::GameObjectManager* gameObjectManager = gameObject->GetGameObjectManager();
-		GE::GameObject* directionLight = gameObjectManager->FindGameObjectWithTag("directionLight", "directionLight");
-		GE::Transform* directionLightPos = directionLight->GetTransform();
 		GE::CameraInfo cameraInfo = graphicsDevice->GetMainCamera()->GetCameraInfo();
-		GE::Math::Matrix4x4 lightMatrix = GE::Math::Matrix4x4::GetViewMatrixLookTo(directionLightPos->position, { 0,-1,0 }, { 0,0,1 });
-		GE::Math::Matrix4x4 projMatrix = GE::Math::Matrix4x4::GetOrthographMatrix(GE::Math::Vector2(20000), 1, 20000);
-		cameraInfo.lightMatrix = lightMatrix * projMatrix;
+		cameraInfo.lightMatrix = gameObject->GetGameObjectManager()->FindGameObjectWithTag("directionalLight","directionalLight")->GetComponent<GE::DirectionalLight>()->GetVPMatrix();
 
 		renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
 		renderQueue->AddSetShaderResource({ 17,graphicsDevice->GetLayerManager()->Get("shadowLayer")->GetDepthTexture()->GetSRVNumber()});

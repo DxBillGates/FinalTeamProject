@@ -142,6 +142,7 @@ namespace GE
 			Quaternion& operator*=(float s);
 			Quaternion& operator/=(float s);
 			Quaternion& operator*=(const Quaternion& q);
+			bool operator==(const Quaternion& q1);
 		};
 		Quaternion operator+(const Quaternion& q1, const Quaternion& q2);
 		Quaternion operator-(const Quaternion& q1, const Quaternion& q2);

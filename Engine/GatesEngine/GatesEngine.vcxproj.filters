@@ -350,6 +350,9 @@
     <ClInclude Include="Header\GameFramework\Component\MeshCollider.h">
       <Filter>Header\GameFramework\Component</Filter>
     </ClInclude>
+    <ClInclude Include="Header\GameFramework\Component\DirectionalLight.h">
+      <Filter>Header\GameFramework\Component</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Application\Application.cpp">
@@ -527,6 +530,9 @@
       <Filter>Source\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameFramework\Component\MeshCollider.cpp">
+      <Filter>Source\GameFramework\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GameFramework\Component\DirectionalLight.cpp">
       <Filter>Source\GameFramework\Component</Filter>
     </ClCompile>
   </ItemGroup>
