@@ -220,7 +220,7 @@ void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 		else if (other->GetTag() == "tile")
 		{
 			Reflection(GE::Math::Vector3(0, 1, 0));
-			crashParticle.Fire(transform->position, gameObject->GetHitNormal(), other->GetColor());
+			crashParticle.Fire(transform->position, GE::Math::Vector3(0, 1, 0), other->GetColor());
 			return;
 
 		}
