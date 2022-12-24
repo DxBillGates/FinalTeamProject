@@ -24,10 +24,12 @@ GE::Math::Vector3 PlayerComponent::gravity = { 0,0.5,0 };			//重力
 float PlayerComponent::rayHitSecond = 144.0f;						//ロックオンする照準を合わせる長さ
 float PlayerComponent::normal_speed = 20.0f;						//通常時のスピード
 float PlayerComponent::current_speed = normal_speed;				//現在のスピード
-float PlayerComponent::damageSpeed = 0.0f;						//敵にヒットしたときにダメージが入るスピード
-int PlayerComponent::colectMax = 10;
-float PlayerComponent::worldRadius = 38000.0f;
-float PlayerComponent::lockOnLength = 10000.0f;
+float PlayerComponent::damageSpeed = 0.0f;							//敵にヒットしたときにダメージが入るスピード
+int PlayerComponent::colectMax = 10;								//一度に掴めるえさの数
+float PlayerComponent::worldRadius = 38000.0f;						//端この壁までの長さ
+float PlayerComponent::lockOnLength = 10000.0f;						//ロックオンできる距離
+float PlayerComponent::moreTimesLockOnLength = 10000.0f;			//連続で二回目以降の敵をロックオンできる距離
+int PlayerComponent::lockOnInterval = 300.0f;						//再度ロックオンできるまでのインターバル
 
 PlayerComponent::PlayerComponent()
 	: inputDevice(nullptr)
@@ -42,6 +44,9 @@ void PlayerComponent::Awake()
 
 void PlayerComponent::Start()
 {
+	//激突時パーティクル
+	crashParticle.Start();
+
 	isDraw = true;
 	GE::Utility::Printf("PlayerComponent Start()\n");
 	inputDevice = GE::InputDevice::GetInstance();
@@ -54,6 +59,8 @@ void PlayerComponent::Start()
 	dashEasingCount = 0.0;
 	startCouunt = 0.0f;
 	colectCount = 0;
+	//
+	lockOnIntervalCount = lockOnInterval;
 	//足でつかんでいるオブジェクトの初期化
 	colectingObjs.resize(colectMax);
 	for (int i = 0; i < colectingObjs.size(); i++)
@@ -86,6 +93,9 @@ void PlayerComponent::Update(float deltaTime)
 {
 	frameRate = 1.0f / deltaTime;
 	const float f = 144.0f / frameRate;
+
+	crashParticle.Update(f);
+
 	//testBGM->Start();
 	InputManager::GetInstance()->Update();
 	const auto& cameraInfo = graphicsDevice->GetMainCamera()->GetCameraInfo();
@@ -137,6 +147,8 @@ void PlayerComponent::Update(float deltaTime)
 
 void PlayerComponent::Draw()
 {
+	crashParticle.Draw(graphicsDevice);
+
 	if (!isDraw)return;
 
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
@@ -163,7 +175,6 @@ void PlayerComponent::Draw()
 
 		renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
 		renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
-		renderQueue->AddSetShaderResource({ 5,graphicsDevice->GetTextureManager()->Get(colectingObjs[i].textureName)->GetSRVNumber() });
 		graphicsDevice->DrawMesh("Sphere");
 
 	}
@@ -203,11 +214,13 @@ void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 		if (other->GetTag() == "ground" || other->GetTag() == "StartTree")
 		{
 			Reflection(gameObject->GetHitNormal());
+			crashParticle.Fire(transform->position, gameObject->GetHitNormal(),other->GetColor());
 			return;
 		}
 		else if (other->GetTag() == "tile")
 		{
 			Reflection(GE::Math::Vector3(0, 1, 0));
+			crashParticle.Fire(transform->position, gameObject->GetHitNormal(), other->GetColor());
 			return;
 
 		}
@@ -299,15 +312,24 @@ void PlayerComponent::Control(float deltaTime)
 		transform->position += transform->GetForward() * current_speed * deltaTime * GE::GameSetting::Time::GetGameTime() - gravity;
 		//Key押したらPlayerState::DASHに変わる
 		if (InputManager::GetInstance()->GetActionButton()) { statas = PlayerStatas::DASH; }
-		if (InputManager::GetInstance()->GetLockonButton())
+		if (lockOnIntervalCount >= lockOnInterval)
 		{
-			isLockOnStart = true;
-			//最も近くて前方にいる敵をセット
-			SearchNearEnemy();
+			if (InputManager::GetInstance()->GetLockonButton())
+			{
+				isLockOnStart = true;
+				//最も近くて前方にいる敵をセット
+				SearchNearEnemy();
+			}
+			else
+			{
+				isLockOnStart = false;
+			}
 		}
-		else { isLockOnStart = false; }
-
-		is_rayCast_active = false;
+		else
+		{
+			lockOnIntervalCount += deltaTime;
+			isLockOnStart = false;
+		}
 		//RayCast(deltaTime);
 		//ロックオンして攻撃
 		LockOn();
@@ -331,6 +353,8 @@ void PlayerComponent::Control(float deltaTime)
 		}
 		break;
 	case PlayerComponent::PlayerStatas::LOCKON_SHOOT:
+		//ロックオンのインターバルのカウントを初期化
+		lockOnIntervalCount = 0;
 
 		if (lockOnEnemy.object != nullptr)
 		{
@@ -339,7 +363,9 @@ void PlayerComponent::Control(float deltaTime)
 				lockOnEnemy.direction = GE::Math::Vector3(lockOnEnemy.object->GetTransform()->position - transform->position).Normalize();
 				loop = true;
 			}
-			else { isLockOn = false; }
+			else {
+				isLockOn = false;
+			}
 		}
 		Dash(100.f, 20.f, deltaTime, lockOnEnemy.direction, loop);
 		break;
@@ -462,12 +488,17 @@ void PlayerComponent::KeyboardMoveControl(float deltaTime)
 	body_direction = GE::Math::Vector3::Min(-bodyDirectionMax, GE::Math::Vector3::Max(bodyDirectionMax, body_direction));
 }
 
-void PlayerComponent::SearchNearEnemy()
+void PlayerComponent::SearchNearEnemy(bool isForward)
 {
 	std::vector<GE::GameObject*> enemies = EnemyManager::GetInstance()->GetAllEnemies();
 	float result = 100000;
 	int a = 0;
 	bool look = false;
+	float whichLockOnLength;
+	//サーチする距離をセット
+	if (!isForward) { whichLockOnLength = lockOnLength; }
+	else { whichLockOnLength = moreTimesLockOnLength; }
+
 	for (int i = 0; i < enemies.size(); i++)
 	{
 		float distance = abs(GE::Math::Vector3::Distance(transform->position, enemies[i]->GetTransform()->position));
@@ -476,9 +507,10 @@ void PlayerComponent::SearchNearEnemy()
 		enemies[i]->SetColor(GE::Color::Red());
 		//生きているか＆前側にいる中で最も近い敵&&LockOnLengthより近い距離か
 		if (enemies[i]->GetComponent<Enemy>()->statas != Enemy::Statas::DEAD
-			&& distance < lockOnLength)
+			&& distance < whichLockOnLength)
 		{
-			if (GE::Math::Vector3::Dot(transform->GetForward(), enemyDirection.Normalize()) > 0.8)
+			//引数をTrueにすると前にいるか関係なくロックオンする()
+			if (GE::Math::Vector3::Dot(transform->GetForward(), enemyDirection.Normalize()) > 0.8 || isForward)
 			{
 				look = true;
 				if (result > distance)
@@ -575,23 +607,13 @@ void PlayerComponent::Reflection(GE::Math::Vector3 normal)
 {
 	statas = PlayerStatas::CRASH;
 	audioManager->Use("hitWall")->Start();
-	transform->rotation = GE::Math::Quaternion::LookDirection(Repulsion(transform->GetForward(), normal, 2.0f));
+	transform->rotation = GE::Math::Quaternion::LookDirection(GE::Math::Vector3::Reflection(transform->GetForward(), normal, 2.0f));
 	CameraControl::GetInstance()->ShakeStart({ 70,70 }, 30);
 }
 //EaseIn関係がよくわからなかったから一時的に追加
 const float PlayerComponent::easeIn(const float start, const float end, float time)
 {
 	return start * (1.0f - time * time) + end * time * time;
-}
-
-const GE::Math::Vector3 PlayerComponent::Repulsion(GE::Math::Vector3 direction, GE::Math::Vector3 normal, float power)
-{
-	GE::Math::Vector3 a = normal;
-	a = a.Normalize();
-	GE::Math::Vector3 L = -direction;
-	float LdotNx2 = power * GE::Math::Vector3::Dot(L, a);
-	GE::Math::Vector3 g = LdotNx2 * a - L;
-	return g;
 }
 
 GE::Math::Vector3 PlayerComponent::GetDirection()

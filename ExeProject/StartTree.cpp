@@ -64,6 +64,8 @@ void StartTree::Draw()
 	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
 	graphicsDevice->DrawMesh("Tree_Leaf3");
+
+	gameObject->SetColor(body_Color);
 }
 
 void StartTree::LateDraw()

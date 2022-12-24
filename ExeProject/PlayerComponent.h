@@ -3,8 +3,7 @@
 #include <GatesEngine/Header/Input/InputDevice.h>
 #include <GatesEngine/Header/Graphics/SkinMeshAnimator.h>
 #include <GatesEngine/Header/Audio/AudioManager.h>
-
-
+#include"CrashParticle.h"
 
 class PlayerComponent : public GE::Component
 {
@@ -12,12 +11,14 @@ private:
 	struct ColectingObject
 	{
 		GE::Transform transform;
-		GE::Color color = {1,1,1,1};
+		GE::Color color = { 1,1,1,1 };
 		std::string textureName = "texture_null";
 		//足に掴んでいるオブジェクトのばらつき
 		GE::Math::Vector3 LocalPosition;
 	};
 	std::vector<ColectingObject> colectingObjs;
+
+	CrashParticle crashParticle;
 public:
 	static float current_speed;		//現在のスピード
 	static float normal_speed;		//通常時のスピード
@@ -34,6 +35,8 @@ private:
 	static float body_direction_LerpTime; //秒数
 	static float worldRadius;				//世界の大きさの半径(端っこの壁までの距離)
 	static float lockOnLength;				//敵をロックオンできる距離
+	static float moreTimesLockOnLength;		//連続で二回目以降の敵をロックオンできる距離
+	static int lockOnInterval;				//ロックオンのインターバルの長さ
 
 	GE::AudioManager* audioManager;
 	GE::InputDevice* inputDevice;
@@ -53,6 +56,7 @@ private:
 	int hitStopCount;				//ヒットストップカウント用
 	float startCouunt;				//開始時のカウント
 	int body_direction_LerpCount;	//元の姿勢に戻るときの遷移
+	int lockOnIntervalCount;		//ロックオンのインターバルのカウント
 
 	int statasChangeCount;			//インプットが次のPlayerStatasでも動かないように1フレーム繰越すよう
 	struct LockOnEnemy
@@ -119,7 +123,7 @@ private:
 	/// <summary>
 	/// 前方にいて最も近い敵を求める
 	/// </summary>
-	void SearchNearEnemy();
+	void SearchNearEnemy(bool isForward = false);
 	/// <summary>
 	/// ロックオンして攻撃
 	/// </summary>
@@ -142,8 +146,6 @@ private:
 	void Reflection(GE::Math::Vector3 normal);
 	//EaseIn関係がよくわからなかったから一時的に追加
 	const float easeIn(const float start, const float end, float time);
-
-	const GE::Math::Vector3 Repulsion(GE::Math::Vector3 direction, GE::Math::Vector3 normal, float power);
 
 public:
 	GE::Math::Vector3 GetDirection();
