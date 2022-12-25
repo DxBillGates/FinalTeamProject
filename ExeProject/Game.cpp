@@ -176,6 +176,10 @@ bool Game::LoadContents()
 	nullTexture = new Texture();
 	nullTexture->Load("sky_Windows.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "sky_Windows");
+	
+	nullTexture = new Texture();
+	nullTexture->Load("tree_leaf3.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "tree_leaf3");
 
 	auto* testScene = sceneManager.AddScene(new SampleScene("SampleScene", sceneManager.GetSceneInitializer()));
 	sceneManager.AddScene(new Clear("ClearScene", sceneManager.GetSceneInitializer()));
