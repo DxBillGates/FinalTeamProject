@@ -171,6 +171,7 @@
     <ClCompile Include="EnemyManager.cpp" />
     <ClCompile Include="FieldObject.cpp" />
     <ClCompile Include="FieldObjectManager.cpp" />
+    <ClCompile Include="FlogEnemy.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="main.cpp" />
@@ -195,6 +196,7 @@
     <ClInclude Include="EnemyManager.h" />
     <ClInclude Include="FieldObject.h" />
     <ClInclude Include="FieldObjectManager.h" />
+    <ClInclude Include="FlogEnemy.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="MiniMap.h" />
