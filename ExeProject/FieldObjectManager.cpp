@@ -29,7 +29,7 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 		object->GetComponent<FieldObject>()->textureName = "sky_Windows";
 		object->SetColor(GE::Color(1.f, 1.f, 1.f, 1));
 		object->GetTransform()->scale = { 400 };
-		object->GetTransform()->rotation = GE::Math::Quaternion::Euler(GE::Math::Vector3(0, 0, 0));
+		object->GetTransform()->rotation = GE::Math::Quaternion::Euler(GE::Math::Vector3(0, 0, 180));
 		skydome = object;
 	}
 	//‘ƒ

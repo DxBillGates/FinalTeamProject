@@ -115,8 +115,8 @@ const GE::Math::Matrix4x4 GE::DirectionalLight::GetVPMatrix()
 GE::Math::Vector2 GE::DirectionalLight::GetUV()
 {
 	Math::Vector2 fixUV;
-	fixUV.x = (atan2f(transform->position.x - target->position.x, transform->position.z - target->position.z) / Math::PI + 1) * 0.5f;
-	fixUV.y = (transform->position.y / drawRange.z + 1) * 0.5f;
+	fixUV.x = 1 - (atan2f(transform->position.x - target->position.x, transform->position.z - target->position.z) / Math::PI + 1) * 0.5f;
+	fixUV.y = 1 - (transform->position.y / drawRange.z + 1) * 0.5f;
 	return fixUV;
 }
 

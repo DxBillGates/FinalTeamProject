@@ -13,6 +13,6 @@ float4 main(DefaultMeshVSOutput psInput) : SV_TARGET
 {
 	float sun = distance(sunsUV,psInput.uv) * 40;
 	float4 texColor = tex.Sample(wrapPointSampler,psInput.uv);
-	texColor.xyz = sun;
+	texColor.xyz *= saturate(sun);
 	return texColor * color;
 }
