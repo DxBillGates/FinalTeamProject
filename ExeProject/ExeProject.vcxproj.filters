@@ -40,6 +40,9 @@
     <FxCompile Include="Resources\Shader\DefaultMeshWithShadowPixelShader.hlsl">
       <Filter>シェーダーファイル</Filter>
     </FxCompile>
+    <FxCompile Include="Resources\Shader\CelestialSpherePixelShader.hlsl">
+      <Filter>シェーダーファイル</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BirdEnemy.cpp">

@@ -20,12 +20,12 @@ float4 main(DefaultMeshVSOutput psInput) : SV_TARGET
 	}
 
 	// diffuse
-	float3 diff = saturate(dot(-lightDir, normal)) * diffuse.xyz;
+	float3 diff = saturate(dot(-lightDir, normal)) * diffuse.xyz * worldLightColor.xyz;
 
 	// specular
-	float3 spec = pow(saturate(dot(halfVec, normal)), specular.x);
+	float3 spec = pow(saturate(dot(halfVec, normal)), specular.x) * worldLightColor.xyz;
 
-	float3 intensity = (ambient.rgb + diff + spec) * worldLightColor.xyz;
+	float3 intensity = (ambient.rgb + diff + spec);
 
 	//// トゥーンにしたら気持ち悪くなったから一旦やめ
 	//// 簡易トゥーン
@@ -37,6 +37,6 @@ float4 main(DefaultMeshVSOutput psInput) : SV_TARGET
 	//	intensity = float3(0.5, 0.5, 0.5);
 	//else
 	//	intensity = float3(0.2, 0.2, 0.2);
-
-	return float4(color.rgb * intensity.x * shadowWeight,color.a);
+	//return float4(intensity * shadowWeight, color.a);
+	return float4(color.rgb * intensity * shadowWeight,color.a);
 }

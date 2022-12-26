@@ -1,5 +1,6 @@
 #pragma once
 #include "Component.h"
+#include "..\..\Graphics\CBufferStruct.h"
 
 namespace GE
 {
@@ -27,9 +28,12 @@ namespace GE
 		void Start() override;
 		void Update(float deltaTime) override;
 		void OnGui() override;
+		void SetDirectionalLightInfo();
 		const Math::Matrix4x4& GetViewMatrix();
 		const Math::Matrix4x4& GetProjectionMatrix();
 		const Math::Matrix4x4 GetVPMatrix();
+		// ‘¾—z‚ÌˆÊ’u‚©‚ç“V‹…‚Ìuv‚ðŒvŽZ‚µ‚½’l‚ð•Ô‚·
+		Math::Vector2 GetUV();
 		void SetTarget(Transform* transform);
 	};
 }

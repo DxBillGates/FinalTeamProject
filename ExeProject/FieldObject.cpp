@@ -98,6 +98,13 @@ void FieldObject::Draw()
 		renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
 		renderQueue->AddSetShaderResource({ 17,graphicsDevice->GetLayerManager()->Get("shadowLayer")->GetDepthTexture()->GetSRVNumber()});
 	}
+	if (shaderName == "CelestialSphereShader")
+	{
+		renderQueue->AddSetConstantBufferInfo({ 4,cbufferAllocater->BindAndAttachData(4, &textureAnimationInfo,sizeof(GE::TextureAnimationInfo)) });
+		GE::Math::Vector2 sunsUV = gameObject->GetGameObjectManager()->FindGameObjectWithTag("directionalLight", "directionalLight")->GetComponent<GE::DirectionalLight>()->GetUV();
+		renderQueue->AddSetShaderResource({ 16,graphicsDevice->GetTextureManager()->Get(textureName)->GetSRVNumber() });
+		renderQueue->AddSetConstantBufferInfo({ 5,cbufferAllocater->BindAndAttachData(4, &sunsUV,sizeof(GE::Math::Vector2)) });
+	}
 	graphicsDevice->DrawMesh(modelName);
 }
 

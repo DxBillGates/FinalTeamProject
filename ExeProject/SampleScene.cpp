@@ -123,18 +123,18 @@ void SampleScene::Draw()
 	graphicsDevice->ClearLayer("shadowLayer");
 	graphicsDevice->SetLayer("shadowLayer");
 	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
+	directionalLight->SetDirectionalLightInfo();
 	gameObjectManager.DrawShadow();
 
 	graphicsDevice->ExecuteRenderQueue();
 	graphicsDevice->ExecuteCommands();
 
 	graphicsDevice->SetShaderResourceDescriptorHeap();
-	GE::DirectionalLightInfo directionalLightInfo;
 	cameraInfo = mainCamera->GetCameraInfo();
 	cameraInfo.lightMatrix = directionalLight->GetVPMatrix();
 	graphicsDevice->SetLayer("resultLayer");
 	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
-	renderQueue->AddSetConstantBufferInfo({ 3,cbufferAllocater->BindAndAttachData(3, &directionalLightInfo, sizeof(GE::DirectionalLightInfo)) });
+	directionalLight->SetDirectionalLightInfo();
 	gameObjectManager.Draw();
 	UIObject::GetInstance()->Draw(graphicsDevice);
 }

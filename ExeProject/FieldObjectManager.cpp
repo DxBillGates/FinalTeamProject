@@ -25,11 +25,11 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 		auto* object = gameObjectManager->AddGameObject(new GE::GameObject("skydome", "skydome"));
 		auto* sampleComponent = object->AddComponent<FieldObject>();
 		object->GetComponent<FieldObject>()->modelName = "Skydome";
-		object->GetComponent<FieldObject>()->shaderName = "DefaultMeshWithTextureShader";
+		object->GetComponent<FieldObject>()->shaderName = "CelestialSphereShader";
 		object->GetComponent<FieldObject>()->textureName = "sky_Windows";
-		object->SetColor(GE::Color(1.f, 1.f, 1.f, 0.5f));
+		object->SetColor(GE::Color(1.f, 1.f, 1.f, 1));
 		object->GetTransform()->scale = { 400 };
-		object->GetTransform()->rotation = GE::Math::Quaternion::Euler(GE::Math::Vector3(180, 0, 0));
+		object->GetTransform()->rotation = GE::Math::Quaternion::Euler(GE::Math::Vector3(0, 0, 0));
 		skydome = object;
 	}
 	//‘ƒ
