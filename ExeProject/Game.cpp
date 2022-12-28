@@ -175,6 +175,10 @@ bool Game::LoadContents()
 	nullTexture = new Texture();
 	nullTexture->Load("tree_leaf3.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "tree_leaf3");
+	
+	nullTexture = new Texture();
+	nullTexture->Load("crash_info.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "crash_info");
 
 	auto* testScene = sceneManager.AddScene(new SampleScene("SampleScene", sceneManager.GetSceneInitializer()));
 	sceneManager.AddScene(new Clear("ClearScene", sceneManager.GetSceneInitializer()));

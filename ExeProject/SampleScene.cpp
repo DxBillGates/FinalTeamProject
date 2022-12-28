@@ -13,6 +13,7 @@
 #include"MiniMapViewer.h"
 #include"Collect.h"
 #include"UIObject.h"
+#include"ScreenUI.h"
 
 SampleScene::SampleScene()
 	: SampleScene("SampleScene")
@@ -62,6 +63,7 @@ void SampleScene::Initialize()
 	EnemyManager::GetInstance()->LoadPosition("Resources/enemies.txt");
 	FieldObjectManager::GetInstance()->LoadPosition("Resources/tree.txt");
 	UIObject::GetInstance()->Start();
+	ScreenUIManager::GetInstance()->Start();
 
 }
 
@@ -74,6 +76,7 @@ void SampleScene::Update(float deltaTime)
 	TimeLimit::GetInstance()->Update();
 	//Collect::GetInstance()->Update(StartTree::collectCount, StartTree::goalCollect);
 	UIObject::GetInstance()->Update(deltaTime);
+	ScreenUIManager::GetInstance()->Update(deltaTime);
 	//ƒNƒŠƒAˆÈ~ğŒ
 	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::Q)
 		|| StartTree::isCollect)
@@ -119,6 +122,7 @@ void SampleScene::Draw()
 void SampleScene::LateDraw()
 {
 	gameObjectManager.LateDraw();
+	ScreenUIManager::GetInstance()->DrawSprite(graphicsDevice);
 }
 
 void SampleScene::Load()
@@ -171,6 +175,7 @@ void SampleScene::UnLoad()
 	EnemyManager::GetInstance()->UnLoad();
 	FieldObjectManager::GetInstance()->UnLoad();
 	UIObject::GetInstance()->UnLoad();
+	ScreenUIManager::GetInstance()->UnLoad();
 	// gameObjects‚ğíœ‚·‚é
 	Scene::UnLoad();
 }

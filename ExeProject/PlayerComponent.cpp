@@ -355,13 +355,13 @@ void PlayerComponent::Control(float deltaTime)
 	case PlayerComponent::PlayerStatas::CRASH:
 		//ダッシュから切り替わった時用初期化
 		current_speed = normal_speed;
-		//体のオイラー角を取得してセット
-		body_direction = transform->rotation.EulerRadian();
 		//移動
 		transform->position += transform->GetForward() * current_speed * deltaTime * GE::GameSetting::Time::GetGameTime();
 
 		if (InputManager::GetInstance()->GetActionButton())
 		{
+			//体のオイラー角を取得してセット
+			body_direction = transform->rotation.EulerRadian();
 			animator.PlayAnimation(0, false);
 			statas = PlayerStatas::MOVE;
 			audioManager->Use("flapping1")->Start();

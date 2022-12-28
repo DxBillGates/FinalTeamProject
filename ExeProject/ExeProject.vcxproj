@@ -182,6 +182,7 @@
     <ClCompile Include="Over.cpp" />
     <ClCompile Include="PlayerComponent.cpp" />
     <ClCompile Include="SampleScene.cpp" />
+    <ClCompile Include="ScreenUI.cpp" />
     <ClCompile Include="StartTree.cpp" />
     <ClCompile Include="TimeLimit.cpp" />
     <ClCompile Include="Title.cpp" />
@@ -207,6 +208,7 @@
     <ClInclude Include="PlayerComponent.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="SampleScene.h" />
+    <ClInclude Include="ScreenUI.h" />
     <ClInclude Include="StartTree.h" />
     <ClInclude Include="TimeLimit.h" />
     <ClInclude Include="Title.h" />
