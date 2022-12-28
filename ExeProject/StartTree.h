@@ -16,6 +16,7 @@ public:
 	void Start();
 	void Update(float deltaTime);
 	void Draw();
+	void TreeLeafDraw();
 	void LateDraw();
 	void OnCollision(GE::GameObject* other);
 	void OnCollision(GE::ICollider* hitCollider);

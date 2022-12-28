@@ -248,6 +248,11 @@ void FieldObjectManager::SaveCurrentPosition(const std::string& filename)
 	writing_file.close();
 }
 
+void FieldObjectManager::OtherDraw()
+{
+	startTree->GetComponent<StartTree>()->TreeLeafDraw();
+}
+
 void FieldObjectManager::UnLoad()
 {
 	fieldTree.clear();

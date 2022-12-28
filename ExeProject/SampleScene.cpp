@@ -112,6 +112,7 @@ void SampleScene::Draw()
 {
 
 	gameObjectManager.Draw();
+	FieldObjectManager::GetInstance()->OtherDraw();
 	UIObject::GetInstance()->Draw(graphicsDevice);
 }
 
