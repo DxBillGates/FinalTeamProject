@@ -132,7 +132,22 @@ void PlayerComponent::Update(float deltaTime)
 		//D0押したら移動停止＊デバッグ用
 		if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::D0))
 		{
-			statas != PlayerStatas::DEBUG ? statas = PlayerStatas::DEBUG : statas = PlayerStatas::MOVE;
+			if (statas != PlayerStatas::DEBUG)
+			{
+				statas = PlayerStatas::DEBUG;
+			}
+			else
+			{
+				if (isDraw)
+				{
+					isDraw = false;
+				}
+				else
+				{
+					isDraw = true;
+					statas = PlayerStatas::MOVE;
+				}
+			}
 		}
 		//めり込んだらD9キーで木に強制送還
 		if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::D9))
@@ -214,7 +229,7 @@ void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 		if (other->GetTag() == "ground" || other->GetTag() == "StartTree")
 		{
 			Reflection(gameObject->GetHitNormal());
-			crashParticle.Fire(transform->position, gameObject->GetHitNormal(),other->GetColor());
+			crashParticle.Fire(transform->position, gameObject->GetHitNormal(), other->GetColor());
 			return;
 		}
 		else if (other->GetTag() == "tile")
