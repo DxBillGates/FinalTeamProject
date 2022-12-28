@@ -75,7 +75,7 @@ void StartTree::TreeLeafDraw()
 	material.color = leaf_Color;
 	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
-	renderQueue->AddSetShaderResource({ 5,graphicsDevice->GetTextureManager()->Get("tree_leaf3")->GetSRVNumber() });
+	renderQueue->AddSetShaderResource({ 5,graphicsDevice->GetTextureManager()->Get("texture_tree_leaf")->GetSRVNumber() });
 	// アニメーションの情報
 	GE::TextureAnimationInfo textureAnimationInfo;
 	// 画像の元サイズ
@@ -87,7 +87,6 @@ void StartTree::TreeLeafDraw()
 	// 切り抜く際の左上座標 例) {0,0}なら元画像の左上 texture->GetSize()なら右下になる
 	textureAnimationInfo.pivot = { 0,0 };
 	renderQueue->AddSetConstantBufferInfo({ 4,cbufferAllocater->BindAndAttachData(4, &textureAnimationInfo,sizeof(GE::TextureAnimationInfo)) });
-
 
 	graphicsDevice->DrawMesh("Tree_Leaf3");
 

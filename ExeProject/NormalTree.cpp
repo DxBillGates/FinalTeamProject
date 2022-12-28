@@ -51,14 +51,12 @@ void FieldTree::TreeLeafDraw()
 	graphicsDevice->SetShader("DefaultMeshWithTextureShader");
 
 	GE::Material material;
-	material.color = GE::Color(0.4f,0.4f,0.4f,1.0f);
 	GE::Math::Matrix4x4 modelMatrix = transform->GetMatrix();
 
-	
-	material.color = leaf_Color;
+	material.color = GE::Color(0.5f, 0.5f, 0.5f, 1.0f);
 	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
-	renderQueue->AddSetShaderResource({ 5,graphicsDevice->GetTextureManager()->Get("tree_leaf3")->GetSRVNumber() });
+	renderQueue->AddSetShaderResource({ 5,graphicsDevice->GetTextureManager()->Get("texture_tree_leaf")->GetSRVNumber() });
 	// アニメーションの情報
 	GE::TextureAnimationInfo textureAnimationInfo;
 	// 画像の元サイズ

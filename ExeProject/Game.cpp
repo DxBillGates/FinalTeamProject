@@ -173,8 +173,8 @@ bool Game::LoadContents()
 	textureManager->Add(nullTexture, "sky_Windows");
 	
 	nullTexture = new Texture();
-	nullTexture->Load("tree_leaf3.png", device, shaderResourceHeap);
-	textureManager->Add(nullTexture, "tree_leaf3");
+	nullTexture->Load("texture_tree_leaf.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "texture_tree_leaf");
 	
 	nullTexture = new Texture();
 	nullTexture->Load("crash_info.png", device, shaderResourceHeap);
