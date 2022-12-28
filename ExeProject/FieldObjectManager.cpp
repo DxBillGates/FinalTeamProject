@@ -251,6 +251,12 @@ void FieldObjectManager::SaveCurrentPosition(const std::string& filename)
 void FieldObjectManager::OtherDraw()
 {
 	startTree->GetComponent<StartTree>()->TreeLeafDraw();
+
+	for (int i = 0; i < fieldTree.size(); i++)
+	{
+		fieldTree[i]->GetComponent<FieldTree>()->TreeLeafDraw();
+
+	}
 }
 
 void FieldObjectManager::UnLoad()

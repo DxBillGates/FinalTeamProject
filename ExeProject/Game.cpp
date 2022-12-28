@@ -71,12 +71,7 @@ bool Game::LoadContents()
 	mesh->Create(device, cmdList, modelTree1);
 
 	meshManager->Add(mesh, "tree1");
-	MeshData<Vertex_UV_Normal> modelTreeLeaf1;
-	MeshCreater::LoadObjModelData("Resources/Model/tree_leaf1", modelTreeLeaf1);
-	mesh = new Mesh();
-	mesh->Create(device, cmdList, modelTreeLeaf1);
-	meshManager->Add(mesh, "tree_leaf1");
-
+	
 	MeshData<Vertex_UV_Normal> modelDataTree2;
 	MeshCreater::LoadObjModelData("Resources/Model/tree2", modelDataTree2);
 	mesh = new Mesh();
