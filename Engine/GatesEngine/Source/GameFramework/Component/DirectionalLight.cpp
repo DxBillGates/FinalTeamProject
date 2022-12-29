@@ -90,7 +90,7 @@ void GE::DirectionalLight::SetDirectionalLightInfo()
 
 	float height = Math::Lerp(0, 1, transform->position.y / drawRange.z);
 	float red = Math::Lerp(0, 1, Math::Easing::EaseOutExpo(height));
-	Math::Vector3 rgb = { red + red,red * red,red * red };
+	Math::Vector3 rgb = { red + red,red * red,red * red * red };
 	if (rgb.x > 1)rgb.x = 1;
 	directionalLightInfo.worldLightColor = GE::Math::Vector4(rgb.x, rgb.y, rgb.z, 1);
 
