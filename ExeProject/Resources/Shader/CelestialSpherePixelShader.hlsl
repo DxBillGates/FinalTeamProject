@@ -21,15 +21,19 @@ float4 main(DefaultMeshVSOutput psInput) : SV_TARGET
 	// uvの高さ
 	float uvHeight = 1 - psInput.uv.y;
 	// 高さによる色変化太陽の高さによる色変化もない状態のデフォルトカラー
-	float3 defaultColor = float3(0.54f,0.76f,0.86f);
-
-	float sun = saturate(distance(sunsUV,psInput.uv) * 40);
-	float3 cream = float3(1, 0.92f, 0.7f);
+	float3 defaultColor = float3(0.44f,0.66f,1.00f);
 	float3 white = float3(1, 1, 1);
-	float3 sunColor = lerp(white, cream, EaseOutExpo(sun));
-	float4 texColor = tex.Sample(wrapPointSampler,psInput.uv);
+	float skyValue = EaseOutExpo(psInput.uv.y);
+	float3 sky = lerp(defaultColor, white, skyValue * skyValue * skyValue);
+	// 太陽を表現するためのしきい値
+	float sunValue = EaseOutExpo(saturate(distance(sunsUV,psInput.uv) * 60));
+	float3 cream = float3(1, 0.92f, 0.7f);
+	float3 sunColor = lerp(white, cream, sunValue);
+	float3 sun = sunColor * (1 - sunValue);
+	float3 lightColor = float3(worldLightColor.rgb);
 
-	float3 lightColor = float3(worldLightColor.r, worldLightColor.gb);
-	float3 resultColor = defaultColor * lightColor + sunColor * (1 - sun);
+	//float4 texColor = tex.Sample(wrapPointSampler,psInput.uv);
+
+	float3 resultColor = sky * lightColor + sun;
 	return float4(resultColor,1);
 }
