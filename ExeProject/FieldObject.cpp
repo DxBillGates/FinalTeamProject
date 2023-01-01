@@ -103,7 +103,7 @@ void FieldObject::Draw()
 		renderQueue->AddSetConstantBufferInfo({ 4,cbufferAllocater->BindAndAttachData(4, &textureAnimationInfo,sizeof(GE::TextureAnimationInfo)) });
 		GE::Math::Vector2 sunsUV = gameObject->GetGameObjectManager()->FindGameObjectWithTag("directionalLight", "directionalLight")->GetComponent<GE::DirectionalLight>()->GetUV();
 		renderQueue->AddSetShaderResource({ 16,graphicsDevice->GetTextureManager()->Get(textureName)->GetSRVNumber() });
-		renderQueue->AddSetConstantBufferInfo({ 5,cbufferAllocater->BindAndAttachData(4, &sunsUV,sizeof(GE::Math::Vector2)) });
+		renderQueue->AddSetConstantBufferInfo({ 5,cbufferAllocater->BindAndAttachData(5, &sunsUV,sizeof(GE::Math::Vector2)) });
 	}
 	graphicsDevice->DrawMesh(modelName);
 }
