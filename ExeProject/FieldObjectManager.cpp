@@ -79,7 +79,8 @@ void FieldObjectManager::SetGroundMesh(GE::MeshData<GE::Vertex_UV_Normal> mesh)
 	auto* collider = object->AddComponent < GE::MeshCollider >();
 	collider->SetMesh(&mesh);
 	object->GetComponent<FieldObject>()->modelName = "GroundTest";
-	object->SetColor(GE::Color(0.5f, 0.9f, 0.5f, 1.0f));
+	object->GetComponent<FieldObject>()->shaderName = "DefaultMeshWithTextureShader";
+	object->GetComponent<FieldObject>()->textureName = "groundTex1";
 	object->GetTransform()->position = { 1000,0,-15000 };
 	object->GetTransform()->scale = { 2 };
 	object->GetTransform()->rotation = GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), -5.0f);

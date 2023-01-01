@@ -179,6 +179,10 @@ bool Game::LoadContents()
 	nullTexture = new Texture();
 	nullTexture->Load("crash_info.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "crash_info");
+	
+	nullTexture = new Texture();
+	nullTexture->Load("groundTex1.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "groundTex1");
 
 	auto* testScene = sceneManager.AddScene(new SampleScene("SampleScene", sceneManager.GetSceneInitializer()));
 	sceneManager.AddScene(new Clear("ClearScene", sceneManager.GetSceneInitializer()));
