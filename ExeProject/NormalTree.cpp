@@ -48,7 +48,7 @@ void FieldTree::TreeLeafDraw()
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
 	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
 
-	graphicsDevice->SetShader("DefaultMeshWithTextureShader");
+	graphicsDevice->SetShader("DefaultMeshWithTextureAndAdsCompositiongShader");
 
 	GE::Material material;
 	GE::Math::Matrix4x4 modelMatrix = transform->GetMatrix();

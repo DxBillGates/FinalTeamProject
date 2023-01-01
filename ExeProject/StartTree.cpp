@@ -71,7 +71,7 @@ void StartTree::TreeLeafDraw()
 	material.color = leaf_Color;
 	GE::Math::Matrix4x4 modelMatrix = transform->GetMatrix();
 
-	graphicsDevice->SetShader("DefaultMeshWithTextureShader");
+	graphicsDevice->SetShader("DefaultMeshWithTextureAndAdsCompositiongShader");
 	material.color = leaf_Color;
 	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
