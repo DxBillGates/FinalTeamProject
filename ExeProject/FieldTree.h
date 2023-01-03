@@ -1,9 +1,10 @@
 #pragma once
 #include <GatesEngine/Header/GameFramework/Component/Component.h>
-
+#include"FieldObjectDeBugTransform.h"
 class FieldTree : public GE::Component
 {
-
+private:
+	FieldObjectDeBugTransform fieldObjectDebugTransform;
 public:
 	GE::Color body_Color = { 1.0f,0.5f,0.1f,1.0f };
 	GE::Color leaf_Color = { 0.1f,1.0f,0.4f,1.0f };

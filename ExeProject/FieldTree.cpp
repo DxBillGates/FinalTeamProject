@@ -3,7 +3,7 @@
 #include <GatesEngine/Header/Graphics\Window.h       >
 #include <GatesEngine/Header/GUI\GUIManager.h        >
 
-#include "NormalTree.h"
+#include "FieldTree.h"
 
 FieldTree::FieldTree()
 {
@@ -25,6 +25,7 @@ void FieldTree::Update(float deltaTime)
 {
 	transform->rotation = GE::Math::Quaternion::Euler(rotation_euler);
 	transform->scale = { scale };
+	fieldObjectDebugTransform.Update(transform);
 }
 
 void FieldTree::Draw()
@@ -42,6 +43,8 @@ void FieldTree::Draw()
 	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
 	graphicsDevice->DrawMesh("tree1");
+
+	fieldObjectDebugTransform.Draw(graphicsDevice);
 }
 void FieldTree::TreeLeafDraw()
 {

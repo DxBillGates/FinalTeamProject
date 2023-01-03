@@ -171,6 +171,7 @@
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="EnemyManager.cpp" />
     <ClCompile Include="FieldObject.cpp" />
+    <ClCompile Include="FieldObjectDeBugTransform.cpp" />
     <ClCompile Include="FieldObjectManager.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="InputManager.cpp" />
@@ -178,7 +179,7 @@
     <ClCompile Include="MiniMap.cpp" />
     <ClCompile Include="MiniMapViewer.cpp" />
     <ClCompile Include="NormalEnemy.cpp" />
-    <ClCompile Include="NormalTree.cpp" />
+    <ClCompile Include="FieldTree.cpp" />
     <ClCompile Include="Over.cpp" />
     <ClCompile Include="PlayerColectObject.cpp" />
     <ClCompile Include="PlayerComponent.cpp" />
@@ -198,13 +199,14 @@
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="EnemyManager.h" />
     <ClInclude Include="FieldObject.h" />
+    <ClInclude Include="FieldObjectDeBugTransform.h" />
     <ClInclude Include="FieldObjectManager.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="MiniMap.h" />
     <ClInclude Include="MiniMapViewer.h" />
     <ClInclude Include="NormalEnemy.h" />
-    <ClInclude Include="NormalTree.h" />
+    <ClInclude Include="FieldTree.h" />
     <ClInclude Include="Over.h" />
     <ClInclude Include="PlayerColectObject.h" />
     <ClInclude Include="PlayerComponent.h" />

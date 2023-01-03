@@ -96,7 +96,7 @@
     <ClCompile Include="FieldObject.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
-    <ClCompile Include="NormalTree.cpp">
+    <ClCompile Include="FieldTree.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
     <ClCompile Include="UIObject.cpp">
@@ -111,6 +111,7 @@
     <ClCompile Include="PlayerColectObject.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
+    <ClCompile Include="FieldObjectDeBugTransform.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BirdEnemy.h">
@@ -167,7 +168,7 @@
     <ClInclude Include="FieldObject.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
-    <ClInclude Include="NormalTree.h">
+    <ClInclude Include="FieldTree.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
     <ClInclude Include="UIObject.h">
@@ -182,6 +183,7 @@
     <ClInclude Include="PlayerColectObject.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
+    <ClInclude Include="FieldObjectDeBugTransform.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ExeProject.rc" />
