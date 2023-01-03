@@ -7,18 +7,6 @@
 
 class PlayerComponent : public GE::Component
 {
-private:
-	struct ColectingObject
-	{
-		GE::Transform transform;
-		GE::Color color = { 1,1,1,1 };
-		std::string textureName = "texture_null";
-		//足に掴んでいるオブジェクトのばらつき
-		GE::Math::Vector3 LocalPosition;
-	};
-	std::vector<ColectingObject> colectingObjs;
-
-	CrashParticle crashParticle;
 public:
 	static float current_speed;		//現在のスピード
 	static float normal_speed;		//通常時のスピード
@@ -65,6 +53,7 @@ private:
 		GE::Math::Vector3 direction;
 	};
 	LockOnEnemy lockOnEnemy;
+	CrashParticle crashParticle;
 
 	//レティクルの位置
 	GE::Math::Vector2 center;

@@ -108,6 +108,9 @@
     <ClCompile Include="ScreenUI.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
+    <ClCompile Include="PlayerColectObject.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BirdEnemy.h">
@@ -174,6 +177,9 @@
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
     <ClInclude Include="ScreenUI.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerColectObject.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
   </ItemGroup>

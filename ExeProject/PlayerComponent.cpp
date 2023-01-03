@@ -12,6 +12,7 @@
 #include "FieldObjectManager.h"
 #include "Title.h"
 #include "TimeLimit.h"
+#include "PlayerColectObject.h"
 
 float PlayerComponent::frameRate;
 PlayerComponent::PlayerStatas PlayerComponent::statas;
@@ -61,14 +62,6 @@ void PlayerComponent::Start()
 	colectCount = 0;
 	//
 	lockOnIntervalCount = lockOnInterval;
-	//足でつかんでいるオブジェクトの初期化
-	colectingObjs.resize(colectMax);
-	for (int i = 0; i < colectingObjs.size(); i++)
-	{
-		GE::Math::Vector3 random = { GE::RandomMaker::GetFloat(-50.0f,50.0f),GE::RandomMaker::GetFloat(100.0f,120.0f),GE::RandomMaker::GetFloat(-100.0f,0.0f) };
-		colectingObjs[i].LocalPosition = random;
-		colectingObjs[i].transform.scale = GE::RandomMaker::GetFloat(30.0f, 60.0f);
-	}
 
 	statasChangeCount = 0;
 
@@ -88,6 +81,8 @@ void PlayerComponent::Start()
 	animator = GE::SkinMeshManager::GetInstance()->Get("Bird");
 	animator.Initialize();
 	animator.PlayAnimation(3, false);
+	//収集物
+	PlayerColectObject::GetInstance()->Start(colectMax, gameObject);
 }
 void PlayerComponent::Update(float deltaTime)
 {
@@ -115,13 +110,8 @@ void PlayerComponent::Update(float deltaTime)
 	//操作
 	Control(f);
 	CameraControl::GetInstance()->SetTargetObject(gameObject);
-	//足でつかんでいる取集物の更新
-	for (int i = 0; i < colectCount; i++)
-	{
-		colectingObjs[i].transform.position = transform->position - transform->GetUp() * colectingObjs[i].LocalPosition.y
-			+ transform->GetForward() * colectingObjs[i].LocalPosition.z
-			+ transform->GetRight() * colectingObjs[i].LocalPosition.x;
-	}
+	//収集物
+	PlayerColectObject::GetInstance()->Update(f, colectCount);
 	//if (statas != PlayerStatas::DEBUG)
 	{
 		CameraControl::GetInstance()->Update();
@@ -181,18 +171,8 @@ void PlayerComponent::Draw()
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
 
 	graphicsDevice->DrawMesh("Player");
-
-	//所持しているえさの描画
-	graphicsDevice->SetShader("DefaultMeshShader");
-	for (int i = 0; i < colectCount; i++)
-	{
-		modelMatrix = colectingObjs[i].transform.GetMatrix();
-
-		renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
-		renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
-		graphicsDevice->DrawMesh("Sphere");
-
-	}
+	//収集物
+	PlayerColectObject::GetInstance()->Draw(graphicsDevice);
 }
 
 void PlayerComponent::LateDraw()
@@ -228,14 +208,18 @@ void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 	{
 		if (other->GetTag() == "ground" || other->GetTag() == "StartTree")
 		{
+			//各法線セット
 			Reflection(gameObject->GetHitNormal());
 			crashParticle.Fire(transform->position, gameObject->GetHitNormal(), other->GetColor());
+			PlayerColectObject::GetInstance()->SetFallen(gameObject->GetHitNormal());
 			return;
 		}
 		else if (other->GetTag() == "tile")
 		{
+			//各法線セット
 			Reflection(GE::Math::Vector3(0, 1, 0));
 			crashParticle.Fire(transform->position, GE::Math::Vector3(0, 1, 0), other->GetColor());
+			PlayerColectObject::GetInstance()->SetFallen({ 0,1,0 });
 			return;
 
 		}

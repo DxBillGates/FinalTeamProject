@@ -180,6 +180,7 @@
     <ClCompile Include="NormalEnemy.cpp" />
     <ClCompile Include="NormalTree.cpp" />
     <ClCompile Include="Over.cpp" />
+    <ClCompile Include="PlayerColectObject.cpp" />
     <ClCompile Include="PlayerComponent.cpp" />
     <ClCompile Include="SampleScene.cpp" />
     <ClCompile Include="ScreenUI.cpp" />
@@ -205,6 +206,7 @@
     <ClInclude Include="NormalEnemy.h" />
     <ClInclude Include="NormalTree.h" />
     <ClInclude Include="Over.h" />
+    <ClInclude Include="PlayerColectObject.h" />
     <ClInclude Include="PlayerComponent.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="SampleScene.h" />
