@@ -82,7 +82,7 @@ void FieldObjectManager::SetGroundMesh(GE::MeshData<GE::Vertex_UV_Normal> mesh)
 	object->GetComponent<FieldObject>()->shaderName = "DefaultMeshWithTextureAndAdsCompositiongShader";
 	object->GetComponent<FieldObject>()->textureName = "groundTex1";
 	object->GetTransform()->position = { 1000,0,-15000 };
-	object->GetTransform()->scale = { 2 };
+	object->GetTransform()->scale = { 2000 };
 	object->GetTransform()->rotation = GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), -5.0f);
 }
 
