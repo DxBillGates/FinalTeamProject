@@ -20,7 +20,7 @@ public:
 	struct Object
 	{
 		GE::GameObject* target = nullptr;
-		std::vector<GE::SphereCollider*> coll;
+		std::vector<GE::SphereCollider> coll;
 		GE::Transform pivotTransform[3];
 		Statas statas = Statas::NONE;
 	};

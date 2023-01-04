@@ -35,11 +35,10 @@ void FieldObjectDeBugTransform::Update()
 		obj.pivotTransform[2].position = obj.target->GetTransform()->position + GE::Math::Vector3(0, 0, obj.target->GetTransform()->scale.x * 3);
 		for (int i = 0; i < obj.coll.size(); i++)
 		{
-			obj.coll[i]->SetTransform(&obj.pivotTransform[i]);
-			//
+			obj.coll[i].SetTransform(&obj.pivotTransform[i]);
 			if (!LClick)
 			{
-				if (GE::CollisionManager::CheckSphereToRay(obj.coll[i], obj.pivotTransform[i].position, rayPos, rayDir))
+				if (GE::CollisionManager::CheckSphereToRay(&obj.coll[i], obj.pivotTransform[i].position, rayPos, rayDir))
 				{
 					switch (i)
 					{
@@ -72,16 +71,16 @@ void FieldObjectDeBugTransform::Update()
 				switch (obj.statas)
 				{
 				case  Statas::DRAG_X:
-					obj.target->GetTransform()->position.x += -inputDevice->GetMouse()->GetMouseMove().x;
+					obj.target->GetTransform()->position.x += -inputDevice->GetMouse()->GetMouseMove().x * 3;
 
 					break;
 
 				case  Statas::DRAG_Y:
-					obj.target->GetTransform()->position.y += inputDevice->GetMouse()->GetMouseMove().y;
+					obj.target->GetTransform()->position.y += inputDevice->GetMouse()->GetMouseMove().y * 3;
 					break;
 
 				case  Statas::DRAG_Z:
-					obj.target->GetTransform()->position.z += -inputDevice->GetMouse()->GetMouseMove().x;
+					obj.target->GetTransform()->position.z += -inputDevice->GetMouse()->GetMouseMove().x * 3;
 					break;
 				case Statas::NONE:
 					break;
@@ -109,11 +108,11 @@ void FieldObjectDeBugTransform::AddTarget(GE::GameObject* gameobject)
 	for (int j = 0; j < 3; j++)
 	{
 		result.pivotTransform[j].scale = { 100 };
-		/*result.coll.push_back(new GE::SphereCollider());
-		result.coll[j]->SetGameObject(result.target);
-		result.coll[j]->SetGraphicsDevice(graphicsDevice);
-		result.coll[j]->Awake();
-		result.coll[j]->SetSize(2);*/
+		result.coll.push_back({});
+		result.coll[j].SetGameObject(result.target);
+		result.coll[j].SetGraphicsDevice(graphicsDevice);
+		result.coll[j].Awake();
+		result.coll[j].SetSize(2);
 	}
 	objects.push_back(result);
 }
