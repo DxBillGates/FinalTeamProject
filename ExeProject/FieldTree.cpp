@@ -4,6 +4,8 @@
 #include <GatesEngine/Header/GUI\GUIManager.h        >
 
 #include "FieldTree.h"
+#include "FieldObjectDeBugTransform.h"
+
 
 FieldTree::FieldTree()
 {
@@ -25,7 +27,6 @@ void FieldTree::Update(float deltaTime)
 {
 	transform->rotation = GE::Math::Quaternion::Euler(rotation_euler);
 	transform->scale = { scale };
-	fieldObjectDebugTransform.Update(transform);
 }
 
 void FieldTree::Draw()
@@ -43,8 +44,6 @@ void FieldTree::Draw()
 	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
 	graphicsDevice->DrawMesh("tree1");
-
-	fieldObjectDebugTransform.Draw(graphicsDevice);
 }
 void FieldTree::TreeLeafDraw()
 {
@@ -96,4 +95,8 @@ void FieldTree::OnGui()
 {
 	ImGui::InputFloat3("Rotation_Euler", rotation_euler.value);
 	ImGui::InputFloat("Scale", &scale);
+}
+
+void FieldTree::UnLoad()
+{
 }

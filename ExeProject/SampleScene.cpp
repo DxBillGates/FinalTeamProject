@@ -14,6 +14,7 @@
 #include"Collect.h"
 #include"UIObject.h"
 #include"ScreenUI.h"
+#include"FieldObjectDeBugTransform.h"
 
 SampleScene::SampleScene()
 	: SampleScene("SampleScene")
@@ -56,7 +57,7 @@ SampleScene::~SampleScene()
 void SampleScene::Initialize()
 {
 	Title::GetInstance()->Awake(&gameObjectManager, graphicsDevice);
-
+	
 	gameObjectManager.Awake();
 	gameObjectManager.Start();
 	//ノーマルエネミー座標ファイル読み込み、座標反映
@@ -109,6 +110,8 @@ void SampleScene::Update(float deltaTime)
 		EnemyManager::GetInstance()->SaveCurrentPosition("Resources/enemies.txt");
 		FieldObjectManager::GetInstance()->SaveCurrentPosition("Resources/tree.txt");
 	}
+
+	FieldObjectManager::GetInstance()->OtherUpdate();
 }
 
 void SampleScene::Draw()
@@ -155,6 +158,8 @@ void SampleScene::Load()
 		sampleComponent->SetPlayer(gameObjectManager.FindGameObject("Player")->GetComponent<PlayerComponent>());
 	}
 	EnemyManager::GetInstance()->Start(&gameObjectManager);
+	FieldObjectDeBugTransform::GetInstance()->SetInputDevice(inputDevice);
+	FieldObjectDeBugTransform::GetInstance()->SetGraphicsDevice(graphicsDevice);
 	FieldObjectManager::GetInstance()->Start(&gameObjectManager);
 	FieldObjectManager::GetInstance()->SetGroundMesh(groundModel);
 	FieldObjectManager::GetInstance()->SetStartTreeMesh(startTreeModel);
@@ -174,6 +179,7 @@ void SampleScene::UnLoad()
 	Title::GetInstance()->ClearGameObject();
 	EnemyManager::GetInstance()->UnLoad();
 	FieldObjectManager::GetInstance()->UnLoad();
+	FieldObjectDeBugTransform::GetInstance()->UnLoad();
 	UIObject::GetInstance()->UnLoad();
 	ScreenUIManager::GetInstance()->UnLoad();
 	// gameObjectsを削除する

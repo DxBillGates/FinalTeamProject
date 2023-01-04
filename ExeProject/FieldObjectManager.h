@@ -34,6 +34,9 @@ public:
 	void LoadPosition(const std::string& filename);
 	//現在の座標をファイルに保存
 	void SaveCurrentPosition(const std::string& filename);
+
+	//componentを継承していない更新の呼び出し
+	void OtherUpdate();
 	//componentを継承していない描画の呼び出し
 	void OtherDraw();
 

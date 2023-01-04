@@ -55,6 +55,7 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 			object->GetTransform()->scale = { 400 };
 
 			fieldTree.push_back(object);
+			FieldObjectDeBugTransform::GetInstance()->AddTarget(object);
 		}
 	}
 	//
@@ -249,6 +250,11 @@ void FieldObjectManager::SaveCurrentPosition(const std::string& filename)
 	writing_file.close();
 }
 
+void FieldObjectManager::OtherUpdate()
+{
+	FieldObjectDeBugTransform::GetInstance()->Update();
+}
+
 void FieldObjectManager::OtherDraw()
 {
 	startTree->GetComponent<StartTree>()->TreeLeafDraw();
@@ -258,6 +264,8 @@ void FieldObjectManager::OtherDraw()
 		fieldTree[i]->GetComponent<FieldTree>()->TreeLeafDraw();
 
 	}
+
+	FieldObjectDeBugTransform::GetInstance()->Draw();
 }
 
 void FieldObjectManager::UnLoad()
