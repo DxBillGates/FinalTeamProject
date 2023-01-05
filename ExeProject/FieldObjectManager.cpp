@@ -110,6 +110,8 @@ void FieldObjectManager::AddGroundModel(std::string fileName)
 	auto cmdList = graphicsDevice->GetCmdList();
 
 	GE::MeshCreater::LoadObjModelData("Resources/Model/_Mountain/" + fileName, model);
+	mesh = new GE::Mesh();
+
 	mesh->Create(device, cmdList, model);
 	meshManager->Add(mesh, fileName);
 
@@ -299,5 +301,5 @@ void FieldObjectManager::OtherDraw()
 void FieldObjectManager::UnLoad()
 {
 	fieldTree.clear();
-	delete mesh;
+	//delete mesh;
 }

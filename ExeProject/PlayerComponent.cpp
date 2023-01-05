@@ -201,7 +201,7 @@ void PlayerComponent::Draw()
 
 	graphicsDevice->DrawMesh("Player");
 	//ŽûW•¨
-	PlayerColectObject::GetInstance()->Draw(graphicsDevice,gameObject->GetGameObjectManager());
+	PlayerColectObject::GetInstance()->Draw(graphicsDevice, gameObject->GetGameObjectManager());
 }
 
 void PlayerComponent::LateDraw()
@@ -250,6 +250,16 @@ void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 			crashParticle.Fire(transform->position, GE::Math::Vector3(0, 1, 0), other->GetColor());
 			PlayerColectObject::GetInstance()->SetFallen({ 0,1,0 });
 			return;
+
+		}
+		else if (other->GetTag() == "fieldtree")
+		{
+			GE::Math::Vector3 dir = transform->position - other->GetTransform()->position;
+			dir = dir.Normalize();
+			GE::Math::Vector3 hitNotmal = GE::Math::Vector3(dir.x, 0, dir.z);
+			Reflection(hitNotmal);
+			crashParticle.Fire(transform->position, GE::Math::Vector3(0, 1, 0), other->GetColor());
+			PlayerColectObject::GetInstance()->SetFallen(hitNotmal);
 
 		}
 	}

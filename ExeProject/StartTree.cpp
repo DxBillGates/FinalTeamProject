@@ -104,6 +104,7 @@ void StartTree::Draw()
 
 	GE::Material material;
 	material.color = body_Color;
+	gameObject->SetColor(body_Color);
 	GE::Math::Matrix4x4 modelMatrix = transform->GetMatrix();
 
 	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
