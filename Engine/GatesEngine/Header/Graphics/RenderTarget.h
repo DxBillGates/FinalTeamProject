@@ -27,6 +27,7 @@ namespace GE
 
 		// interface
 
+		D3D12_GPU_DESCRIPTOR_HANDLE GetGPUHandle() override;
 		D3D12_CPU_DESCRIPTOR_HANDLE GetHandle() override;
 		const Math::Vector2& GetSize() override;
 		D3D12_RESOURCE_STATES GetCurrentResourceState() override;

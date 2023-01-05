@@ -9,6 +9,7 @@ namespace GE
 	{
 	public:
 		virtual ~IRenderTarget() {}
+		virtual D3D12_GPU_DESCRIPTOR_HANDLE GetGPUHandle() = 0;
 		virtual D3D12_CPU_DESCRIPTOR_HANDLE GetHandle() = 0;
 		virtual const Math::Vector2& GetSize() = 0;
 		virtual D3D12_RESOURCE_STATES GetCurrentResourceState() = 0;

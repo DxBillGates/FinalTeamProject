@@ -18,7 +18,7 @@ namespace GE
 		D3D12_RESOURCE_STATES currentResourceState;
 
 		// texture
-
+		IShaderResourceHeap* shaderResourceHeap;
 		ID3D12Resource* buffer;
 		Math::Vector2 size;
 		int srvNum;
@@ -29,6 +29,7 @@ namespace GE
 
 		// IRenderTarget interface
 
+		D3D12_GPU_DESCRIPTOR_HANDLE GetGPUHandle() override;
 		D3D12_CPU_DESCRIPTOR_HANDLE GetHandle() override;
 		const Math::Vector2& GetSize() override;
 		D3D12_RESOURCE_STATES GetCurrentResourceState() override;

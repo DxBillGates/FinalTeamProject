@@ -73,6 +73,13 @@ void GE::RenderTarget::SetIndex(int value)
 	index = value;
 }
 
+D3D12_GPU_DESCRIPTOR_HANDLE GE::RenderTarget::GetGPUHandle()
+{
+	D3D12_GPU_DESCRIPTOR_HANDLE handle = rtvHeap->GetGPUDescriptorHandleForHeapStart();
+	handle.ptr += (UINT64)incrementSize * index;
+	return handle;
+}
+
 D3D12_CPU_DESCRIPTOR_HANDLE GE::RenderTarget::GetHandle()
 {
 	D3D12_CPU_DESCRIPTOR_HANDLE handle = rtvHeap->GetCPUDescriptorHandleForHeapStart();

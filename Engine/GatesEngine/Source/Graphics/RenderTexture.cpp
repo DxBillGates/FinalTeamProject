@@ -71,6 +71,14 @@ void GE::RenderTexture::Create(ID3D12Device* device, IShaderResourceHeap* shader
 	srvDesc.Texture2D.MipLevels = 1;
 
 	shaderResourceHeap->CreateSRV(buffer,srvDesc);
+
+	this->shaderResourceHeap = shaderResourceHeap;
+}
+
+D3D12_GPU_DESCRIPTOR_HANDLE GE::RenderTexture::GetGPUHandle()
+{
+	D3D12_GPU_DESCRIPTOR_HANDLE handle = shaderResourceHeap->GetGPUHandleForSRV(srvNum);
+	return handle;
 }
 
 D3D12_CPU_DESCRIPTOR_HANDLE GE::RenderTexture::GetHandle()

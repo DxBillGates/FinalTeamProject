@@ -358,6 +358,10 @@ bool Game::Draw()
 	graphicsDevice.DrawMesh("2DPlane");
 
 	graphicsDevice.ExecuteRenderQueue();
+
+	ImVec2 texSize = { textureAnimationInfo.textureSize.x / 4,textureAnimationInfo.textureSize.y / 4 };
+	ImGui::Image((ImTextureID)brightnessLayerRenderTexture->GetGPUHandle().ptr, texSize);
+
 	GE::GUIManager::EndFrame();
 	graphicsDevice.ExecuteCommands();
 	graphicsDevice.ScreenFlip();
