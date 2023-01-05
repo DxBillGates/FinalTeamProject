@@ -34,23 +34,8 @@ SampleScene::SampleScene(const std::string& sceneName, const GE::SceneInitialize
 	, col1(nullptr)
 	, col2(nullptr)
 {
-	using namespace GE;
-	auto meshManager = graphicsDevice->GetMeshManager();
-	auto device = graphicsDevice->GetDevice();
-	auto cmdList = graphicsDevice->GetCmdList();
 
-	{
-		MeshCreater::LoadObjModelData("Resources/Model/groundTest", groundModel);
-		Mesh* mesh = new Mesh();
-		mesh->Create(device, cmdList, groundModel);
-		meshManager->Add(mesh, "ground");
-	}
-	{
-		MeshCreater::LoadObjModelData("Resources/Model/tree2", startTreeModel);
-		Mesh* mesh = new Mesh();
-		mesh->Create(device, cmdList, startTreeModel);
-		meshManager->Add(mesh, "startTree");
-	}
+	FieldObjectManager::GetInstance()->SetGraphicsDevice(graphicsDevice);
 }
 
 SampleScene::~SampleScene()
@@ -60,7 +45,7 @@ SampleScene::~SampleScene()
 void SampleScene::Initialize()
 {
 	Title::GetInstance()->Awake(&gameObjectManager, graphicsDevice);
-	
+
 	gameObjectManager.Awake();
 	gameObjectManager.Start();
 	//ノーマルエネミー座標ファイル読み込み、座標反映
@@ -187,8 +172,8 @@ void SampleScene::Load()
 	FieldObjectDeBugTransform::GetInstance()->SetInputDevice(inputDevice);
 	FieldObjectDeBugTransform::GetInstance()->SetGraphicsDevice(graphicsDevice);
 	FieldObjectManager::GetInstance()->Start(&gameObjectManager);
-	FieldObjectManager::GetInstance()->SetGroundMesh(groundModel);
-	FieldObjectManager::GetInstance()->SetStartTreeMesh(startTreeModel);
+	/*FieldObjectManager::GetInstance()->SetGroundMesh(groundModel);
+	FieldObjectManager::GetInstance()->SetStartTreeMesh(startTreeModel);*/
 	TimeLimit::GetInstance()->Start(&gameObjectManager);
 	//Collect::GetInstance()->Start(&gameObjectManager);
 

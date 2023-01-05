@@ -53,11 +53,17 @@ bool Game::LoadContents()
 	mesh->Create(device, cmdList, modelDataBird1);
 	meshManager->Add(mesh, "Bird1");
 
-	MeshData<Vertex_UV_Normal> modelDataGroundTest;
-	MeshCreater::LoadObjModelData("Resources/Model/groundTest", modelDataGroundTest);
+	MeshData<Vertex_UV_Normal> modelMountain1;
+	MeshCreater::LoadObjModelData("Resources/Model/mountain1", modelMountain1);
 	mesh = new Mesh();
-	mesh->Create(device, cmdList, modelDataGroundTest);
-	meshManager->Add(mesh, "GroundTest");
+	mesh->Create(device, cmdList, modelMountain1);
+	meshManager->Add(mesh, "mountain1");
+	
+	MeshData<Vertex_UV_Normal> modelMountain2;
+	MeshCreater::LoadObjModelData("Resources/Model/mountain2", modelMountain2);
+	mesh = new Mesh();
+	mesh->Create(device, cmdList, modelMountain2);
+	meshManager->Add(mesh, "mountain2");
 
 	MeshData<Vertex_UV_Normal> modelDataNest;
 	MeshCreater::LoadObjModelData("Resources/Model/nest", modelDataNest);

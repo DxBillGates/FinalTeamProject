@@ -12,8 +12,6 @@ class SampleScene : public GE::Scene
 {
 private:
 	GE::ICollider* col1, * col2;
-	GE::MeshData<GE::Vertex_UV_Normal> groundModel;
-	GE::MeshData<GE::Vertex_UV_Normal> startTreeModel;
 	GE::DirectionalLight* directionalLight;
 public:
 	SampleScene();

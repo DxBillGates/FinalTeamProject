@@ -25,11 +25,11 @@ private:
 	GE::GameObject* nest = nullptr;
 	GE::GameObject* skydome = nullptr;
 
+	GE::IGraphicsDeviceDx12* graphicsDevice;
 public:
 	static FieldObjectManager* GetInstance();
 	void Start(GE::GameObjectManager* gameObjectManager);
-	void SetGroundMesh(GE::MeshData<GE::Vertex_UV_Normal> mesh);
-	void SetStartTreeMesh(GE::MeshData<GE::Vertex_UV_Normal> mesh);
+	void SetGraphicsDevice(GE::IGraphicsDeviceDx12* pGraphicsDevice) { graphicsDevice = pGraphicsDevice; }
 	//ファイルに保存されている座標取得
 	void LoadPosition(const std::string& filename);
 	//現在の座標をファイルに保存
