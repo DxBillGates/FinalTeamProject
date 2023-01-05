@@ -299,4 +299,5 @@ void FieldObjectManager::OtherDraw()
 void FieldObjectManager::UnLoad()
 {
 	fieldTree.clear();
+	delete mesh;
 }
