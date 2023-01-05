@@ -46,6 +46,9 @@
     <FxCompile Include="Resources\Shader\BrightnessSamplingPixelShader.hlsl">
       <Filter>シェーダーファイル</Filter>
     </FxCompile>
+    <FxCompile Include="Resources\Shader\DefaultMeshWithTextureAndAdsCompositiongPixelShader.hlsl">
+      <Filter>シェーダーファイル</Filter>
+    </FxCompile>
     <FxCompile Include="Resources\Shader\MixedTexturePixelShader.hlsl">
       <Filter>シェーダーファイル</Filter>
     </FxCompile>
@@ -105,10 +108,22 @@
     <ClCompile Include="FieldObject.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
-    <ClCompile Include="NormalTree.cpp">
+    <ClCompile Include="FieldTree.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
     <ClCompile Include="UIObject.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="CrashParticle.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ScreenUI.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerColectObject.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="FieldObjectDeBugTransform.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -167,10 +182,22 @@
     <ClInclude Include="FieldObject.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
-    <ClInclude Include="NormalTree.h">
+    <ClInclude Include="FieldTree.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
     <ClInclude Include="UIObject.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="CrashParticle.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ScreenUI.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerColectObject.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="FieldObjectDeBugTransform.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
   </ItemGroup>

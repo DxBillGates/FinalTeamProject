@@ -85,7 +85,7 @@ void FieldObject::Draw()
 
 	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
-	if (shaderName == "DefaultMeshWithTextureShader")
+	if (shaderName != "DefaultMeshShader")
 	{
 		renderQueue->AddSetConstantBufferInfo({ 4,cbufferAllocater->BindAndAttachData(4, &textureAnimationInfo,sizeof(GE::TextureAnimationInfo)) });
 		renderQueue->AddSetShaderResource({ 5,graphicsDevice->GetTextureManager()->Get(textureName)->GetSRVNumber() });
@@ -104,6 +104,15 @@ void FieldObject::Draw()
 		GE::Math::Vector2 sunsUV = gameObject->GetGameObjectManager()->FindGameObjectWithTag("directionalLight", "directionalLight")->GetComponent<GE::DirectionalLight>()->GetUV();
 		renderQueue->AddSetShaderResource({ 16,graphicsDevice->GetTextureManager()->Get(textureName)->GetSRVNumber() });
 		renderQueue->AddSetConstantBufferInfo({ 5,cbufferAllocater->BindAndAttachData(5, &sunsUV,sizeof(GE::Math::Vector2)) });
+	}
+	if (shaderName == "DefaultMeshWithTextureAndAdsCompositiongShader")
+	{
+		GE::CameraInfo cameraInfo = graphicsDevice->GetMainCamera()->GetCameraInfo();
+		cameraInfo.lightMatrix = gameObject->GetGameObjectManager()->FindGameObjectWithTag("directionalLight", "directionalLight")->GetComponent<GE::DirectionalLight>()->GetVPMatrix();
+
+		renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
+		renderQueue->AddSetShaderResource({ 16,graphicsDevice->GetTextureManager()->Get(textureName)->GetSRVNumber() });
+		renderQueue->AddSetShaderResource({ 17,graphicsDevice->GetLayerManager()->Get("shadowLayer")->GetDepthTexture()->GetSRVNumber() });
 	}
 	graphicsDevice->DrawMesh(modelName);
 }

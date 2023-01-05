@@ -71,12 +71,7 @@ bool Game::LoadContents()
 	mesh->Create(device, cmdList, modelTree1);
 
 	meshManager->Add(mesh, "tree1");
-	MeshData<Vertex_UV_Normal> modelTreeLeaf1;
-	MeshCreater::LoadObjModelData("Resources/Model/tree_leaf1", modelTreeLeaf1);
-	mesh = new Mesh();
-	mesh->Create(device, cmdList, modelTreeLeaf1);
-	meshManager->Add(mesh, "tree_leaf1");
-
+	
 	MeshData<Vertex_UV_Normal> modelDataTree2;
 	MeshCreater::LoadObjModelData("Resources/Model/tree2", modelDataTree2);
 	mesh = new Mesh();
@@ -176,6 +171,18 @@ bool Game::LoadContents()
 	nullTexture = new Texture();
 	nullTexture->Load("sky_Windows.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "sky_Windows");
+	
+	nullTexture = new Texture();
+	nullTexture->Load("texture_tree_leaf.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "texture_tree_leaf");
+	
+	nullTexture = new Texture();
+	nullTexture->Load("crash_info.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "crash_info");
+	
+	nullTexture = new Texture();
+	nullTexture->Load("groundTex1.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "groundTex1");
 
 	auto* testScene = sceneManager.AddScene(new SampleScene("SampleScene", sceneManager.GetSceneInitializer()));
 	sceneManager.AddScene(new Clear("ClearScene", sceneManager.GetSceneInitializer()));

@@ -1,6 +1,6 @@
 #include "FieldObjectManager.h"
 #include "FieldObject.h"
-#include "NormalTree.h"
+#include "FieldTree.h"
 #include <GatesEngine/Header/GameFramework/Component/SphereCollider.h>
 #include <GatesEngine/Header/GameFramework/Component/MeshCollider.h>
 #include <GatesEngine/Header/GameFramework/Component/BoxCollider.h>
@@ -55,6 +55,7 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 			object->GetTransform()->scale = { 400 };
 
 			fieldTree.push_back(object);
+			FieldObjectDeBugTransform::GetInstance()->AddTarget(object);
 		}
 	}
 	//
@@ -81,9 +82,11 @@ void FieldObjectManager::SetGroundMesh(GE::MeshData<GE::Vertex_UV_Normal> mesh)
 	collider->SetMesh(&mesh);
 	object->GetComponent<FieldObject>()->modelName = "GroundTest";
 	sampleComponent->shaderName = "DefaultMeshWithShadowShader";
-	object->SetColor(GE::Color(0.5f, 0.9f, 0.5f, 1.0f));
+	//object->SetColor(GE::Color(0.5f, 0.9f, 0.5f, 1.0f));
+	object->GetComponent<FieldObject>()->shaderName = "DefaultMeshWithTextureAndAdsCompositiongShader";
+	object->GetComponent<FieldObject>()->textureName = "groundTex1";
 	object->GetTransform()->position = { 1000,0,-15000 };
-	object->GetTransform()->scale = { 2 };
+	object->GetTransform()->scale = { 2000 };
 	object->GetTransform()->rotation = GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), -5.0f);
 }
 
@@ -248,6 +251,24 @@ void FieldObjectManager::SaveCurrentPosition(const std::string& filename)
 		" " << col.r << " " << col.g << " " << col.b << " " << col.a << std::endl;
 
 	writing_file.close();
+}
+
+void FieldObjectManager::OtherUpdate()
+{
+	FieldObjectDeBugTransform::GetInstance()->Update();
+}
+
+void FieldObjectManager::OtherDraw()
+{
+	startTree->GetComponent<StartTree>()->TreeLeafDraw();
+
+	for (int i = 0; i < fieldTree.size(); i++)
+	{
+		fieldTree[i]->GetComponent<FieldTree>()->TreeLeafDraw();
+
+	}
+
+	FieldObjectDeBugTransform::GetInstance()->Draw();
 }
 
 void FieldObjectManager::UnLoad()

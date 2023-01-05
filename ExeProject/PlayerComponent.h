@@ -3,6 +3,7 @@
 #include <GatesEngine/Header/Input/InputDevice.h>
 #include <GatesEngine/Header/Graphics/SkinMeshAnimator.h>
 #include <GatesEngine/Header/Audio/AudioManager.h>
+#include"CrashParticle.h"
 
 class PlayerComponent : public GE::Component
 {
@@ -18,10 +19,12 @@ private:
 	static float damageSpeed;
 	static float pushStartTime;		//キーを押してから操作できるようになるまでのカウント
 	static float stayLandLerpTime;	//木に戻るラープ
-	static int collectMax;			//収集物の同時にもてる最大個数
+	static int colectMax;			//収集物の同時にもてる最大個数
 	static float body_direction_LerpTime; //秒数
 	static float worldRadius;				//世界の大きさの半径(端っこの壁までの距離)
 	static float lockOnLength;				//敵をロックオンできる距離
+	static float moreTimesLockOnLength;		//連続で二回目以降の敵をロックオンできる距離
+	static int lockOnInterval;				//ロックオンのインターバルの長さ
 
 	GE::AudioManager* audioManager;
 	GE::InputDevice* inputDevice;
@@ -37,10 +40,11 @@ private:
 	float dashEasingCount;			//スピード遷移のカウント
 	float stayLandLerpEasingCount;	//着陸する遷移カウント
 	float rayHitCount;				//何フレーム照準をあわせているか
-	int collectCount;				//取集物を何個集めたか
+	int colectCount;				//取集物を何個集めたか
 	int hitStopCount;				//ヒットストップカウント用
 	float startCouunt;				//開始時のカウント
 	int body_direction_LerpCount;	//元の姿勢に戻るときの遷移
+	int lockOnIntervalCount;		//ロックオンのインターバルのカウント
 
 	int statasChangeCount;			//インプットが次のPlayerStatasでも動かないように1フレーム繰越すよう
 	struct LockOnEnemy
@@ -49,6 +53,7 @@ private:
 		GE::Math::Vector3 direction;
 	};
 	LockOnEnemy lockOnEnemy;
+	CrashParticle crashParticle;
 
 	//レティクルの位置
 	GE::Math::Vector2 center;
@@ -108,7 +113,7 @@ private:
 	/// <summary>
 	/// 前方にいて最も近い敵を求める
 	/// </summary>
-	void SearchNearEnemy();
+	void SearchNearEnemy(bool isForward = false);
 	/// <summary>
 	/// ロックオンして攻撃
 	/// </summary>
@@ -131,8 +136,6 @@ private:
 	void Reflection(GE::Math::Vector3 normal);
 	//EaseIn関係がよくわからなかったから一時的に追加
 	const float easeIn(const float start, const float end, float time);
-
-	const GE::Math::Vector3 Repulsion(GE::Math::Vector3 direction, GE::Math::Vector3 normal, float power);
 
 public:
 	GE::Math::Vector3 GetDirection();

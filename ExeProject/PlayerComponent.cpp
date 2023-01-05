@@ -13,6 +13,7 @@
 #include "FieldObjectManager.h"
 #include "Title.h"
 #include "TimeLimit.h"
+#include "PlayerColectObject.h"
 
 float PlayerComponent::frameRate;
 PlayerComponent::PlayerStatas PlayerComponent::statas;
@@ -25,10 +26,12 @@ GE::Math::Vector3 PlayerComponent::gravity = { 0,0.5,0 };			//重力
 float PlayerComponent::rayHitSecond = 144.0f;						//ロックオンする照準を合わせる長さ
 float PlayerComponent::normal_speed = 20.0f;						//通常時のスピード
 float PlayerComponent::current_speed = normal_speed;				//現在のスピード
-float PlayerComponent::damageSpeed = 0.0f;						//敵にヒットしたときにダメージが入るスピード
-int PlayerComponent::collectMax = 10;
-float PlayerComponent::worldRadius = 38000.0f;
-float PlayerComponent::lockOnLength = 10000.0f;
+float PlayerComponent::damageSpeed = 0.0f;							//敵にヒットしたときにダメージが入るスピード
+int PlayerComponent::colectMax = 10;								//一度に掴めるえさの数
+float PlayerComponent::worldRadius = 38000.0f;						//端この壁までの長さ
+float PlayerComponent::lockOnLength = 10000.0f;						//ロックオンできる距離
+float PlayerComponent::moreTimesLockOnLength = 10000.0f;			//連続で二回目以降の敵をロックオンできる距離
+int PlayerComponent::lockOnInterval = 300.0f;						//再度ロックオンできるまでのインターバル
 
 PlayerComponent::PlayerComponent()
 	: inputDevice(nullptr)
@@ -43,6 +46,9 @@ void PlayerComponent::Awake()
 
 void PlayerComponent::Start()
 {
+	//激突時パーティクル
+	crashParticle.Start();
+
 	isDraw = true;
 	GE::Utility::Printf("PlayerComponent Start()\n");
 	inputDevice = GE::InputDevice::GetInstance();
@@ -54,7 +60,10 @@ void PlayerComponent::Start()
 	body_direction = { 0,-1.57f,0 };
 	dashEasingCount = 0.0;
 	startCouunt = 0.0f;
-	collectCount = 0;
+	colectCount = 0;
+	//
+	lockOnIntervalCount = lockOnInterval;
+
 	statasChangeCount = 0;
 
 	hitStopCount = hitStopTime;
@@ -73,11 +82,16 @@ void PlayerComponent::Start()
 	animator = GE::SkinMeshManager::GetInstance()->Get("Bird");
 	animator.Initialize();
 	animator.PlayAnimation(3, false);
+	//収集物
+	PlayerColectObject::GetInstance()->Start(colectMax, gameObject);
 }
 void PlayerComponent::Update(float deltaTime)
 {
 	frameRate = 1.0f / deltaTime;
 	const float f = 144.0f / frameRate;
+
+	crashParticle.Update(f);
+
 	//testBGM->Start();
 	InputManager::GetInstance()->Update();
 	const auto& cameraInfo = graphicsDevice->GetMainCamera()->GetCameraInfo();
@@ -97,6 +111,8 @@ void PlayerComponent::Update(float deltaTime)
 	//操作
 	Control(f);
 	CameraControl::GetInstance()->SetTargetObject(gameObject);
+	//収集物
+	PlayerColectObject::GetInstance()->Update(f, colectCount);
 	//if (statas != PlayerStatas::DEBUG)
 	{
 		CameraControl::GetInstance()->Update();
@@ -107,7 +123,22 @@ void PlayerComponent::Update(float deltaTime)
 		//D0押したら移動停止＊デバッグ用
 		if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::D0))
 		{
-			statas != PlayerStatas::DEBUG ? statas = PlayerStatas::DEBUG : statas = PlayerStatas::MOVE;
+			if (statas != PlayerStatas::DEBUG)
+			{
+				statas = PlayerStatas::DEBUG;
+			}
+			else
+			{
+				if (isDraw)
+				{
+					isDraw = false;
+				}
+				else
+				{
+					isDraw = true;
+					statas = PlayerStatas::MOVE;
+				}
+			}
 		}
 		//めり込んだらD9キーで木に強制送還
 		if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::D9))
@@ -137,18 +168,23 @@ void PlayerComponent::DrawShadow()
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
 
 	graphicsDevice->DrawMesh("Player");
+
+	//収集物
+	PlayerColectObject::GetInstance()->DrawShadow(graphicsDevice);
 }
 
 void PlayerComponent::Draw()
 {
+	crashParticle.Draw(graphicsDevice);
+
 	if (!isDraw)return;
 
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
 	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
 
 	graphicsDevice->SetShader("DefaultSkinMeshShader");
-
 	GE::Math::Matrix4x4 modelMatrix = transform->GetMatrix();
+
 	GE::Material material;
 	material.color = GE::Color::White();
 
@@ -164,38 +200,12 @@ void PlayerComponent::Draw()
 
 
 	graphicsDevice->DrawMesh("Player");
-
+	//収集物
+	PlayerColectObject::GetInstance()->Draw(graphicsDevice,gameObject->GetGameObjectManager());
 }
 
 void PlayerComponent::LateDraw()
 {
-	if (!is_rayCast_active)
-	{
-		return;
-	}
-	const float SPRITE_SIZE = 30;
-
-	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
-	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
-
-	graphicsDevice->SetShader("DefaultSpriteWithTextureShader");
-
-	GE::Math::Matrix4x4 modelMatrix = GE::Math::Matrix4x4::Scale({ GE::Math::Lerp(SPRITE_SIZE,10,rayHitCount / rayHitSecond) });
-
-	modelMatrix *= GE::Math::Matrix4x4::RotationZ(rayHitCount);
-	modelMatrix *= GE::Math::Matrix4x4::Translate({ center.x,center.y,0 });
-	GE::Material material;
-	material.color = gameObject->GetColor();
-
-	GE::CameraInfo cameraInfo;
-	cameraInfo.viewMatrix = GE::Math::Matrix4x4::GetViewMatrixLookTo({ 0,1,0 }, { 0,0,1 }, { 0,1,0 });
-	cameraInfo.projMatrix = GE::Math::Matrix4x4::GetOrthographMatrix(GE::Window::GetWindowSize());
-
-	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
-	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
-	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
-	renderQueue->AddSetShaderResource({ 4,graphicsDevice->GetTextureManager()->Get("texture_null")->GetSRVNumber() });
-	graphicsDevice->DrawMesh("2DPlane");
 
 }
 
@@ -227,12 +237,18 @@ void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 	{
 		if (other->GetTag() == "ground" || other->GetTag() == "StartTree")
 		{
+			//各法線セット
 			Reflection(gameObject->GetHitNormal());
+			crashParticle.Fire(transform->position, gameObject->GetHitNormal(), other->GetColor());
+			PlayerColectObject::GetInstance()->SetFallen(gameObject->GetHitNormal());
 			return;
 		}
 		else if (other->GetTag() == "tile")
 		{
+			//各法線セット
 			Reflection(GE::Math::Vector3(0, 1, 0));
+			crashParticle.Fire(transform->position, GE::Math::Vector3(0, 1, 0), other->GetColor());
+			PlayerColectObject::GetInstance()->SetFallen({ 0,1,0 });
 			return;
 
 		}
@@ -253,7 +269,7 @@ void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 			}
 			audioManager->Use("catch2")->Start();
 			//収集物 +1
-			collectCount < collectMax ? collectCount++ : 0;
+			colectCount < colectMax ? colectCount++ : 0;
 		}
 		hitStopCount = 0;
 		CameraControl::GetInstance()->ShakeStart({ 70,70 }, 30);
@@ -324,15 +340,24 @@ void PlayerComponent::Control(float deltaTime)
 		transform->position += transform->GetForward() * current_speed * deltaTime * GE::GameSetting::Time::GetGameTime() - gravity;
 		//Key押したらPlayerState::DASHに変わる
 		if (InputManager::GetInstance()->GetActionButton()) { statas = PlayerStatas::DASH; }
-		if (InputManager::GetInstance()->GetLockonButton())
+		if (lockOnIntervalCount >= lockOnInterval)
 		{
-			isLockOnStart = true;
-			//最も近くて前方にいる敵をセット
-			SearchNearEnemy();
+			if (InputManager::GetInstance()->GetLockonButton())
+			{
+				isLockOnStart = true;
+				//最も近くて前方にいる敵をセット
+				SearchNearEnemy();
+			}
+			else
+			{
+				isLockOnStart = false;
+			}
 		}
-		else { isLockOnStart = false; }
-
-		is_rayCast_active = false;
+		else
+		{
+			lockOnIntervalCount += deltaTime;
+			isLockOnStart = false;
+		}
 		//RayCast(deltaTime);
 		//ロックオンして攻撃
 		LockOn();
@@ -343,19 +368,21 @@ void PlayerComponent::Control(float deltaTime)
 	case PlayerComponent::PlayerStatas::CRASH:
 		//ダッシュから切り替わった時用初期化
 		current_speed = normal_speed;
-		//体のオイラー角を取得してセット
-		body_direction = transform->rotation.EulerRadian();
 		//移動
 		transform->position += transform->GetForward() * current_speed * deltaTime * GE::GameSetting::Time::GetGameTime();
 
 		if (InputManager::GetInstance()->GetActionButton())
 		{
+			//体のオイラー角を取得してセット
+			body_direction = transform->rotation.EulerRadian();
 			animator.PlayAnimation(0, false);
 			statas = PlayerStatas::MOVE;
 			audioManager->Use("flapping1")->Start();
 		}
 		break;
 	case PlayerComponent::PlayerStatas::LOCKON_SHOOT:
+		//ロックオンのインターバルのカウントを初期化
+		lockOnIntervalCount = 0;
 
 		if (lockOnEnemy.object != nullptr)
 		{
@@ -364,7 +391,9 @@ void PlayerComponent::Control(float deltaTime)
 				lockOnEnemy.direction = GE::Math::Vector3(lockOnEnemy.object->GetTransform()->position - transform->position).Normalize();
 				loop = true;
 			}
-			else { isLockOn = false; }
+			else {
+				isLockOn = false;
+			}
 		}
 		Dash(100.f, 20.f, deltaTime, lockOnEnemy.direction, loop);
 		break;
@@ -380,9 +409,9 @@ void PlayerComponent::Control(float deltaTime)
 			//stayアニメーション
 			animator.PlayAnimation(3, false);
 			//収集物お持ち帰り
-			StartTree::collectCount += collectCount;
-			TimeLimit::GetInstance()->AddSeconds(10 * collectCount);
-			collectCount = 0;
+			StartTree::collectCount += colectCount;
+			TimeLimit::GetInstance()->AddSeconds(10 * colectCount);
+			colectCount = 0;
 			//着陸
 			statas = PlayerStatas::STAY_TREE;
 		}
@@ -487,12 +516,17 @@ void PlayerComponent::KeyboardMoveControl(float deltaTime)
 	body_direction = GE::Math::Vector3::Min(-bodyDirectionMax, GE::Math::Vector3::Max(bodyDirectionMax, body_direction));
 }
 
-void PlayerComponent::SearchNearEnemy()
+void PlayerComponent::SearchNearEnemy(bool isForward)
 {
 	std::vector<GE::GameObject*> enemies = EnemyManager::GetInstance()->GetAllEnemies();
 	float result = 100000;
 	int a = 0;
 	bool look = false;
+	float whichLockOnLength;
+	//サーチする距離をセット
+	if (!isForward) { whichLockOnLength = lockOnLength; }
+	else { whichLockOnLength = moreTimesLockOnLength; }
+
 	for (int i = 0; i < enemies.size(); i++)
 	{
 		float distance = abs(GE::Math::Vector3::Distance(transform->position, enemies[i]->GetTransform()->position));
@@ -501,9 +535,10 @@ void PlayerComponent::SearchNearEnemy()
 		enemies[i]->SetColor(GE::Color::Red());
 		//生きているか＆前側にいる中で最も近い敵&&LockOnLengthより近い距離か
 		if (enemies[i]->GetComponent<Enemy>()->statas != Enemy::Statas::DEAD
-			&& distance < lockOnLength)
+			&& distance < whichLockOnLength)
 		{
-			if (GE::Math::Vector3::Dot(transform->GetForward(), enemyDirection.Normalize()) > 0.8)
+			//引数をTrueにすると前にいるか関係なくロックオンする()
+			if (GE::Math::Vector3::Dot(transform->GetForward(), enemyDirection.Normalize()) > 0.8 || isForward)
 			{
 				look = true;
 				if (result > distance)
@@ -600,23 +635,13 @@ void PlayerComponent::Reflection(GE::Math::Vector3 normal)
 {
 	statas = PlayerStatas::CRASH;
 	audioManager->Use("hitWall")->Start();
-	transform->rotation = GE::Math::Quaternion::LookDirection(Repulsion(transform->GetForward(), normal, 2.0f));
+	transform->rotation = GE::Math::Quaternion::LookDirection(GE::Math::Vector3::Reflection(transform->GetForward(), normal, 2.0f));
 	CameraControl::GetInstance()->ShakeStart({ 70,70 }, 30);
 }
 //EaseIn関係がよくわからなかったから一時的に追加
 const float PlayerComponent::easeIn(const float start, const float end, float time)
 {
 	return start * (1.0f - time * time) + end * time * time;
-}
-
-const GE::Math::Vector3 PlayerComponent::Repulsion(GE::Math::Vector3 direction, GE::Math::Vector3 normal, float power)
-{
-	GE::Math::Vector3 a = normal;
-	a = a.Normalize();
-	GE::Math::Vector3 L = -direction;
-	float LdotNx2 = power * GE::Math::Vector3::Dot(L, a);
-	GE::Math::Vector3 g = LdotNx2 * a - L;
-	return g;
 }
 
 GE::Math::Vector3 PlayerComponent::GetDirection()

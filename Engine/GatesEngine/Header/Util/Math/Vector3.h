@@ -102,6 +102,15 @@ namespace GE
 			/// <param name="v2">最小ベクトル</param>
 			/// <returns>ベクトル</returns>
 			static Vector3 Min(const Vector3& v1, const Vector3& v2);
+			/// <summary>
+			/// 法線を使って反射ベクトルを返す
+			/// </summary>
+			/// <param name="direction">入射角</param>
+			/// <param name="normal">法線</param>
+			/// <param name="power">反発係数 *2.0で普通に反射大きくなればなるほど入射角のマイナス方向に近くなる。
+			///						1.0で法線の垂直方面になる(ポリゴン面に沿う)</param>
+			/// <returns>反射角</returns>
+			static Vector3 Reflection(GE::Math::Vector3 direction, GE::Math::Vector3 normal, float power = 2.0f);
 
 			Vector3 operator+();
 			Vector3 operator-();

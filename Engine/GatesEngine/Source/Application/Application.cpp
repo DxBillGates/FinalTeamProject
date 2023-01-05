@@ -69,7 +69,7 @@ bool GE::Application::LoadContents()
 	// sample bgm ロード＆再生
 	auto* testBGMData = audioManager.AddAudioData(new AudioData("Resources/Audio/BGM1.wav"), "testBGMData");
 	auto* testBGM = audioManager.AddAudio(new Audio(testBGMData, "testBGM"));
-	testBGM->Start();
+	//testBGM->Start();
 	testBGM->SetVolume(0.1f);
 	testBGM->SetPitch(1);
 
@@ -203,6 +203,10 @@ bool GE::Application::LoadContents()
 	defaultLinePixelShader.CompileShaderFileWithoutFormat(L"DefaultLinePixelShader", "ps_5_0");
 	Shader defaultMeshWithTexturePixelShader;
 	defaultMeshWithTexturePixelShader.CompileShaderFileWithoutFormat(L"DefaultMeshWithTexturePixelShader", "ps_5_0");
+	//山田が追加ァアッ!
+	Shader defaultMeshWithTextureAndAdsCompositiongPixelShader;
+	defaultMeshWithTextureAndAdsCompositiongPixelShader.CompileShaderFileWithoutFormat(L"DefaultMeshWithTextureAndAdsCompositiongPixelShader", "ps_5_0");
+
 	Shader defaultSpriteVertexShader, defaultSpritePixelShader;
 	defaultSpriteVertexShader.CompileShaderFileWithoutFormat(L"DefaultSpriteVertexShader", "vs_5_0");
 	defaultSpritePixelShader.CompileShaderFileWithoutFormat(L"DefaultSpritePixelShader", "ps_5_0");
@@ -259,6 +263,13 @@ bool GE::Application::LoadContents()
 	GraphicsPipeline* dafaultMeshWithTexturePipeline = new GraphicsPipeline({ &defaultMeshVertexShader,nullptr,nullptr,nullptr,&defaultMeshWithTexturePixelShader });
 	dafaultMeshWithTexturePipeline->Create(device, { GraphicsPipelineInputLayout::POSITION,GraphicsPipelineInputLayout::UV ,GraphicsPipelineInputLayout::NORMAL }, cbv5srv1RootSignature, pipelineInfo);
 	graphicsPipelineManager->Add(dafaultMeshWithTexturePipeline, "DefaultMeshWithTextureShader");
+	
+	//山田が追加ァアッ!
+	pipelineInfo.topologyType = GraphicsPipelinePrimitiveTopolotyType::TRIANGLE;
+	GraphicsPipeline* dafaultMeshWithTextureAndADSCompositiongPipeline = new GraphicsPipeline({ &defaultMeshVertexShader,nullptr,nullptr,nullptr,&defaultMeshWithTextureAndAdsCompositiongPixelShader });
+	dafaultMeshWithTextureAndADSCompositiongPipeline->Create(device, { GraphicsPipelineInputLayout::POSITION,GraphicsPipelineInputLayout::UV ,GraphicsPipelineInputLayout::NORMAL }, testRootSignature, pipelineInfo);
+	graphicsPipelineManager->Add(dafaultMeshWithTextureAndADSCompositiongPipeline, "DefaultMeshWithTextureAndAdsCompositiongShader");
+
 	// default sprite shader
 	pipelineInfo.topologyType = GraphicsPipelinePrimitiveTopolotyType::TRIANGLE;
 	pipelineInfo.isUseDepthClip = false;

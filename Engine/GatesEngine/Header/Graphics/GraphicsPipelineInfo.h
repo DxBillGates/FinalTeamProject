@@ -41,7 +41,7 @@ namespace GE
 		bool isUseDepthClip = true;
 		bool isWriteDepthStencil = true;
 		int renderTargetCount = 1; 
-		bool isUseAlphaToCoverage = false;
+		bool isUseAlphaToCoverage = true;
 		GraphicsPipelineComparison depthComparison = GraphicsPipelineComparison::COMPARISON_FUNC_LESS;
 	};
 

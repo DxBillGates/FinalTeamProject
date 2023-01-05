@@ -80,6 +80,15 @@ GE::Math::Vector3 GE::Math::Vector3::Min(const Vector3& v1, const Vector3& v2)
 	return result;
 }
 
+ GE::Math::Vector3 GE::Math::Vector3::Reflection(GE::Math::Vector3 direction, GE::Math::Vector3 normal, float power)
+{
+	GE::Math::Vector3 a = normal;
+	a = a.Normalize();
+	GE::Math::Vector3 L = -direction;
+	float LdotNx2 = power * GE::Math::Vector3::Dot(L, a);
+	GE::Math::Vector3 result = LdotNx2 * a - L;
+	return result;
+}
 GE::Math::Vector3 GE::Math::Vector3::operator+()
 {
 	return *this;
