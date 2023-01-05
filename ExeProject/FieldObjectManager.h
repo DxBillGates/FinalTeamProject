@@ -3,6 +3,7 @@
 #include <GatesEngine/Header/GameFramework/GameObject/GameObject.h> 
 #include <GatesEngine/Header/Util/Random.h>
 #include <GatesEngine/Header/Graphics/MeshData.h>
+#include <GatesEngine/Header/Graphics/Mesh.h>
 #include <GatesEngine/Header/Graphics/VertexData.h>
 #include "StartTree.h"
 
@@ -26,6 +27,10 @@ private:
 	GE::GameObject* skydome = nullptr;
 
 	GE::IGraphicsDeviceDx12* graphicsDevice;
+	GE::Mesh* mesh;
+
+private:
+	void AddGroundModel(std::string fileName);
 public:
 	static FieldObjectManager* GetInstance();
 	void Start(GE::GameObjectManager* gameObjectManager);

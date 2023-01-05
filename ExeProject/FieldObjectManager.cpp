@@ -5,13 +5,13 @@
 #include <GatesEngine/Header/GameFramework/Component/MeshCollider.h>
 #include <GatesEngine/Header/GameFramework/Component/BoxCollider.h>
 #include <GatesEngine/Header/Graphics/MeshCreater.h>
-#include <GatesEngine/Header/Graphics/Mesh.h>
 
 #include<fstream>
 #include<sstream>
 #include<cassert>
 
 GE::Math::Vector3 FieldObjectManager::FieldObjectManager::StartPosition;
+
 
 FieldObjectManager* FieldObjectManager::GetInstance()
 {
@@ -30,9 +30,9 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 
 	//スタートの止まり木
 	GE::MeshData<GE::Vertex_UV_Normal> startTreeModel;
+	mesh = new GE::Mesh();
 	{
 		GE::MeshCreater::LoadObjModelData("Resources/Model/tree2", startTreeModel);
-		GE::Mesh* mesh = new GE::Mesh();
 		mesh->Create(device, cmdList, startTreeModel);
 		meshManager->Add(mesh, "startTree");
 
@@ -42,48 +42,10 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 		collider->SetMesh(&startTreeModel);
 		startTree = object;
 	}
-	//地形
-	GE::MeshData<GE::Vertex_UV_Normal> MountainModel1;
-	{
-		GE::MeshCreater::LoadObjModelData("Resources/Model/mountain1", MountainModel1);
-		GE::Mesh* mesh = new GE::Mesh();
-		mesh->Create(device, cmdList, MountainModel1);
-		meshManager->Add(mesh, "mountain1");
+	GE::MeshData<GE::Vertex_UV_Normal> model;
 
-		auto* object = gameObjectManager->AddGameObject(new GE::GameObject("ground", "ground"));
-		auto* sampleComponent = object->AddComponent<FieldObject>();
-		auto* collider = object->AddComponent < GE::MeshCollider >();
-		collider->SetMesh(&MountainModel1);
-		object->GetComponent<FieldObject>()->modelName = "mountain1";
-		sampleComponent->shaderName = "DefaultMeshWithShadowShader";
-		//object->SetColor(GE::Color(0.5f, 0.9f, 0.5f, 1.0f));
-		object->GetComponent<FieldObject>()->shaderName = "DefaultMeshWithTextureAndAdsCompositiongShader";
-		object->GetComponent<FieldObject>()->textureName = "groundTex1";
-		object->GetTransform()->position = { 1000,0,-15000 };
-		object->GetTransform()->scale = { 2000 };
-		object->GetTransform()->rotation = GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), -5.0f);
-	}
-	GE::MeshData<GE::Vertex_UV_Normal> MountainModel2;
-	{
-		GE::MeshCreater::LoadObjModelData("Resources/Model/mountain2", MountainModel2);
-		GE::Mesh* mesh = new GE::Mesh();
-		mesh->Create(device, cmdList, MountainModel2);
-		meshManager->Add(mesh, "mountain2");
-
-		auto* object = gameObjectManager->AddGameObject(new GE::GameObject("ground", "ground"));
-		auto* sampleComponent = object->AddComponent<FieldObject>();
-		auto* collider = object->AddComponent < GE::MeshCollider >();
-		collider->SetMesh(&MountainModel2);
-		object->GetComponent<FieldObject>()->modelName = "mountain2";
-		sampleComponent->shaderName = "DefaultMeshWithShadowShader";
-		//object->SetColor(GE::Color(0.5f, 0.9f, 0.5f, 1.0f));
-		object->GetComponent<FieldObject>()->shaderName = "DefaultMeshWithTextureAndAdsCompositiongShader";
-		object->GetComponent<FieldObject>()->textureName = "groundTex1";
-		object->GetTransform()->position = { 1000,0,-15000 };
-		object->GetTransform()->scale = { 2000 };
-		object->GetTransform()->rotation = GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), -5.0f);
-	}
-
+	AddGroundModel("mountain1");
+	AddGroundModel("mountain2");
 	//壁仮
 	{
 		auto* object = gameObjectManager->AddGameObject(new GE::GameObject("skydome", "skydome"));
@@ -137,17 +99,30 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 
 	}
 }
+void FieldObjectManager::AddGroundModel(std::string fileName)
+{
+	//地形
+	GE::MeshData<GE::Vertex_UV_Normal> model;
+	auto meshManager = graphicsDevice->GetMeshManager();
+	auto device = graphicsDevice->GetDevice();
+	auto cmdList = graphicsDevice->GetCmdList();
 
-//void FieldObjectManager::SetGroundMesh(GE::MeshData<GE::Vertex_UV_Normal> mesh)
-//{
-//
-//}
-//
-//void FieldObjectManager::SetStartTreeMesh(GE::MeshData<GE::Vertex_UV_Normal> mesh)
-//{
-//
-//
-//}
+	GE::MeshCreater::LoadObjModelData("Resources/Model/" + fileName, model);
+	mesh->Create(device, cmdList, model);
+	meshManager->Add(mesh, fileName);
+
+	auto* object = gameObjectManager->AddGameObject(new GE::GameObject("ground", "ground"));
+	auto* sampleComponent = object->AddComponent<FieldObject>();
+	auto* collider = object->AddComponent < GE::MeshCollider >();
+	collider->SetMesh(&model);
+	object->GetComponent<FieldObject>()->modelName = fileName;
+	sampleComponent->shaderName = "DefaultMeshWithShadowShader";
+	object->GetComponent<FieldObject>()->shaderName = "DefaultMeshWithTextureAndAdsCompositiongShader";
+	object->GetComponent<FieldObject>()->textureName = "groundTex1";
+	object->GetTransform()->position = { 1000,0,-15000 };
+	object->GetTransform()->scale = { 2000 };
+	object->GetTransform()->rotation = GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), -5.0f);
+}
 
 void FieldObjectManager::LoadPosition(const std::string& filename)
 {
