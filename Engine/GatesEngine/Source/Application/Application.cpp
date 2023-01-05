@@ -217,6 +217,10 @@ bool GE::Application::LoadContents()
 	defaultMeshWithShadowPixelShader.CompileShaderFileWithoutFormat(L"DefaultMeshWithShadowPixelShader", "ps_5_0");
 	Shader celestialSpherePixelShader;
 	celestialSpherePixelShader.CompileShaderFileWithoutFormat(L"CelestialSpherePixelShader", "ps_5_0");
+	Shader brightnessSamplingShader;
+	brightnessSamplingShader.CompileShaderFileWithoutFormat(L"BrightnessSamplingPixelShader", "ps_5_0");
+	Shader mixedTextureShader;
+	mixedTextureShader.CompileShaderFileWithoutFormat(L"MixedTexturePixelShader", "ps_5_0");
 	// rootSignatureì¬
 	auto* rootSignatureManager = graphicsDevice.GetRootSignatureManager();
 	RootSignature* defaultMeshRootSignature = new RootSignature();
@@ -272,8 +276,12 @@ bool GE::Application::LoadContents()
 	graphicsPipelineManager->Add(spriteTextureForPosteffectPipeline, "SpriteTextureForPosteffectShader");
 	// gauss blur shader
 	GraphicsPipeline* gaussBlurPipeline = new GraphicsPipeline({ &defaultSpriteVertexShader,nullptr,nullptr,nullptr,&gaussBlurPixelShader });
-	gaussBlurPipeline->Create(device, { GraphicsPipelineInputLayout::POSITION,GraphicsPipelineInputLayout::UV }, cbv5srv1RootSignature, pipelineInfo);
+	gaussBlurPipeline->Create(device, { GraphicsPipelineInputLayout::POSITION,GraphicsPipelineInputLayout::UV }, testRootSignature, pipelineInfo);
 	graphicsPipelineManager->Add(gaussBlurPipeline, "GaussBlurShader");
+	// brightness
+	GraphicsPipeline* brightnessPipeline = new GraphicsPipeline({ &defaultSpriteVertexShader,nullptr,nullptr,nullptr,&brightnessSamplingShader });
+	brightnessPipeline->Create(device, { GraphicsPipelineInputLayout::POSITION,GraphicsPipelineInputLayout::UV }, testRootSignature, pipelineInfo);
+	graphicsPipelineManager->Add(brightnessPipeline, "BrightnessSamplingShader");
 	// default mesh with shadow shader
 	pipelineInfo = GraphicsPipelineInfo();
 	GraphicsPipeline* defaultMeshWithShadowPipline = new GraphicsPipeline({ &defaultMeshVertexShader,nullptr,nullptr,nullptr,&defaultMeshWithShadowPixelShader });
@@ -283,6 +291,10 @@ bool GE::Application::LoadContents()
 	GraphicsPipeline* celestialSpherePipeline = new GraphicsPipeline({ &defaultMeshVertexShader,nullptr,nullptr,nullptr,&celestialSpherePixelShader });
 	celestialSpherePipeline->Create(device, { GraphicsPipelineInputLayout::POSITION,GraphicsPipelineInputLayout::UV ,GraphicsPipelineInputLayout::NORMAL }, testRootSignature, pipelineInfo);
 	graphicsPipelineManager->Add(celestialSpherePipeline, "CelestialSphereShader");
+	// mixed texture shader
+	GraphicsPipeline* mixedTexturePipeline = new GraphicsPipeline({ &defaultSpriteVertexShader,nullptr,nullptr,nullptr,&mixedTextureShader });
+	mixedTexturePipeline->Create(device, { GraphicsPipelineInputLayout::POSITION,GraphicsPipelineInputLayout::UV }, testRootSignature, pipelineInfo);
+	graphicsPipelineManager->Add(mixedTexturePipeline, "MixedTextureShader");
 
 	// demo layerì¬
 	auto* layerManager = graphicsDevice.GetLayerManager();
@@ -304,6 +316,22 @@ bool GE::Application::LoadContents()
 	shadowRenderTexture->Create(device, shaderResourceHeap, Math::Vector2(2048), Color::Black());
 	shadowDepthTexture->Create(device, shaderResourceHeap,  Math::Vector2(2048));
 	layerManager->Add(new Layer(shadowRenderTexture, shadowDepthTexture), "shadowLayer");
+
+	RenderTexture* brightnessRenderTexture = new RenderTexture();
+	DepthTexture* brightnessDepthTexture = new DepthTexture();
+	brightnessRenderTexture->Create(device, shaderResourceHeap, mainWindow.GetWindowSize(), Color::Blue());
+	brightnessDepthTexture->Create(device, shaderResourceHeap, mainWindow.GetWindowSize());
+	layerManager->Add(new Layer(brightnessRenderTexture, brightnessDepthTexture), "brightnessLayer");
+
+	for (int i = 0, divide = 2; i < 6; ++i)
+	{
+		if (i % 2 == 0)divide *= 2;
+
+		RenderTexture* bloomRenderTexture = new RenderTexture();
+		bloomRenderTexture->Create(device, shaderResourceHeap, mainWindow.GetWindowSize() / divide, Color::Black());
+
+		layerManager->Add(new Layer(bloomRenderTexture, nullptr), "BloomLayer_" + std::to_string(i));
+	}
 
 	return true;
 }
