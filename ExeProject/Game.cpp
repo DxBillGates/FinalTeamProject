@@ -190,7 +190,7 @@ bool Game::Initialize()
 	Application::Initialize();
 
 	// fps‚Ì•\Ž¦Ø‘Ö
-	timer.SetIsShow(true);
+	timer.SetIsShow(false);
 
 	float gaussValue = 2.5f;
 	GE::Math::Vector2 right = { 1,0 };
@@ -221,6 +221,7 @@ bool Game::Update()
 {
 	GE::GUIManager::StartFrame();
 	Application::Update();
+	ImGui::Text("FPS : %.3f",1.0f / timer.GetElapsedTime());
 	return true;
 }
 
@@ -304,7 +305,7 @@ bool Game::Draw()
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
 	renderQueue->AddSetConstantBufferInfo({ 4,cbufferAllocater->BindAndAttachData(4,&textureAnimationInfo,sizeof(GE::TextureAnimationInfo)) });
 	static float BRIGHTNESS = 0.7f;
-	ImGui::DragFloat("shaderVariable", &BRIGHTNESS, 0.01f,0,1);
+	ImGui::DragFloat("BrightnessSamplingValue", &BRIGHTNESS, 0.01f,0,1);
 	renderQueue->AddSetConstantBufferInfo({ 5,cbufferAllocater->BindAndAttachData(5,&BRIGHTNESS,sizeof(float)) });
 	renderQueue->AddSetShaderResource({ 16,graphicsDevice.GetLayerManager()->Get("resultLayer")->GetRenderTexture()->GetSRVNumber() });
 	graphicsDevice.DrawMesh("2DPlane");
