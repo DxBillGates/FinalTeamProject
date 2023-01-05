@@ -42,9 +42,11 @@ void GE::MeshCollider::SetMesh(MeshData<Vertex_UV_Normal>* meshData)
 	auto vertices = meshData->GetVertices();
 	auto indices = meshData->GetIndices();
 
-	Math::Vector3 minPos,maxPos;
-
-	auto CalculateEdgePosition = [&minPos,&maxPos](const Math::Vector3& point) 
+	Math::Vector3 minPos, maxPos;
+	
+	minPos = vertices[0][0].point;
+	maxPos = vertices[0][0].point;
+	auto CalculateEdgePosition = [&minPos, &maxPos](const Math::Vector3& point)
 	{
 		for (int i = 0; i < 3; ++i)
 		{
