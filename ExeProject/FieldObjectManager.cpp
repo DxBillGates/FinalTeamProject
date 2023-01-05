@@ -42,10 +42,12 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 		collider->SetMesh(&startTreeModel);
 		startTree = object;
 	}
-	GE::MeshData<GE::Vertex_UV_Normal> model;
 
 	AddGroundModel("mountain1");
 	AddGroundModel("mountain2");
+	AddGroundModel("mountain3");
+	AddGroundModel("mountain4");
+	AddGroundModel("mountain5");
 	//•Ç‰¼
 	{
 		auto* object = gameObjectManager->AddGameObject(new GE::GameObject("skydome", "skydome"));
@@ -107,7 +109,7 @@ void FieldObjectManager::AddGroundModel(std::string fileName)
 	auto device = graphicsDevice->GetDevice();
 	auto cmdList = graphicsDevice->GetCmdList();
 
-	GE::MeshCreater::LoadObjModelData("Resources/Model/" + fileName, model);
+	GE::MeshCreater::LoadObjModelData("Resources/Model/_Mountain/" + fileName, model);
 	mesh->Create(device, cmdList, model);
 	meshManager->Add(mesh, fileName);
 
