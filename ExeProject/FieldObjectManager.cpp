@@ -98,7 +98,7 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 	}
 	//フィールドの草
 	{
-		for (int i = 0; i < 0; ++i)
+		for (int i = 0; i < 7; ++i)
 		{
 			auto* object = gameObjectManager->AddGameObject(new GE::GameObject("leaf", "leaf"));
 			auto* sampleComponent = object->AddComponent<FieldObject>();
@@ -160,6 +160,7 @@ void FieldObjectManager::LoadModel(const std::string& filename)
 void FieldObjectManager::LoadPosition(const std::string& filename)
 {
 	std::vector<obj> ft;
+	std::vector<obj> fl;
 	obj st;
 	obj nst;
 
@@ -201,6 +202,27 @@ void FieldObjectManager::LoadPosition(const std::string& filename)
 			line_stream >> result.col.b;
 			result.col.a = 1.0f;
 			ft.emplace_back(result);
+		}
+		else if (key == "FieldLeaf")
+		{
+			obj result;
+			line_stream >> result.pos.x;
+			line_stream >> result.pos.y;
+			line_stream >> result.pos.z;
+
+			line_stream >> result.rot.x;
+			line_stream >> result.rot.y;
+			line_stream >> result.rot.z;
+
+			line_stream >> result.scale.x;
+			line_stream >> result.scale.y;
+			line_stream >> result.scale.z;
+
+			line_stream >> result.col.r;
+			line_stream >> result.col.g;
+			line_stream >> result.col.b;
+			result.col.a = 1.0f;
+			fl.emplace_back(result);
 		}
 		else if (key == "StartTree")
 		{
@@ -253,6 +275,14 @@ void FieldObjectManager::LoadPosition(const std::string& filename)
 		fieldTree[i]->GetTransform()->position = ft[i].pos;
 		fieldTree[i]->GetComponent<FieldTree>()->rotation_euler = ft[i].rot;
 		fieldTree[i]->GetComponent<FieldTree>()->scale = ft[i].scale.x;
+	}
+	//草
+	index = fl.size() < fieldLeaf.size() ? fl.size() : fieldLeaf.size();
+	for (int i = 0; i < index; i++)
+	{
+		fieldLeaf[i]->GetTransform()->position = fl[i].pos;
+		fieldLeaf[i]->GetTransform()->rotation = GE::Math::Quaternion::Euler(fl[i].rot);
+		fieldLeaf[i]->GetTransform()->scale = fl[i].scale;
 	}
 	//開始時の木
 	startTree->GetTransform()->position = st.pos;
@@ -343,5 +373,6 @@ void FieldObjectManager::OtherDraw()
 void FieldObjectManager::UnLoad()
 {
 	fieldTree.clear();
+	fieldLeaf.clear();
 	//delete mesh;
 }
