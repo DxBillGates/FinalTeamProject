@@ -22,13 +22,9 @@ void FieldTree::Awake()
 void FieldTree::Start()
 {
 	GE::Utility::Printf("NormalTree Start()\n");
-	rotation_euler = {};
-	scale = 100;
 }
 void FieldTree::Update(float deltaTime)
 {
-	transform->rotation = GE::Math::Quaternion::Euler(rotation_euler);
-	transform->scale = { scale };
 }
 
 void FieldTree::DrawShadow()
@@ -124,8 +120,6 @@ void FieldTree::OnCollision(GE::ICollider* hitCollider)
 
 void FieldTree::OnGui()
 {
-	ImGui::InputFloat3("Rotation_Euler", rotation_euler.value);
-	ImGui::InputFloat("Scale", &scale);
 }
 
 void FieldTree::UnLoad()

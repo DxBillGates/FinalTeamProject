@@ -273,8 +273,8 @@ void FieldObjectManager::LoadPosition(const std::string& filename)
 	for (int i = 0; i < index; i++)
 	{
 		fieldTree[i]->GetTransform()->position = ft[i].pos;
-		fieldTree[i]->GetComponent<FieldTree>()->rotation_euler = ft[i].rot;
-		fieldTree[i]->GetComponent<FieldTree>()->scale = ft[i].scale.x;
+		fieldTree[i]->GetTransform()->rotation = GE::Math::Quaternion::Euler(ft[i].rot);
+		fieldTree[i]->GetTransform()->scale = ft[i].scale;
 	}
 	//ëê
 	index = fl.size() < fieldLeaf.size() ? fl.size() : fieldLeaf.size();
@@ -306,26 +306,26 @@ void FieldObjectManager::SaveCurrentPosition(const std::string& filename)
 	for (int i = 0; i < fieldTree.size(); i++)
 	{
 		GE::Math::Vector3 pos = fieldTree[i]->GetTransform()->position;
-		float scale = fieldTree[i]->GetComponent<FieldTree>()->scale;
+		GE::Math::Vector3 scale = fieldTree[i]->GetTransform()->scale;
 		GE::Math::Vector3 rota = fieldTree[i]->GetTransform()->rotation.EulerAngle();
 		GE::Color col = fieldTree[i]->GetColor();
 
 		writing_file << "FieldTree " << pos.x << " " << pos.y << " " << pos.z <<
 			" " << rota.x << " " << rota.y << " " << rota.z <<
-			" " << scale << " " << scale << " " << scale <<
+			" " << scale.x << " " << scale.x << " " << scale.x <<
 			" " << col.r << " " << col.g << " " << col.b << " " << col.a << std::endl;
 	}
 	//ïÅí ÇÃñÿ
 	for (int i = 0; i < fieldLeaf.size(); i++)
 	{
 		GE::Math::Vector3 pos = fieldLeaf[i]->GetTransform()->position;
-		float scale = fieldLeaf[i]->GetTransform()->scale.x;
+		GE::Math::Vector3 scale = fieldLeaf[i]->GetTransform()->scale;
 		GE::Math::Vector3 rota = fieldLeaf[i]->GetTransform()->rotation.EulerAngle();
 		GE::Color col = fieldLeaf[i]->GetColor();
 
 		writing_file << "FieldLeaf " << pos.x << " " << pos.y << " " << pos.z <<
 			" " << rota.x << " " << rota.y << " " << rota.z <<
-			" " << scale << " " << scale << " " << scale <<
+			" " << scale.x << " " << scale.x << " " << scale.x <<
 			" " << col.r << " " << col.g << " " << col.b << " " << col.a << std::endl;
 	}
 	//äJénéûÇÃñÿ
