@@ -38,9 +38,9 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 
 
 	//スタートの止まり木
-	GE::MeshData<GE::Vertex_UV_Normal> startTreeModel;
-	mesh = new GE::Mesh();
 	{
+		GE::MeshData<GE::Vertex_UV_Normal> startTreeModel;
+		mesh = new GE::Mesh();
 		GE::MeshCreater::LoadObjModelData("Resources/Model/tree2", startTreeModel);
 		mesh->Create(device, cmdList, startTreeModel);
 		meshManager->Add(mesh, "startTree");

@@ -17,6 +17,12 @@ public:
 		DRAG_Z,
 		NONE,
 	};
+	enum class Trans_State
+	{
+		POSITION,
+		ROTATION,
+		SCALE,
+	};
 	struct Object
 	{
 		GE::GameObject* target = nullptr;
@@ -24,6 +30,8 @@ public:
 		GE::Transform pivotTransform[3];
 		Statas statas = Statas::NONE;
 	};
+
+	Trans_State state = Trans_State::POSITION;
 	GE::Material material[3];
 	GE::Math::Vector3 rayPos;
 	GE::Math::Vector3 rayDir;

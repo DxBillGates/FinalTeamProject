@@ -14,6 +14,16 @@ void FieldObjectDeBugTransform::Update()
 	//マウスのレイ
 	const auto& cameraInfo = graphicsDevice->GetMainCamera()->GetCameraInfo();
 	GE::Math::GetScreenToRay(inputDevice->GetMouse()->GetClientMousePos(), &rayPos, &rayDir, cameraInfo.viewMatrix, cameraInfo.projMatrix, GE::Math::Matrix4x4::GetViewportMatrix(GE::Window::GetWindowSize()));
+	//モード切替
+	if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::LCONTROL))
+	{
+		state = Trans_State::ROTATION;
+	}
+	else
+	{
+		state = Trans_State::POSITION;
+	}
+
 	//押されているかどうか
 	bool LClick = false;
 	if (inputDevice->GetMouse()->GetCheckHitButton(GE::MouseButtons::LEFT_CLICK))
@@ -67,26 +77,49 @@ void FieldObjectDeBugTransform::Update()
 			{
 				GE::Math::Vector3 cameraPos = { cameraInfo.cameraPos.x,cameraInfo.cameraPos.y,cameraInfo.cameraPos.z };
 				GE::Math::Vector3 pivotDirection = GE::Math::Vector3(obj.target->GetTransform()->position - cameraPos).Normalize();
-
-				switch (obj.statas)
+				
+				switch (state)
 				{
-				case  Statas::DRAG_X:
-					obj.target->GetTransform()->position.x += -inputDevice->GetMouse()->GetMouseMove().x * 3;
+				case Trans_State::POSITION:
+					switch (obj.statas)
+					{
+					case  Statas::DRAG_X:
+						obj.target->GetTransform()->position.x += -inputDevice->GetMouse()->GetMouseMove().x * 3;
 
-					break;
+						break;
 
-				case  Statas::DRAG_Y:
-					obj.target->GetTransform()->position.y += inputDevice->GetMouse()->GetMouseMove().y * 3;
-					break;
+					case  Statas::DRAG_Y:
+						obj.target->GetTransform()->position.y += inputDevice->GetMouse()->GetMouseMove().y * 3;
+						break;
 
-				case  Statas::DRAG_Z:
-					obj.target->GetTransform()->position.z += -inputDevice->GetMouse()->GetMouseMove().x * 3;
+					case  Statas::DRAG_Z:
+						obj.target->GetTransform()->position.z += -inputDevice->GetMouse()->GetMouseMove().x * 3;
+						break;
+					case Statas::NONE:
+						break;
+					}
 					break;
-				case Statas::NONE:
+				case Trans_State::ROTATION:
+					switch (obj.statas)
+					{
+					case  Statas::DRAG_X:
+						obj.target->GetTransform()->rotation *= GE::Math::Quaternion(GE::Math::Vector3(1, 0, 0), inputDevice->GetMouse()->GetMouseMove().x * 0.01f);
+
+						break;
+
+					case  Statas::DRAG_Y:
+						obj.target->GetTransform()->rotation *= GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), inputDevice->GetMouse()->GetMouseMove().x * 0.01f);
+						break;
+
+					case  Statas::DRAG_Z:
+						obj.target->GetTransform()->rotation *= GE::Math::Quaternion(GE::Math::Vector3(0, 0, 1), inputDevice->GetMouse()->GetMouseMove().x * 0.01f);
+						break;
+					case Statas::NONE:
+						break;
+					}
 					break;
 				}
 			}
-
 		}
 	}
 }
@@ -142,7 +175,15 @@ void FieldObjectDeBugTransform::Draw()
 
 			renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
 			renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material[i],sizeof(GE::Material)) });
-			graphicsDevice->DrawMesh("Cube");
+			switch (state)
+			{
+			case Trans_State::POSITION:
+				graphicsDevice->DrawMesh("Cube");
+				break;
+			case Trans_State::ROTATION:
+				graphicsDevice->DrawMesh("Sphere");
+				break;
+			}
 		}
 	}
 }
