@@ -19,6 +19,15 @@ FieldObjectManager* FieldObjectManager::GetInstance()
 	return &instance;
 }
 
+void FieldObjectManager::LoadModels()
+{
+	LoadModel("mountain1");
+	LoadModel("mountain2");
+	LoadModel("mountain3");
+	LoadModel("mountain4");
+	LoadModel("mountain5");
+}
+
 void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 {
 	this->gameObjectManager = gameObjectManager;
@@ -103,22 +112,10 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 }
 void FieldObjectManager::AddGroundModel(std::string fileName)
 {
-	//地形
-	GE::MeshData<GE::Vertex_UV_Normal> model;
-	auto meshManager = graphicsDevice->GetMeshManager();
-	auto device = graphicsDevice->GetDevice();
-	auto cmdList = graphicsDevice->GetCmdList();
-
-	GE::MeshCreater::LoadObjModelData("Resources/Model/_Mountain/" + fileName, model);
-	mesh = new GE::Mesh();
-
-	mesh->Create(device, cmdList, model);
-	meshManager->Add(mesh, fileName);
-
 	auto* object = gameObjectManager->AddGameObject(new GE::GameObject("ground", "ground"));
 	auto* sampleComponent = object->AddComponent<FieldObject>();
 	auto* collider = object->AddComponent < GE::MeshCollider >();
-	collider->SetMesh(&model);
+	collider->SetMesh(&groundModels[fileName]);
 	object->GetComponent<FieldObject>()->modelName = fileName;
 	sampleComponent->shaderName = "DefaultMeshWithShadowShader";
 	object->GetComponent<FieldObject>()->shaderName = "DefaultMeshWithTextureAndAdsCompositiongShader";
@@ -126,6 +123,23 @@ void FieldObjectManager::AddGroundModel(std::string fileName)
 	object->GetTransform()->position = { 1000,0,-15000 };
 	object->GetTransform()->scale = { 2000 };
 	object->GetTransform()->rotation = GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), -5.0f);
+}
+
+void FieldObjectManager::LoadModel(const std::string& filename)
+{
+	//地形
+	GE::MeshData<GE::Vertex_UV_Normal> model;
+	auto meshManager = graphicsDevice->GetMeshManager();
+	auto device = graphicsDevice->GetDevice();
+	auto cmdList = graphicsDevice->GetCmdList();
+
+	GE::MeshCreater::LoadObjModelData("Resources/Model/_Mountain/" + filename, model);
+	mesh = new GE::Mesh();
+
+	mesh->Create(device, cmdList, model);
+	meshManager->Add(mesh, filename);
+
+	groundModels[filename] = model;
 }
 
 void FieldObjectManager::LoadPosition(const std::string& filename)

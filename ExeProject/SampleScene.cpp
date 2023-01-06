@@ -35,7 +35,9 @@ SampleScene::SampleScene(const std::string& sceneName, const GE::SceneInitialize
 	, col2(nullptr)
 {
 
-	FieldObjectManager::GetInstance()->SetGraphicsDevice(graphicsDevice);
+	auto fieldObjectManager = FieldObjectManager::GetInstance();
+	fieldObjectManager->SetGraphicsDevice(graphicsDevice);
+	fieldObjectManager->LoadModels();	
 }
 
 SampleScene::~SampleScene()

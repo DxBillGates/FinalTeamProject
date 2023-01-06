@@ -53,35 +53,35 @@ bool Game::LoadContents()
 	mesh->Create(device, cmdList, modelDataBird1);
 	meshManager->Add(mesh, "Bird1");
 
-	MeshData<Vertex_UV_Normal> modelMountain1;
-	MeshCreater::LoadObjModelData("Resources/Model/_Mountain/mountain1", modelMountain1);
-	mesh = new Mesh();
-	mesh->Create(device, cmdList, modelMountain1);
-	meshManager->Add(mesh, "mountain1");
-	
-	MeshData<Vertex_UV_Normal> modelMountain2;
-	MeshCreater::LoadObjModelData("Resources/Model/_Mountain/mountain2", modelMountain2);
-	mesh = new Mesh();
-	mesh->Create(device, cmdList, modelMountain2);
-	meshManager->Add(mesh, "mountain2");
+	//MeshData<Vertex_UV_Normal> modelMountain1;
+	//MeshCreater::LoadObjModelData("Resources/Model/_Mountain/mountain1", modelMountain1);
+	//mesh = new Mesh();
+	//mesh->Create(device, cmdList, modelMountain1);
+	//meshManager->Add(mesh, "mountain1");
+	//
+	//MeshData<Vertex_UV_Normal> modelMountain2;
+	//MeshCreater::LoadObjModelData("Resources/Model/_Mountain/mountain2", modelMountain2);
+	//mesh = new Mesh();
+	//mesh->Create(device, cmdList, modelMountain2);
+	//meshManager->Add(mesh, "mountain2");
 
-	MeshData<Vertex_UV_Normal> modelMountain3;
-	MeshCreater::LoadObjModelData("Resources/Model/_Mountain/mountain3", modelMountain3);
-	mesh = new Mesh();
-	mesh->Create(device, cmdList, modelMountain3);
-	meshManager->Add(mesh, "mountain3");
+	//MeshData<Vertex_UV_Normal> modelMountain3;
+	//MeshCreater::LoadObjModelData("Resources/Model/_Mountain/mountain3", modelMountain3);
+	//mesh = new Mesh();
+	//mesh->Create(device, cmdList, modelMountain3);
+	//meshManager->Add(mesh, "mountain3");
 
-	MeshData<Vertex_UV_Normal> modelMountain4;
-	MeshCreater::LoadObjModelData("Resources/Model/_Mountain/mountain4", modelMountain4);
-	mesh = new Mesh();
-	mesh->Create(device, cmdList, modelMountain4);
-	meshManager->Add(mesh, "mountain4");
+	//MeshData<Vertex_UV_Normal> modelMountain4;
+	//MeshCreater::LoadObjModelData("Resources/Model/_Mountain/mountain4", modelMountain4);
+	//mesh = new Mesh();
+	//mesh->Create(device, cmdList, modelMountain4);
+	//meshManager->Add(mesh, "mountain4");
 
-	MeshData<Vertex_UV_Normal> modelMountain5;
-	MeshCreater::LoadObjModelData("Resources/Model/_Mountain/mountain5", modelMountain5);
-	mesh = new Mesh();
-	mesh->Create(device, cmdList, modelMountain5);
-	meshManager->Add(mesh, "mountain5");
+	//MeshData<Vertex_UV_Normal> modelMountain5;
+	//MeshCreater::LoadObjModelData("Resources/Model/_Mountain/mountain5", modelMountain5);
+	//mesh = new Mesh();
+	//mesh->Create(device, cmdList, modelMountain5);
+	//meshManager->Add(mesh, "mountain5");
 
 	MeshData<Vertex_UV_Normal> modelDataNest;
 	MeshCreater::LoadObjModelData("Resources/Model/nest", modelDataNest);
