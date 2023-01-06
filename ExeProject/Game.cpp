@@ -113,6 +113,12 @@ bool Game::LoadContents()
 	mesh = new Mesh();
 	mesh->Create(device, cmdList, modelTreeLeaf3);
 	meshManager->Add(mesh, "Tree_Leaf3");
+	
+	MeshData<Vertex_UV_Normal> modelGroundLeaf1;
+	MeshCreater::LoadObjModelData("Resources/Model/ground_leaf1", modelGroundLeaf1);
+	mesh = new Mesh();
+	mesh->Create(device, cmdList, modelGroundLeaf1);
+	meshManager->Add(mesh, "Ground_Leaf1");
 
 	meshManager->Add(FbxLoader::Load("Bird", &graphicsDevice), "Player");
 	//Œø‰Ê‰¹hit_wall
@@ -207,6 +213,10 @@ bool Game::LoadContents()
 	nullTexture = new Texture();
 	nullTexture->Load("groundTex1.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "groundTex1");
+	
+	nullTexture = new Texture();
+	nullTexture->Load("texture_ground_leaf1.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "leafTex1");
 
 	auto* testScene = sceneManager.AddScene(new SampleScene("SampleScene", sceneManager.GetSceneInitializer()));
 	sceneManager.AddScene(new Clear("ClearScene", sceneManager.GetSceneInitializer()));

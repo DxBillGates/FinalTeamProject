@@ -96,6 +96,21 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 			FieldObjectDeBugTransform::GetInstance()->AddTarget(object);
 		}
 	}
+	//フィールドの草
+	{
+		for (int i = 0; i < 0; ++i)
+		{
+			auto* object = gameObjectManager->AddGameObject(new GE::GameObject("leaf", "leaf"));
+			auto* sampleComponent = object->AddComponent<FieldObject>();
+			object->GetTransform()->position = {};
+			object->GetTransform()->scale = { 100 };
+			object->GetComponent<FieldObject>()->modelName = "Ground_Leaf1";
+			sampleComponent->shaderName = "DefaultMeshWithTextureAndAdsCompositiongShader";
+			object->GetComponent<FieldObject>()->textureName = "leafTex1";
+			fieldLeaf.push_back(object);
+			FieldObjectDeBugTransform::GetInstance()->AddTarget(object);
+		}
+	}
 	//
 	{
 		auto* object = gameObjectManager->AddGameObject(new GE::GameObject("tile", "tile"));
@@ -262,7 +277,7 @@ void FieldObjectManager::SaveCurrentPosition(const std::string& filename)
 	{
 		GE::Math::Vector3 pos = fieldTree[i]->GetTransform()->position;
 		float scale = fieldTree[i]->GetComponent<FieldTree>()->scale;
-		GE::Math::Vector3 rota = fieldTree[i]->GetComponent<FieldTree>()->rotation_euler;
+		GE::Math::Vector3 rota = fieldTree[i]->GetTransform()->rotation.EulerAngle();
 		GE::Color col = fieldTree[i]->GetColor();
 
 		writing_file << "FieldTree " << pos.x << " " << pos.y << " " << pos.z <<
@@ -270,10 +285,23 @@ void FieldObjectManager::SaveCurrentPosition(const std::string& filename)
 			" " << scale << " " << scale << " " << scale <<
 			" " << col.r << " " << col.g << " " << col.b << " " << col.a << std::endl;
 	}
+	//普通の木
+	for (int i = 0; i < fieldLeaf.size(); i++)
+	{
+		GE::Math::Vector3 pos = fieldLeaf[i]->GetTransform()->position;
+		float scale = fieldLeaf[i]->GetTransform()->scale.x;
+		GE::Math::Vector3 rota = fieldLeaf[i]->GetTransform()->rotation.EulerAngle();
+		GE::Color col = fieldLeaf[i]->GetColor();
+
+		writing_file << "FieldLeaf " << pos.x << " " << pos.y << " " << pos.z <<
+			" " << rota.x << " " << rota.y << " " << rota.z <<
+			" " << scale << " " << scale << " " << scale <<
+			" " << col.r << " " << col.g << " " << col.b << " " << col.a << std::endl;
+	}
 	//開始時の木
 	GE::Math::Vector3 pos = startTree->GetTransform()->position;
 	GE::Math::Vector3 scale = startTree->GetTransform()->scale;
-	GE::Math::Vector3 rota = startTree->GetComponent<StartTree>()->rotation_euler;
+	GE::Math::Vector3 rota = startTree->GetTransform()->rotation.EulerAngle();
 	GE::Color col = startTree->GetColor();
 
 	writing_file << "StartTree " << pos.x << " " << pos.y << " " << pos.z <<

@@ -22,6 +22,7 @@ private:
 	};
 	GE::GameObjectManager* gameObjectManager = nullptr;
 	std::vector<GE::GameObject*> fieldTree;
+	std::vector<GE::GameObject*> fieldLeaf;
 	GE::GameObject* startTree = nullptr;
 	GE::GameObject* nest = nullptr;
 	GE::GameObject* skydome = nullptr;
