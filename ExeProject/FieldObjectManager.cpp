@@ -26,6 +26,8 @@ void FieldObjectManager::LoadModels()
 	LoadModel("mountain3");
 	LoadModel("mountain4");
 	LoadModel("mountain5");
+	LoadModel("mountain6");
+	LoadModel("mountain7");
 }
 
 void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
@@ -57,13 +59,15 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 	AddGroundModel("mountain3");
 	AddGroundModel("mountain4");
 	AddGroundModel("mountain5");
+	AddGroundModel("mountain6");
+	AddGroundModel("mountain7");
 	//壁仮
 	{
 		auto* object = gameObjectManager->AddGameObject(new GE::GameObject("skydome", "skydome"));
-		auto* sampleComponent = object->AddComponent<FieldObject>();
-		object->GetComponent<FieldObject>()->modelName = "Skydome";
-		object->GetComponent<FieldObject>()->shaderName = "CelestialSphereShader";
-		object->GetComponent<FieldObject>()->textureName = "sky_Windows";
+		auto* sampleComponent = object->AddComponent<FieldObjectComponent>();
+		object->GetComponent<FieldObjectComponent>()->modelName = "Skydome";
+		object->GetComponent<FieldObjectComponent>()->shaderName = "CelestialSphereShader";
+		object->GetComponent<FieldObjectComponent>()->textureName = "sky_Windows";
 		object->SetColor(GE::Color(1.f, 1.f, 1.f, 1));
 		object->GetTransform()->scale = { 400 };
 		object->GetTransform()->rotation = GE::Math::Quaternion::Euler(GE::Math::Vector3(0, 0, 180));
@@ -72,9 +76,9 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 	//巣
 	{
 		auto* object = gameObjectManager->AddGameObject(new GE::GameObject("nest", "nest"));
-		auto* sampleComponent = object->AddComponent<FieldObject>();
-		object->GetComponent<FieldObject>()->modelName = "Nest";
-		object->GetComponent<FieldObject>()->shaderName = "DefaultMeshShader";
+		auto* sampleComponent = object->AddComponent<FieldObjectComponent>();
+		object->GetComponent<FieldObjectComponent>()->modelName = "Nest";
+		object->GetComponent<FieldObjectComponent>()->shaderName = "DefaultMeshShader";
 		object->SetColor(GE::Color(0.8f, 0.6f, 0.6f, 1.f));
 		object->GetTransform()->scale = { 200,300,200 };
 		auto* collider = object->AddComponent < GE::SphereCollider >();
@@ -98,15 +102,15 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 	}
 	//フィールドの草
 	{
-		for (int i = 0; i < 7; ++i)
+		for (int i = 0; i < 12; ++i)
 		{
 			auto* object = gameObjectManager->AddGameObject(new GE::GameObject("leaf", "leaf"));
-			auto* sampleComponent = object->AddComponent<FieldObject>();
+			auto* sampleComponent = object->AddComponent<FieldObjectComponent>();
 			object->GetTransform()->position = {};
 			object->GetTransform()->scale = { 100 };
-			object->GetComponent<FieldObject>()->modelName = "Ground_Leaf1";
+			object->GetComponent<FieldObjectComponent>()->modelName = "Ground_Leaf1";
 			sampleComponent->shaderName = "DefaultMeshWithTextureAndAdsCompositiongShader";
-			object->GetComponent<FieldObject>()->textureName = "leafTex1";
+			object->GetComponent<FieldObjectComponent>()->textureName = "leafTex1";
 			fieldLeaf.push_back(object);
 			FieldObjectDeBugTransform::GetInstance()->AddTarget(object);
 		}
@@ -114,8 +118,8 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 	//
 	{
 		auto* object = gameObjectManager->AddGameObject(new GE::GameObject("tile", "tile"));
-		auto* sampleComponent = object->AddComponent<FieldObject>();
-		object->GetComponent<FieldObject>()->modelName = "Plane";
+		auto* sampleComponent = object->AddComponent<FieldObjectComponent>();
+		object->GetComponent<FieldObjectComponent>()->modelName = "Plane";
 		sampleComponent->shaderName = "DefaultMeshWithShadowShader";
 		object->GetTransform()->scale = { 100000,1,100000 };
 		object->GetTransform()->position = { 0,-30.f,0 };
@@ -128,13 +132,13 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 void FieldObjectManager::AddGroundModel(std::string fileName)
 {
 	auto* object = gameObjectManager->AddGameObject(new GE::GameObject("ground", "ground"));
-	auto* sampleComponent = object->AddComponent<FieldObject>();
+	auto* sampleComponent = object->AddComponent<FieldObjectComponent>();
 	auto* collider = object->AddComponent < GE::MeshCollider >();
 	collider->SetMesh(&groundModels[fileName]);
-	object->GetComponent<FieldObject>()->modelName = fileName;
+	object->GetComponent<FieldObjectComponent>()->modelName = fileName;
 	sampleComponent->shaderName = "DefaultMeshWithShadowShader";
-	object->GetComponent<FieldObject>()->shaderName = "DefaultMeshWithTextureAndAdsCompositiongShader";
-	object->GetComponent<FieldObject>()->textureName = "groundTex1";
+	object->GetComponent<FieldObjectComponent>()->shaderName = "DefaultMeshWithTextureAndAdsCompositiongShader";
+	object->GetComponent<FieldObjectComponent>()->textureName = "groundTex1";
 	object->GetTransform()->position = { 1000,0,-15000 };
 	object->GetTransform()->scale = { 2000 };
 	object->GetTransform()->rotation = GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), -5.0f);
@@ -354,7 +358,7 @@ void FieldObjectManager::SaveCurrentPosition(const std::string& filename)
 
 void FieldObjectManager::OtherUpdate()
 {
-	FieldObjectDeBugTransform::GetInstance()->Update();
+	
 }
 
 void FieldObjectManager::OtherDraw()
@@ -367,7 +371,6 @@ void FieldObjectManager::OtherDraw()
 
 	}
 
-	FieldObjectDeBugTransform::GetInstance()->Draw();
 }
 
 void FieldObjectManager::UnLoad()

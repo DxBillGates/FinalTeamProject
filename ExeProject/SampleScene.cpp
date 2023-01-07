@@ -37,7 +37,7 @@ SampleScene::SampleScene(const std::string& sceneName, const GE::SceneInitialize
 
 	auto fieldObjectManager = FieldObjectManager::GetInstance();
 	fieldObjectManager->SetGraphicsDevice(graphicsDevice);
-	fieldObjectManager->LoadModels();	
+	fieldObjectManager->LoadModels();
 }
 
 SampleScene::~SampleScene()
@@ -102,6 +102,7 @@ void SampleScene::Update(float deltaTime)
 	}
 
 	FieldObjectManager::GetInstance()->OtherUpdate();
+	FieldObjectDeBugTransform::GetInstance()->Update();
 }
 
 void SampleScene::Draw()
@@ -132,6 +133,7 @@ void SampleScene::Draw()
 	directionalLight->SetDirectionalLightInfo();
 	gameObjectManager.Draw();
 	FieldObjectManager::GetInstance()->OtherDraw();
+	FieldObjectDeBugTransform::GetInstance()->Draw();
 	UIObject::GetInstance()->Draw(graphicsDevice);
 }
 

@@ -389,4 +389,8 @@
       <UniqueIdentifier>{bbec98bc-d805-4223-ad80-83c256bc279a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="Resources\enemies.txt" />
+    <Text Include="Resources\tree.txt" />
+  </ItemGroup>
 </Project>

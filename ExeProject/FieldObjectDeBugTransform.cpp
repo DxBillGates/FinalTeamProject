@@ -15,13 +15,20 @@ void FieldObjectDeBugTransform::Update()
 	const auto& cameraInfo = graphicsDevice->GetMainCamera()->GetCameraInfo();
 	GE::Math::GetScreenToRay(inputDevice->GetMouse()->GetClientMousePos(), &rayPos, &rayDir, cameraInfo.viewMatrix, cameraInfo.projMatrix, GE::Math::Matrix4x4::GetViewportMatrix(GE::Window::GetWindowSize()));
 	//ƒ‚[ƒhØ‘Ö
-	if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::LCONTROL))
+	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::LCONTROL))
 	{
-		state = Trans_State::ROTATION;
-	}
-	else
-	{
-		state = Trans_State::POSITION;
+		switch (state)
+		{
+		case Trans_State::POSITION:
+			state = Trans_State::ROTATION;
+			break;
+		case Trans_State::ROTATION:
+			state = Trans_State::SCALE;
+			break;
+		case Trans_State::SCALE:
+			state = Trans_State::POSITION;
+			break;
+		}
 	}
 
 	//‰Ÿ‚³‚ê‚Ä‚¢‚é‚©‚Ç‚¤‚©
@@ -40,9 +47,10 @@ void FieldObjectDeBugTransform::Update()
 
 	for (auto& obj : objects)
 	{
-		obj.pivotTransform[0].position = obj.target->GetTransform()->position + GE::Math::Vector3(obj.target->GetTransform()->scale.x * 3, 0, 0);
+		obj.pivotTransform[0].position = obj.target->GetTransform()->position + GE::Math::Vector3(obj.target->GetTransform()->scale.x * 5, 0, 0);
 		obj.pivotTransform[1].position = obj.target->GetTransform()->position + GE::Math::Vector3(0, obj.target->GetTransform()->scale.x * 10, 0);
-		obj.pivotTransform[2].position = obj.target->GetTransform()->position + GE::Math::Vector3(0, 0, obj.target->GetTransform()->scale.x * 3);
+		obj.pivotTransform[2].position = obj.target->GetTransform()->position + GE::Math::Vector3(0, 0, obj.target->GetTransform()->scale.x * 5);
+
 		for (int i = 0; i < obj.coll.size(); i++)
 		{
 			obj.coll[i].SetTransform(&obj.pivotTransform[i]);
@@ -77,7 +85,7 @@ void FieldObjectDeBugTransform::Update()
 			{
 				GE::Math::Vector3 cameraPos = { cameraInfo.cameraPos.x,cameraInfo.cameraPos.y,cameraInfo.cameraPos.z };
 				GE::Math::Vector3 pivotDirection = GE::Math::Vector3(obj.target->GetTransform()->position - cameraPos).Normalize();
-				
+
 				switch (state)
 				{
 				case Trans_State::POSITION:
@@ -103,7 +111,7 @@ void FieldObjectDeBugTransform::Update()
 					switch (obj.statas)
 					{
 					case  Statas::DRAG_X:
-						obj.target->GetTransform()->rotation *= GE::Math::Quaternion(GE::Math::Vector3(1, 0, 0), inputDevice->GetMouse()->GetMouseMove().x * 0.01f);
+						obj.target->GetTransform()->rotation *= GE::Math::Quaternion(GE::Math::Vector3(0, 0, 1), inputDevice->GetMouse()->GetMouseMove().x * 0.01f);
 
 						break;
 
@@ -112,7 +120,23 @@ void FieldObjectDeBugTransform::Update()
 						break;
 
 					case  Statas::DRAG_Z:
-						obj.target->GetTransform()->rotation *= GE::Math::Quaternion(GE::Math::Vector3(0, 0, 1), inputDevice->GetMouse()->GetMouseMove().x * 0.01f);
+						obj.target->GetTransform()->rotation *= GE::Math::Quaternion(GE::Math::Vector3(1, 0, 0), inputDevice->GetMouse()->GetMouseMove().x * 0.01f);
+						break;
+					case Statas::NONE:
+						break;
+					}
+					break;
+				case Trans_State::SCALE:
+					switch (obj.statas)
+					{
+					case  Statas::DRAG_X:
+						obj.target->GetTransform()->scale.x += -inputDevice->GetMouse()->GetMouseMove().x;
+						break;
+					case  Statas::DRAG_Y:
+						obj.target->GetTransform()->scale.y += inputDevice->GetMouse()->GetMouseMove().y;
+						break;
+					case  Statas::DRAG_Z:
+						obj.target->GetTransform()->scale.z += -inputDevice->GetMouse()->GetMouseMove().x;
 						break;
 					case Statas::NONE:
 						break;
@@ -141,6 +165,10 @@ void FieldObjectDeBugTransform::AddTarget(GE::GameObject* gameobject)
 	for (int j = 0; j < 3; j++)
 	{
 		result.pivotTransform[j].scale = { 100 };
+		result.pivotTransform[0].rotation = GE::Math::Quaternion(GE::Math::Vector3(0, 0, 1), -1.57f);
+		result.pivotTransform[1].rotation = GE::Math::Quaternion();
+		result.pivotTransform[2].rotation = GE::Math::Quaternion(GE::Math::Vector3(1, 0, 0), 1.57f);
+
 		result.coll.push_back({});
 		result.coll[j].SetGameObject(result.target);
 		result.coll[j].SetGraphicsDevice(graphicsDevice);
@@ -155,15 +183,15 @@ void FieldObjectDeBugTransform::Draw()
 {
 	if (PlayerComponent::statas != PlayerComponent::PlayerStatas::DEBUG)return;
 
+	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
+	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
+
 	material[0].color = GE::Color::Red();
 	material[0].specular = 0.f;
 	material[1].color = GE::Color::Blue();
 	material[1].specular = 0.f;
 	material[2].color = GE::Color::Green();
 	material[2].specular = 0.f;
-
-	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
-	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
 
 	for (auto& obj : objects)
 	{
@@ -178,10 +206,13 @@ void FieldObjectDeBugTransform::Draw()
 			switch (state)
 			{
 			case Trans_State::POSITION:
-				graphicsDevice->DrawMesh("Cube");
+				graphicsDevice->DrawMesh("Corn");
 				break;
 			case Trans_State::ROTATION:
 				graphicsDevice->DrawMesh("Sphere");
+				break;
+			case Trans_State::SCALE:
+				graphicsDevice->DrawMesh("Cube");
 				break;
 			}
 		}

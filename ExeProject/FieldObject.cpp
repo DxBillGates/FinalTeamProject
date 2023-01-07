@@ -8,26 +8,26 @@
 #include"FieldObject.h"
 
 
-FieldObject::FieldObject()
+FieldObjectComponent::FieldObjectComponent()
 {
 
 }
 
-void FieldObject::Awake()
+void FieldObjectComponent::Awake()
 {
 	GE::Utility::Printf("FieldObject Awake()\n");
 }
 
-void FieldObject::Start()
+void FieldObjectComponent::Start()
 {
 	GE::Utility::Printf("FieldObject Start()\n");
 }
-void FieldObject::Update(float deltaTime)
+void FieldObjectComponent::Update(float deltaTime)
 {
 
 }
 
-void FieldObject::DrawShadow()
+void FieldObjectComponent::DrawShadow()
 {
 
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
@@ -60,7 +60,7 @@ void FieldObject::DrawShadow()
 	graphicsDevice->DrawMesh(modelName);
 }
 
-void FieldObject::Draw()
+void FieldObjectComponent::Draw()
 {
 
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
@@ -93,10 +93,10 @@ void FieldObject::Draw()
 	if (shaderName == "DefaultMeshWithShadowShader")
 	{
 		GE::CameraInfo cameraInfo = graphicsDevice->GetMainCamera()->GetCameraInfo();
-		cameraInfo.lightMatrix = gameObject->GetGameObjectManager()->FindGameObjectWithTag("directionalLight","directionalLight")->GetComponent<GE::DirectionalLight>()->GetVPMatrix();
+		cameraInfo.lightMatrix = gameObject->GetGameObjectManager()->FindGameObjectWithTag("directionalLight", "directionalLight")->GetComponent<GE::DirectionalLight>()->GetVPMatrix();
 
 		renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
-		renderQueue->AddSetShaderResource({ 17,graphicsDevice->GetLayerManager()->Get("shadowLayer")->GetDepthTexture()->GetSRVNumber()});
+		renderQueue->AddSetShaderResource({ 17,graphicsDevice->GetLayerManager()->Get("shadowLayer")->GetDepthTexture()->GetSRVNumber() });
 	}
 	if (shaderName == "CelestialSphereShader")
 	{
@@ -117,22 +117,67 @@ void FieldObject::Draw()
 	graphicsDevice->DrawMesh(modelName);
 }
 
-void FieldObject::LateDraw()
+void FieldObjectComponent::LateDraw()
 {
 
 }
 
-void FieldObject::OnCollision(GE::GameObject* other)
+void FieldObjectComponent::OnCollision(GE::GameObject* other)
 {
 	GE::Utility::Printf("FieldObject OnCollision(GameObject* other) : hit\n");
 }
 
-void FieldObject::OnCollision(GE::ICollider* hitCollider)
+void FieldObjectComponent::OnCollision(GE::ICollider* hitCollider)
 {
 	GE::Utility::Printf("FieldObject OnCollision(ICollider* other) : hit\n");
 }
 
-void FieldObject::OnGui()
+void FieldObjectComponent::OnGui()
 {
 
 }
+
+//FieldObject* FieldObject::GetInstance()
+//{
+//	static FieldObject instance;
+//	return &instance;
+//}
+//
+//void FieldObject::Update()
+//{
+//
+//}
+//
+//void FieldObject::SetGraphicsDevice(GE::IGraphicsDeviceDx12* gDevice)
+//{
+//	graphicsDevice = gDevice;
+//}
+//
+//void FieldObject::AddTarget(GE::GameObject* gameobject)
+//{
+//	Object result;
+//	result.transform = gameobject;
+//	objects.push_back(result);
+//}
+//
+//
+//void FieldObject::Draw()
+//{
+//	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
+//	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
+//
+//	for (auto& obj : objects)
+//	{
+//		graphicsDevice->SetShader("DefaultMeshShader");
+//		GE::Math::Matrix4x4 modelMatrix = obj.transform.GetMatrix();
+//
+//		renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
+//		renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material[i],sizeof(GE::Material)) });
+//		graphicsDevice->DrawMesh("Sphere");
+//	}
+//}
+//
+//void FieldObject::UnLoad()
+//{
+//	objects.clear();
+//}

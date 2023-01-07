@@ -15,7 +15,7 @@ TimeLimit* TimeLimit::GetInstance()
 
 void TimeLimit::Start(GE::GameObjectManager* gameObjectManager)
 {
-	const int DEFAULT_TIME = 1;//制限時間(分指定)
+	const int DEFAULT_TIME = 3;//制限時間(分指定)
 	time = DEFAULT_TIME * 60;
 	minutes = tenSeconds = oneSeconds = 0; // 各時間値初期化
 	timeOver = false;//タイムオーバーフラグ

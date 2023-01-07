@@ -490,7 +490,7 @@ void PlayerComponent::KeyboardMoveControl(float deltaTime)
 
 		body_direction.z = abs(body_direction.z) > 0.3f ? 0.3f * ((body_direction.z > 0) ? 1 : -1) : body_direction.z;
 	}
-	else
+	else if (statas != PlayerStatas::DEBUG)
 	{
 		abs(body_direction.z) < 0.005 ? body_direction.z = 0 : body_direction.z > 0.0 ? body_direction.z -= 0.005 * GE::GameSetting::Time::GetGameTime() : body_direction.z += 0.005 * GE::GameSetting::Time::GetGameTime();
 	}
@@ -500,7 +500,7 @@ void PlayerComponent::KeyboardMoveControl(float deltaTime)
 		body_direction.x -= rota.y;
 		body_direction.x = abs(body_direction.x) > 1.57f ? 1.57f * ((body_direction.x > 0) ? 1 : -1) : body_direction.x;
 	}
-	else
+	else if (statas != PlayerStatas::DEBUG)
 	{
 		abs(body_direction.x) < 0.01 ? body_direction.x = 0 : body_direction.x > 0.0 ? body_direction.x -= 0.01 * GE::GameSetting::Time::GetGameTime() : body_direction.x += 0.01 * GE::GameSetting::Time::GetGameTime();
 	}
