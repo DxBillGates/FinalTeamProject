@@ -371,6 +371,34 @@ bool Game::Draw()
 	}
 #pragma endregion
 
+#pragma region 被写界深度用ブラー
+	for (int i = 0; i < 6; ++i)
+	{
+		graphicsDevice.SetShaderResourceDescriptorHeap();
+		graphicsDevice.SetLayer("DofLayer_" + std::to_string(i));
+		graphicsDevice.SetShader("GaussBlurShader");
+
+		renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
+		renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
+		renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2, &material, sizeof(GE::Material)) });
+		renderQueue->AddSetConstantBufferInfo({ 5,cbufferAllocater->BindAndAttachData(5,&gaussFilterData[i],sizeof(GE::Math::GaussFilterData)) });
+
+		if (i == 0)
+		{
+			renderQueue->AddSetShaderResource({ 16,graphicsDevice.GetLayerManager()->Get("resultLayer")->GetRenderTexture()->GetSRVNumber() });
+		}
+		else
+		{
+			renderQueue->AddSetShaderResource({ 16,graphicsDevice.GetLayerManager()->Get("DofLayer_" + std::to_string(i - 1))->GetRenderTexture()->GetSRVNumber() });
+		}
+
+		graphicsDevice.DrawMesh("2DPlane");
+		graphicsDevice.ExecuteRenderQueue();
+		graphicsDevice.ExecuteCommands();
+	}
+#pragma endregion
+
+
 	// ブラーした結果を元画像に合成
 	graphicsDevice.SetShaderResourceDescriptorHeap();
 	graphicsDevice.SetDefaultRenderTarget();
@@ -380,17 +408,26 @@ bool Game::Draw()
 	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
 	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2, &material, sizeof(GE::Material)) });
+
+	static GE::Math::Vector3 dofInfo = { 0.4f,1.7f,0.4f };
+	ImGui::DragFloat3("dofInfo", dofInfo.value, 0.001f);
+	GE::Math::Vector4 dof = { dofInfo.x,dofInfo.y ,dofInfo.z ,1 };
+	renderQueue->AddSetConstantBufferInfo({ 13,cbufferAllocater->BindAndAttachData(15, &dof, sizeof(GE::Math::Vector4)) });
 	renderQueue->AddSetShaderResource({ 16,graphicsDevice.GetLayerManager()->Get("resultLayer")->GetRenderTexture()->GetSRVNumber() });
 	//renderQueue->AddSetShaderResource({ 17,graphicsDevice.GetLayerManager()->Get("EffectLayer")->GetRenderTexture()->GetSRVNumber() });
 	renderQueue->AddSetShaderResource({ 18,graphicsDevice.GetLayerManager()->Get("BloomLayer_" + std::to_string(1))->GetRenderTexture()->GetSRVNumber() });
 	renderQueue->AddSetShaderResource({ 19,graphicsDevice.GetLayerManager()->Get("BloomLayer_" + std::to_string(3))->GetRenderTexture()->GetSRVNumber() });
 	renderQueue->AddSetShaderResource({ 20,graphicsDevice.GetLayerManager()->Get("BloomLayer_" + std::to_string(5))->GetRenderTexture()->GetSRVNumber() });
+	renderQueue->AddSetShaderResource({ 21,graphicsDevice.GetLayerManager()->Get("resultLayer")->GetDepthTexture()->GetSRVNumber() });
+	renderQueue->AddSetShaderResource({ 22,graphicsDevice.GetLayerManager()->Get("DofLayer_" + std::to_string(1))->GetRenderTexture()->GetSRVNumber() });
+	renderQueue->AddSetShaderResource({ 23,graphicsDevice.GetLayerManager()->Get("DofLayer_" + std::to_string(5))->GetRenderTexture()->GetSRVNumber() });
 	graphicsDevice.DrawMesh("2DPlane");
 
 	graphicsDevice.ExecuteRenderQueue();
 
-	ImVec2 texSize = { textureAnimationInfo.textureSize.x / 4,textureAnimationInfo.textureSize.y / 4 };
-	ImGui::Image((ImTextureID)brightnessLayerRenderTexture->GetGPUHandle().ptr, texSize);
+	//ImVec2 texSize = { textureAnimationInfo.textureSize.x / 4,textureAnimationInfo.textureSize.y / 4 };
+	//GE::IDepthTexture* dofRenderTexture = graphicsDevice.GetLayerManager()->Get("resultLayer")->GetDepthTexture();
+	//ImGui::Image((ImTextureID)dofRenderTexture->GetGPUHandle().ptr, texSize);
 
 	GE::GUIManager::EndFrame();
 	graphicsDevice.ExecuteCommands();

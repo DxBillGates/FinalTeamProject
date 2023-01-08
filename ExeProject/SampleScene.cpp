@@ -18,6 +18,7 @@
 
 #include"ScreenUI.h"
 #include"FieldObjectDeBugTransform.h"
+#include <GatesEngine/External/DirectXTex/DirectXTex.h>
 
 SampleScene::SampleScene()
 	: SampleScene("SampleScene")
@@ -127,6 +128,8 @@ void SampleScene::Draw()
 
 	graphicsDevice->SetShaderResourceDescriptorHeap();
 	cameraInfo = mainCamera->GetCameraInfo();
+
+	DirectX::XMMATRIX t = DirectX::XMMatrixPerspectiveFovLH(90, 1920 / 1080, 1, 60000);
 	cameraInfo.lightMatrix = directionalLight->GetVPMatrix();
 	graphicsDevice->SetLayer("resultLayer");
 	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });

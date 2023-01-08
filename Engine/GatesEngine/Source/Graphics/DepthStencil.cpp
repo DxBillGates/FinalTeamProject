@@ -63,6 +63,11 @@ void GE::DepthStencil::Cleanup()
 	COM_RELEASE(depthBuffer);
 }
 
+D3D12_GPU_DESCRIPTOR_HANDLE GE::DepthStencil::GetGPUHandle()
+{
+	return D3D12_GPU_DESCRIPTOR_HANDLE();
+}
+
 D3D12_CPU_DESCRIPTOR_HANDLE GE::DepthStencil::GetHandle()
 {
 	return dsvHeap->GetCPUDescriptorHandleForHeapStart();

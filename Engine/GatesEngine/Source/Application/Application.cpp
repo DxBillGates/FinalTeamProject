@@ -344,6 +344,16 @@ bool GE::Application::LoadContents()
 		layerManager->Add(new Layer(bloomRenderTexture, nullptr), "BloomLayer_" + std::to_string(i));
 	}
 
+	for (int i = 0, divide = 2; i < 6; ++i)
+	{
+		if (i % 2 == 0)divide *= 2;
+
+		RenderTexture* dofRenderTexture = new RenderTexture();
+		dofRenderTexture->Create(device, shaderResourceHeap, mainWindow.GetWindowSize() / divide * 2, Color::Black());
+
+		layerManager->Add(new Layer(dofRenderTexture, nullptr), "DofLayer_" + std::to_string(i));
+	}
+
 	return true;
 }
 
