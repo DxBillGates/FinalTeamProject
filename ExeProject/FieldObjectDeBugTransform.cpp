@@ -47,9 +47,9 @@ void FieldObjectDeBugTransform::Update()
 
 	for (auto& obj : objects)
 	{
-		obj.pivotTransform[0].position = obj.target->GetTransform()->position + GE::Math::Vector3(obj.target->GetTransform()->scale.x * 5, 0, 0);
+		obj.pivotTransform[0].position = obj.target->GetTransform()->position + GE::Math::Vector3(obj.target->GetTransform()->scale.x * 3, 0, 0);
 		obj.pivotTransform[1].position = obj.target->GetTransform()->position + GE::Math::Vector3(0, obj.target->GetTransform()->scale.x * 10, 0);
-		obj.pivotTransform[2].position = obj.target->GetTransform()->position + GE::Math::Vector3(0, 0, obj.target->GetTransform()->scale.x * 5);
+		obj.pivotTransform[2].position = obj.target->GetTransform()->position + GE::Math::Vector3(0, 0, obj.target->GetTransform()->scale.x * 3);
 
 		for (int i = 0; i < obj.coll.size(); i++)
 		{

@@ -163,6 +163,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BirdChild.cpp" />
     <ClCompile Include="BirdEnemy.cpp" />
     <ClCompile Include="CameraControl.cpp" />
     <ClCompile Include="Clear.cpp" />
@@ -191,6 +192,7 @@
     <ClCompile Include="UIObject.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BirdChild.h" />
     <ClInclude Include="BirdEnemy.h" />
     <ClInclude Include="CameraControl.h" />
     <ClInclude Include="Clear.h" />

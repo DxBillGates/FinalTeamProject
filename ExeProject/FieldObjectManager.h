@@ -23,6 +23,7 @@ private:
 	GE::GameObjectManager* gameObjectManager = nullptr;
 	std::vector<GE::GameObject*> fieldTree;
 	std::vector<GE::GameObject*> fieldLeaf;
+	std::vector<GE::GameObject*> birdChild;
 	GE::GameObject* startTree = nullptr;
 	GE::GameObject* nest = nullptr;
 	GE::GameObject* skydome = nullptr;

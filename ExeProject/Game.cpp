@@ -47,11 +47,6 @@ bool Game::LoadContents()
 	std::string objModelPath = resourcesFolder + modelFolder + objModelFolder;
 	std::string fbxModelPath = resourcesFolder + modelFolder + fbxModelFolder;
 
-	MeshData<Vertex_UV_Normal> modelDataBird1;
-	MeshCreater::LoadObjModelData(objModelPath + "bird1", modelDataBird1);
-	mesh = new Mesh();
-	mesh->Create(device, cmdList, modelDataBird1);
-	meshManager->Add(mesh, "Bird1");
 
 	//MeshData<Vertex_UV_Normal> modelMountain1;
 	//MeshCreater::LoadObjModelData("Resources/Model/_Mountain/mountain1", modelMountain1);
@@ -108,12 +103,13 @@ bool Game::LoadContents()
 	meshManager->Add(mesh, "Tree_Leaf3");
 	
 	MeshData<Vertex_UV_Normal> modelGroundLeaf1;
-	MeshCreater::LoadObjModelData("Resources/Model/ground_leaf1", modelGroundLeaf1);
+	MeshCreater::LoadObjModelData("Resources/Model/ground_leaf1_b", modelGroundLeaf1);
 	mesh = new Mesh();
 	mesh->Create(device, cmdList, modelGroundLeaf1);
 	meshManager->Add(mesh, "Ground_Leaf1");
 
 	meshManager->Add(FbxLoader::Load("Bird", &graphicsDevice), "Player");
+	meshManager->Add(FbxLoader::Load("hina", &graphicsDevice), "Hina");
 	//Œø‰Ê‰¹hit_wall
 	{
 		auto* audioData = audioManager.AddAudioData(new GE::AudioData("Resources/Audio/hit_wall.wav"), "hitWall");

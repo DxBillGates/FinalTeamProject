@@ -1,6 +1,7 @@
 #include "FieldObjectManager.h"
 #include "FieldObject.h"
 #include "FieldTree.h"
+#include "BirdChild.h"
 #include <GatesEngine/Header/GameFramework/Component/SphereCollider.h>
 #include <GatesEngine/Header/GameFramework/Component/MeshCollider.h>
 #include <GatesEngine/Header/GameFramework/Component/BoxCollider.h>
@@ -102,7 +103,7 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 	}
 	//フィールドの草
 	{
-		for (int i = 0; i < 12; ++i)
+		for (int i = 0; i < 5; ++i)
 		{
 			auto* object = gameObjectManager->AddGameObject(new GE::GameObject("leaf", "leaf"));
 			auto* sampleComponent = object->AddComponent<FieldObjectComponent>();
@@ -115,7 +116,7 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 			FieldObjectDeBugTransform::GetInstance()->AddTarget(object);
 		}
 	}
-	//
+	//床
 	{
 		auto* object = gameObjectManager->AddGameObject(new GE::GameObject("tile", "tile"));
 		auto* sampleComponent = object->AddComponent<FieldObjectComponent>();
@@ -127,6 +128,19 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 		auto* collider = object->AddComponent < GE::BoxCollider >();
 		collider->SetSize(GE::Math::Vector3(100000, 1, 100000));
 
+	}
+
+	//雛
+	{
+		for (int i = 0; i < 4; ++i)
+		{
+			auto* object = gameObjectManager->AddGameObject(new GE::GameObject("birdChild", "BirdChild"));
+			auto* sampleComponent = object->AddComponent<BirdChild>();
+			object->GetTransform()->position = {};
+			object->GetTransform()->scale = { 2 };
+			birdChild.push_back(object);
+			FieldObjectDeBugTransform::GetInstance()->AddTarget(object);
+		}
 	}
 }
 void FieldObjectManager::AddGroundModel(std::string fileName)
@@ -165,6 +179,7 @@ void FieldObjectManager::LoadPosition(const std::string& filename)
 {
 	std::vector<obj> ft;
 	std::vector<obj> fl;
+	std::vector<obj> bc;
 	obj st;
 	obj nst;
 
@@ -249,6 +264,27 @@ void FieldObjectManager::LoadPosition(const std::string& filename)
 			result.col.a = 1.0f;
 			st = result;
 		}
+		else if (key == "BirdChild")
+		{
+			obj result;
+			line_stream >> result.pos.x;
+			line_stream >> result.pos.y;
+			line_stream >> result.pos.z;
+
+			line_stream >> result.rot.x;
+			line_stream >> result.rot.y;
+			line_stream >> result.rot.z;
+
+			line_stream >> result.scale.x;
+			line_stream >> result.scale.y;
+			line_stream >> result.scale.z;
+
+			line_stream >> result.col.r;
+			line_stream >> result.col.g;
+			line_stream >> result.col.b;
+			result.col.a = 1.0f;
+			bc.emplace_back(result);
+		}
 		else if (key == "Nest")
 		{
 			obj result;
@@ -288,6 +324,14 @@ void FieldObjectManager::LoadPosition(const std::string& filename)
 		fieldLeaf[i]->GetTransform()->rotation = GE::Math::Quaternion::Euler(fl[i].rot);
 		fieldLeaf[i]->GetTransform()->scale = fl[i].scale;
 	}
+	//雛
+	index = bc.size() < birdChild.size() ? bc.size() : birdChild.size();
+	for (int i = 0; i < index; i++)
+	{
+		birdChild[i]->GetTransform()->position = bc[i].pos;
+		birdChild[i]->GetTransform()->rotation = GE::Math::Quaternion::Euler(bc[i].rot);
+		birdChild[i]->GetTransform()->scale = bc[i].scale;
+	}
 	//開始時の木
 	startTree->GetTransform()->position = st.pos;
 	startTree->GetComponent<StartTree>()->rotation_euler = st.rot;
@@ -319,7 +363,7 @@ void FieldObjectManager::SaveCurrentPosition(const std::string& filename)
 			" " << scale.x << " " << scale.x << " " << scale.x <<
 			" " << col.r << " " << col.g << " " << col.b << " " << col.a << std::endl;
 	}
-	//普通の木
+	//草
 	for (int i = 0; i < fieldLeaf.size(); i++)
 	{
 		GE::Math::Vector3 pos = fieldLeaf[i]->GetTransform()->position;
@@ -328,6 +372,19 @@ void FieldObjectManager::SaveCurrentPosition(const std::string& filename)
 		GE::Color col = fieldLeaf[i]->GetColor();
 
 		writing_file << "FieldLeaf " << pos.x << " " << pos.y << " " << pos.z <<
+			" " << rota.x << " " << rota.y << " " << rota.z <<
+			" " << scale.x << " " << scale.x << " " << scale.x <<
+			" " << col.r << " " << col.g << " " << col.b << " " << col.a << std::endl;
+	}
+	//雛
+	for (int i = 0; i < birdChild.size(); i++)
+	{
+		GE::Math::Vector3 pos = birdChild[i]->GetTransform()->position;
+		GE::Math::Vector3 scale = birdChild[i]->GetTransform()->scale;
+		GE::Math::Vector3 rota = birdChild[i]->GetTransform()->rotation.EulerAngle();
+		GE::Color col = birdChild[i]->GetColor();
+
+		writing_file << "BirdChild " << pos.x << " " << pos.y << " " << pos.z <<
 			" " << rota.x << " " << rota.y << " " << rota.z <<
 			" " << scale.x << " " << scale.x << " " << scale.x <<
 			" " << col.r << " " << col.g << " " << col.b << " " << col.a << std::endl;
@@ -358,7 +415,7 @@ void FieldObjectManager::SaveCurrentPosition(const std::string& filename)
 
 void FieldObjectManager::OtherUpdate()
 {
-	
+
 }
 
 void FieldObjectManager::OtherDraw()
@@ -377,5 +434,6 @@ void FieldObjectManager::UnLoad()
 {
 	fieldTree.clear();
 	fieldLeaf.clear();
+	birdChild.clear();
 	//delete mesh;
 }

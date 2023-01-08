@@ -126,6 +126,9 @@
     <ClCompile Include="FieldObjectDeBugTransform.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
+    <ClCompile Include="BirdChild.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BirdEnemy.h">
@@ -198,6 +201,9 @@
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
     <ClInclude Include="FieldObjectDeBugTransform.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="BirdChild.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
   </ItemGroup>
