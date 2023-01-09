@@ -24,12 +24,35 @@ void BirdChild::Start()
 	animator = GE::SkinMeshManager::GetInstance()->Get("hina");
 	animator.Initialize();
 	animator.PlayAnimation(0, true);
+
+	isJump = false;
+	jumpCount = 0;
+	count = 0;
 }
 void BirdChild::Update(float deltaTime)
 {
 	animator.Update(deltaTime);
+	//‘ƒ‚Åƒsƒ‡ƒ“ƒsƒ‡ƒ“‚µ‚Ä‚é‚¾‚¯
+	if (isJump)
+	{
+		const float lerpTime = 40.0f;
+		count = GE::Math::Lerp(0.0f, 6.28f, jumpCount / lerpTime);
+		transform->position.y += sin(count) * 5;
+		jumpCount++;
+		if (jumpCount >= lerpTime)
+		{
+			isJump = false;
+			jumpCount = 0;
+		}
+	}
+	else
+	{
+		if (GE::RandomMaker::GetInt(0, 100) == 0)
+		{
+			isJump = true;
+		}
+	}
 }
-
 void BirdChild::DrawShadow()
 {
 

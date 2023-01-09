@@ -10,7 +10,9 @@ private:
 
 	GE::AudioManager* audioManager;
 	GE::SkinMeshAnimator animator;
-
+	bool isJump;
+	int jumpCount;
+	float count;
 public:
 
 public:
