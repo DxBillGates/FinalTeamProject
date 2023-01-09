@@ -33,7 +33,7 @@ void BirdChild::Update(float deltaTime)
 void BirdChild::DrawShadow()
 {
 
-	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
+	/*GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
 	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
 
 	graphicsDevice->SetShader("DefaultSkinMeshShader");
@@ -45,7 +45,7 @@ void BirdChild::DrawShadow()
 	animator.SetAnimationData(graphicsDevice, modelMatrix);
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
 
-	graphicsDevice->DrawMesh("Hina");
+	graphicsDevice->DrawMesh("Hina");*/
 
 }
 
