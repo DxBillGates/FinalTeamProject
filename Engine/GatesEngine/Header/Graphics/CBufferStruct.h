@@ -23,6 +23,8 @@ namespace GE
 		Math::Matrix4x4 projMatrix;
 		Math::Matrix4x4 billboard = Math::Matrix4x4::Identity();
 		Math::Matrix4x4 lightMatrix;
+		Math::Matrix4x4 invViewMatrix;
+		Math::Matrix4x4 invProjMatrix;
 		Math::Vector4 cameraPos = { 0 };
 		Math::Vector4 cameraDir = { 0 };
 	};

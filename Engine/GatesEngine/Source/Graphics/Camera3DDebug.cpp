@@ -30,7 +30,7 @@ void GE::Camera3DDebug::Update()
 	if (mouse->GetCheckHitButton(MouseButtons::RIGHT_CLICK))
 	{
 		windowSize = GE::Window::GetWindowSize();
-		mouse->SetMouseCursor(windowSize/2);
+		mouse->SetMouseCursor(windowSize / 2);
 		//ƒ}ƒEƒX‚ÌˆÚ“®—Ê‚ðŽæ“¾
 		Math::Vector2 inputValue = mouse->GetMouseMove() / 500.0f;
 
@@ -66,18 +66,22 @@ void GE::Camera3DDebug::Update()
 		{
 			moveVector -= axis.y;
 		}
+		moveSpeed = keyboard->CheckHitKey(Keys::LSHIFT) ? 100.0f : 1.0f;
+
+		moveVector = moveVector.Normalize();
+		moveVector += wheelValue * axis.z.Normalize();
+
+		direction = Math::Vector3(0, 0, 1);
+		rotation = Math::Matrix4x4::RotationX(pitch) * Math::Matrix4x4::RotationY(yaw);
+		direction = Math::Matrix4x4::Transform(direction, rotation);
+		info.cameraPos += moveVector * moveSpeed;
 	}
-	moveSpeed = keyboard->CheckHitKey(Keys::LSHIFT) ? 10.0f : 1.0f;
-
-	moveVector = moveVector.Normalize();
-	moveVector += wheelValue * axis.z.Normalize(); 
-	info.cameraPos += moveVector * moveSpeed;
-
-	info.projMatrix = Math::Matrix4x4::GetPerspectiveMatrix(90, aspect, 1, 60000*5);
-
-	//direction = Math::Vector3(0, 0, 1);
-	//rotation = Math::Matrix4x4::RotationX(pitch) * Math::Matrix4x4::RotationY(yaw);
-	//direction = Math::Matrix4x4::Transform(direction, rotation);
 	Math::Vector3 pos = { info.cameraPos.x,info.cameraPos.y ,info.cameraPos.z };
+
+	info.projMatrix = Math::Matrix4x4::GetPerspectiveMatrix(90, aspect, 1, 60000 * 5);
 	info.viewMatrix = Math::Matrix4x4::GetViewMatrixLookTo(pos, direction, axis.y);
+	info.invViewMatrix = Math::Matrix4x4::Inverse(info.viewMatrix);
+	info.invProjMatrix = Math::Matrix4x4::Inverse(info.projMatrix);
+	info.cameraPos = { pos.x,pos.y,pos.z,1 };
+	info.cameraDir = { direction.x,direction.y,direction.z,1 };
 }

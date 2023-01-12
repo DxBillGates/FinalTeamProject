@@ -35,6 +35,13 @@ struct DefaultSpriteVSOutput
 	float2 uv : UV;
 };
 
+struct RaymarchingVSOutput
+{
+	float4 svpos : SV_POSITION;
+	float2 uv : UV;
+	float3 viewVector : VIEW_VECTOR;
+};
+
 struct DefaultLineVSInput
 {
 	float4 pos : POSITION;
@@ -61,6 +68,8 @@ cbuffer CameraInfo : register(b1)
 	matrix projMatrix;
 	matrix billboard;
 	matrix lightMatrix;
+	matrix invViewMatrix;
+	matrix invProjMatrix;
 	float4 cameraPos;
 	float4 cameraDir;
 }

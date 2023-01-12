@@ -30,6 +30,11 @@ void CameraControl::Initialize()
 
 void CameraControl::Update()
 {
+	if (PlayerComponent::statas == PlayerComponent::PlayerStatas::DEBUG)
+	{
+		return;
+	}
+
 	UIObject::GetInstance()->cameraPosition = position;
 	//ターゲトポジションセット
 	target = targetObject->GetTransform()->position;
