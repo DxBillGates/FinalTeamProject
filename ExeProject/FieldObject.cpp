@@ -29,6 +29,7 @@ void FieldObjectComponent::Update(float deltaTime)
 
 void FieldObjectComponent::DrawShadow()
 {
+	if (!isDraw)return;
 
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
 	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
@@ -62,7 +63,7 @@ void FieldObjectComponent::DrawShadow()
 
 void FieldObjectComponent::Draw()
 {
-
+	if (!isDraw)return;
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
 	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
 
@@ -134,7 +135,7 @@ void FieldObjectComponent::OnCollision(GE::ICollider* hitCollider)
 
 void FieldObjectComponent::OnGui()
 {
-
+	ImGui::Checkbox("IsDraw", &isDraw);
 }
 
 //FieldObject* FieldObject::GetInstance()

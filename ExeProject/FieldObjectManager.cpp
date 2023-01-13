@@ -106,18 +106,15 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 	}
 	//フィールドの草
 	{
-		for (int i = 0; i < 6; ++i)
-		{
-			auto* object = gameObjectManager->AddGameObject(new GE::GameObject("leaf", "leaf"));
-			auto* sampleComponent = object->AddComponent<FieldObjectComponent>();
-			object->GetTransform()->position = {};
-			object->GetTransform()->scale = { 100 };
-			object->GetComponent<FieldObjectComponent>()->modelName = "Ground_Leaf1";
-			sampleComponent->shaderName = "DefaultMeshWithTextureAndAdsCompositiongShader";
-			object->GetComponent<FieldObjectComponent>()->textureName = "leafTex1";
-			fieldLeaf.push_back(object);
-			FieldObjectDeBugTransform::GetInstance()->AddTarget(object);
-		}
+		auto* object = gameObjectManager->AddGameObject(new GE::GameObject("leaf", "leaf"));
+		auto* sampleComponent = object->AddComponent<FieldObjectComponent>();
+		object->GetTransform()->position = { 1000,100,-15000 };
+		object->GetTransform()->scale = { 2000 };
+		object->GetTransform()->rotation = GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), -5.0f);
+		object->GetComponent<FieldObjectComponent>()->modelName = "Ground_Leaf1";
+		sampleComponent->shaderName = "DefaultMeshWithTextureAndAdsCompositiongShader";
+		object->GetComponent<FieldObjectComponent>()->textureName = "leafTex1";
+		fieldLeaf = object;
 	}
 	//床
 	{
@@ -181,7 +178,6 @@ void FieldObjectManager::LoadModel(const std::string& filename)
 void FieldObjectManager::LoadPosition(const std::string& filename)
 {
 	std::vector<obj> ft;
-	std::vector<obj> fl;
 	std::vector<obj> bc;
 	obj st;
 	obj nst;
@@ -224,27 +220,6 @@ void FieldObjectManager::LoadPosition(const std::string& filename)
 			line_stream >> result.col.b;
 			result.col.a = 1.0f;
 			ft.emplace_back(result);
-		}
-		else if (key == "FieldLeaf")
-		{
-			obj result;
-			line_stream >> result.pos.x;
-			line_stream >> result.pos.y;
-			line_stream >> result.pos.z;
-
-			line_stream >> result.rot.x;
-			line_stream >> result.rot.y;
-			line_stream >> result.rot.z;
-
-			line_stream >> result.scale.x;
-			line_stream >> result.scale.y;
-			line_stream >> result.scale.z;
-
-			line_stream >> result.col.r;
-			line_stream >> result.col.g;
-			line_stream >> result.col.b;
-			result.col.a = 1.0f;
-			fl.emplace_back(result);
 		}
 		else if (key == "StartTree")
 		{
@@ -319,14 +294,6 @@ void FieldObjectManager::LoadPosition(const std::string& filename)
 		fieldTree[i]->GetTransform()->rotation = GE::Math::Quaternion::Euler(ft[i].rot);
 		fieldTree[i]->GetTransform()->scale = ft[i].scale;
 	}
-	//草
-	index = fl.size() < fieldLeaf.size() ? fl.size() : fieldLeaf.size();
-	for (int i = 0; i < index; i++)
-	{
-		fieldLeaf[i]->GetTransform()->position = fl[i].pos;
-		fieldLeaf[i]->GetTransform()->rotation = GE::Math::Quaternion::Euler(fl[i].rot);
-		fieldLeaf[i]->GetTransform()->scale = fl[i].scale;
-	}
 	//雛
 	index = bc.size() < birdChild.size() ? bc.size() : birdChild.size();
 	for (int i = 0; i < index; i++)
@@ -362,19 +329,6 @@ void FieldObjectManager::SaveCurrentPosition(const std::string& filename)
 		GE::Color col = fieldTree[i]->GetColor();
 
 		writing_file << "FieldTree " << pos.x << " " << pos.y << " " << pos.z <<
-			" " << rota.x << " " << rota.y << " " << rota.z <<
-			" " << scale.x << " " << scale.x << " " << scale.x <<
-			" " << col.r << " " << col.g << " " << col.b << " " << col.a << std::endl;
-	}
-	//草
-	for (int i = 0; i < fieldLeaf.size(); i++)
-	{
-		GE::Math::Vector3 pos = fieldLeaf[i]->GetTransform()->position;
-		GE::Math::Vector3 scale = fieldLeaf[i]->GetTransform()->scale;
-		GE::Math::Vector3 rota = fieldLeaf[i]->GetTransform()->rotation.EulerAngle();
-		GE::Color col = fieldLeaf[i]->GetColor();
-
-		writing_file << "FieldLeaf " << pos.x << " " << pos.y << " " << pos.z <<
 			" " << rota.x << " " << rota.y << " " << rota.z <<
 			" " << scale.x << " " << scale.x << " " << scale.x <<
 			" " << col.r << " " << col.g << " " << col.b << " " << col.a << std::endl;
@@ -436,7 +390,6 @@ void FieldObjectManager::OtherDraw()
 void FieldObjectManager::UnLoad()
 {
 	fieldTree.clear();
-	fieldLeaf.clear();
 	birdChild.clear();
 	//delete mesh;
 }

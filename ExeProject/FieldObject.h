@@ -8,7 +8,7 @@ public:
 	std::string modelName = "Cube";
 	std::string shaderName = "DefaultMeshShader";
 	std::string textureName = "texture_null";
-
+	bool isDraw = true;
 	float scaleXYZ;
 	FieldObjectComponent();
 	void Awake();

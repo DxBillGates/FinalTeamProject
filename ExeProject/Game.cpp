@@ -103,7 +103,7 @@ bool Game::LoadContents()
 	meshManager->Add(mesh, "Tree_Leaf3");
 	
 	MeshData<Vertex_UV_Normal> modelGroundLeaf1;
-	MeshCreater::LoadObjModelData("Resources/Model/ground_leaf1_b", modelGroundLeaf1);
+	MeshCreater::LoadObjModelData("Resources/Model/ground_leaf1_a", modelGroundLeaf1);
 	mesh = new Mesh();
 	mesh->Create(device, cmdList, modelGroundLeaf1);
 	meshManager->Add(mesh, "Ground_Leaf1");
