@@ -1,8 +1,11 @@
 #pragma once
+#include"Option.h"
+
 #include <GatesEngine/Header/GameFramework/Component/Component.h>
 #include <GatesEngine/Header/Input/InputDevice.h>
 #include <GatesEngine/Header/GameFramework/GameObject/GameObjectManager.h> 
 #include <GatesEngine/Header/GameFramework/GameObject/GameObject.h> 
+#include<GatesEngine/Header/Audio/AudioManager.h>
 
 //タイトル用テクスチャクラス
 class TitleTex :public GE::Component
@@ -33,9 +36,11 @@ private:
 	std::vector<GE::ITexture*> textures;
 
 	bool decided = false;
+	Option option;
+
 public:
 	//選択項目
-	enum States
+	enum class States
 	{
 		start,
 		option,
@@ -44,7 +49,7 @@ public:
 		serectNum,
 	};
 	//選択ステージ
-	enum Stage
+	enum class Stage
 	{
 		stage1,
 		stage2,
@@ -72,7 +77,7 @@ public:
 
 	//初期設定
 	void Awake(GE::GameObjectManager* gameObjectManager, GE::IGraphicsDeviceDx12* device);
-	void Update();
+	void Update(GE::AudioManager* audioManager);
 
 	bool GetDecid() { return decided; }
 
@@ -82,6 +87,8 @@ public:
 	/// <param name="s">指定内容</param>
 	/// <returns>指定内容がタイトルで選択されたか</returns>
 	bool GetSelect(Title::States s);
+
+	void Back() { decided = false; }
 
 	void ClearGameObject();
 };

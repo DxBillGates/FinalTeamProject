@@ -148,8 +148,8 @@ bool Game::LoadContents()
 	textureManager->Add(nullTexture, "texture_title");
 
 	nullTexture = new Texture();
-	nullTexture->Load("stage1.png", device, shaderResourceHeap);
-	textureManager->Add(nullTexture, "texture_stage1");
+	nullTexture->Load("start.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "texture_start");
 
 	nullTexture = new Texture();
 	nullTexture->Load("stage2.png", device, shaderResourceHeap);
