@@ -40,7 +40,7 @@ void GE::DirectionalLight::Start()
 	drawRange = { 20000,20000,30000 };
 	direction = { 0,0,1 };
 	up = { 0,-1,0 };
-	angleXY = { 20,110 };
+	angleXY = { 20,350 };
 	transform->rotation = Math::Quaternion::Euler({ angleXY.x,angleXY.y,0 });
 
 	lightMatrix = Math::Matrix4x4::GetViewMatrixLookTo(-direction * drawRange.z, direction, up);
