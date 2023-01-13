@@ -4,10 +4,16 @@
 
 class FlogEnemy : public Enemy
 {
-
 private:
 	float random;
 	float angle = 0.0f;
+
+	bool jump;
+	int jumpCount;
+
+	GE::Math::Vector3 velocity;//ˆÚ“®—Ê
+	GE::Math::Vector3 accelerate;//‰Á‘¬“x
+	GE::Math::Vector3 gravity;//d—Í
 public:
 	FlogEnemy();
 

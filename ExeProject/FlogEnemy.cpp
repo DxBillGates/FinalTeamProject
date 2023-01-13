@@ -24,12 +24,15 @@ void FlogEnemy::Start()
 	GE::Utility::Printf("FlogEnemy Start()\n");
 	random = GE::RandomMaker::GetFloat(-1.0f, 1.0f);
 	float randPos = GE::RandomMaker::GetFloat(100.0f, 1000.0f);
-	transform->position = { 0.0f,randPos,0.0f };//位置をランダム化
+	transform->position = { 0.0f,0.0f,0.0f };//位置をランダム化
 	transform->scale = { 100.0f,100.0f,100.0f };//サイズ
 	float randSpeed = GE::RandomMaker::GetFloat(10.0f, 25.0f);
 
 	speed = randSpeed;//速度
 	statas = Statas::ALIVE;
+
+	accelerate = { 0,15,10 };
+	gravity = { 0,-0.2f,0 };
 
 	gameObject->SetColor(GE::Color::Red());
 }
@@ -38,11 +41,26 @@ void FlogEnemy::Update(float deltaTime)
 {
 	const GE::Math::Axis& axis = transform->GetMatrix().GetAxis();
 
-	//回転処理
-	transform->rotation = GE::Math::Quaternion(GE::Math::Vector3(0.0f, 1.0f, 0.0f), bodyDirection.y);
-	bodyDirection.y -= 0.005f * random;
+	if (transform->position.y <= 0)//地面についてたら
+	{
+		velocity = {};
+		jumpCount++;
+	}
+	else
+	{
+		velocity += gravity;
+	}
 
-	transform->position += transform->GetForward() * speed * GE::GameSetting::Time::GetGameTime();//移動処理
+	//ジャンプ
+	if (jumpCount == 180)
+	{
+		velocity += accelerate;
+		jumpCount = 0;
+	}
+
+	transform->position += velocity;//移動処理
+
+	//transform->position += transform->GetForward() * speed * GE::GameSetting::Time::GetGameTime();//移動処理
 }
 
 void FlogEnemy::Draw()

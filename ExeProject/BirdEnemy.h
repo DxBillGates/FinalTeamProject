@@ -9,6 +9,7 @@ private:
 	float random;
 	float angle = 0.0f;
 	float randRange;
+
 public:
 	BirdEnemy();
 

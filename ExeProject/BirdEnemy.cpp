@@ -26,7 +26,7 @@ void BirdEnemy::Start()
 	randRange = GE::RandomMaker::GetFloat(20.0f, 30.0f);
 	transform->position = { -91.0f,5500,-2000.0f };//位置をランダム化
 	transform->scale = { 100.0f,100.0f,100.0f };//サイズ
-	float randSpeed = GE::RandomMaker::GetFloat(10.0f, 25.0f);
+	float randSpeed = GE::RandomMaker::GetFloat(10.0f, 25.0f);//幅の変更
 
 	speed = randSpeed;//速度
 	statas = Statas::ALIVE;
@@ -39,8 +39,9 @@ void BirdEnemy::Update(float deltaTime)
 	const GE::Math::Axis& axis = transform->GetMatrix().GetAxis();
 
 	//回転処理
-	/*transform->rotation = GE::Math::Quaternion(GE::Math::Vector3(0.0f, 1.0f, 0.0f), bodyDirection.y);
-	bodyDirection.y -= 0.005f * random;*/
+	//transform->rotation = GE::Math::Quaternion(GE::Math::Vector3(0.0f, 1.0f, 0.0f), bodyDirection.y);
+	//bodyDirection.y -= 0.005f * random;
+	//transform->position += transform->GetForward() * speed * GE::GameSetting::Time::GetGameTime();//移動処理
 
 	angle += 1.0 * GE::GameSetting::Time::GetGameTime() * deltaTime;//ホバリングの速さ
 	transform->position = (transform->position + GE::Math::Vector3(0.0f, 0.0f, sinf(angle) * randRange * GE::GameSetting::Time::GetGameTime()));
