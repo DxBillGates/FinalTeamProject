@@ -61,5 +61,18 @@ GE::Audio * GE::AudioManager::Use(const std::string& tag)
 		return audio;
 	}
 
-	return nullptr;
+	return audios[tag][0];
+}
+
+GE::Audio* GE::AudioManager::Get(const std::string& tag, int index)
+{
+	// そもそもそのタグでオーディオが作られてないからnullptrを返す
+	if (audios.find(tag) == audios.end())return nullptr;
+
+	int audioCount = (int)audios[tag].size();
+
+	// 使おうとしている要素番号が用意されている量より多い場合は0番を返す
+	if (index >= audioCount)return audios[tag][0];
+
+	return audios[tag][index];
 }
