@@ -31,14 +31,14 @@ void EnemyManager::Start(GE::GameObjectManager* gameObjectManager)
 		birdEnemyCollider->SetSize({ 2 });
 		birdEnemies.push_back(bEnemy);
 	}
-	for (int i = 0; i < 12; ++i)
+	for (int i = 0; i < 1; ++i)
 	{
 		auto* fEnemy = gameObjectManager->AddGameObject(new GE::GameObject("FlogEnemy", "enemy"));
 		auto* fComponent = fEnemy->AddComponent<FlogEnemy>();
-		auto* birdEnemyCollider = fEnemy->AddComponent<GE::SphereCollider>();
-		birdEnemyCollider->SetCenter({ 0,0,0 });
-		birdEnemyCollider->SetSize({ 2 });
-		birdEnemies.push_back(fEnemy);
+		auto* flogEnemyCollider = fEnemy->AddComponent<GE::SphereCollider>();
+		flogEnemyCollider->SetCenter({ 0,0,0 });
+		flogEnemyCollider->SetSize({ 2 });
+		flogEnemies.push_back(fEnemy);
 	}
 }
 

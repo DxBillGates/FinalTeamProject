@@ -8,7 +8,7 @@ private:
 	float random;
 	float angle = 0.0f;
 
-	bool jump;
+	int state;
 	int jumpCount;
 	GE::SkinMeshAnimator animator;
 
