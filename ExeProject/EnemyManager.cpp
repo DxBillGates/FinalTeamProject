@@ -31,7 +31,7 @@ void EnemyManager::Start(GE::GameObjectManager* gameObjectManager)
 		birdEnemyCollider->SetSize({ 2 });
 		birdEnemies.push_back(bEnemy);
 	}
-	for (int i = 0; i < 12; ++i)
+	for (int i = 0; i < 1; ++i)
 	{
 		auto* fEnemy = gameObjectManager->AddGameObject(new GE::GameObject("FlogEnemy", "enemy"));
 		auto* fComponent = fEnemy->AddComponent<FlogEnemy>();

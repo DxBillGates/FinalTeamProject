@@ -22,20 +22,20 @@ void Title::Awake(GE::GameObjectManager* gameObjectManager, GE::IGraphicsDeviceD
 
 	//テクスチャたちの生成、初期設定
 	Create("title_start", "texture_start", gameObjectManager, device);
-	sprites.back()->position = { GE::Window::GetWindowSize().x - 400,GE::Window::GetWindowSize().y / 2,0.0f };
+	sprites.back()->position = { GE::Window::GetWindowSize().x - 300,GE::Window::GetWindowSize().y / 2,0.0f };
 	sprites.back()->scale = { 300,100,0 };
 	//ステージ用テクスチャ追加
 	textures.push_back(device->GetTextureManager()->Get("texture_stage2"));
 	Create("title_option", "texture_option", gameObjectManager, device);
-	sprites.back()->position = { GE::Window::GetWindowSize().x - 400,GE::Window::GetWindowSize().y / 2 + 100,0.0f };
+	sprites.back()->position = { GE::Window::GetWindowSize().x - 300,GE::Window::GetWindowSize().y / 2 + 100,0.0f };
 	sprites.back()->scale = { 300,100,0 };
 	Create("title_exit", "texture_exit", gameObjectManager, device);
-	sprites.back()->position = { GE::Window::GetWindowSize().x - 400,GE::Window::GetWindowSize().y / 2 + 200,0.0f };
+	sprites.back()->position = { GE::Window::GetWindowSize().x - 300,GE::Window::GetWindowSize().y / 2 + 200,0.0f };
 	sprites.back()->scale = { 300,100,0 };
 
 	Create("title_name", "texture_title", gameObjectManager, device);
-	sprites.back()->position = { 1000,GE::Window::GetWindowSize().y / 2 - 200.0f,0 };
-	sprites.back()->scale = { 610,180,0 };
+	sprites.back()->position = { 1100,GE::Window::GetWindowSize().y / 2 - 200.0f,0 };
+	sprites.back()->scale = { 1319 / 2.0f,642 / 2.0f,0 };
 	//Create("title_nextL", "texture_next", gameObjectManager, device);
 	//sprites.back()->position = { 70.0f,GE::Window::GetWindowSize().y / 2,0.0f };
 	//sprites.back()->scale = { 150,150,0 };
