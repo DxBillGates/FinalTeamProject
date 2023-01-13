@@ -36,8 +36,10 @@ void FlogEnemy::Start()
 	speed = randSpeed;//‘¬“x
 	statas = Statas::ALIVE;
 
-	accelerate = { 0,15,10 };
-	gravity = { 0,-0.2f,0 };
+	accelerate = { 15,15,15 };
+	gravity = { 0,-0.5f,0 };
+	state = 0;
+	jumpCount = 1;
 
 	gameObject->SetColor(GE::Color::Red());
 }
@@ -48,9 +50,14 @@ void FlogEnemy::Update(float deltaTime)
 
 	const GE::Math::Axis& axis = transform->GetMatrix().GetAxis();
 
+	//’…’n
 	if (jumpCount == 0)
 	{
 		animator.PlayAnimation(2, false);
+	}
+	if (jumpCount == 0 && transform->position.y <= 0)
+	{
+		angle += 90;
 	}
 	//’n–Ê‚É‚Â‚¢‚Ä‚½‚ç
 	if (transform->position.y <= 0)
@@ -71,9 +78,8 @@ void FlogEnemy::Update(float deltaTime)
 		jumpCount = 0;
 	}
 
-	transform->position += velocity;//ˆÚ“®ˆ—
-
-	//transform->position += transform->GetForward() * speed * GE::GameSetting::Time::GetGameTime();//ˆÚ“®ˆ—
+	transform->rotation = GE::Math::Quaternion::Euler({ 0,angle,0 });
+	transform->position += GE::Math::Vector3(transform->GetForward().x * velocity.x,velocity.y, transform->GetForward().z * velocity.z);
 }
 
 void FlogEnemy::DrawShadow()
