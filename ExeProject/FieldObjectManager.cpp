@@ -106,7 +106,7 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 	}
 	//フィールドの草
 	{
-		for (int i = 0; i < 5; ++i)
+		for (int i = 0; i < 6; ++i)
 		{
 			auto* object = gameObjectManager->AddGameObject(new GE::GameObject("leaf", "leaf"));
 			auto* sampleComponent = object->AddComponent<FieldObjectComponent>();

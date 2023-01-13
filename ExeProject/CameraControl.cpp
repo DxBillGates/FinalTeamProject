@@ -21,6 +21,7 @@ void CameraControl::Initialize()
 	current_cameraDistance = normal_cameraDistance;
 
 	shakeFlame = 0;
+	count = 0.0f;
 
 	range = {};
 	cameraShake = {};
@@ -30,9 +31,10 @@ void CameraControl::Initialize()
 
 void CameraControl::Update()
 {
+	float LERP_VALUE = 0.02f * GE::GameSetting::Time::GetGameTime();
+
 	UIObject::GetInstance()->cameraPosition = position;
 	//ターゲトポジションセット
-	target = targetObject->GetTransform()->position;
 
 	//体の角度計算
 	if (abs(targetObject->GetTransform()->GetForward().y) < 0.6)
@@ -47,17 +49,24 @@ void CameraControl::Update()
 	if (PlayerComponent::statas == PlayerComponent::PlayerStatas::TITLE)
 	{
 		current_cameraDistance = 3000;
-		//target += targetObject->GetTransform()->GetRight() * 2000;
+		GE::Math::Vector3 wind = GE::Math::Vector3(sinf(count), cosf(count), cosf(-count)) * 30;
+		count += 0.01f;
+
+		//注視点
+		target = targetObject->GetTransform()->position + targetObject->GetTransform()->GetRight() * 2000 + wind;
+
 		newCameraPosition = target
 			- GE::Math::Vector3(targetObject->GetTransform()->GetForward().x * current_cameraDistance,
 				-300,
 				targetObject->GetTransform()->GetForward().z * current_cameraDistance);
-		direction = GE::Math::Vector3(target + targetObject->GetTransform()->GetRight() * 2000 - position).Normalize();
+
+
+		direction = GE::Math::Vector3(target - position).Normalize();
 	}
 	else if (PlayerComponent::statas == PlayerComponent::PlayerStatas::STAY_TREE)
 	{
 		current_cameraDistance = 2000;
-
+		target = GE::Math::Vector3::Lerp(target, targetObject->GetTransform()->position, LERP_VALUE);
 		newCameraPosition = target
 			- GE::Math::Vector3(targetObject->GetTransform()->GetForward().x * current_cameraDistance,
 				-300,
@@ -65,10 +74,12 @@ void CameraControl::Update()
 	}
 	else
 	{
+		target = targetObject->GetTransform()->position;
 		current_cameraDistance = normal_cameraDistance;
 		newCameraPosition = target - targetObject->GetTransform()->GetForward() * current_cameraDistance;
 	}
 	auto camera = dynamic_cast<GE::Camera3DDebug*>(graphicsDevice->GetMainCamera());
+	//現在のポジション
 	GE::Math::Vector3 beforeCameraPosition = {
 		camera->GetCameraInfo().cameraPos.x,
 		camera->GetCameraInfo().cameraPos.y,
@@ -76,16 +87,15 @@ void CameraControl::Update()
 	};
 
 
-	float LERP_VALUE = 0.02f * GE::GameSetting::Time::GetGameTime();
 	//ダッシュ時
 	if (PlayerComponent::statas == PlayerComponent::PlayerStatas::DASH
 		|| PlayerComponent::statas == PlayerComponent::PlayerStatas::LOCKON_SHOOT)
 	{
 		LERP_VALUE = 0.035f * GE::GameSetting::Time::GetGameTime();
 	}
-
 	position = GE::Math::Vector3::Lerp(beforeCameraPosition, newCameraPosition, LERP_VALUE) + cameraShake * GE::GameSetting::Time::GetGameTime();
 	target += cameraShake * GE::GameSetting::Time::GetGameTime();
+
 	//カメラシェイク
 	Shake();
 

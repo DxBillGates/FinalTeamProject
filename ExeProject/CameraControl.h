@@ -22,6 +22,8 @@ private:
 	int shakeFlame;
 	GE::Math::Vector2 range;
 	GE::Math::Vector3 cameraShake;
+	//ƒJƒƒ‰‚ÌƒuƒŒ—p
+	float count;
 
 public:
 	static CameraControl* GetInstance();
