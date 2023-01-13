@@ -22,6 +22,17 @@ FieldObjectManager* FieldObjectManager::GetInstance()
 
 void FieldObjectManager::LoadModels()
 {
+	//地形
+	GE::MeshData<GE::Vertex_UV_Normal> model;
+	auto meshManager = graphicsDevice->GetMeshManager();
+	auto device = graphicsDevice->GetDevice();
+	auto cmdList = graphicsDevice->GetCmdList();
+	GE::MeshCreater::LoadObjModelData("Resources/Model/tree2", model);
+	mesh = new GE::Mesh();
+	mesh->Create(device, cmdList, model);
+	meshManager->Add(mesh, "startTree");
+	startTreeModel = model;
+
 	LoadModel("mountain1");
 	LoadModel("mountain2");
 	LoadModel("mountain3");
@@ -42,12 +53,6 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 
 	//スタートの止まり木
 	{
-		GE::MeshData<GE::Vertex_UV_Normal> startTreeModel;
-		mesh = new GE::Mesh();
-		GE::MeshCreater::LoadObjModelData("Resources/Model/tree2", startTreeModel);
-		mesh->Create(device, cmdList, startTreeModel);
-		meshManager->Add(mesh, "startTree");
-
 		auto* object = gameObjectManager->AddGameObject(new GE::GameObject("StartTree", "StartTree"));
 		auto* sampleComponent = object->AddComponent<StartTree>();
 		auto* collider = object->AddComponent < GE::MeshCollider >();

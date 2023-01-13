@@ -30,7 +30,8 @@ private:
 
 	GE::IGraphicsDeviceDx12* graphicsDevice;
 	GE::Mesh* mesh;
-	std::map<std::string,GE::MeshData<GE::Vertex_UV_Normal>> groundModels;
+	std::map<std::string, GE::MeshData<GE::Vertex_UV_Normal>> groundModels;
+	GE::MeshData<GE::Vertex_UV_Normal> startTreeModel;
 
 private:
 	void AddGroundModel(std::string fileName);
