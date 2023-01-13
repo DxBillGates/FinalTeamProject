@@ -16,10 +16,9 @@ ScreenUIManager* ScreenUIManager::GetInstance()
 	return &instance;
 }
 
-ScreenUIManager::SpriteInfo ScreenUIManager::Set(std::string tag, GE::Math::Vector3 pos, GE::Math::Vector3 scale, GE::Color color, std::string textureName)
+ScreenUIManager::SpriteInfo ScreenUIManager::Set(GE::Math::Vector3 pos, GE::Math::Vector3 scale, GE::Color color, std::string textureName)
 {
 	SpriteInfo result;
-	result.tag = tag;
 	result.transform.position = pos;
 	result.transform.scale = scale;
 	result.color = color;
@@ -29,27 +28,26 @@ ScreenUIManager::SpriteInfo ScreenUIManager::Set(std::string tag, GE::Math::Vect
 void ScreenUIManager::Start()
 {
 	//微調整の座標手打ちだから環境でずれそう	
-	object.push_back(Set("crash_info", GE::Math::Vector3(GE::Window::GetWindowSize().x / 2.f, GE::Window::GetWindowSize().y / 2.f - 150.f, 0.f),
-		{ 400,100,0 }, GE::Color::White(), "crash_info"));
+	object["crash"] = Set(GE::Math::Vector3(GE::Window::GetWindowSize().x / 2.f, GE::Window::GetWindowSize().y / 2.f - 150.f, 0.f),
+		{ 400,100,0 }, GE::Color::White(), "crash_info");
 }
 void ScreenUIManager::Update(float deltaTime)
 {
 	if (PlayerComponent::statas == PlayerComponent::PlayerStatas::CRASH)
 	{
-		object[0].isDraw = true;
+		object["crash"].isDraw = true;
 	}
 	else
 	{
-		object[0].isDraw = false;
+		object["crash"].isDraw = false;
 	}
-
 }
 
 void ScreenUIManager::DrawSprite(GE::IGraphicsDeviceDx12* graphicsDevice)
 {
 	for (auto o : object)
 	{
-		if (o.isDraw)
+		if (o.second.isDraw)
 		{
 			GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
 			GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
@@ -61,11 +59,11 @@ void ScreenUIManager::DrawSprite(GE::IGraphicsDeviceDx12* graphicsDevice)
 			graphicsDevice->SetShader("DefaultSpriteWithTextureShader");
 
 			GE::Math::Matrix4x4 modelMatrix = GE::Math::Matrix4x4::Scale({ 0 });
-			modelMatrix = o.transform.GetMatrix();
+			modelMatrix = o.second.transform.GetMatrix();
 
 			// 画像の色変えたりするよう
 			GE::Material material;
-			material.color = o.color;
+			material.color = o.second.color;
 
 			// 2d用のカメラ情報 基本的に買えなくてok
 			GE::CameraInfo cameraInfo;
@@ -76,18 +74,18 @@ void ScreenUIManager::DrawSprite(GE::IGraphicsDeviceDx12* graphicsDevice)
 			GE::TextureAnimationInfo textureAnimationInfo;
 
 			// 画像の元サイズ
-			textureAnimationInfo.textureSize = o.texSize;
+			textureAnimationInfo.textureSize = o.second.texSize;
 			// 元画像のサイズからどうやって切り抜くか　例) 元サイズが100*100で半分だけ表示したいなら{50,100}にする
 			// textureSizeと一緒にすると切り抜かれずに描画される
-			textureAnimationInfo.clipSize = o.clipSize;
+			textureAnimationInfo.clipSize = o.second.clipSize;
 			// 切り抜く際の左上座標 例) {0,0}なら元画像の左上 texture->GetSize()なら右下になる
-			textureAnimationInfo.pivot = o.pivotPos;
+			textureAnimationInfo.pivot = o.second.pivotPos;
 
 			renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
 			renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
 			renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2, &material,sizeof(GE::Material)) });
 			renderQueue->AddSetConstantBufferInfo({ 4,cbufferAllocater->BindAndAttachData(4, &textureAnimationInfo,sizeof(GE::TextureAnimationInfo)) });
-			renderQueue->AddSetShaderResource({ 5,graphicsDevice->GetTextureManager()->Get(o.textureName)->GetSRVNumber() });
+			renderQueue->AddSetShaderResource({ 5,graphicsDevice->GetTextureManager()->Get(o.second.textureName)->GetSRVNumber() });
 			graphicsDevice->DrawMesh("2DPlane");
 		}
 	}

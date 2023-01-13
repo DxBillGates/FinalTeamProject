@@ -8,7 +8,6 @@ public:
 	struct SpriteInfo
 	{
 		bool isDraw = false;
-		std::string tag = "Tag_Ga_Naiyo";
 		GE::Transform transform;
 		GE::Color color;
 		std::string textureName = "texture_null";
@@ -24,7 +23,7 @@ private:
 		GE::Math::Vector3 scale;
 		GE::Color col;
 	};
-	std::vector<SpriteInfo> object;
+	std::map<std::string,SpriteInfo> object;
 public:
 	static ScreenUIManager* GetInstance();
 	void Start();
@@ -43,5 +42,5 @@ private:
 	void operator=(const ScreenUIManager& obj) = delete;
 	ScreenUIManager(const ScreenUIManager& obj) = delete;
 
-	SpriteInfo Set(std::string tag, GE::Math::Vector3 pos, GE::Math::Vector3 scale, GE::Color color, std::string textureName);
+	SpriteInfo Set(GE::Math::Vector3 pos, GE::Math::Vector3 scale, GE::Color color, std::string textureName);
 };
