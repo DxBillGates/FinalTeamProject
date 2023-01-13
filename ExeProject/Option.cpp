@@ -123,21 +123,21 @@ void Option::Update(GE::AudioManager* audioManager)
 	{
 		float set = OptionData::BGM_vol / 10.0f;
 		//•ÏX€–Ú
-		audioManager->Use("testBGM")->SetVolume(set);
+		audioManager->Get("testBGM", 0)->SetVolume(set);
 		bgmChange = false;
 	}
 	if (seChange)
 	{
 		float set = OptionData::SE_vol / 10.0f;
 		//•ÏX€–Ú
-		audioManager->Use("hitWall")->SetVolume(set);
-		audioManager->Use("hitWall")->SetVolume(set);
-		audioManager->Use("air1")->SetVolume(set);
-		audioManager->Use("catch2")->SetVolume(set);
-		audioManager->Use("catch2")->SetVolume(set);
-		audioManager->Use("catch2")->SetVolume(set);
-		audioManager->Use("flapping1")->SetVolume(set);
-		audioManager->Use("flapping1")->SetVolume(set);
+		audioManager->Get("hitWall", 0)->SetVolume(set);
+		audioManager->Get("hitWall", 1)->SetVolume(set);
+		audioManager->Get("air1", 0)->SetVolume(set);
+		audioManager->Get("catch2", 0)->SetVolume(set);
+		audioManager->Get("catch2", 1)->SetVolume(set);
+		audioManager->Get("catch2", 2)->SetVolume(set);
+		audioManager->Get("flapping1", 0)->SetVolume(set);
+		audioManager->Get("flapping1", 1)->SetVolume(set);
 		seChange = false;
 	}
 }
@@ -190,12 +190,13 @@ void OptionTex::Update(float deltaTime)
 
 void OptionTex::LateDraw()
 {
+	if (!Title::GetInstance()->GetSelect(Title::States::option))return;
 	if (Option::select == Option::Select::Back
 		&& (handle == Option::Select::volR || handle == Option::Select::volL))
 	{
 		return;
 	}
-	if (!Title::GetInstance()->GetSelect(Title::States::option))return;
+
 	// •`‰æ‚·‚é‚½‚ß‚ÌGraphicsDevice‚ðŽæ“¾‚µ‚Æ‚­‚æ‚¤‚ÉI
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
 	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
