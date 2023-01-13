@@ -18,5 +18,6 @@ namespace GE
 		AudioData* AddAudioData(AudioData* newAudioData,const std::string& tag);
 		AudioData* GetAudioData(std::string& tag);
 		Audio* Use(const std::string& tag);
+		Audio* Get(const std::string& tag, int index);
 	};
 }
