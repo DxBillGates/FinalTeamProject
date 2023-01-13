@@ -60,13 +60,13 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 		startTree = object;
 	}
 
-	AddGroundModel("mountain1");
+	/*AddGroundModel("mountain1");
 	AddGroundModel("mountain2");
 	AddGroundModel("mountain3");
 	AddGroundModel("mountain4");
 	AddGroundModel("mountain5");
 	AddGroundModel("mountain6");
-	AddGroundModel("mountain7");
+	AddGroundModel("mountain7");*/
 	//•Ç‰¼
 	{
 		auto* object = gameObjectManager->AddGameObject(new GE::GameObject("skydome", "skydome"));

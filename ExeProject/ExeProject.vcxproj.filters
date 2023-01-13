@@ -132,6 +132,9 @@
     <ClCompile Include="Option.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
+    <ClCompile Include="FlogEnemy.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BirdEnemy.h">
@@ -210,6 +213,9 @@
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
     <ClInclude Include="Option.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="FlogEnemy.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
   </ItemGroup>

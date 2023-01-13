@@ -110,6 +110,7 @@ bool Game::LoadContents()
 
 	meshManager->Add(FbxLoader::Load("Bird", &graphicsDevice), "Player");
 	meshManager->Add(FbxLoader::Load("hina", &graphicsDevice), "Hina");
+	meshManager->Add(FbxLoader::Load("Frog", &graphicsDevice), "Frog");
 	//Œø‰Ê‰¹hit_wall
 	{
 		auto* audioData = audioManager.AddAudioData(new GE::AudioData("Resources/Audio/hit_wall.wav"), "hitWall");

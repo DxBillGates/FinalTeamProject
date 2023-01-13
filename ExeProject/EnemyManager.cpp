@@ -13,7 +13,7 @@ EnemyManager* EnemyManager::GetInstance()
 void EnemyManager::Start(GE::GameObjectManager* gameObjectManager)
 {
 	this->gameObjectManager = gameObjectManager;
-	for (int i = 0; i < 12; ++i)
+	for (int i = 0; i < 0; ++i)
 	{
 		auto* enemy = gameObjectManager->AddGameObject(new GE::GameObject("Enemy", "enemy"));
 		auto* sampleComponent = enemy->AddComponent<NormalEnemy>();
@@ -30,6 +30,15 @@ void EnemyManager::Start(GE::GameObjectManager* gameObjectManager)
 		birdEnemyCollider->SetCenter({ 0,0,0 });
 		birdEnemyCollider->SetSize({ 2 });
 		birdEnemies.push_back(bEnemy);
+	}
+	for (int i = 0; i < 12; ++i)
+	{
+		auto* fEnemy = gameObjectManager->AddGameObject(new GE::GameObject("FlogEnemy", "enemy"));
+		auto* fComponent = fEnemy->AddComponent<FlogEnemy>();
+		auto* birdEnemyCollider = fEnemy->AddComponent<GE::SphereCollider>();
+		birdEnemyCollider->SetCenter({ 0,0,0 });
+		birdEnemyCollider->SetSize({ 2 });
+		birdEnemies.push_back(fEnemy);
 	}
 }
 

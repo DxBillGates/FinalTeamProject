@@ -1,6 +1,7 @@
 #pragma once
 #include"NormalEnemy.h"
 #include"BirdEnemy.h"
+#include"FlogEnemy.h"
 #include <GatesEngine/Header/GameFramework/GameObject/GameObjectManager.h> 
 #include <GatesEngine/Header/GameFramework/GameObject/GameObject.h> 
 #include <GatesEngine/Header/Util/Random.h>
@@ -20,6 +21,7 @@ private:
 	GE::GameObjectManager* gameObjectManager = nullptr;
 	std::vector<GE::GameObject*> nEnemies;
 	std::vector<GE::GameObject*> birdEnemies;
+	std::vector<GE::GameObject*> flogEnemies;
 
 public:
 	static EnemyManager* GetInstance();
@@ -32,6 +34,7 @@ public:
 	void UnLoad();
 	std::vector<GE::GameObject*> GetNormalEnemies() { return nEnemies; }
 	std::vector<GE::GameObject*> GetBirdEnemies() { return birdEnemies; }
+	std::vector<GE::GameObject*> GetFlogEnemies() { return flogEnemies; }
 	std::vector<GE::GameObject*> GetAllEnemies();
 private:
 	EnemyManager() = default;

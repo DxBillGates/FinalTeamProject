@@ -34,7 +34,7 @@ void Title::Awake(GE::GameObjectManager* gameObjectManager, GE::IGraphicsDeviceD
 	sprites.back()->scale = { 300,100,0 };
 
 	Create("title_name", "texture_title", gameObjectManager, device);
-	sprites.back()->position = { GE::Window::GetWindowSize().x / 2.0f - 500,GE::Window::GetWindowSize().y / 2 - 300.0f,0 };
+	sprites.back()->position = { 1000,GE::Window::GetWindowSize().y / 2 - 200.0f,0 };
 	sprites.back()->scale = { 610,180,0 };
 	//Create("title_nextL", "texture_next", gameObjectManager, device);
 	//sprites.back()->position = { 70.0f,GE::Window::GetWindowSize().y / 2,0.0f };

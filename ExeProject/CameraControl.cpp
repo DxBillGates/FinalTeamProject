@@ -39,20 +39,24 @@ void CameraControl::Update()
 	{
 		dir = atan2f(targetObject->GetTransform()->GetForward().x, targetObject->GetTransform()->GetForward().z);
 	}
+	//カメラの向き
+	GE::Math::Vector3 direction = GE::Math::Vector3(target - position).Normalize();
 
 	//カメラの更新
 	GE::Math::Vector3 newCameraPosition;
-	if (PlayerComponent::statas == PlayerComponent::PlayerStatas::TITLE )
+	if (PlayerComponent::statas == PlayerComponent::PlayerStatas::TITLE)
 	{
-	current_cameraDistance = 2000;
-	newCameraPosition = target
-		- GE::Math::Vector3(targetObject->GetTransform()->GetForward().x * current_cameraDistance,
-			-300,
-			targetObject->GetTransform()->GetForward().z * current_cameraDistance);
+		current_cameraDistance = 3000;
+		//target += targetObject->GetTransform()->GetRight() * 2000;
+		newCameraPosition = target
+			- GE::Math::Vector3(targetObject->GetTransform()->GetForward().x * current_cameraDistance,
+				-300,
+				targetObject->GetTransform()->GetForward().z * current_cameraDistance);
+		direction = GE::Math::Vector3(target + targetObject->GetTransform()->GetRight() * 2000 - position).Normalize();
 	}
 	else if (PlayerComponent::statas == PlayerComponent::PlayerStatas::STAY_TREE)
 	{
-		current_cameraDistance = 1000;
+		current_cameraDistance = 2000;
 
 		newCameraPosition = target
 			- GE::Math::Vector3(targetObject->GetTransform()->GetForward().x * current_cameraDistance,
@@ -71,8 +75,6 @@ void CameraControl::Update()
 		camera->GetCameraInfo().cameraPos.z,
 	};
 
-	//カメラの向き
-	GE::Math::Vector3 direction = GE::Math::Vector3(target - position).Normalize();
 
 	float LERP_VALUE = 0.02f * GE::GameSetting::Time::GetGameTime();
 	//ダッシュ時
