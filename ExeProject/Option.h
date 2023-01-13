@@ -46,21 +46,3 @@ public:
 	void Awake(GE::GameObjectManager* gameObjectManager);
 	void Update(GE::AudioManager* audioManager);
 };
-
-class OptionTex :public GE::Component
-{
-public:
-	float pivotPosX;
-	float texSizeX;
-	std::string tag;
-	GE::Color color;
-
-	//‰½‚Ì‰æ‘œ‚ð’S“–‚µ‚Ä‚¢‚é‚©
-	Option::Select handle;
-public:
-
-	void Start()override;
-	void Update(float deltaTime) override;
-	void LateDraw() override;
-
-};
