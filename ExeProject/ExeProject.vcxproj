@@ -174,7 +174,7 @@
     <ClCompile Include="FieldObject.cpp" />
     <ClCompile Include="FieldObjectDeBugTransform.cpp" />
     <ClCompile Include="FieldObjectManager.cpp" />
-    <ClCompile Include="FlogEnemy.cpp" />
+    <ClCompile Include="FrogEnemy.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="main.cpp" />
@@ -205,7 +205,7 @@
     <ClInclude Include="FieldObject.h" />
     <ClInclude Include="FieldObjectDeBugTransform.h" />
     <ClInclude Include="FieldObjectManager.h" />
-    <ClInclude Include="FlogEnemy.h" />
+    <ClInclude Include="FrogEnemy.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="MiniMap.h" />

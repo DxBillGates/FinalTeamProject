@@ -132,7 +132,7 @@
     <ClCompile Include="Option.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
-    <ClCompile Include="FlogEnemy.cpp">
+    <ClCompile Include="FrogEnemy.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -215,7 +215,7 @@
     <ClInclude Include="Option.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
-    <ClInclude Include="FlogEnemy.h">
+    <ClInclude Include="FrogEnemy.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
   </ItemGroup>

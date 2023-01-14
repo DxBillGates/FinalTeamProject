@@ -33,11 +33,11 @@ void EnemyManager::Start(GE::GameObjectManager* gameObjectManager)
 	}
 	for (int i = 0; i < 1; ++i)
 	{
-		auto* fEnemy = gameObjectManager->AddGameObject(new GE::GameObject("FlogEnemy", "enemy"));
-		auto* fComponent = fEnemy->AddComponent<FlogEnemy>();
+		auto* fEnemy = gameObjectManager->AddGameObject(new GE::GameObject("FrogEnemy", "frog"));
+		auto* fComponent = fEnemy->AddComponent<FrogEnemy>();
 		auto* flogEnemyCollider = fEnemy->AddComponent<GE::SphereCollider>();
-		flogEnemyCollider->SetCenter({ 0,0,0 });
-		flogEnemyCollider->SetSize({ 2 });
+		flogEnemyCollider->SetCenter({ 0,40,0 });
+		flogEnemyCollider->SetSize({ 80 });
 		flogEnemies.push_back(fEnemy);
 	}
 }

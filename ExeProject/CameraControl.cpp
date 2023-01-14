@@ -29,7 +29,7 @@ void CameraControl::Initialize()
 	graphicsDevice->GetMainCamera()->SetPosition({ 0,5000,-20000 });
 }
 
-void CameraControl::Update()
+void CameraControl::Update(float deltaTime)
 {
 	float LERP_VALUE = 0.02f * GE::GameSetting::Time::GetGameTime();
 
@@ -50,7 +50,7 @@ void CameraControl::Update()
 	{
 		current_cameraDistance = 3000;
 		GE::Math::Vector3 wind = GE::Math::Vector3(sinf(count), cosf(count), cosf(-count)) * 30;
-		count += 0.01f;
+		count += 0.01f * deltaTime;
 
 		//注視点
 		target = targetObject->GetTransform()->position + targetObject->GetTransform()->GetRight() * 2000 + wind;
@@ -74,6 +74,7 @@ void CameraControl::Update()
 	}
 	else
 	{
+		//target = GE::Math::Vector3::Lerp(target, targetObject->GetTransform()->position, 0.9f);
 		target = targetObject->GetTransform()->position;
 		current_cameraDistance = normal_cameraDistance;
 		newCameraPosition = target - targetObject->GetTransform()->GetForward() * current_cameraDistance;
@@ -94,20 +95,13 @@ void CameraControl::Update()
 		LERP_VALUE = 0.035f * GE::GameSetting::Time::GetGameTime();
 	}
 	position = GE::Math::Vector3::Lerp(beforeCameraPosition, newCameraPosition, LERP_VALUE) + cameraShake * GE::GameSetting::Time::GetGameTime();
-	target += cameraShake * GE::GameSetting::Time::GetGameTime();
+	target += cameraShake * GE::GameSetting::Time::GetGameTime() * deltaTime;
 
 	//カメラシェイク
 	Shake();
 
 	camera->SetDirection(direction);
 	camera->SetPosition(position);
-}
-
-void CameraControl::DashCam(float dashEasingCount, float dash_time)
-{
-	////カメラの距離遷移、遷移で離れて遷移で元に戻る
-	//current_cameraDistance = easeIn(normal_cameraDistance, dash_cameraDistance,
-	//	sin(GE::Math::Easing::Lerp(0, 3.14, dashEasingCount / dash_time)));
 }
 
 void CameraControl::Shake()

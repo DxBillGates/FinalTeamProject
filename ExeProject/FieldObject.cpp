@@ -125,12 +125,10 @@ void FieldObjectComponent::LateDraw()
 
 void FieldObjectComponent::OnCollision(GE::GameObject* other)
 {
-	GE::Utility::Printf("FieldObject OnCollision(GameObject* other) : hit\n");
 }
 
 void FieldObjectComponent::OnCollision(GE::ICollider* hitCollider)
 {
-	GE::Utility::Printf("FieldObject OnCollision(ICollider* other) : hit\n");
 }
 
 void FieldObjectComponent::OnGui()

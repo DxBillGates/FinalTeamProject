@@ -1,7 +1,7 @@
 #pragma once
 #include"NormalEnemy.h"
 #include"BirdEnemy.h"
-#include"FlogEnemy.h"
+#include"FrogEnemy.h"
 #include <GatesEngine/Header/GameFramework/GameObject/GameObjectManager.h> 
 #include <GatesEngine/Header/GameFramework/GameObject/GameObject.h> 
 #include <GatesEngine/Header/Util/Random.h>

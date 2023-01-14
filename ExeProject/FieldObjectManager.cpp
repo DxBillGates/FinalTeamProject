@@ -122,8 +122,8 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 		auto* sampleComponent = object->AddComponent<FieldObjectComponent>();
 		object->GetComponent<FieldObjectComponent>()->modelName = "Plane";
 		sampleComponent->shaderName = "DefaultMeshWithShadowShader";
-		object->GetTransform()->scale = { 100000,1,100000 };
-		object->GetTransform()->position = { 0,-30.f,0 };
+		object->GetTransform()->scale = { 100000,100,100000 };
+		object->GetTransform()->position = { 0,-130.f,0 };
 		object->SetColor(GE::Color(0.2f, 0.5f, 0.2f, 1.0f));
 		auto* collider = object->AddComponent < GE::BoxCollider >();
 		collider->SetSize(GE::Math::Vector3(100000, 1, 100000));

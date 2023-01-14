@@ -187,7 +187,8 @@ void SampleScene::Load()
 	collisionManager.AddTagCombination("player", "nest");
 	collisionManager.AddTagCombination("player", "tile");
 	collisionManager.AddTagCombination("player", "fieldtree");
-	//collisionManager.AddTagCombination("player", "birdEnemy");
+	collisionManager.AddTagCombination("frog", "tile");
+	collisionManager.AddTagCombination("player", "frog");
 
 	{
 		auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject("directionalLight", "directionalLight"));

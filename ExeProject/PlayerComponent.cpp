@@ -107,17 +107,14 @@ void PlayerComponent::Update(float deltaTime)
 		}
 		else { GE::GameSetting::Time::SetGameTime(1.0); }
 	}
-
 	//操作
 	Control(f);
 	CameraControl::GetInstance()->SetTargetObject(gameObject);
 	//収集物
 	PlayerColectObject::GetInstance()->Update(f, colectCount);
-	//if (statas != PlayerStatas::DEBUG)
-	{
-		CameraControl::GetInstance()->Update();
+	//カメラコントロールの更新
+	CameraControl::GetInstance()->Update(f);
 
-	}
 	if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::LCONTROL) || inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::RCONTROL))
 	{
 		//D0押したら移動停止＊デバッグ用
@@ -264,7 +261,7 @@ void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 		}
 	}
 	//GE::Utility::Printf("PlayerComponent OnCollisionEnter\n");
-	if (other->GetTag() == "enemy")
+	if (other->GetTag() == "enemy"|| other->GetTag() == "frog")
 	{
 		//一定上の速度を満たしていない
 		if (!IsSpeedy())
@@ -432,7 +429,7 @@ void PlayerComponent::Control(float deltaTime)
 			transform->position = FieldObjectManager::GetInstance()->StartPosition + onTheTreePosition;
 			if (InputManager::GetInstance()->GetActionButton())
 			{
-				startCouunt++;
+				startCouunt+=deltaTime;
 				//MoveFromStop
 				animator.PlayAnimation(2, false);
 				audioManager->Use("flapping1")->Start();

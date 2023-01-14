@@ -30,14 +30,12 @@ public:
 
 	void Create();
 	void Initialize();	//初期化
-	void Update();		//更新
+	void Update(float deltaTime);		//更新
 
 	void Distance_current(float value) { current_cameraDistance = value; }	//カメラとの距離
 	void Distance_normal(float value) { normal_cameraDistance = value; }	//普段の距離
 	void Distance_dash(float value) { dash_cameraDistance = value; }		//ダッシュ時の距離
 	void SetGraphicsDevice(GE::IGraphicsDeviceDx12* graphicsDevice);		//取得
-
-	void DashCam(float dashEasingCount, float dash_time = 100);				//ダッシュ中計算
 
 	/// <summary>
 	/// カメラシェイク開始時設定
