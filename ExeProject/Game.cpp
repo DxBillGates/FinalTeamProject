@@ -187,10 +187,6 @@ bool Game::LoadContents()
 	nullTexture = new Texture();
 	nullTexture->Load("Chick.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "texture_Chick");
-
-	nullTexture = new Texture();
-	nullTexture->Load("sky_Windows.png", device, shaderResourceHeap);
-	textureManager->Add(nullTexture, "sky_Windows");
 	
 	nullTexture = new Texture();
 	nullTexture->Load("texture_tree_leaf.png", device, shaderResourceHeap);
