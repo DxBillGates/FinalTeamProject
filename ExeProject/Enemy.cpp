@@ -32,7 +32,7 @@ void Enemy::LateDraw()
 
 void Enemy::OnCollision(GE::GameObject* other)
 {
-	
+
 }
 
 void Enemy::OnCollision(GE::ICollider* hitCollider)
@@ -41,7 +41,17 @@ void Enemy::OnCollision(GE::ICollider* hitCollider)
 
 void Enemy::OnCollisionEnter(GE::GameObject* other)
 {
-
+	if (statas == Statas::ALIVE)
+	{
+		if (other->GetTag() == "player")
+		{
+			if (PlayerComponent::IsSpeedy())//ˆê’èã‚Ì‘¬“x
+			{
+				statas = Statas::DEAD;
+				gameObject->Destroy();
+			}
+		}
+	}
 }
 
 void Enemy::OnGui()

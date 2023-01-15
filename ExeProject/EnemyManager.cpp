@@ -3,6 +3,7 @@
 #include<fstream>
 #include<sstream>
 #include<cassert>
+#include "FieldObjectDeBugTransform.h"
 
 EnemyManager* EnemyManager::GetInstance()
 {
@@ -31,14 +32,15 @@ void EnemyManager::Start(GE::GameObjectManager* gameObjectManager)
 		birdEnemyCollider->SetSize({ 2 });
 		birdEnemies.push_back(bEnemy);
 	}
-	for (int i = 0; i < 1; ++i)
+	for (int i = 0; i < 5; ++i)
 	{
 		auto* fEnemy = gameObjectManager->AddGameObject(new GE::GameObject("FrogEnemy", "frog"));
 		auto* fComponent = fEnemy->AddComponent<FrogEnemy>();
 		auto* flogEnemyCollider = fEnemy->AddComponent<GE::SphereCollider>();
 		flogEnemyCollider->SetCenter({ 0,40,0 });
 		flogEnemyCollider->SetSize({ 80 });
-		flogEnemies.push_back(fEnemy);
+		frogEnemies.push_back(fEnemy);
+		FieldObjectDeBugTransform::GetInstance()->AddTarget(fEnemy, {100,100,100});
 	}
 }
 
@@ -46,6 +48,7 @@ void EnemyManager::LoadPosition(const std::string& filename)
 {
 	std::vector<obj>ne;
 	std::vector<obj>be;
+	std::vector<obj>fe;
 
 	std::ifstream file;
 	//ファイルを開く
@@ -106,6 +109,26 @@ void EnemyManager::LoadPosition(const std::string& filename)
 			result.col.a = 1.0f;
 			be.emplace_back(result);
 		}
+		else if (key == "frogEnemy") {
+			obj result;
+			line_stream >> result.pos.x;
+			line_stream >> result.pos.y;
+			line_stream >> result.pos.z;
+
+			line_stream >> result.rot.x;
+			line_stream >> result.rot.y;
+			line_stream >> result.rot.z;
+
+			line_stream >> result.scale.x;
+			line_stream >> result.scale.y;
+			line_stream >> result.scale.z;
+
+			line_stream >> result.col.r;
+			line_stream >> result.col.g;
+			line_stream >> result.col.b;
+			result.col.a = 1.0f;
+			fe.emplace_back(result);
+		}
 	}
 	file.close();
 	//ファイルの座標セット
@@ -113,15 +136,19 @@ void EnemyManager::LoadPosition(const std::string& filename)
 	for (int i = 0; i < index; i++)
 	{
 		nEnemies[i]->GetTransform()->position = ne[i].pos;
-		//nEnemies[i]->GetComponent<FieldTree>()->rotation_euler = ft[i].rot;
 		nEnemies[i]->GetTransform()->scale = ne[i].scale;
 	}
 	index = be.size() < birdEnemies.size() ? be.size() : birdEnemies.size();
 	for (int i = 0; i < index; i++)
 	{
 		birdEnemies[i]->GetTransform()->position = be[i].pos;
-		//nEnemies[i]->GetComponent<FieldTree>()->rotation_euler = ft[i].rot;
 		birdEnemies[i]->GetTransform()->scale = be[i].scale;
+	}
+	index = fe.size() < frogEnemies.size() ? fe.size() : frogEnemies.size();
+	for (int i = 0; i < index; i++)
+	{
+		frogEnemies[i]->GetTransform()->position = fe[i].pos;
+		frogEnemies[i]->GetTransform()->scale = fe[i].scale;
 	}
 }
 
@@ -137,7 +164,7 @@ void EnemyManager::SaveCurrentPosition(const std::string& filename)
 	{
 		GE::Math::Vector3 pos = nEnemies[i]->GetTransform()->position;
 		GE::Math::Vector3 scale = nEnemies[i]->GetTransform()->scale;
-		GE::Math::Vector3 rota = {};//nEnemies[i]->GetComponent<Enemy>()->rotation_euler;
+		GE::Math::Vector3 rota = {};
 		GE::Color col = nEnemies[i]->GetColor();
 
 		writing_file << "normalEnemy " << pos.x << " " << pos.y << " " << pos.z <<
@@ -150,10 +177,23 @@ void EnemyManager::SaveCurrentPosition(const std::string& filename)
 	{
 		GE::Math::Vector3 pos = birdEnemies[i]->GetTransform()->position;
 		GE::Math::Vector3 scale = birdEnemies[i]->GetTransform()->scale;
-		GE::Math::Vector3 rota = {};// nEnemies[i]->GetComponent<Enemy>()->rotation_euler;
+		GE::Math::Vector3 rota = {};
 		GE::Color col = birdEnemies[i]->GetColor();
 
 		writing_file << "birdEnemy " << pos.x << " " << pos.y << " " << pos.z <<
+			" " << rota.x << " " << rota.y << " " << rota.z <<
+			" " << scale.x << " " << scale.y << " " << scale.z <<
+			" " << col.r << " " << col.g << " " << col.b << " " << col.a << std::endl;
+	}
+	for (int i = 0; i < frogEnemies.size(); i++)
+	{
+		GE::Math::Vector3 pos = frogEnemies[i]->GetTransform()->position;
+		GE::Math::Vector3 scale = frogEnemies[i]->GetTransform()->scale;
+		GE::Math::Vector3 rota = {};
+		GE::Color col = frogEnemies[i]->GetColor();
+
+		//カエルは重力が効いてるからY座標めり込まないように500にしてるよ
+		writing_file << "frogEnemy " << pos.x << " " << 500 << " " << pos.z <<
 			" " << rota.x << " " << rota.y << " " << rota.z <<
 			" " << scale.x << " " << scale.y << " " << scale.z <<
 			" " << col.r << " " << col.g << " " << col.b << " " << col.a << std::endl;
@@ -166,6 +206,7 @@ void EnemyManager::UnLoad()
 {
 	nEnemies.clear();
 	birdEnemies.clear();
+	frogEnemies.clear();
 }
 
 std::vector<GE::GameObject*> EnemyManager::GetAllEnemies()
@@ -177,9 +218,13 @@ std::vector<GE::GameObject*> EnemyManager::GetAllEnemies()
 	{
 		result.push_back(ne);
 	}
-	for (auto& ne : (*manager)["birdEnemy"])
+	/*for (auto& be : (*manager)["birdEnemy"])
 	{
-		result.push_back(ne);
+		result.push_back(be);
+	}*/
+	for (auto& fe : (*manager)["frog"])
+	{
+		result.push_back(fe);
 	}
 	return result;
 }

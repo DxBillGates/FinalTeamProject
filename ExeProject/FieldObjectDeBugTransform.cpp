@@ -10,6 +10,8 @@ FieldObjectDeBugTransform* FieldObjectDeBugTransform::GetInstance()
 
 void FieldObjectDeBugTransform::Update()
 {
+
+#ifdef _DEBUG
 	if (PlayerComponent::statas != PlayerComponent::PlayerStatas::DEBUG)return;
 	//マウスのレイ
 	const auto& cameraInfo = graphicsDevice->GetMainCamera()->GetCameraInfo();
@@ -47,9 +49,9 @@ void FieldObjectDeBugTransform::Update()
 
 	for (auto& obj : objects)
 	{
-		obj.pivotTransform[0].position = obj.target->GetTransform()->position + GE::Math::Vector3(obj.target->GetTransform()->scale.x * 3, 0, 0);
-		obj.pivotTransform[1].position = obj.target->GetTransform()->position + GE::Math::Vector3(0, obj.target->GetTransform()->scale.x * 10, 0);
-		obj.pivotTransform[2].position = obj.target->GetTransform()->position + GE::Math::Vector3(0, 0, obj.target->GetTransform()->scale.x * 3);
+		obj.pivotTransform[0].position = obj.target->GetTransform()->position + GE::Math::Vector3(obj.target->GetTransform()->scale.x *obj.pivotLength.x, 0, 0);
+		obj.pivotTransform[1].position = obj.target->GetTransform()->position + GE::Math::Vector3(0, obj.target->GetTransform()->scale.x * obj.pivotLength.y, 0);
+		obj.pivotTransform[2].position = obj.target->GetTransform()->position + GE::Math::Vector3(0, 0, obj.target->GetTransform()->scale.x* obj.pivotLength.z);
 
 		for (int i = 0; i < obj.coll.size(); i++)
 		{
@@ -146,6 +148,8 @@ void FieldObjectDeBugTransform::Update()
 			}
 		}
 	}
+#endif
+
 }
 
 void FieldObjectDeBugTransform::SetInputDevice(GE::InputDevice* iDevice)
@@ -158,8 +162,10 @@ void FieldObjectDeBugTransform::SetGraphicsDevice(GE::IGraphicsDeviceDx12* gDevi
 	graphicsDevice = gDevice;
 }
 
-void FieldObjectDeBugTransform::AddTarget(GE::GameObject* gameobject)
+void FieldObjectDeBugTransform::AddTarget(GE::GameObject* gameobject, GE::Math::Vector3 pivotLength)
 {
+#ifdef _DEBUG
+
 	Object result;
 	result.target = gameobject;
 	for (int j = 0; j < 3; j++)
@@ -175,12 +181,16 @@ void FieldObjectDeBugTransform::AddTarget(GE::GameObject* gameobject)
 		result.coll[j].Awake();
 		result.coll[j].SetSize(2);
 	}
+	result.pivotLength = pivotLength;
 	objects.push_back(result);
+#endif
 }
 
 
 void FieldObjectDeBugTransform::Draw()
 {
+#ifdef _DEBUG
+
 	if (PlayerComponent::statas != PlayerComponent::PlayerStatas::DEBUG)return;
 
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
@@ -217,9 +227,13 @@ void FieldObjectDeBugTransform::Draw()
 			}
 		}
 	}
+#endif
 }
 
 void FieldObjectDeBugTransform::UnLoad()
 {
+#ifdef _DEBUG
+
 	objects.clear();
+#endif
 }

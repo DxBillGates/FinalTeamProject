@@ -10,7 +10,7 @@ private:
 	float currentAngle = 0.0f;
 
 	int state;
-	int jumpCount;
+	float jumpCount;
 	GE::SkinMeshAnimator animator;
 
 	GE::Math::Vector3 velocity;//ˆÚ“®—Ê

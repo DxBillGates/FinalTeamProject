@@ -14,7 +14,6 @@ public:
 private:
 	static GE::Math::Vector3 onTheTreePosition;	//木の上で体の高さ調整用
 	static GE::Math::Vector3 gravity;	//重力
-	static float rayHitSecond;		//照準を合わせる長さ（秒数）
 	static int hitStopTime;
 	static float damageSpeed;
 	static float pushStartTime;		//キーを押してから操作できるようになるまでのカウント
@@ -39,7 +38,6 @@ private:
 
 	float dashEasingCount;			//スピード遷移のカウント
 	float stayLandLerpEasingCount;	//着陸する遷移カウント
-	float rayHitCount;				//何フレーム照準をあわせているか
 	int colectCount;				//取集物を何個集めたか
 	int hitStopCount;				//ヒットストップカウント用
 	float startCouunt;				//開始時のカウント
@@ -58,10 +56,12 @@ private:
 	//レティクルの位置
 	GE::Math::Vector2 center;
 
+	//ロックオン時の向き
+	GE::Math::Vector3 lockOnDashDirection;
+
 	GE::Math::Quaternion quat;
 	GE::Math::Vector3 body_direction;				//体の向き計算用
 	GE::Math::Quaternion body_direction_LockOn;		//ロックオン時の体の向き計算用
-	bool is_rayCast_active;							//レイキャストの照準が使われてるか
 
 	GE::Math::Vector3 currentPosition;//巣に着陸するときのラープ用
 public:
@@ -128,10 +128,6 @@ private:
 	/// <param name="direction">向き</param>
 	/// <param name="loop">Trueの間はダッシュし続ける。Falseになるとdash_timeのフレーム数かけて減速する。最初からfalseだとdash_timeフレーム数加速する</param>
 	void Dash(float dash_speed, float dash_time, float deltaTime, GE::Math::Vector3 direction, bool loop = false);
-	/// <summary>
-	/// 
-	/// </summary>
-	void RayCast(float deltaTime);
 
 	void Reflection(GE::Math::Vector3 normal);
 	//EaseIn関係がよくわからなかったから一時的に追加

@@ -58,7 +58,7 @@ void NormalEnemy::DrawShadow()
 void NormalEnemy::Draw()
 {
 	if (statas == Statas::DEAD) { return; }
-	
+
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
 	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
 
@@ -110,20 +110,10 @@ void NormalEnemy::LateDraw()
 
 void NormalEnemy::OnCollision(GE::GameObject* other)
 {
-	GE::Utility::Printf("NormalEnemy OnCollision(GameObject* other) : hit\n");
-	if (statas == Statas::ALIVE)
-	{
-		if (PlayerComponent::IsSpeedy())//ˆê’èã‚Ì‘¬“x
-		{
-			statas = Statas::DEAD;
-			gameObject->Destroy();
-		}
-	}
 }
 
 void NormalEnemy::OnCollision(GE::ICollider* hitCollider)
 {
-	GE::Utility::Printf("NormalEnemy OnCollision(ICollider* other) : hit\n");
 }
 
 void NormalEnemy::OnGui()

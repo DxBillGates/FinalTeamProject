@@ -18,12 +18,12 @@ FrogEnemy::FrogEnemy()
 
 void FrogEnemy::Awake()
 {
-	GE::Utility::Printf("FlogEnemy Awake()\n");
+	GE::Utility::Printf("FrogEnemy Awake()\n");
 }
 
 void FrogEnemy::Start()
 {
-	GE::Utility::Printf("FlogEnemy Start()\n");
+	GE::Utility::Printf("FrogEnemy Start()\n");
 	random = GE::RandomMaker::GetFloat(-1.0f, 1.0f);
 	float randPos = GE::RandomMaker::GetFloat(100.0f, 1000.0f);
 	transform->position = { 0.0f,400.0f,0.0f };//位置をランダム化
@@ -34,12 +34,11 @@ void FrogEnemy::Start()
 	animator.Initialize();
 
 	speed = randSpeed;//速度
-	statas = Statas::ALIVE;
 
 	accelerate = { 30 };
 	gravity = { 0,-2.0f,0 };
 	state = 0;
-	jumpCount = 1;
+	jumpCount = GE::RandomMaker::GetFloat(1.0f, 90.0f);
 
 	gameObject->SetColor(GE::Color::Red());
 }
@@ -61,7 +60,7 @@ void FrogEnemy::Update(float deltaTime)
 		{
 			animator.PlayAnimation(0, false);
 			velocity += accelerate;
-			jumpCount = 0;
+			jumpCount = 0.0f;
 			frogState = FrogState::JUMPING;
 			currentAngle = angle;
 		}
@@ -75,13 +74,14 @@ void FrogEnemy::Update(float deltaTime)
 		velocity += gravity;
 		break;
 	}
-
 	transform->rotation = GE::Math::Quaternion::Euler({ 0,angle,0 });
 	transform->position += GE::Math::Vector3(transform->GetForward().x * velocity.x, velocity.y, transform->GetForward().z * velocity.z);
 }
 
 void FrogEnemy::DrawShadow()
 {
+	if (statas == Statas::DEAD) { return; }
+
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
 	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
 
@@ -138,15 +138,7 @@ void FrogEnemy::OnCollisionEnter(GE::GameObject* other)
 {
 	if (statas == Statas::ALIVE)
 	{
-		if (other->GetTag() == "player")
-		{
-			if (PlayerComponent::IsSpeedy())//一定上の速度
-			{
-				statas = Statas::DEAD;
-				gameObject->Destroy();
-			}
-		}
-		else if (other->GetTag() == "tile")
+		if (other->GetTag() == "tile")
 		{
 			if (frogState == FrogState::JUMPING)
 			{
@@ -156,6 +148,7 @@ void FrogEnemy::OnCollisionEnter(GE::GameObject* other)
 			}
 		}
 	}
+	Enemy::OnCollisionEnter(other);
 }
 
 void FrogEnemy::OnGui()

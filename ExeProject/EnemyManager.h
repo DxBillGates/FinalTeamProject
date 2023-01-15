@@ -21,7 +21,7 @@ private:
 	GE::GameObjectManager* gameObjectManager = nullptr;
 	std::vector<GE::GameObject*> nEnemies;
 	std::vector<GE::GameObject*> birdEnemies;
-	std::vector<GE::GameObject*> flogEnemies;
+	std::vector<GE::GameObject*> frogEnemies;
 
 public:
 	static EnemyManager* GetInstance();
@@ -34,7 +34,7 @@ public:
 	void UnLoad();
 	std::vector<GE::GameObject*> GetNormalEnemies() { return nEnemies; }
 	std::vector<GE::GameObject*> GetBirdEnemies() { return birdEnemies; }
-	std::vector<GE::GameObject*> GetFlogEnemies() { return flogEnemies; }
+	std::vector<GE::GameObject*> GetFlogEnemies() { return frogEnemies; }
 	std::vector<GE::GameObject*> GetAllEnemies();
 private:
 	EnemyManager() = default;

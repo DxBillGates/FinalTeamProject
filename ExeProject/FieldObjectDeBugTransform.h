@@ -10,6 +10,7 @@ private:
 	GE::InputDevice* inputDevice;
 	GE::IGraphicsDeviceDx12* graphicsDevice;
 public:
+	bool isActive;
 	enum  class Statas
 	{
 		DRAG_X,
@@ -28,6 +29,7 @@ public:
 		GE::GameObject* target = nullptr;
 		std::vector<GE::SphereCollider> coll;
 		GE::Transform pivotTransform[3];
+		GE::Math::Vector3 pivotLength;
 		Statas statas = Statas::NONE;
 	};
 
@@ -45,7 +47,7 @@ public:
 	void SetInputDevice(GE::InputDevice* inputDevice);
 	void SetGraphicsDevice(GE::IGraphicsDeviceDx12* gDevice);
 
-	void AddTarget(GE::GameObject* gameobject);
+	void AddTarget(GE::GameObject* gameobject, GE::Math::Vector3 pivotLength = { 3.0f });
 private:
 	FieldObjectDeBugTransform() = default;
 

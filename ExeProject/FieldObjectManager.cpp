@@ -100,7 +100,7 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 			fieldTree.push_back(object);
 			auto* collider = object->AddComponent < GE::BoxCollider >();
 			collider->SetSize(GE::Math::Vector3(1.5f, 15, 1.5f));
-			FieldObjectDeBugTransform::GetInstance()->AddTarget(object);
+			FieldObjectDeBugTransform::GetInstance()->AddTarget(object, {3,10,3});
 		}
 	}
 	//フィールドの草

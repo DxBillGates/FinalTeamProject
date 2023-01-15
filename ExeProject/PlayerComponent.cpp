@@ -23,7 +23,6 @@ float PlayerComponent::body_direction_LerpTime = 50.0f;				//ƒ_ƒbƒVƒ…Œã‘Ì‚ÌŠp“x‚
 float PlayerComponent::pushStartTime = 20.0f;						//ƒL[‚ğ‰Ÿ‚µ‚Ä‚©‚ç‘€ì‚Å‚«‚é‚æ‚¤‚É‚È‚é‚Ü‚Å‚ÌƒJƒEƒ“ƒg
 float PlayerComponent::stayLandLerpTime = 150.0f;					//–Ø‚É’…—¤‚·‚éƒ‰[ƒv’·‚³
 GE::Math::Vector3 PlayerComponent::gravity = { 0,0.5,0 };			//d—Í
-float PlayerComponent::rayHitSecond = 144.0f;						//ƒƒbƒNƒIƒ“‚·‚éÆ€‚ğ‡‚í‚¹‚é’·‚³
 float PlayerComponent::normal_speed = 20.0f;						//’Êí‚ÌƒXƒs[ƒh
 float PlayerComponent::current_speed = normal_speed;				//Œ»İ‚ÌƒXƒs[ƒh
 float PlayerComponent::damageSpeed = 0.0f;							//“G‚Éƒqƒbƒg‚µ‚½‚Æ‚«‚Éƒ_ƒ[ƒW‚ª“ü‚éƒXƒs[ƒh
@@ -72,8 +71,6 @@ void PlayerComponent::Start()
 	body_direction_LerpCount = body_direction_LerpTime;
 	//ƒŒƒeƒBƒNƒ‹‚ÌˆÊ’u
 	center = GE::Window::GetWindowSize() / 2.0 + GE::Math::Vector2(0, -100);
-	//ƒŒƒCƒLƒƒƒXƒg‚ÌƒXƒvƒ‰ƒCƒg‚ğ•`‰æ‚·‚é‚©
-	is_rayCast_active = false;
 
 	CameraControl::GetInstance()->SetGraphicsDevice(graphicsDevice);
 	CameraControl::GetInstance()->Initialize();
@@ -184,7 +181,6 @@ void PlayerComponent::Draw()
 
 	GE::Material material;
 	material.color = GE::Color::White();
-
 	animator.SetAnimationData(graphicsDevice, modelMatrix);
 
 	//renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
@@ -261,7 +257,7 @@ void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 		}
 	}
 	//GE::Utility::Printf("PlayerComponent OnCollisionEnter\n");
-	if (other->GetTag() == "enemy"|| other->GetTag() == "frog")
+	if (other->GetTag() == "enemy" || other->GetTag() == "frog")
 	{
 		//ˆê’èã‚Ì‘¬“x‚ğ–‚½‚µ‚Ä‚¢‚È‚¢
 		if (!IsSpeedy())
@@ -273,13 +269,14 @@ void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 			if (other == lockOnEnemy.object)
 			{
 				lockOnEnemy.object = nullptr;
+				lockOnDashDirection = { transform->GetForward().x,-transform->GetForward().y ,transform->GetForward().z };
 			}
 			audioManager->Use("catch2")->Start();
 			//ûW•¨ +1
 			colectCount < colectMax ? colectCount++ : 0;
 		}
 		hitStopCount = 0;
-		CameraControl::GetInstance()->ShakeStart({ 70,70 }, 30);
+		CameraControl::GetInstance()->ShakeStart({ 50,50 }, 30);
 	}
 }
 
@@ -321,6 +318,7 @@ bool PlayerComponent::IsSpeedy()
 void PlayerComponent::Control(float deltaTime)
 {
 	const float distance = abs(GE::Math::Vector3::Distance(transform->position, FieldObjectManager::GetInstance()->StartPosition));
+
 	if (statas != PlayerStatas::CRASH)
 	{
 		if (worldRadius < distance)
@@ -390,7 +388,6 @@ void PlayerComponent::Control(float deltaTime)
 	case PlayerComponent::PlayerStatas::LOCKON_SHOOT:
 		//ƒƒbƒNƒIƒ“‚ÌƒCƒ“ƒ^[ƒoƒ‹‚ÌƒJƒEƒ“ƒg‚ğ‰Šú‰»
 		lockOnIntervalCount = 0;
-
 		if (lockOnEnemy.object != nullptr)
 		{
 			if (lockOnEnemy.object->GetComponent<Enemy>()->statas != Enemy::Statas::DEAD)
@@ -401,8 +398,9 @@ void PlayerComponent::Control(float deltaTime)
 			else {
 				isLockOn = false;
 			}
+			lockOnDashDirection = lockOnEnemy.direction;
 		}
-		Dash(100.f, 20.f, deltaTime, lockOnEnemy.direction, loop);
+		Dash(100.f, 20.f, deltaTime, lockOnDashDirection, loop);
 		break;
 	case PlayerComponent::PlayerStatas::GO_TREE:
 		if (stayLandLerpEasingCount < stayLandLerpTime)
@@ -429,7 +427,7 @@ void PlayerComponent::Control(float deltaTime)
 			transform->position = FieldObjectManager::GetInstance()->StartPosition + onTheTreePosition;
 			if (InputManager::GetInstance()->GetActionButton())
 			{
-				startCouunt+=deltaTime;
+				startCouunt += deltaTime;
 				//MoveFromStop
 				animator.PlayAnimation(2, false);
 				audioManager->Use("flapping1")->Start();
@@ -598,44 +596,10 @@ void PlayerComponent::Dash(float dash_speed, float dash_time, float deltaTime, G
 	if (dashEasingCount < dash_time) { dashEasingCount += 1 * GE::GameSetting::Time::GetGameTime(); }
 	else { statas = PlayerStatas::MOVE; dashEasingCount = 0.0f; body_direction_LerpCount = 0; animator.PlayAnimation(1, false); }
 
-
 	body_direction_LockOn = GE::Math::Quaternion::LookDirection(direction);
 	transform->rotation = body_direction_LockOn;
 
-
 	transform->position += transform->GetForward() * current_speed * deltaTime * GE::GameSetting::Time::GetGameTime();
-}
-
-void PlayerComponent::RayCast(float deltaTime)
-{
-	is_rayCast_active = true;
-
-	std::vector<GE::GameObject*> enemies = EnemyManager::GetInstance()->GetAllEnemies();
-	bool hit = false;
-	for (int i = 0; i < enemies.size(); i++)
-	{
-		//F‰Šú‰»
-		enemies[i]->SetColor(GE::Color::Red());
-		if (GE::CollisionManager::CheckSphereToRay(enemies[i]->GetCollider(), enemies[i]->GetTransform()->position, rayPos, rayDir))
-		{
-			hit = true;
-			lockOnEnemy.object = enemies[i];
-		}
-	}
-	if (hit) { rayHitCount += 1.0 * GE::GameSetting::Time::GetGameTime(); }
-	else { rayHitCount = 0; }
-	//w’è‚µ‚½•b”ƒJ[ƒ\ƒ‹‡‚í‚¹‚½‚ç
-	if (rayHitCount > rayHitSecond)
-	{
-		//ƒƒbƒNƒIƒ“‚µ‚Ä‚¢‚é“G‚ğÂ‚­‚·‚é
-		lockOnEnemy.object->SetColor(GE::Color::Blue());
-
-		isLockOnStart = false;
-	}
-	else
-	{
-		isLockOnStart = true;
-	}
 }
 
 void PlayerComponent::Reflection(GE::Math::Vector3 normal)
@@ -643,7 +607,7 @@ void PlayerComponent::Reflection(GE::Math::Vector3 normal)
 	statas = PlayerStatas::CRASH;
 	audioManager->Use("hitWall")->Start();
 	transform->rotation = GE::Math::Quaternion::LookDirection(GE::Math::Vector3::Reflection(transform->GetForward(), normal, 2.0f));
-	CameraControl::GetInstance()->ShakeStart({ 70,70 }, 30);
+	CameraControl::GetInstance()->ShakeStart({ 50,50 }, 30);
 }
 //EaseInŠÖŒW‚ª‚æ‚­‚í‚©‚ç‚È‚©‚Á‚½‚©‚çˆê“I‚É’Ç‰Á
 const float PlayerComponent::easeIn(const float start, const float end, float time)
