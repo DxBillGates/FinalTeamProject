@@ -51,7 +51,7 @@ void ScreenUIManager::Start()
 	object["title_start"] = Set(GE::Math::Vector3(pos.x - 300, pos.y / 2.f , 0.0f), { 300,100,0 }, GE::Color::White(), "texture_start");
 	object["title_option"] = Set(GE::Math::Vector3(pos.x - 300, pos.y / 2.f + 100, 0.0f), { 300,100,0 }, GE::Color::White(), "texture_option");
 	object["title_exit"] = Set(GE::Math::Vector3(pos.x - 300, pos.y / 2.f + 200, 0.0f), { 300,100,0 }, GE::Color::White(), "texture_exit");
-	object["title_name"] = Set(GE::Math::Vector3(1100, pos.y / 2 - 200.0f ,0.0f), { 1319 / 2.0f,642 / 2.0f,0 }, GE::Color::White(), "texture_title");
+	object["title_name"] = Set(GE::Math::Vector3(1500, pos.y / 2 - 220.0f ,0.0f), { 1319 / 2.0f,642 / 2.0f,0 }, GE::Color::White(), "texture_title");
 #pragma endregion
 
 #pragma region タイムリミット
