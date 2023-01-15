@@ -7,6 +7,9 @@
 
 #include"ScreenUI.h"
 #include"PlayerComponent.h"
+#include"Option.h"
+#include"Title.h"
+#include"TimeLimit.h"
 
 
 
@@ -27,9 +30,45 @@ ScreenUIManager::SpriteInfo ScreenUIManager::Set(GE::Math::Vector3 pos, GE::Math
 }
 void ScreenUIManager::Start()
 {
-	//微調整の座標手打ちだから環境でずれそう	
-	object["crash"] = Set(GE::Math::Vector3(GE::Window::GetWindowSize().x / 2.f, GE::Window::GetWindowSize().y / 2.f - 150.f, 0.f),
+	//微調整の座標手打ちだから環境でずれそう
+	GE::Math::Vector2 pos = GE::Window::GetWindowSize();
+	object["crash"] = Set(GE::Math::Vector3(pos.x / 2.f, pos.y / 2.f - 150.f, 0.f),
 		{ 400,100,0 }, GE::Color::White(), "crash_info");
+#pragma region オプション
+	object["option_bgm"] = Set(GE::Math::Vector3(pos.x / 2.f, pos.y / 2.f, 0.0f), { 100,100,0 }, GE::Color::White(), "texture_Number");
+	object["option_bgm"].texSize = { 320,64 };
+	object["option_bgm"].clipSize = { 32,64 };
+	object["option_se"] = Set(GE::Math::Vector3(pos.x / 2.f, pos.y / 2.f + 100, 0.0f), { 100,100,0 }, GE::Color::White(), "texture_Number");
+	object["option_se"].texSize = { 320, 64 };
+	object["option_se"].clipSize = { 32,64 };
+	object["option_back"] = Set(GE::Math::Vector3(pos.x / 2.f, pos.y / 2.f + 200, 0.0f), { 150,100,0 }, GE::Color::White(), "texture_back");
+	object["option_right"] = Set(GE::Math::Vector3(pos.x / 2.f + 200, pos.y / 2.f + 200, 0.0f), { 100,100,0 }, GE::Color::White(), "texture_next");
+	object["option_right"].transform.rotation = GE::Math::Quaternion::Euler({ 0, 0, 180 });
+	object["option_left"] = Set(GE::Math::Vector3(pos.x / 2.f - 200, pos.y / 2.f + 200, 0.0f), { 100,100,0 }, GE::Color::White(), "texture_next");
+#pragma endregion
+
+#pragma region タイトル
+	object["title_start"] = Set(GE::Math::Vector3(pos.x - 300, pos.y / 2.f , 0.0f), { 300,100,0 }, GE::Color::White(), "texture_start");
+	object["title_option"] = Set(GE::Math::Vector3(pos.x - 300, pos.y / 2.f + 100, 0.0f), { 300,100,0 }, GE::Color::White(), "texture_option");
+	object["title_exit"] = Set(GE::Math::Vector3(pos.x - 300, pos.y / 2.f + 200, 0.0f), { 300,100,0 }, GE::Color::White(), "texture_exit");
+	object["title_name"] = Set(GE::Math::Vector3(1100, pos.y / 2 - 200.0f ,0.0f), { 1319 / 2.0f,642 / 2.0f,0 }, GE::Color::White(), "texture_title");
+#pragma endregion
+
+#pragma region タイムリミット
+	object["time_minutes"] = Set(GE::Math::Vector3(80, 850, 0.0f), { 100,100,0 }, GE::Color::White(), "texture_Number");
+	object["time_minutes"].texSize = { 320,64 };
+	object["time_minutes"].clipSize = { 32,64 };
+	object["time_symbol"] = Set(GE::Math::Vector3(160, 850, 0.0f), { 50,100,0 }, GE::Color::White(), "texture_symbol");
+	object["time_symbol"].texSize = { 64,64 };
+	object["time_symbol"].clipSize = { 32,64 };
+	object["time_tenSeconds"] = Set(GE::Math::Vector3(240, 850, 0.0f), { 100,100,0 }, GE::Color::White(), "texture_Number");
+	object["time_tenSeconds"].texSize = { 320,64 };
+	object["time_tenSeconds"].clipSize = { 32,64 };
+	object["time_oneSeconds"] = Set(GE::Math::Vector3(340, 850, 0.0f), { 100,100,0 }, GE::Color::White(), "texture_Number");
+	object["time_oneSeconds"].texSize = { 320,64 };
+	object["time_oneSeconds"].clipSize = { 32,64 };
+#pragma endregion
+
 }
 void ScreenUIManager::Update(float deltaTime)
 {
@@ -41,6 +80,99 @@ void ScreenUIManager::Update(float deltaTime)
 	{
 		object["crash"].isDraw = false;
 	}
+
+#pragma region オプション中
+	if (Title::GetInstance()->GetSelect(Title::States::option))
+	{
+		object["option_bgm"].isDraw = true;
+		object["option_bgm"].pivotPos.x = OptionData::BGM_vol;
+		object["option_bgm"].color = GE::Color::White();
+		if (Option::select == Option::Select::BGM_VOL) { object["option_bgm"].color = GE::Color::Red(); }
+		object["option_se"].isDraw = true;
+		object["option_se"].pivotPos.x = OptionData::SE_vol;
+		object["option_se"].color = GE::Color::White();
+		if (Option::select == Option::Select::SE_VOL) { object["option_se"].color = GE::Color::Red(); }
+		object["option_back"].isDraw = true;
+		if (Option::select == Option::Select::Back)
+		{
+			object["option_back"].color = GE::Color::Red();
+			object["option_right"].isDraw = false;
+			object["option_left"].isDraw = false;
+		}
+		else
+		{
+			object["option_back"].color = GE::Color::White();
+			object["option_right"].isDraw = true;
+			object["option_right"].transform.position.y = (GE::Window::GetWindowSize().y / 2) + (int)Option::select * 100;
+			object["option_left"].isDraw = true;
+			object["option_left"].transform.position.y = (GE::Window::GetWindowSize().y / 2) + (int)Option::select * 100;
+		}
+	}
+	else
+	{
+		object["option_bgm"].isDraw = false;
+		object["option_se"].isDraw = false;
+		object["option_back"].isDraw = false;
+		object["option_right"].isDraw = false;
+		object["option_left"].isDraw = false;
+	}
+#pragma endregion
+
+#pragma region タイトル
+	if (!Title::GetInstance()->GetDecid())
+	{
+		object["title_start"].isDraw = true;
+		object["title_start"].color = GE::Color::White();
+		object["title_option"].isDraw = true;
+		object["title_option"].color = GE::Color::White();
+		object["title_exit"].isDraw = true;
+		object["title_exit"].color = GE::Color::White();
+		object["title_name"].isDraw = true;
+
+		switch (Title::GetInstance()->states)
+		{
+		case Title::States::start:
+			object["title_start"].color = GE::Color::Red();
+			break;
+		case Title::States::option:
+			object["title_option"].color = GE::Color::Red();
+			break;
+		case Title::States::exit:
+			object["title_exit"].color = GE::Color::Red();
+			break;
+		default:
+			break;
+		}
+	}
+	else
+	{
+		object["title_start"].isDraw = false;
+		object["title_option"].isDraw = false;
+		object["title_exit"].isDraw = false;
+		object["title_name"].isDraw = false;
+	}
+#pragma endregion
+
+#pragma region タイムリミット
+	if (PlayerComponent::statas != PlayerComponent::PlayerStatas::TITLE)
+	{
+		object["time_minutes"].isDraw = true;
+		object["time_minutes"].pivotPos = TimeLimit::GetInstance()->GetMinutes();
+		object["time_tenSeconds"].isDraw = true;
+		object["time_tenSeconds"].pivotPos = TimeLimit::GetInstance()->GetTenSeconds();
+		object["time_oneSeconds"].isDraw = true;
+		object["time_oneSeconds"].pivotPos = TimeLimit::GetInstance()->GetOneSeconds();
+		object["time_symbol"].isDraw = true;
+	}
+	else
+	{
+		object["time_minutes"].isDraw = false;
+		object["time_symbol"].isDraw = false;
+		object["time_tenSeconds"].isDraw = false;
+		object["time_oneSeconds"].isDraw = false;
+	}
+#pragma endregion
+
 }
 
 void ScreenUIManager::DrawSprite(GE::IGraphicsDeviceDx12* graphicsDevice)

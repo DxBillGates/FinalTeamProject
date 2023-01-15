@@ -7,33 +7,11 @@
 #include <GatesEngine/Header/GameFramework/GameObject/GameObject.h> 
 #include<GatesEngine/Header/Audio/AudioManager.h>
 
-//タイトル用テクスチャクラス
-class TitleTex :public GE::Component
-{
-private:
-	GE::ITexture* tex;
-public:
-	GE::Math::Vector3 position = {};
-	GE::Math::Vector3 scale = {};
-	GE::Math::Quaternion rotation = {};
-	std::string tag;
-public:
-	void Awake();
-	void Start()override;
-	void Update(float deltaTime) override;
-	void LateDraw() override;
-
-	void SetTexture(GE::ITexture* setTex) { tex = setTex; }
-};
-
 //タイトルクラス
 class Title
 {
 private:
 	GE::InputDevice* inputDevice;
-
-	std::vector<TitleTex*> sprites;
-	std::vector<GE::ITexture*> textures;
 
 	bool decided = false;
 	Option option;

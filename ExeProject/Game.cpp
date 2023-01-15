@@ -204,6 +204,10 @@ bool Game::LoadContents()
 	nullTexture->Load("texture_ground_leaf1.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "leafTex1");
 
+	nullTexture = new Texture();
+	nullTexture->Load("back.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "texture_back");
+
 	auto* testScene = sceneManager.AddScene(new SampleScene("SampleScene", sceneManager.GetSceneInitializer()));
 	sceneManager.AddScene(new Clear("ClearScene", sceneManager.GetSceneInitializer()));
 	sceneManager.AddScene(new Over("OverScene", sceneManager.GetSceneInitializer()));

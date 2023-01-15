@@ -3,34 +3,6 @@
 #include <GatesEngine/Header/GameFramework/GameObject/GameObjectManager.h> 
 #include <GatesEngine/Header/GameFramework/GameObject/GameObject.h> 
 
-class TimeTex : public GE::Component
-{
-public:
-	GE::Math::Vector3 position;
-	GE::Math::Vector3 scale;
-	GE::Math::Quaternion rotation;
-	std::string tag;
-
-	float pivotPosX;
-	float texSizeX;
-
-	enum class TimeName
-	{
-		minutes,
-		tenSeconds,
-		oneSeconds,
-	};
-
-	int num = 0;
-
-public:
-
-	void Start()override;
-	void Update(float deltaTime) override;
-	void LateDraw() override;
-
-};
-
 class TimeLimit 
 {
 private:
