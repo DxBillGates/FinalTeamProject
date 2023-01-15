@@ -16,6 +16,13 @@ GE::Collider::~Collider()
 
 void GE::Collider::Update(float deltaTime)
 {
+#ifdef _DEBUG
+	drawEnabled = true;
+#else
+	drawEnabled = false;
+#endif // _DEBUG
+
+
 	// e‚Ì‰ñ“]s—ñ‚ÆŽ©g‚Ì‰ñ“]s—ñ‚©‚çŽ²‚ðŽæ“¾
 	localAxis = Math::Matrix4x4(localRotation * transform->rotation.Rotation()).GetAxis();
 
