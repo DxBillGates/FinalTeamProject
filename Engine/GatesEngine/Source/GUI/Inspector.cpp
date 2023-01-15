@@ -14,6 +14,10 @@ GE::GameObject* GE::GUI::Inspector::CurrentSelectGameObject()
 
 void GE::GUI::Inspector::OnGui()
 {
+#ifdef _DEBUG
+#else
+	return;
+#endif // _DEBUG
 	ImGui::Begin("Inspector");
 
 	if (currentSelectGameObject)

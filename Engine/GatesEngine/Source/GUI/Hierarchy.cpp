@@ -3,6 +3,11 @@
 
 bool GE::GUI::Hierarchy::OnGui(GameObject* gameObject)
 {
+#ifdef _DEBUG
+#else
+	return false;
+#endif // _DEBUG
+
 	bool isInputButton = false;
 	ImGui::Begin("Hierarchy");
 	ImGui::PushID(gameObject);
