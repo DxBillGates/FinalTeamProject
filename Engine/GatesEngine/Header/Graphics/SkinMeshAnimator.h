@@ -15,6 +15,8 @@ namespace GE
 		bool isEnd;
 
 		FbxTime currentTime;
+
+		ModelSkinMeshInfo skinMeshInfo;
 	public:
 		SkinMeshAnimator();
 		SkinMeshAnimator(SkinMeshData* setSkinMeshData);

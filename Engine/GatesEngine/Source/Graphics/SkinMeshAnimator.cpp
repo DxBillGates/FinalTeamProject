@@ -107,12 +107,6 @@ void GE::SkinMeshAnimator::Update(float deltaTime)
 		currentTime = currentPlayAnimationData->endTime;
 		isEnd = true;
 	}
-}
-
-void GE::SkinMeshAnimator::SetAnimationData(IGraphicsDeviceDx12* graphicsDevice, const Math::Matrix4x4& modelMatrix)
-{
-	ModelSkinMeshInfo skinMeshInfo;
-	skinMeshInfo.modelMatrix = modelMatrix;
 
 	// fbxMatrix ‚©‚ç Math::Matrix4x4 ‚É•ÏŠ·
 	auto ConvertMatrixFromFbxMatrix = [](Math::Matrix4x4& dst, const FbxAMatrix& src)
@@ -136,6 +130,11 @@ void GE::SkinMeshAnimator::SetAnimationData(IGraphicsDeviceDx12* graphicsDevice,
 
 		skinMeshInfo.bones[i] = skinMeshData->bones[i].invInitialPose * currentPose;
 	}
+}
+
+void GE::SkinMeshAnimator::SetAnimationData(IGraphicsDeviceDx12* graphicsDevice, const Math::Matrix4x4& modelMatrix)
+{
+	skinMeshInfo.modelMatrix = modelMatrix;
 
 	ShaderResourceCommand cbufferCommand;
 	cbufferCommand.descIndex = 0;
