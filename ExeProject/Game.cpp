@@ -390,8 +390,8 @@ bool Game::Draw()
 
 	graphicsDevice.ExecuteRenderQueue();
 
-	ImVec2 texSize = { textureAnimationInfo.textureSize.x / 4,textureAnimationInfo.textureSize.y / 4 };
-	ImGui::Image((ImTextureID)brightnessLayerRenderTexture->GetGPUHandle().ptr, texSize);
+	//ImVec2 texSize = { textureAnimationInfo.textureSize.x / 4,textureAnimationInfo.textureSize.y / 4 };
+	//ImGui::Image((ImTextureID)brightnessLayerRenderTexture->GetGPUHandle().ptr, texSize);
 
 	GE::GUIManager::EndFrame();
 	graphicsDevice.ExecuteCommands();
