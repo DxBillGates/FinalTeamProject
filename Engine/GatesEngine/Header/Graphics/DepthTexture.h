@@ -11,6 +11,7 @@ namespace GE
 	private:
 		// depthStencil
 
+		IShaderResourceHeap* shaderResourceHeap;
 		ID3D12DescriptorHeap* dsvHeap;
 
 		// texture
@@ -24,7 +25,7 @@ namespace GE
 		void Create(ID3D12Device* device, IShaderResourceHeap* shaderResourceHeap,const Math::Vector2& setSize);
 
 		// IDepthStencil interface
-
+		D3D12_GPU_DESCRIPTOR_HANDLE GetGPUHandle() override;
 		D3D12_CPU_DESCRIPTOR_HANDLE GetHandle();
 
 		// ITexture interface

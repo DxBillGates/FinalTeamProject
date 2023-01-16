@@ -101,16 +101,15 @@ bool Game::LoadContents()
 	mesh = new Mesh();
 	mesh->Create(device, cmdList, modelTreeLeaf3);
 	meshManager->Add(mesh, "Tree_Leaf3");
-	
+
 	MeshData<Vertex_UV_Normal> modelGroundLeaf1;
-	MeshCreater::LoadObjModelData("Resources/Model/ground_leaf1_a", modelGroundLeaf1);
+	MeshCreater::LoadObjModelData("Resources/Model/ground_leaf1_b", modelGroundLeaf1);
 	mesh = new Mesh();
 	mesh->Create(device, cmdList, modelGroundLeaf1);
 	meshManager->Add(mesh, "Ground_Leaf1");
 
 	meshManager->Add(FbxLoader::Load("Bird", &graphicsDevice), "Player");
 	meshManager->Add(FbxLoader::Load("hina", &graphicsDevice), "Hina");
-	meshManager->Add(FbxLoader::Load("Frog", &graphicsDevice), "Frog");
 	//効果音hit_wall
 	{
 		auto* audioData = audioManager.AddAudioData(new GE::AudioData("Resources/Audio/hit_wall.wav"), "hitWall");
@@ -149,8 +148,8 @@ bool Game::LoadContents()
 	textureManager->Add(nullTexture, "texture_title");
 
 	nullTexture = new Texture();
-	nullTexture->Load("start.png", device, shaderResourceHeap);
-	textureManager->Add(nullTexture, "texture_start");
+	nullTexture->Load("stage1.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "texture_stage1");
 
 	nullTexture = new Texture();
 	nullTexture->Load("stage2.png", device, shaderResourceHeap);
@@ -187,26 +186,26 @@ bool Game::LoadContents()
 	nullTexture = new Texture();
 	nullTexture->Load("Chick.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "texture_Chick");
-	
+
+	nullTexture = new Texture();
+	nullTexture->Load("sky_Windows.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "sky_Windows");
+
 	nullTexture = new Texture();
 	nullTexture->Load("texture_tree_leaf.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "texture_tree_leaf");
-	
+
 	nullTexture = new Texture();
 	nullTexture->Load("crash_info.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "crash_info");
-	
+
 	nullTexture = new Texture();
 	nullTexture->Load("groundTex1.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "groundTex1");
-	
+
 	nullTexture = new Texture();
 	nullTexture->Load("texture_ground_leaf1.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "leafTex1");
-
-	nullTexture = new Texture();
-	nullTexture->Load("back.png", device, shaderResourceHeap);
-	textureManager->Add(nullTexture, "texture_back");
 
 	auto* testScene = sceneManager.AddScene(new SampleScene("SampleScene", sceneManager.GetSceneInitializer()));
 	sceneManager.AddScene(new Clear("ClearScene", sceneManager.GetSceneInitializer()));
@@ -252,7 +251,7 @@ bool Game::Update()
 {
 	GE::GUIManager::StartFrame();
 	Application::Update();
-	ImGui::Text("FPS : %.3f",1.0f / timer.GetElapsedTime());
+	ImGui::Text("FPS : %.3f", 1.0f / timer.GetElapsedTime());
 	return true;
 }
 
@@ -323,6 +322,7 @@ bool Game::Draw()
 	material.color = GE::Color::White();
 
 	GE::CameraInfo cameraInfo;
+	cameraInfo = graphicsDevice.GetMainCamera()->GetCameraInfo();
 	cameraInfo.viewMatrix = GE::Math::Matrix4x4::GetViewMatrixLookTo({ 0,0,0 }, { 0,0,1 }, { 0,1,0 });
 	cameraInfo.projMatrix = GE::Math::Matrix4x4::GetOrthographMatrix(GE::Window::GetWindowSize());
 
@@ -336,7 +336,7 @@ bool Game::Draw()
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
 	renderQueue->AddSetConstantBufferInfo({ 4,cbufferAllocater->BindAndAttachData(4,&textureAnimationInfo,sizeof(GE::TextureAnimationInfo)) });
 	static float BRIGHTNESS = 0.7f;
-	ImGui::DragFloat("BrightnessSamplingValue", &BRIGHTNESS, 0.01f,0,1);
+	ImGui::DragFloat("BrightnessSamplingValue", &BRIGHTNESS, 0.01f, 0, 1);
 	renderQueue->AddSetConstantBufferInfo({ 5,cbufferAllocater->BindAndAttachData(5,&BRIGHTNESS,sizeof(float)) });
 	renderQueue->AddSetShaderResource({ 16,graphicsDevice.GetLayerManager()->Get("resultLayer")->GetRenderTexture()->GetSRVNumber() });
 	graphicsDevice.DrawMesh("2DPlane");
@@ -349,6 +349,7 @@ bool Game::Draw()
 	for (int i = 0; i < 6; ++i)
 	{
 		graphicsDevice.SetShaderResourceDescriptorHeap();
+		graphicsDevice.ClearLayer("BloomLayer_" + std::to_string(i));
 		graphicsDevice.SetLayer("BloomLayer_" + std::to_string(i));
 		graphicsDevice.SetShader("GaussBlurShader");
 
@@ -372,26 +373,103 @@ bool Game::Draw()
 	}
 #pragma endregion
 
+#pragma region 被写界深度用ブラー
+	for (int i = 0; i < 6; ++i)
+	{
+		graphicsDevice.SetShaderResourceDescriptorHeap();
+		graphicsDevice.ClearLayer("DofLayer_" + std::to_string(i));
+		graphicsDevice.SetLayer("DofLayer_" + std::to_string(i));
+		graphicsDevice.SetShader("GaussBlurShader");
+
+		renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
+		renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
+		renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2, &material, sizeof(GE::Material)) });
+		renderQueue->AddSetConstantBufferInfo({ 5,cbufferAllocater->BindAndAttachData(5,&gaussFilterData[i],sizeof(GE::Math::GaussFilterData)) });
+
+		if (i == 0)
+		{
+			renderQueue->AddSetShaderResource({ 16,graphicsDevice.GetLayerManager()->Get("resultLayer")->GetRenderTexture()->GetSRVNumber() });
+		}
+		else
+		{
+			renderQueue->AddSetShaderResource({ 16,graphicsDevice.GetLayerManager()->Get("DofLayer_" + std::to_string(i - 1))->GetRenderTexture()->GetSRVNumber() });
+		}
+
+		graphicsDevice.DrawMesh("2DPlane");
+		graphicsDevice.ExecuteRenderQueue();
+		graphicsDevice.ExecuteCommands();
+	}
+#pragma endregion
+
+
 	// ブラーした結果を元画像に合成
 	graphicsDevice.SetShaderResourceDescriptorHeap();
-	graphicsDevice.SetDefaultRenderTarget();
+	//graphicsDevice.SetDefaultRenderTarget();
+	graphicsDevice.ClearLayer("defaultLayer");
+	graphicsDevice.SetLayer("defaultLayer");
 	graphicsDevice.SetShader("MixedTextureShader");
 
 
 	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
 	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2, &material, sizeof(GE::Material)) });
+
+	static GE::Math::Vector3 dofInfo = { 0.4f,1.7f,0.4f };
+	ImGui::DragFloat3("dofInfo", dofInfo.value, 0.001f);
+	GE::Math::Vector4 dof = { dofInfo.x,dofInfo.y ,dofInfo.z ,1 };
+	renderQueue->AddSetConstantBufferInfo({ 13,cbufferAllocater->BindAndAttachData(15, &dof, sizeof(GE::Math::Vector4)) });
 	renderQueue->AddSetShaderResource({ 16,graphicsDevice.GetLayerManager()->Get("resultLayer")->GetRenderTexture()->GetSRVNumber() });
 	//renderQueue->AddSetShaderResource({ 17,graphicsDevice.GetLayerManager()->Get("EffectLayer")->GetRenderTexture()->GetSRVNumber() });
 	renderQueue->AddSetShaderResource({ 18,graphicsDevice.GetLayerManager()->Get("BloomLayer_" + std::to_string(1))->GetRenderTexture()->GetSRVNumber() });
 	renderQueue->AddSetShaderResource({ 19,graphicsDevice.GetLayerManager()->Get("BloomLayer_" + std::to_string(3))->GetRenderTexture()->GetSRVNumber() });
 	renderQueue->AddSetShaderResource({ 20,graphicsDevice.GetLayerManager()->Get("BloomLayer_" + std::to_string(5))->GetRenderTexture()->GetSRVNumber() });
+	renderQueue->AddSetShaderResource({ 21,graphicsDevice.GetLayerManager()->Get("resultLayer")->GetDepthTexture()->GetSRVNumber() });
+	renderQueue->AddSetShaderResource({ 22,graphicsDevice.GetLayerManager()->Get("DofLayer_" + std::to_string(1))->GetRenderTexture()->GetSRVNumber() });
+	renderQueue->AddSetShaderResource({ 23,graphicsDevice.GetLayerManager()->Get("DofLayer_" + std::to_string(5))->GetRenderTexture()->GetSRVNumber() });
+	graphicsDevice.DrawMesh("2DPlane");
+
+	graphicsDevice.ExecuteRenderQueue();
+	graphicsDevice.ExecuteCommands();
+
+	// ブラーした結果を元画像に合成
+	graphicsDevice.SetShaderResourceDescriptorHeap();
+	graphicsDevice.SetDefaultRenderTarget();
+	graphicsDevice.SetShader("volumetricCloudShader");
+
+	//cameraInfo.invProjMatrix = GE::Math::Matrix4x4::Inverse(cameraInfo.projMatrix);
+	//cameraInfo.invViewMatrix = GE::Math::Matrix4x4::Inverse(cameraInfo.viewMatrix);
+
+	struct RayInfo
+	{
+		GE::Math::Vector3 boundMin;
+		float pad;
+		GE::Math::Vector3 boundMax;
+	};
+
+	RayInfo rayInfo;
+	static GE::Math::Vector3 pos = { 0,0,0 };
+	static GE::Math::Vector3 scale = 2000;
+	ImGui::DragFloat3("CloudPos"  , pos.value, 1.0f);
+	ImGui::DragFloat3("CloudScale", scale.value, 1.0f);
+	rayInfo.boundMin = pos - scale / 2;
+	rayInfo.boundMax = pos + scale / 2;
+
+	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
+	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
+	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2, &material, sizeof(GE::Material)) });
+
+	renderQueue->AddSetConstantBufferInfo({ 13,cbufferAllocater->BindAndAttachData(13, &rayInfo, sizeof(RayInfo)) });
+
+	renderQueue->AddSetShaderResource({ 16,graphicsDevice.GetLayerManager()->Get("defaultLayer")->GetRenderTexture()->GetSRVNumber() });
+	renderQueue->AddSetShaderResource({ 17,graphicsDevice.GetLayerManager()->Get("resultLayer")->GetDepthTexture()->GetSRVNumber() });
+	renderQueue->AddSetShaderResource({ 18,graphicsDevice.GetLayerManager()->Get("shadowLayer")->GetDepthTexture()->GetSRVNumber() });
 	graphicsDevice.DrawMesh("2DPlane");
 
 	graphicsDevice.ExecuteRenderQueue();
 
 	//ImVec2 texSize = { textureAnimationInfo.textureSize.x / 4,textureAnimationInfo.textureSize.y / 4 };
-	//ImGui::Image((ImTextureID)brightnessLayerRenderTexture->GetGPUHandle().ptr, texSize);
+	//GE::IDepthTexture* dofRenderTexture = graphicsDevice.GetLayerManager()->Get("resultLayer")->GetDepthTexture();
+	//ImGui::Image((ImTextureID)dofRenderTexture->GetGPUHandle().ptr, texSize);
 
 	GE::GUIManager::EndFrame();
 	graphicsDevice.ExecuteCommands();

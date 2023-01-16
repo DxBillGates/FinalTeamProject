@@ -58,6 +58,13 @@ void GE::DepthTexture::Create(ID3D12Device* device, IShaderResourceHeap* shaderR
 	srvDesc.Texture2D.MipLevels = 1;
 
 	shaderResourceHeap->CreateSRV(buffer, srvDesc);
+	this->shaderResourceHeap = shaderResourceHeap;
+}
+
+D3D12_GPU_DESCRIPTOR_HANDLE GE::DepthTexture::GetGPUHandle()
+{
+	D3D12_GPU_DESCRIPTOR_HANDLE handle = shaderResourceHeap->GetGPUHandleForSRV(srvNum);
+	return handle;
 }
 
 D3D12_CPU_DESCRIPTOR_HANDLE GE::DepthTexture::GetHandle()

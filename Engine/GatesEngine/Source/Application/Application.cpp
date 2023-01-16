@@ -225,6 +225,11 @@ bool GE::Application::LoadContents()
 	brightnessSamplingShader.CompileShaderFileWithoutFormat(L"BrightnessSamplingPixelShader", "ps_5_0");
 	Shader mixedTextureShader;
 	mixedTextureShader.CompileShaderFileWithoutFormat(L"MixedTexturePixelShader", "ps_5_0");
+	Shader volumetricCloudPixelShader;
+	volumetricCloudPixelShader.CompileShaderFileWithoutFormat(L"VolumetricCloudPixelShader", "ps_5_0");
+	Shader volumetricCloudVertexShader;
+	volumetricCloudVertexShader.CompileShaderFileWithoutFormat(L"VolumetricCloudVertexShader", "vs_5_0");
+
 	// rootSignatureì¬
 	auto* rootSignatureManager = graphicsDevice.GetRootSignatureManager();
 	RootSignature* defaultMeshRootSignature = new RootSignature();
@@ -306,6 +311,10 @@ bool GE::Application::LoadContents()
 	GraphicsPipeline* mixedTexturePipeline = new GraphicsPipeline({ &defaultSpriteVertexShader,nullptr,nullptr,nullptr,&mixedTextureShader });
 	mixedTexturePipeline->Create(device, { GraphicsPipelineInputLayout::POSITION,GraphicsPipelineInputLayout::UV }, testRootSignature, pipelineInfo);
 	graphicsPipelineManager->Add(mixedTexturePipeline, "MixedTextureShader");
+	// volumetric cloud rendering shader
+	GraphicsPipeline* volumetricCloudPipeline = new GraphicsPipeline({ &volumetricCloudVertexShader,nullptr,nullptr,nullptr,&volumetricCloudPixelShader });
+	volumetricCloudPipeline->Create(device, { GraphicsPipelineInputLayout::POSITION,GraphicsPipelineInputLayout::UV }, testRootSignature, pipelineInfo);
+	graphicsPipelineManager->Add(volumetricCloudPipeline, "volumetricCloudShader");
 
 	// demo layerì¬
 	auto* layerManager = graphicsDevice.GetLayerManager();
@@ -344,6 +353,20 @@ bool GE::Application::LoadContents()
 		layerManager->Add(new Layer(bloomRenderTexture, nullptr), "BloomLayer_" + std::to_string(i));
 	}
 
+	for (int i = 0, divide = 2; i < 6; ++i)
+	{
+		if (i % 2 == 0)divide *= 2;
+
+		RenderTexture* dofRenderTexture = new RenderTexture();
+		dofRenderTexture->Create(device, shaderResourceHeap, mainWindow.GetWindowSize() / divide, Color::Black());
+
+		layerManager->Add(new Layer(dofRenderTexture, nullptr), "DofLayer_" + std::to_string(i));
+	}
+
+	RenderTexture* renderTarget = new RenderTexture();
+	renderTarget->Create(device, shaderResourceHeap, mainWindow.GetWindowSize(), Color::Black());
+	layerManager->Add(new Layer(renderTarget, nullptr), "defaultLayer");
+
 	return true;
 }
 
@@ -358,8 +381,8 @@ bool GE::Application::Initialize()
 
 bool GE::Application::Update()
 {
-	sceneManager.Update(timer.GetElapsedTime());
 	mainCamera->Update();
+	sceneManager.Update(timer.GetElapsedTime());
 	return true;
 }
 
