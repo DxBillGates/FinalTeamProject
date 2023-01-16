@@ -39,7 +39,7 @@ void Clear::Initialize()
 void Clear::Update(float deltaTime)
 {
 	//カメラコントロールの更新
-	CameraControl::GetInstance()->Update(deltaTime);
+	//CameraControl::GetInstance()->Update(deltaTime);
 
 	gameObjectManager.Update(deltaTime);
 
@@ -101,7 +101,7 @@ void Clear::Load()
 		//directionalLight->SetTarget(gameObjectManager.FindGameObjectWithTag("Player", "player")->GetTransform());
 		testObject->GetTransform()->position = { 0,0,0 };
 
-		CameraControl::GetInstance()->SetTargetObject(testObject);
+		//CameraControl::GetInstance()->SetTargetObject(testObject);
 	}
 
 	//飛び立つ鳥

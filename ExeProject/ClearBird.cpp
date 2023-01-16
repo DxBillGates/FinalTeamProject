@@ -18,6 +18,9 @@ void ClearBird::Start()
 
 void ClearBird::Update(float deltaTime)
 {
+	GE::Math::Vector3 result = target - transform->position;
+	result = result.Normalize();
+	transform->position += result;
 	animator.Update(deltaTime);
 }
 
