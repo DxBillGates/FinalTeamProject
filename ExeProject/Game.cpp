@@ -47,37 +47,6 @@ bool Game::LoadContents()
 	std::string objModelPath = resourcesFolder + modelFolder + objModelFolder;
 	std::string fbxModelPath = resourcesFolder + modelFolder + fbxModelFolder;
 
-
-	//MeshData<Vertex_UV_Normal> modelMountain1;
-	//MeshCreater::LoadObjModelData("Resources/Model/_Mountain/mountain1", modelMountain1);
-	//mesh = new Mesh();
-	//mesh->Create(device, cmdList, modelMountain1);
-	//meshManager->Add(mesh, "mountain1");
-	//
-	//MeshData<Vertex_UV_Normal> modelMountain2;
-	//MeshCreater::LoadObjModelData("Resources/Model/_Mountain/mountain2", modelMountain2);
-	//mesh = new Mesh();
-	//mesh->Create(device, cmdList, modelMountain2);
-	//meshManager->Add(mesh, "mountain2");
-
-	//MeshData<Vertex_UV_Normal> modelMountain3;
-	//MeshCreater::LoadObjModelData("Resources/Model/_Mountain/mountain3", modelMountain3);
-	//mesh = new Mesh();
-	//mesh->Create(device, cmdList, modelMountain3);
-	//meshManager->Add(mesh, "mountain3");
-
-	//MeshData<Vertex_UV_Normal> modelMountain4;
-	//MeshCreater::LoadObjModelData("Resources/Model/_Mountain/mountain4", modelMountain4);
-	//mesh = new Mesh();
-	//mesh->Create(device, cmdList, modelMountain4);
-	//meshManager->Add(mesh, "mountain4");
-
-	//MeshData<Vertex_UV_Normal> modelMountain5;
-	//MeshCreater::LoadObjModelData("Resources/Model/_Mountain/mountain5", modelMountain5);
-	//mesh = new Mesh();
-	//mesh->Create(device, cmdList, modelMountain5);
-	//meshManager->Add(mesh, "mountain5");
-
 	MeshData<Vertex_UV_Normal> modelDataNest;
 	MeshCreater::LoadObjModelData("Resources/Model/nest", modelDataNest);
 	mesh = new Mesh();
@@ -103,13 +72,15 @@ bool Game::LoadContents()
 	meshManager->Add(mesh, "Tree_Leaf3");
 
 	MeshData<Vertex_UV_Normal> modelGroundLeaf1;
-	MeshCreater::LoadObjModelData("Resources/Model/ground_leaf1_b", modelGroundLeaf1);
+	MeshCreater::LoadObjModelData("Resources/Model/ground_leaf1_a", modelGroundLeaf1);
 	mesh = new Mesh();
 	mesh->Create(device, cmdList, modelGroundLeaf1);
 	meshManager->Add(mesh, "Ground_Leaf1");
 
 	meshManager->Add(FbxLoader::Load("Bird", &graphicsDevice), "Player");
 	meshManager->Add(FbxLoader::Load("hina", &graphicsDevice), "Hina");
+	meshManager->Add(FbxLoader::Load("Frog", &graphicsDevice), "Frog");
+
 	//Œø‰Ê‰¹hit_wall
 	{
 		auto* audioData = audioManager.AddAudioData(new GE::AudioData("Resources/Audio/hit_wall.wav"), "hitWall");
@@ -148,8 +119,8 @@ bool Game::LoadContents()
 	textureManager->Add(nullTexture, "texture_title");
 
 	nullTexture = new Texture();
-	nullTexture->Load("stage1.png", device, shaderResourceHeap);
-	textureManager->Add(nullTexture, "texture_stage1");
+	nullTexture->Load("start.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "texture_start");
 
 	nullTexture = new Texture();
 	nullTexture->Load("stage2.png", device, shaderResourceHeap);
@@ -188,10 +159,6 @@ bool Game::LoadContents()
 	textureManager->Add(nullTexture, "texture_Chick");
 
 	nullTexture = new Texture();
-	nullTexture->Load("sky_Windows.png", device, shaderResourceHeap);
-	textureManager->Add(nullTexture, "sky_Windows");
-
-	nullTexture = new Texture();
 	nullTexture->Load("texture_tree_leaf.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "texture_tree_leaf");
 
@@ -206,6 +173,11 @@ bool Game::LoadContents()
 	nullTexture = new Texture();
 	nullTexture->Load("texture_ground_leaf1.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "leafTex1");
+
+	nullTexture = new Texture();
+	nullTexture->Load("back.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "texture_back");
+
 
 	auto* testScene = sceneManager.AddScene(new SampleScene("SampleScene", sceneManager.GetSceneInitializer()));
 	sceneManager.AddScene(new Clear("ClearScene", sceneManager.GetSceneInitializer()));
