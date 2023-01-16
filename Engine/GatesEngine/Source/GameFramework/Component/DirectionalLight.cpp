@@ -55,7 +55,7 @@ void GE::DirectionalLight::Update(float deltaTime)
 	direction = CalclateDirection();
 	up = CalclateUp();
 
-	Math::Vector3 targetPosition = target->position;
+	Math::Vector3 targetPosition = (target) ? target->position : GE::Math::Vector3();
 	targetPosition.y = 0;
 	Math::Vector3 position = (target) ? targetPosition + -direction * drawRange.z : -direction * drawRange.z;
 	//Math::Vector3 tempPosition = -direction * drawRange;
@@ -115,7 +115,9 @@ const GE::Math::Matrix4x4 GE::DirectionalLight::GetVPMatrix()
 GE::Math::Vector2 GE::DirectionalLight::GetUV()
 {
 	Math::Vector2 fixUV;
-	fixUV.x = 1 - (atan2f(transform->position.x - target->position.x, transform->position.z - target->position.z) / Math::PI + 1) * 0.5f;
+	Math::Vector3 targetPosition = (target) ? target->position : GE::Math::Vector3();
+
+	fixUV.x = 1 - (atan2f(transform->position.x - targetPosition.x, transform->position.z - targetPosition.z) / Math::PI + 1) * 0.5f;
 	fixUV.y = 1 - (transform->position.y / drawRange.z + 1) * 0.5f;
 	return fixUV;
 }
