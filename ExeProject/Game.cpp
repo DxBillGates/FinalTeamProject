@@ -178,6 +178,10 @@ bool Game::LoadContents()
 	nullTexture->Load("back.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "texture_back");
 
+	nullTexture = new Texture();
+	nullTexture->Load("cellularnoise.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "cellularnoise");
+
 
 	auto* testScene = sceneManager.AddScene(new SampleScene("SampleScene", sceneManager.GetSceneInitializer()));
 	sceneManager.AddScene(new Clear("ClearScene", sceneManager.GetSceneInitializer()));
@@ -414,17 +418,29 @@ bool Game::Draw()
 	struct RayInfo
 	{
 		GE::Math::Vector3 boundMin;
-		float pad;
+		float pad = 1;
 		GE::Math::Vector3 boundMax;
+		float pad2 = 1;
+		GE::Math::Vector2 perspective;
+		float DensityThreshold = 0.5;
+		float DensityMultiplier = 5;
+		float CloudScale = 70;
+		GE::Math::Vector3 CloudOffset = GE::Math::Vector3(0, 0, 0);
 	};
 
-	RayInfo rayInfo;
+	static RayInfo rayInfo;
 	static GE::Math::Vector3 pos = { 0,0,0 };
-	static GE::Math::Vector3 scale = 2000;
-	ImGui::DragFloat3("CloudPos"  , pos.value, 1.0f);
-	ImGui::DragFloat3("CloudScale", scale.value, 1.0f);
+	static GE::Math::Vector3 scale = {20000,2000,20000};
+	ImGui::DragFloat3("Pos"  , pos.value, 10.0f);
+	ImGui::DragFloat3("Scale", scale.value, 10.0f);
 	rayInfo.boundMin = pos - scale / 2;
 	rayInfo.boundMax = pos + scale / 2;
+	ImGui::DragFloat("DensityThreshold", &rayInfo.DensityThreshold, 0.01f,0.01f,1);
+	ImGui::DragFloat("DensityMultiplier", &rayInfo.DensityMultiplier, 0.1f);
+	ImGui::DragFloat("CloudScale", &rayInfo.CloudScale, 0.1f);
+	ImGui::DragFloat3("CloudOffset",rayInfo.CloudOffset.value, 0.1f);
+	rayInfo.perspective.x = graphicsDevice.GetMainCamera()->GetCameraInfo().projMatrix.m[2][3];
+	rayInfo.perspective.y = graphicsDevice.GetMainCamera()->GetCameraInfo().projMatrix.m[3][3];
 
 	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
 	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
@@ -435,13 +451,14 @@ bool Game::Draw()
 	renderQueue->AddSetShaderResource({ 16,graphicsDevice.GetLayerManager()->Get("defaultLayer")->GetRenderTexture()->GetSRVNumber() });
 	renderQueue->AddSetShaderResource({ 17,graphicsDevice.GetLayerManager()->Get("resultLayer")->GetDepthTexture()->GetSRVNumber() });
 	renderQueue->AddSetShaderResource({ 18,graphicsDevice.GetLayerManager()->Get("shadowLayer")->GetDepthTexture()->GetSRVNumber() });
+	renderQueue->AddSetShaderResource({ 19,graphicsDevice.GetTextureManager()->Get("cellularnoise")->GetSRVNumber() });
 	graphicsDevice.DrawMesh("2DPlane");
 
 	graphicsDevice.ExecuteRenderQueue();
 
-	//ImVec2 texSize = { textureAnimationInfo.textureSize.x / 4,textureAnimationInfo.textureSize.y / 4 };
-	//GE::IDepthTexture* dofRenderTexture = graphicsDevice.GetLayerManager()->Get("resultLayer")->GetDepthTexture();
-	//ImGui::Image((ImTextureID)dofRenderTexture->GetGPUHandle().ptr, texSize);
+	ImVec2 texSize = { textureAnimationInfo.textureSize.x / 4,textureAnimationInfo.textureSize.y / 4 };
+	GE::IRenderTexture* dofRenderTexture = graphicsDevice.GetLayerManager()->Get("resultLayer")->GetRenderTexture();
+	ImGui::Image((ImTextureID)dofRenderTexture->GetGPUHandle().ptr, texSize);
 
 	GE::GUIManager::EndFrame();
 	graphicsDevice.ExecuteCommands();
