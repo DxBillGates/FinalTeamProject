@@ -58,25 +58,23 @@ void FrogEnemy::Update(float deltaTime)
 		//ƒWƒƒƒ“ƒv
 		if (jumpCount > jumpInterval)
 		{
-			animator.PlayAnimation(0, false);
+			animator.PlayAnimation(4, false);
 			velocity += accelerate;
 			jumpCount = 0.0f;
 			frogState = FrogState::JUMPING;
 			currentAngle = angle;
 		}
-		else
-		{
-			/*if (animator.IsEndAnimation())
-			{
-				animator.PlayAnimation(5, true);
 
-			}*/
-		}
 		jumpCount += f;
 		angle = GE::Math::Lerp(currentAngle, currentAngle + 90, jumpCount / (float)jumpInterval);
 
 		break;
 	case FrogState::WALK:
+		if (animator.IsEndAnimation())
+		{
+			animator.PlayAnimation(0, true);
+			frogState = FrogState::STAY;
+		}
 		break;
 	case FrogState::JUMPING:
 		velocity += gravity;
@@ -150,8 +148,8 @@ void FrogEnemy::OnCollisionEnter(GE::GameObject* other)
 		{
 			if (frogState == FrogState::JUMPING)
 			{
-				frogState = FrogState::STAY;
-				animator.PlayAnimation(2, false);
+				frogState = FrogState::WALK;
+				animator.PlayAnimation(3, false);
 				velocity = {};
 			}
 		}
