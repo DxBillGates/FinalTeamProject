@@ -11,6 +11,8 @@ private:
 	int count;
 	bool fly;
 public:
+	int startCount;
+public:
 	virtual void Awake() override;
 	virtual void Start() override;
 	virtual void Update(float deltaTime) override;

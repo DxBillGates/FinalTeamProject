@@ -16,33 +16,29 @@ void ClearBird::Start()
 	animator.Initialize();
 	animator.PlayAnimation(3, false);
 	count = 0;
-	fly = true;
+	fly = false;
 }
 
 void ClearBird::Update(float deltaTime)
 {
-	if (fly && count == 0)
+	if (startCount == count)
 	{
 		//”ò‚Ñ—§‚Â
 		animator.PlayAnimation(2, false);
-		count++;
+		fly = true;
 	}
-	else if (fly)
+	count++;
+
+
+	if (fly)
 	{
-		if (animator.IsEndAnimation())count++;
+		//‰H‚Î‚½‚­
+		if (count % 50 == 0)animator.PlayAnimation(0, false);
+
+		float LERP_VALUE = 0.002f * GE::GameSetting::Time::GetGameTime();
+		transform->position = GE::Math::Vector3::Lerp(transform->position, target, LERP_VALUE);
+		animator.Update(deltaTime);
 	}
-
-	if (count != 0 && count % 50 == 0)
-	{
-		//‰H‚Î‚½‚«
-		animator.PlayAnimation(0, false);
-	}
-	float LERP_VALUE = 0.002f * GE::GameSetting::Time::GetGameTime();
-
-
-	//result = result.Normalize();
-	transform->position = GE::Math::Vector3::Lerp(transform->position, target, LERP_VALUE);
-	animator.Update(deltaTime);
 }
 
 void ClearBird::Draw()

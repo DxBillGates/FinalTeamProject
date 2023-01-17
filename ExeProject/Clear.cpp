@@ -3,6 +3,7 @@
 #include <GatesEngine/Header/Util/Utility.h          >
 #include <GatesEngine/Header/Graphics\Window.h       >
 #include <GatesEngine/Header/GameFramework/Component/SphereCollider.h>
+#include <GatesEngine/Header/Util/Random.h           >
 #include "PlayerComponent.h"
 #include "FieldObjectManager.h"
 #include "ClearBird.h"
@@ -36,6 +37,8 @@ void Clear::Initialize()
 
 	gameObjectManager.Awake();
 	gameObjectManager.Start();
+
+	gameObjectManager.FindGameObjectWithTag("directionalLight", "directionalLight")->GetTransform()->rotation = GE::Math::Quaternion::Euler({ 9,190,0 });
 
 	FieldObjectManager::GetInstance()->LoadPosition("Resources/tree.txt");
 }
@@ -96,7 +99,7 @@ void Clear::Load()
 {
 	auto* Object = gameObjectManager.AddGameObject(new GE::GameObject("clear", "clear"));
 	//titleObject->SetDrawAxisEnabled(true);
-	Object->GetTransform()->position = { GE::Window::GetWindowSize().x / 2,GE::Window::GetWindowSize().y / 2,0 };
+	Object->GetTransform()->position = { 450,200,0 };
 	Object->GetTransform()->scale = { 700,400,0 };
 	auto* clearComponent = Object->AddComponent<ClearTex>();
 
@@ -114,10 +117,12 @@ void Clear::Load()
 	{
 		auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject("CBird", "CBird"));
 		testObject->GetTransform()->position = FieldObjectManager::StartPosition;
-		testObject->GetTransform()->position.z += i * 100;
 		auto* sampleComponent = testObject->AddComponent<ClearBird>();
-		sampleComponent->SetTarget({ 0,15000,15000 });
-		if (i >= 0)CameraControl::GetInstance()->SetTargetObject(testObject);
+		float randSign = GE::RandomMaker::GetFloat(-1.0f, 1.0f);
+		float randX = GE::RandomMaker::GetFloat(500.0f, 5000.0f);
+		sampleComponent->SetTarget({ randSign * randX,15000,15000 });
+		sampleComponent->startCount = i * 50;
+		if (i == 0)CameraControl::GetInstance()->SetTargetObject(testObject);
 	}
 	FieldObjectManager::GetInstance()->Start(&gameObjectManager);
 }
@@ -143,8 +148,6 @@ void ClearTex::Update(float deltaTime)
 
 void ClearTex::LateDraw()
 {
-	return;
-
 	const float SPRITE_SIZE = 30;
 
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
