@@ -7,6 +7,9 @@ private:
 	GE::Math::Vector3 target;
 
 	GE::SkinMeshAnimator animator;
+
+	int count;
+	bool fly;
 public:
 	virtual void Awake() override;
 	virtual void Start() override;

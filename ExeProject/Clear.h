@@ -15,6 +15,8 @@ public:
 
 class Clear : public GE::Scene
 {
+public:
+	static bool nowClear;
 private:
 	GE::DirectionalLight* directionalLight;
 public:

@@ -9,6 +9,8 @@
 #include"StartTree.h"
 #include"CameraControl.h"
 
+bool Clear::nowClear = false;
+
 Clear::Clear()
 	:Clear("ClearScene")
 {
@@ -30,6 +32,8 @@ Clear::~Clear()
 
 void Clear::Initialize()
 {
+	nowClear = true;
+
 	gameObjectManager.Awake();
 	gameObjectManager.Start();
 
@@ -39,13 +43,14 @@ void Clear::Initialize()
 void Clear::Update(float deltaTime)
 {
 	//カメラコントロールの更新
-	//CameraControl::GetInstance()->Update(deltaTime);
+	CameraControl::GetInstance()->Update(deltaTime);
 
 	gameObjectManager.Update(deltaTime);
 
 	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE)
 		|| inputDevice->GetJoyconR()->GetTriggerButton(GE::JoyconButtonData::B))
 	{
+		nowClear = false;
 		changeSceneInfo.name = "SampleScene";
 		changeSceneInfo.flag = true;
 		changeSceneInfo.initNextSceneFlag = true;
@@ -111,7 +116,8 @@ void Clear::Load()
 		testObject->GetTransform()->position = FieldObjectManager::StartPosition;
 		testObject->GetTransform()->position.z += i * 100;
 		auto* sampleComponent = testObject->AddComponent<ClearBird>();
-		sampleComponent->SetTarget({ 0,100,0 });
+		sampleComponent->SetTarget({ 0,15000,15000 });
+		if (i >= 0)CameraControl::GetInstance()->SetTargetObject(testObject);
 	}
 	FieldObjectManager::GetInstance()->Start(&gameObjectManager);
 }
@@ -137,6 +143,8 @@ void ClearTex::Update(float deltaTime)
 
 void ClearTex::LateDraw()
 {
+	return;
+
 	const float SPRITE_SIZE = 30;
 
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();

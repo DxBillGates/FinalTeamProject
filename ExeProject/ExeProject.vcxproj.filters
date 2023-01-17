@@ -135,7 +135,9 @@
     <ClCompile Include="FrogEnemy.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
-    <ClCompile Include="ClearBird.cpp" />
+    <ClCompile Include="ClearBird.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BirdEnemy.h">
@@ -219,7 +221,9 @@
     <ClInclude Include="FrogEnemy.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
-    <ClInclude Include="ClearBird.h" />
+    <ClInclude Include="ClearBird.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ExeProject.rc" />

@@ -1,6 +1,7 @@
 #include "ClearBird.h"
 #include "FieldObjectManager.h"
 #include <GatesEngine/Header/GameFramework/Component/DirectionalLight.h>
+#include <GatesEngine/Header\GameFramework/GameSetting.h>
 
 void ClearBird::Awake()
 {
@@ -14,13 +15,33 @@ void ClearBird::Start()
 	animator = GE::SkinMeshManager::GetInstance()->Get("Bird");
 	animator.Initialize();
 	animator.PlayAnimation(3, false);
+	count = 0;
+	fly = true;
 }
 
 void ClearBird::Update(float deltaTime)
 {
-	GE::Math::Vector3 result = target - transform->position;
-	result = result.Normalize();
-	transform->position += result;
+	if (fly && count == 0)
+	{
+		//”ò‚Ñ—§‚Â
+		animator.PlayAnimation(2, false);
+		count++;
+	}
+	else if (fly)
+	{
+		if (animator.IsEndAnimation())count++;
+	}
+
+	if (count != 0 && count % 50 == 0)
+	{
+		//‰H‚Î‚½‚«
+		animator.PlayAnimation(0, false);
+	}
+	float LERP_VALUE = 0.002f * GE::GameSetting::Time::GetGameTime();
+
+
+	//result = result.Normalize();
+	transform->position = GE::Math::Vector3::Lerp(transform->position, target, LERP_VALUE);
 	animator.Update(deltaTime);
 }
 
