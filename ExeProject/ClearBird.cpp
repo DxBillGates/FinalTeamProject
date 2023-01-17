@@ -24,7 +24,7 @@ void ClearBird::Update(float deltaTime)
 	if (startCount == count)
 	{
 		//”ò‚Ñ—§‚Â
-		animator.PlayAnimation(2, false);
+		animator.PlayAnimation(0, true);
 		fly = true;
 	}
 	count++;
@@ -32,8 +32,6 @@ void ClearBird::Update(float deltaTime)
 
 	if (fly)
 	{
-		//‰H‚Î‚½‚­
-		if (count % 50 == 0)animator.PlayAnimation(0, false);
 
 		float LERP_VALUE = 0.002f * GE::GameSetting::Time::GetGameTime();
 		transform->position = GE::Math::Vector3::Lerp(transform->position, target, LERP_VALUE);
