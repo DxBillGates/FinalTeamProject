@@ -178,6 +178,10 @@ bool Game::LoadContents()
 	nullTexture->Load("back.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "texture_back");
 
+	nullTexture = new Texture();
+	nullTexture->Load("gyro_shake_tex.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "gyro_shake_tex");
+
 
 	auto* testScene = sceneManager.AddScene(new SampleScene("SampleScene", sceneManager.GetSceneInitializer()));
 	sceneManager.AddScene(new Clear("ClearScene", sceneManager.GetSceneInitializer()));
@@ -386,7 +390,7 @@ bool Game::Draw()
 	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2, &material, sizeof(GE::Material)) });
 
-	static GE::Math::Vector3 dofInfo = { 0.4f,1.7f,0.4f };
+	static GE::Math::Vector3 dofInfo = { 0.4f,2.0f,0.4f };
 	ImGui::DragFloat3("dofInfo", dofInfo.value, 0.001f);
 	GE::Math::Vector4 dof = { dofInfo.x,dofInfo.y ,dofInfo.z ,1 };
 	renderQueue->AddSetConstantBufferInfo({ 13,cbufferAllocater->BindAndAttachData(15, &dof, sizeof(GE::Math::Vector4)) });

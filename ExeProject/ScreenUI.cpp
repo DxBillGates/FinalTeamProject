@@ -48,10 +48,10 @@ void ScreenUIManager::Start()
 #pragma endregion
 
 #pragma region タイトル
-	object["title_start"] = Set(GE::Math::Vector3(pos.x - 300, pos.y / 2.f , 0.0f), { 300,100,0 }, GE::Color::White(), "texture_start");
+	object["title_start"] = Set(GE::Math::Vector3(pos.x - 300, pos.y / 2.f, 0.0f), { 300,100,0 }, GE::Color::White(), "texture_start");
 	object["title_option"] = Set(GE::Math::Vector3(pos.x - 300, pos.y / 2.f + 100, 0.0f), { 300,100,0 }, GE::Color::White(), "texture_option");
 	object["title_exit"] = Set(GE::Math::Vector3(pos.x - 300, pos.y / 2.f + 200, 0.0f), { 300,100,0 }, GE::Color::White(), "texture_exit");
-	object["title_name"] = Set(GE::Math::Vector3(1500, pos.y / 2 - 220.0f ,0.0f), { 1319 / 2.0f,642 / 2.0f,0 }, GE::Color::White(), "texture_title");
+	object["title_name"] = Set(GE::Math::Vector3(1500, pos.y / 2 - 220.0f, 0.0f), { 1319 / 2.0f,642 / 2.0f,0 }, GE::Color::White(), "texture_title");
 #pragma endregion
 
 #pragma region タイムリミット
@@ -69,6 +69,10 @@ void ScreenUIManager::Start()
 	object["time_oneSeconds"].clipSize = { 32,64 };
 #pragma endregion
 
+	object["gyro_shake_tex"] = Set(GE::Math::Vector3(340, 550, 0.0f), { 128,128,0 }, GE::Color::White(), "gyro_shake_tex");
+	object["gyro_shake_tex"].texSize = { 512,128 };
+	object["gyro_shake_tex"].clipSize = { 128,128 };
+	object["gyro_shake_tex"].isDraw = true;
 }
 void ScreenUIManager::Update(float deltaTime)
 {
@@ -80,6 +84,13 @@ void ScreenUIManager::Update(float deltaTime)
 	{
 		object["crash"].isDraw = false;
 	}
+
+	a++;
+	if (a > 20)
+	{
+		a = 0;
+	}
+	object["gyro_shake_tex"].pivotPos = a / 5;
 
 #pragma region オプション中
 	if (Title::GetInstance()->GetSelect(Title::States::option))

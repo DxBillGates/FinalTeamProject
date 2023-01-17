@@ -24,6 +24,8 @@ private:
 		GE::Color col;
 	};
 	std::map<std::string,SpriteInfo> object;
+
+	int a = 0;
 public:
 	static ScreenUIManager* GetInstance();
 	void Start();
