@@ -26,12 +26,13 @@ void CameraControl::Initialize()
 	range = {};
 	cameraShake = {};
 
-	graphicsDevice->GetMainCamera()->SetPosition({ 0,5000,-20000 });
+	graphicsDevice->GetMainCamera()->SetPosition({ 37750,600,15000 });
 }
 
 void CameraControl::Update(float deltaTime)
 {
-	float LERP_VALUE = 0.02f * GE::GameSetting::Time::GetGameTime() * deltaTime;
+
+	float LERP_VALUE = 0.01f * GE::GameSetting::Time::GetGameTime();
 
 	UIObject::GetInstance()->cameraPosition = position;
 	//ターゲトポジションセット

@@ -25,7 +25,7 @@ private:
 	};
 	std::map<std::string,SpriteInfo> object;
 
-	int a = 0;
+	float a = 0.f;
 public:
 	static ScreenUIManager* GetInstance();
 	void Start();
@@ -45,4 +45,5 @@ private:
 	ScreenUIManager(const ScreenUIManager& obj) = delete;
 
 	SpriteInfo Set(GE::Math::Vector3 pos, GE::Math::Vector3 scale, GE::Color color, std::string textureName);
+	SpriteInfo Set(GE::Math::Vector3 pos, GE::Math::Vector3 scale, GE::Color color, std::string textureName, GE::Math::Vector2 texSize, GE::Math::Vector2 clipSize);
 };
