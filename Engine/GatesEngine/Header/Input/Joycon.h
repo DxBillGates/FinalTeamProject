@@ -2,6 +2,7 @@
 #include <cstdint>
 #include "HidDevice.h"
 #include "..\Util\Math\Vector2.h"
+#include "..\Util\Math\Vector3.h"
 
 namespace GE
 {
@@ -192,6 +193,8 @@ namespace GE
 		Vector3Int16 accelerometer;
 		Vector3Int16 gyroscope;
 
+		Math::Vector3 accf, gyrof;
+
 		Vector2Int16 stickData;
 	private:
 		void SendCommand(JoyconCommandID commandID, void* data, int dataSize);
@@ -218,8 +221,9 @@ namespace GE
 		bool GetTriggerButton(JoyconButtonData buttonType);
 		bool GetReleaseButton(JoyconButtonData buttonType);
 
-		Vector3Int16 GetAccelerometer();
-		Vector3Int16 GetGyroscope();
+		GE::Math::Vector3 GetAccelerometer();
+		GE::Math::Vector3 GetGyroscope();
+		GE::Math::Vector3 GetSensorFusion();
 		
 		GE::Math::Vector2 GetStick();
 	};

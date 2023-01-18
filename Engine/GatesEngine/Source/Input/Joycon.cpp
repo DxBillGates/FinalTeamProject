@@ -133,14 +133,17 @@ void GE::Joycon::Update()
 		accelerometer.value[i] -= OFFSET.value[i];
 		gyroscope.value[i] -= OFFSET.value[i];
 
-		accelerometer.value[i] *= 0.000244f;
-		gyroscope.value[i] *= 0.06103f;
+		accf.value[i] = accelerometer.value[i];
+		gyrof.value[i] = gyroscope.value[i];
+
+		accf.value[i] *= 0.000244f;
+		gyrof.value[i] *= 0.06103f;
 	}
 }
 
 void GE::Joycon::ResetPairing()
 {
-	byte data[1] = {0x02};
+	byte data[1] = { 0x02 };
 
 	SendCommand(JoyconCommandID::SET_HCI_STATE, data, 1);
 }
@@ -202,7 +205,7 @@ bool GE::Joycon::GetTriggerButton(JoyconButtonData buttonType)
 	int beforeState = isShareInput ? beforeJoyconShareButtonState : beforeJoyconButtonState;
 	int currentState = isShareInput ? currentJoyconShareButtonState : currentJoyconButtonState;
 
-	return GetTrigger(beforeState,currentState,(int)buttonType);
+	return GetTrigger(beforeState, currentState, (int)buttonType);
 }
 
 bool GE::Joycon::GetReleaseButton(JoyconButtonData buttonType)
@@ -213,17 +216,37 @@ bool GE::Joycon::GetReleaseButton(JoyconButtonData buttonType)
 	int beforeState = isShareInput ? beforeJoyconShareButtonState : beforeJoyconButtonState;
 	int currentState = isShareInput ? currentJoyconShareButtonState : currentJoyconButtonState;
 
-	return GetRelease(beforeState,currentState,(int)buttonType);
+	return GetRelease(beforeState, currentState, (int)buttonType);
 }
 
-GE::Vector3Int16 GE::Joycon::GetAccelerometer()
+GE::Math::Vector3 GE::Joycon::GetAccelerometer()
 {
-	return accelerometer;
+	return accf;
 }
 
-GE::Vector3Int16 GE::Joycon::GetGyroscope()
+GE::Math::Vector3 GE::Joycon::GetGyroscope()
 {
-	return gyroscope;
+	return gyrof;
+}
+
+GE::Math::Vector3 GE::Joycon::GetSensorFusion()
+{
+	// センサー・フュージョンに使用する定数
+	// f =  k * acc + (1 - k) * gyro
+	const float K = 0.05f;
+
+	GE::Math::Vector3 result;
+	float phi = 0, theta = 0, psi = 0;
+	float phiA = std::atan2f(-accf.y, accf.z);
+	float thetaA = std::atan2f(accf.x, std::sqrtf(std::powf(accf.y, 2) + std::powf(accf.z, 2)));
+	float phiG = phi + (gyrof.x + std::sinf(phi) * std::tanf(theta) * gyrof.y + std::cosf(phi) * std::tanf(theta) * gyrof.z);
+	float thetaG = theta + (std::cosf(phi) * gyrof.y - std::sinf(phi) * gyrof.z);
+	float psiG = psi + (std::sinf(phi) / std::cosf(theta) * gyrof.y + std::cosf(phi) / std::cosf(theta) * gyrof.z);
+	phi = K * phiA + (1 - K) * phiG;
+	theta = K * thetaA + (1 - K) * thetaG;
+	psi = 1 * psiG;
+	result = { phi,theta,psi };
+	return result;
 }
 
 GE::Math::Vector2 GE::Joycon::GetStick()

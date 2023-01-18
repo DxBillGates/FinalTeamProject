@@ -119,7 +119,7 @@ bool InputManager::GetActionButton(bool isJoyconAcc)
 	case InputManager::InputDeviceState::JOYCON:
 		if (joyconR->GetTriggerButton(GE::JoyconButtonData::B) && isJoyconAcc == false)return true;
 
-		GE::Vector3Int16 acc = joyconL->GetAccelerometer();
+		GE::Math::Vector3 acc = joyconL->GetAccelerometer();
 		Vector3 accVector = { (float)acc.x,(float)acc.y,(float)acc.z };
 		if (accVector.Length() > 2)return true;
 
