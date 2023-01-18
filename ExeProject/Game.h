@@ -8,6 +8,7 @@ class Game : public GE::Application
 {
 private:
 	GE::Math::GaussFilterData gaussFilterData[6];
+	float sceneColor;
 public:
 	Game();
 	Game(const GE::WindowData& windowData, const GE::Math::Vector2& resolution);

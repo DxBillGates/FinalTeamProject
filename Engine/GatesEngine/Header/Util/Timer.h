@@ -70,6 +70,8 @@ namespace GE
 			/// </summary>
 			/// <param name="value"></param>
 			void SetFrameRate(float value);
+
+			void ResetStartTime();
 		};
 	}
 }
