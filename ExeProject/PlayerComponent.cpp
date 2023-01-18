@@ -368,13 +368,14 @@ void PlayerComponent::Control(float deltaTime)
 		LockOn();
 		break;
 	case PlayerComponent::PlayerStatas::DASH:
-		Dash(100.0f, 80.0f, deltaTime, transform->GetForward());
+		Dash(100.0f, 100.0f, deltaTime, transform->GetForward());
 		break;
 	case PlayerComponent::PlayerStatas::CRASH:
 		//ダッシュから切り替わった時用初期化
 		current_speed = normal_speed;
 		//移動
 		transform->position += transform->GetForward() * current_speed * deltaTime * GE::GameSetting::Time::GetGameTime();
+		transform->rotation *= GE::Math::Quaternion(GE::Math::Vector3(0, 0, 1), 0.03f * deltaTime * GE::GameSetting::Time::GetGameTime());
 
 		if (InputManager::GetInstance()->GetActionButton())
 		{
@@ -606,6 +607,7 @@ void PlayerComponent::Reflection(GE::Math::Vector3 normal)
 {
 	statas = PlayerStatas::CRASH;
 	audioManager->Use("hitWall")->Start();
+	crashCount = 0.0f;
 	transform->rotation = GE::Math::Quaternion::LookDirection(GE::Math::Vector3::Reflection(transform->GetForward(), normal, 2.0f));
 	CameraControl::GetInstance()->ShakeStart({ 50,50 }, 30);
 }

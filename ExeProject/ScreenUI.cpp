@@ -72,12 +72,13 @@ void ScreenUIManager::Start()
 	//Crash時の説明
 	object["crash"] = Set(GE::Math::Vector3(center.x, center.y - 150.f, 0.f), { 400,100,0 }, GE::Color::White(), "crash_info_tex");
 	//ジョイコン振ってるアニメーション
-	object["gyro_shake"] = Set(object["crash"].transform.position - GE::Math::Vector3(300, 0, 0), { 150,150,0 }, GE::Color::White(), "gyro_shake_tex", { 896,128 }, { 128,128 });
+	//object["gyro_shake"] = Set(object["crash"].transform.position - GE::Math::Vector3(300, 0, 0), { 150,150,0 }, GE::Color::White(), "gyro_shake_tex", { 896,128 }, { 128,128 });
 }
 void ScreenUIManager::Update(float deltaTime)
 {
 	object["crash"].isDraw = false;
 	object["gyro_shake"].isDraw = false;
+	object["control_info_2"].isDraw = true;
 	//タイムリミット
 	object["time_minutes"].isDraw = true;
 	object["time_minutes"].pivotPos = TimeLimit::GetInstance()->GetMinutes();
@@ -91,7 +92,7 @@ void ScreenUIManager::Update(float deltaTime)
 	{
 	case PlayerComponent::PlayerStatas::CRASH:
 		object["crash"].isDraw = true;
-		object["gyro_shake"].isDraw = true;
+		//object["gyro_shake"].isDraw = true;
 		break;
 	case PlayerComponent::PlayerStatas::TITLE:
 
@@ -105,9 +106,9 @@ void ScreenUIManager::Update(float deltaTime)
 
 	const float f = 144.0f / (1.0f / deltaTime);
 
-	a += 0.05f * f;
-	int b = GE::Math::Lerp(0, 30, sin(a));
-	object["gyro_shake"].pivotPos = abs(b / 7);
+	//a += 0.05f * f;
+	//int b = GE::Math::Lerp(0, 30, sin(a));
+	//object["gyro_shake"].pivotPos = abs(b / 7);
 
 #pragma region オプション中
 	if (Title::GetInstance()->GetSelect(Title::States::option))
@@ -255,7 +256,7 @@ void ScreenUIManager::LoadPosition(const std::string& filename)
 		std::string key;
 		getline(line_stream, key, ' ');
 
-		
+
 
 	}
 	file.close();

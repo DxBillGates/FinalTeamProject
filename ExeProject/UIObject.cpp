@@ -52,9 +52,8 @@ void UIObject::Start()
 		AddAnimaiotnObject({}, { 250 }, GE::Color(1, 1, 1, 1), "texture_Number", { 320,64 }, { 32,64 }, { 1,0 });
 
 	object["control_info"] =
-		AddObject({}, { 1024,1,512 }, GE::Color(1, 1, 1, 1), "control_info_1_tex");
+		AddObject({}, { 512,1,384 }, GE::Color(1, 1, 1, 1), "control_info_1_tex");
 	object["control_info"].isDraw = true;
-
 }
 
 void UIObject::Update(float deltaTime)
@@ -75,9 +74,11 @@ void UIObject::Update(float deltaTime)
 	object["colectMax"].pivotPos = { (float)StartTree::goalCollect,0 };
 	object["colectMax"].transform.position = object["symbol"].transform.position + object["symbol"].transform.GetRight() * object["symbol"].transform.scale.x;
 	object["colectMax"].isDraw = true;
-
-	GE::Math::Vector3 infoPos = object["colectMax"].transform.GetRight() * object["colectMax"].transform.scale.x;
+	//ê‡ñæUI
+	GE::Math::Vector3 infoPos = object["colectMax"].transform.GetRight() * GE::Math::Matrix4x4::RotationY(1.2f) * 800;
 	object["control_info"].transform.position = object["colectMax"].transform.position + infoPos + GE::Math::Vector3(0, -310, 0);
+	object["control_info"].isDraw = false;
+
 	switch (PlayerComponent::statas)
 	{
 	case PlayerComponent::PlayerStatas::TITLE:
@@ -86,9 +87,9 @@ void UIObject::Update(float deltaTime)
 		object["colectMax"].isDraw = false;
 		break;
 	case PlayerComponent::PlayerStatas::STAY_TREE:
+		object["control_info"].isDraw = true;	//ê‡ñæUI
 		break;
 	case PlayerComponent::PlayerStatas::MOVE:
-		object["control_info"].isDraw = false;
 		break;
 	case PlayerComponent::PlayerStatas::CRASH:
 		break;
