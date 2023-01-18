@@ -37,6 +37,11 @@ void GE::RenderQueue::SetMesh(IMesh* drawMesh)
 	currentSetDrawMesh = drawMesh;
 }
 
+void GE::RenderQueue::AddSetunorderedAccessInfo(const ShaderResourceCommand& command)
+{
+	currentSetUnorderedAccessViews.push_back(command);
+}
+
 void GE::RenderQueue::SetDepth(float value)
 {
 	depth = value;
@@ -53,6 +58,7 @@ void GE::RenderQueue::AddCommand()
 		currentSetPipelineIsWireframe,
 		currentSetShaderResources,
 		currentSetConstantBufferViews,
+		currentSetUnorderedAccessViews,
 		currentSetDrawMesh,
 		depth 
 	};
@@ -60,6 +66,7 @@ void GE::RenderQueue::AddCommand()
 
 	currentSetConstantBufferViews.clear();
 	currentSetShaderResources.clear();
+	currentSetUnorderedAccessViews.clear();
 }
 
 void GE::RenderQueue::ZSortCommand()
@@ -106,6 +113,11 @@ void GE::RenderQueue::Execute(ID3D12GraphicsCommandList* cmdList, IShaderResourc
 		for (auto& constantBufferViewCommand : command.constantBufferViews)
 		{
 			cmdList->SetGraphicsRootDescriptorTable(constantBufferViewCommand.descIndex, shaderResourceHeap->GetGPUHandleForCBV(constantBufferViewCommand.viewNumber));
+		}
+
+		for (auto& unorderedAccessViewCommand : command.unorderedAccessViews)
+		{
+			cmdList->SetGraphicsRootDescriptorTable(unorderedAccessViewCommand.descIndex, shaderResourceHeap->GetGPUHandleForUAV(unorderedAccessViewCommand.viewNumber));
 		}
 
 		GraphicsPipelinePrimitiveTopolotyType topologyType = (GraphicsPipelinePrimitiveTopolotyType)usePipeline->GetTopologyType();

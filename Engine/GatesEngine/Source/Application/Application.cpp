@@ -245,7 +245,7 @@ bool GE::Application::LoadContents()
 	rootSignatureManager->Add(cbv5srv1RootSignature, "CBV5SRV1");
 	// cbv16srv16ルートシグネチャ
 	RootSignature* testRootSignature = new RootSignature();
-	testRootSignature->Create(device, { 16,16,0 });
+	testRootSignature->Create(device, { 16,16,1 });
 	rootSignatureManager->Add(testRootSignature, "CBV16SRV16");
 
 	// demo graphicsPipeline作成

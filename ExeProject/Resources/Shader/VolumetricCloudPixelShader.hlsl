@@ -9,6 +9,8 @@ Texture2D<float4> lightDepthTexture : register(t2);
 
 Texture2D <float4> cellularNoiseTexture : register(t3);
 
+Texture3D<float4> noiseTexture : register(t4);
+
 cbuffer RayInfo : register(b13)
 {
 	float3 boundMin;
@@ -128,7 +130,7 @@ float cellularnoise(float3 st, float n) {
 float SampleDentity(float3 position)
 {
 	float3 uvw = position + CloudScale * 0.001f + CloudOffset * 0.01f;
-	float3 shape = cellularnoise(uvw,4);
+	float3 shape = noiseTexture.Sample(clampLinearSampler, uvw);
 	float density = max(0, shape.r - DensityThreshold) * DensityMultiplier;
 	return density;
 }
@@ -145,11 +147,13 @@ float4 main(RaymarchingVSOutput input) : SV_TARGET
 	bool rayHitBox = rayBoxInfo.y > 0 && rayBoxInfo.x < depth;
 
 	float dstTravelled = 0;
-	float numSteps = 100;
+	float numSteps = 10;
 	float stepSize = rayBoxInfo.y / numSteps;
 	float dstLimit = min(depth - rayBoxInfo.x, rayBoxInfo.y);
 
 	float totalDensity = 0;
+
+	[loop]
 	while(dstTravelled < dstLimit)
 	{
 		float3 rayPos = cameraPos.xyz + rayDir * (rayBoxInfo.x + dstTravelled);

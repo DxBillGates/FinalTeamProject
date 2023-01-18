@@ -118,8 +118,11 @@ void GE::ShaderResourceHeap::CreateSRV(ID3D12Resource* buffer, const D3D12_SHADE
 
 void GE::ShaderResourceHeap::CreateUAV(ID3D12Resource* buffer, const D3D12_UNORDERED_ACCESS_VIEW_DESC& uavDesc)
 {
+	UINT64 incrementSize = GetDescriptorHandleIncrementSize();
 	D3D12_CPU_DESCRIPTOR_HANDLE handle = heap->GetCPUDescriptorHandleForHeapStart();
-	handle.ptr += (UINT64)GetDescriptorHandleIncrementSize() * nextUseUavDescriptorNumber;
+	handle.ptr += ((UINT64)usedShaderResourceCount.x + 1) * incrementSize;
+	handle.ptr += ((UINT64)usedShaderResourceCount.y + 1) * incrementSize;
+	handle.ptr += incrementSize * nextUseUavDescriptorNumber;
 	device->CreateUnorderedAccessView(buffer, nullptr, &uavDesc, handle);
 	++nextUseUavDescriptorNumber;
 }

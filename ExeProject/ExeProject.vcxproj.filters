@@ -58,6 +58,9 @@
     <FxCompile Include="Resources\Shader\VolumetricCloudPixelShader.hlsl">
       <Filter>シェーダーファイル</Filter>
     </FxCompile>
+    <FxCompile Include="Resources\Shader\NoiseTextureGenerateComputeShader.hlsl">
+      <Filter>シェーダーファイル</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BirdEnemy.cpp">

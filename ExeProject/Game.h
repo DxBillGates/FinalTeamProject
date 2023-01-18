@@ -3,11 +3,13 @@
 #include <GatesEngine/Header/Graphics/RenderTexture.h>
 #include <GatesEngine/Header/Graphics/DepthTexture.h>
 #include <GatesEngine/Header/Util/Math/Math.h>
+#include "VolumetricCloud.h"
 
 class Game : public GE::Application
 {
 private:
 	GE::Math::GaussFilterData gaussFilterData[6];
+	VolumetricCloud volumetricCloud;
 public:
 	Game();
 	Game(const GE::WindowData& windowData, const GE::Math::Vector2& resolution);

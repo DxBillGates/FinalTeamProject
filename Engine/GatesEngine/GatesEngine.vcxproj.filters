@@ -353,6 +353,9 @@
     <ClInclude Include="Header\GameFramework\Component\DirectionalLight.h">
       <Filter>Header\GameFramework\Component</Filter>
     </ClInclude>
+    <ClInclude Include="Header\Graphics\ComputePipeline.h">
+      <Filter>Header\Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Application\Application.cpp">
@@ -534,6 +537,9 @@
     </ClCompile>
     <ClCompile Include="Source\GameFramework\Component\DirectionalLight.cpp">
       <Filter>Source\GameFramework\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Graphics\ComputePipeline.cpp">
+      <Filter>Source\Graphics</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

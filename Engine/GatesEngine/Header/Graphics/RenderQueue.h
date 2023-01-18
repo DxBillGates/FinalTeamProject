@@ -25,6 +25,7 @@ namespace GE
 		bool isWireframe = false;
 		std::vector<ShaderResourceCommand> shaderResources;
 		std::vector<ShaderResourceCommand> constantBufferViews;
+		std::vector<ShaderResourceCommand> unorderedAccessViews;
 		IMesh* drawMesh = nullptr;
 		float depth = 0;
 	};
@@ -40,6 +41,7 @@ namespace GE
 		bool currentSetPipelineIsWireframe;
 		std::vector<ShaderResourceCommand> currentSetShaderResources;
 		std::vector<ShaderResourceCommand> currentSetConstantBufferViews;
+		std::vector<ShaderResourceCommand> currentSetUnorderedAccessViews;
 		IMesh* currentSetDrawMesh;
 		float depth;
 	public:
@@ -48,6 +50,7 @@ namespace GE
 		void SetPipeline(IGraphicsPipeline* setPipeline,bool isWireframe = false);
 		void AddSetShaderResource(const ShaderResourceCommand& command);
 		void AddSetConstantBufferInfo(const ShaderResourceCommand& command);
+		void AddSetunorderedAccessInfo(const ShaderResourceCommand& command);
 		void SetMesh(IMesh* drawMesh);
 		void SetDepth(float value);
 

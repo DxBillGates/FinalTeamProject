@@ -182,6 +182,7 @@ bool Game::LoadContents()
 	nullTexture->Load("cellularnoise.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "cellularnoise");
 
+	volumetricCloud.Initialize(&graphicsDevice);
 
 	auto* testScene = sceneManager.AddScene(new SampleScene("SampleScene", sceneManager.GetSceneInitializer()));
 	sceneManager.AddScene(new Clear("ClearScene", sceneManager.GetSceneInitializer()));
@@ -234,6 +235,8 @@ bool Game::Update()
 bool Game::Draw()
 {
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice.GetCBufferAllocater();
+
+	volumetricCloud.Compute();
 
 	graphicsDevice.SetCurrentRenderQueue(true);
 	GE::RenderQueue* renderQueue = graphicsDevice.GetRenderQueue();
@@ -452,6 +455,7 @@ bool Game::Draw()
 	renderQueue->AddSetShaderResource({ 17,graphicsDevice.GetLayerManager()->Get("resultLayer")->GetDepthTexture()->GetSRVNumber() });
 	renderQueue->AddSetShaderResource({ 18,graphicsDevice.GetLayerManager()->Get("shadowLayer")->GetDepthTexture()->GetSRVNumber() });
 	renderQueue->AddSetShaderResource({ 19,graphicsDevice.GetTextureManager()->Get("cellularnoise")->GetSRVNumber() });
+	volumetricCloud.Set3DTexture(20,false);
 	graphicsDevice.DrawMesh("2DPlane");
 
 	graphicsDevice.ExecuteRenderQueue();
