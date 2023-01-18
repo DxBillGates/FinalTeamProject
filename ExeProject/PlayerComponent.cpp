@@ -368,7 +368,7 @@ void PlayerComponent::Control(float deltaTime)
 		LockOn();
 		break;
 	case PlayerComponent::PlayerStatas::DASH:
-		Dash(100.0f, 100.0f, deltaTime, transform->GetForward());
+		Dash(100.0f, 80.0f, deltaTime, transform->GetForward());
 		break;
 	case PlayerComponent::PlayerStatas::CRASH:
 		//ダッシュから切り替わった時用初期化
@@ -607,9 +607,11 @@ void PlayerComponent::Reflection(GE::Math::Vector3 normal)
 {
 	statas = PlayerStatas::CRASH;
 	audioManager->Use("hitWall")->Start();
-	crashCount = 0.0f;
 	transform->rotation = GE::Math::Quaternion::LookDirection(GE::Math::Vector3::Reflection(transform->GetForward(), normal, 2.0f));
 	CameraControl::GetInstance()->ShakeStart({ 50,50 }, 30);
+	//ロックオン中ならロックオンをキャンセル
+	isLockOn = false; dashEasingCount = 0.0f; body_direction_LerpCount = 0; lockOnEnemy.object = nullptr;
+
 }
 //EaseIn関係がよくわからなかったから一時的に追加
 const float PlayerComponent::easeIn(const float start, const float end, float time)

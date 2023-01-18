@@ -77,6 +77,12 @@ bool Game::LoadContents()
 	mesh->Create(device, cmdList, modelGroundLeaf1);
 	meshManager->Add(mesh, "Ground_Leaf1");
 
+	MeshData<Vertex_UV_Normal> modelFrog;
+	MeshCreater::LoadObjModelData("Resources/Model/frog", modelFrog);
+	mesh = new Mesh();
+	mesh->Create(device, cmdList, modelFrog);
+	meshManager->Add(mesh, "modelFrog");
+
 	meshManager->Add(FbxLoader::Load("Bird", &graphicsDevice), "Player");
 	meshManager->Add(FbxLoader::Load("hina", &graphicsDevice), "Hina");
 	meshManager->Add(FbxLoader::Load("Frog", &graphicsDevice), "Frog");

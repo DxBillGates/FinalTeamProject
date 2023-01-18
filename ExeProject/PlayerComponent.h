@@ -35,7 +35,6 @@ private:
 
 	bool isLockOnStart;				//ロックオン処理を呼ぶフラグ
 	bool isLockOn;					//ロックオンして発射待機中フラグ
-	float crashCount;
 
 	float dashEasingCount;			//スピード遷移のカウント
 	float stayLandLerpEasingCount;	//着陸する遷移カウント
