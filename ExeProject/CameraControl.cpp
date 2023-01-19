@@ -99,21 +99,21 @@ void CameraControl::Update(float deltaTime)
 	target += cameraShake * GE::GameSetting::Time::GetGameTime() * deltaTime;
 
 	//カメラシェイク
-	Shake();
+	Shake(deltaTime);
 
 	camera->SetDirection(direction);
 	camera->SetPosition(position);
 }
 
-void CameraControl::Shake()
+void CameraControl::Shake(float deltaTime)
 {
 	//ランダムで移動量
 	GE::Math::Vector2 randVel = GE::Math::Vector2(range.x > 0 ? GE::RandomMaker::GetFloat(-range.x, range.x) : 0, range.y > 0 ? GE::RandomMaker::GetFloat(-range.y, range.y) : 0);
 	//移動量をセットする
 	cameraShake = GE::Math::Vector3(randVel.x, randVel.y, 0);
 	//カメラシェイクの減衰
-	range.x > 0 ? range.x -= 1.0 * GE::GameSetting::Time::GetGameTime() : range.x = 0.0f;
-	range.y > 0 ? range.y -= 1.0f * GE::GameSetting::Time::GetGameTime() : range.y = 0.0f;
+	range.x > 0 ? range.x -= deltaTime * GE::GameSetting::Time::GetGameTime() : range.x = 0.0f;
+	range.y > 0 ? range.y -= deltaTime * GE::GameSetting::Time::GetGameTime() : range.y = 0.0f;
 }
 void CameraControl::ShakeStart(GE::Math::Vector2 range, int flame)
 {

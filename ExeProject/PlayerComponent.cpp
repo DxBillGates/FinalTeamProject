@@ -18,7 +18,7 @@
 float PlayerComponent::frameRate;
 PlayerComponent::PlayerStatas PlayerComponent::statas;
 GE::Math::Vector3 PlayerComponent::onTheTreePosition = { 0,250,200 };	//木の上で体の高さ調整用
-int PlayerComponent::hitStopTime = 15;								// ヒットストップの長さ
+int PlayerComponent::hitStopTime = 50;								// ヒットストップの長さ
 float PlayerComponent::body_direction_LerpTime = 50.0f;				//ダッシュ後体の角度の遷移
 float PlayerComponent::pushStartTime = 20.0f;						//キーを押してから操作できるようになるまでのカウント
 float PlayerComponent::stayLandLerpTime = 150.0f;					//木に着陸するラープ長さ
@@ -65,7 +65,7 @@ void PlayerComponent::Start()
 
 	statasChangeCount = 0;
 
-	hitStopCount = hitStopTime;
+	hitStopCount = (float)hitStopTime;
 	stayLandLerpEasingCount = stayLandLerpTime;
 	//姿勢遷移
 	body_direction_LerpCount = body_direction_LerpTime;
@@ -100,7 +100,7 @@ void PlayerComponent::Update(float deltaTime)
 		if (hitStopCount < hitStopTime)
 		{
 			GE::GameSetting::Time::SetGameTime(0.01);
-			hitStopCount += 1;
+			hitStopCount += f;
 		}
 		else { GE::GameSetting::Time::SetGameTime(1.0); }
 	}
@@ -275,7 +275,7 @@ void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 			//収集物 +1
 			colectCount < colectMax ? colectCount++ : 0;
 		}
-		hitStopCount = 0;
+		hitStopCount = 0.0f;
 		CameraControl::GetInstance()->ShakeStart({ 50,50 }, 30);
 	}
 }

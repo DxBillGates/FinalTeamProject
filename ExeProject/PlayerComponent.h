@@ -39,7 +39,7 @@ private:
 	float dashEasingCount;			//スピード遷移のカウント
 	float stayLandLerpEasingCount;	//着陸する遷移カウント
 	int colectCount;				//取集物を何個集めたか
-	int hitStopCount;				//ヒットストップカウント用
+	float hitStopCount;				//ヒットストップカウント用
 	float startCouunt;				//開始時のカウント
 	int body_direction_LerpCount;	//元の姿勢に戻るときの遷移
 	int lockOnIntervalCount;		//ロックオンのインターバルのカウント

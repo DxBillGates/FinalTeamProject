@@ -104,7 +104,7 @@ void SampleScene::Update(float deltaTime)
 	}
 
 	FieldObjectManager::GetInstance()->OtherUpdate();
-	FieldObjectDeBugTransform::GetInstance()->Update();
+	FieldObjectDebugTransform::GetInstance()->Update();
 }
 
 void SampleScene::Draw()
@@ -137,7 +137,7 @@ void SampleScene::Draw()
 	directionalLight->SetDirectionalLightInfo();
 	gameObjectManager.Draw();
 	FieldObjectManager::GetInstance()->OtherDraw();
-	FieldObjectDeBugTransform::GetInstance()->Draw();
+	FieldObjectDebugTransform::GetInstance()->Draw();
 	UIObject::GetInstance()->Draw(graphicsDevice);
 }
 
@@ -177,8 +177,8 @@ void SampleScene::Load()
 		sampleComponent->SetPlayer(gameObjectManager.FindGameObject("Player")->GetComponent<PlayerComponent>());
 	}
 	EnemyManager::GetInstance()->Start(&gameObjectManager);
-	FieldObjectDeBugTransform::GetInstance()->SetInputDevice(inputDevice);
-	FieldObjectDeBugTransform::GetInstance()->SetGraphicsDevice(graphicsDevice);
+	FieldObjectDebugTransform::GetInstance()->SetInputDevice(inputDevice);
+	FieldObjectDebugTransform::GetInstance()->SetGraphicsDevice(graphicsDevice);
 	FieldObjectManager::GetInstance()->Start(&gameObjectManager);
 	/*FieldObjectManager::GetInstance()->SetGroundMesh(groundModel);
 	FieldObjectManager::GetInstance()->SetStartTreeMesh(startTreeModel);*/
@@ -207,7 +207,7 @@ void SampleScene::UnLoad()
 	Title::GetInstance()->ClearGameObject();
 	EnemyManager::GetInstance()->UnLoad();
 	FieldObjectManager::GetInstance()->UnLoad();
-	FieldObjectDeBugTransform::GetInstance()->UnLoad();
+	FieldObjectDebugTransform::GetInstance()->UnLoad();
 	UIObject::GetInstance()->UnLoad();
 	ScreenUIManager::GetInstance()->UnLoad();
 	// gameObjects‚ğíœ‚·‚é

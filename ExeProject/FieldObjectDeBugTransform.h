@@ -4,7 +4,7 @@
 #include <GatesEngine/Header/GameFramework/Component/SphereCollider.h>
 #include <GatesEngine/Header/GameFramework/Collision/CollisionManager.h>
 
-class FieldObjectDeBugTransform
+class FieldObjectDebugTransform
 {
 private:
 	GE::InputDevice* inputDevice;
@@ -39,7 +39,7 @@ public:
 	GE::Math::Vector3 rayDir;
 	std::vector<Object> objects;
 public:
-	static FieldObjectDeBugTransform* GetInstance();
+	static FieldObjectDebugTransform* GetInstance();
 	void Update();
 	void Draw();
 	void UnLoad();
@@ -49,10 +49,10 @@ public:
 
 	void AddTarget(GE::GameObject* gameobject, GE::Math::Vector3 pivotLength = { 3.0f });
 private:
-	FieldObjectDeBugTransform() = default;
+	FieldObjectDebugTransform() = default;
 
-	~FieldObjectDeBugTransform() = default;
-	void operator=(const FieldObjectDeBugTransform& obj) = delete;
-	FieldObjectDeBugTransform(const FieldObjectDeBugTransform& obj) = delete;
+	~FieldObjectDebugTransform() = default;
+	void operator=(const FieldObjectDebugTransform& obj) = delete;
+	FieldObjectDebugTransform(const FieldObjectDebugTransform& obj) = delete;
 };
 
