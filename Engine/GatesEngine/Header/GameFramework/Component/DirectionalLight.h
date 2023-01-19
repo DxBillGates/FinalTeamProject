@@ -35,5 +35,6 @@ namespace GE
 		// 太陽の位置から天球のuvを計算した値を返す
 		Math::Vector2 GetUV();
 		void SetTarget(Transform* transform);
+		Math::Vector2& GetAngle();
 	};
 }

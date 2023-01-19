@@ -57,11 +57,17 @@ void SampleScene::Initialize()
 	FieldObjectManager::GetInstance()->LoadPosition("Resources/tree.txt");
 	UIObject::GetInstance()->Start();
 	ScreenUIManager::GetInstance()->Start();
-
 }
 
 void SampleScene::Update(float deltaTime)
 {
+	GE::Math::Vector3 directionalLightAngle = { directionalLight->GetAngle().x,directionalLight->GetAngle().y,0 };
+	directionalLightAngle.x += GE::GameSetting::Time::GetDeltaTime();
+	GE::Math::Vector3 minAngle = { 10,directionalLightAngle.y,0 };
+	GE::Math::Vector3 maxAngle = { 170,directionalLightAngle.y,0 };
+	directionalLightAngle = GE::Math::Vector3::Min(minAngle,GE::Math::Vector3::Max(maxAngle,directionalLightAngle));
+	directionalLight->GetAngle().x = directionalLightAngle.x;
+
 	Title::GetInstance()->Select();
 	gameObjectManager.Update(deltaTime);
 	collisionManager.Update();

@@ -38,7 +38,7 @@ void Clear::Initialize()
 	gameObjectManager.Awake();
 	gameObjectManager.Start();
 
-	gameObjectManager.FindGameObjectWithTag("directionalLight", "directionalLight")->GetTransform()->rotation = GE::Math::Quaternion::Euler({ 9,190,0 });
+	directionalLight->GetAngle() = { 10,190 };
 
 	FieldObjectManager::GetInstance()->LoadPosition("Resources/tree.txt");
 }
