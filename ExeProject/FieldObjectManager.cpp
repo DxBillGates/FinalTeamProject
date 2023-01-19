@@ -100,7 +100,7 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 			fieldTree.push_back(object);
 			auto* collider = object->AddComponent < GE::BoxCollider >();
 			collider->SetSize(GE::Math::Vector3(1.5f, 15, 1.5f));
-			FieldObjectDeBugTransform::GetInstance()->AddTarget(object, {3,10,3});
+			FieldObjectDebugTransform::GetInstance()->AddTarget(object, {3,10,3});
 		}
 	}
 	//フィールドの草
@@ -138,7 +138,7 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 			object->GetTransform()->position = {};
 			object->GetTransform()->scale = { 2 };
 			birdChild.push_back(object);
-			FieldObjectDeBugTransform::GetInstance()->AddTarget(object);
+			FieldObjectDebugTransform::GetInstance()->AddTarget(object);
 		}
 	}
 }
