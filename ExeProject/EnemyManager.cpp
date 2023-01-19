@@ -22,6 +22,8 @@ void EnemyManager::Start(GE::GameObjectManager* gameObjectManager)
 		normalEnemyCollider->SetCenter({ 0,0,0 });
 		normalEnemyCollider->SetSize({ 40 });
 		nEnemies.push_back(enemy);
+		FieldObjectDebugTransform::GetInstance()->AddTarget(enemy, { 100,100,100 });
+
 	}
 	for (int i = 0; i < 0; ++i)
 	{
