@@ -54,7 +54,7 @@ void GE::DirectionalLight::Update(float deltaTime)
 	const float MAX_RADIUS = 20000;
 	direction = CalclateDirection();
 	up = CalclateUp();
-
+	transform->rotation = Math::Quaternion::Euler({ angleXY.x,angleXY.y,0 });
 	Math::Vector3 targetPosition = (target) ? target->position : GE::Math::Vector3();
 	targetPosition.y = 0;
 	Math::Vector3 position = (target) ? targetPosition + -direction * drawRange.z : -direction * drawRange.z;
@@ -125,4 +125,9 @@ GE::Math::Vector2 GE::DirectionalLight::GetUV()
 void GE::DirectionalLight::SetTarget(Transform* transform)
 {
 	target = transform;
+}
+
+GE::Math::Vector2& GE::DirectionalLight::GetAngle()
+{
+	return angleXY;
 }

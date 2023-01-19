@@ -69,9 +69,9 @@ bool GE::Application::LoadContents()
 	// sample bgm ƒ[ƒh•Ä¶
 	auto* testBGMData = audioManager.AddAudioData(new AudioData("Resources/Audio/BGM1.wav"), "testBGMData");
 	auto* testBGM = audioManager.AddAudio(new Audio(testBGMData, "testBGM"));
-	testBGM->Start();
-	testBGM->SetVolume(0.1f);
-	testBGM->SetPitch(1);
+	//testBGM->Start();
+	//testBGM->SetVolume(0.1f);
+	//testBGM->SetPitch(1);
 
 	auto* device = graphicsDevice.GetDevice();
 	auto* cmdList = graphicsDevice.GetCmdList();
