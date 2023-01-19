@@ -144,6 +144,7 @@ void PlayerComponent::Update(float deltaTime)
 			statas = PlayerStatas::GO_TREE;
 		}
 	}
+
 	animator.Update(deltaTime);
 }
 
@@ -237,6 +238,7 @@ void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 			crashParticle.Fire(transform->position, gameObject->GetHitNormal(), other->GetColor());
 			PlayerColectObject::GetInstance()->SetFallen(gameObject->GetHitNormal());
 			colectCount > 0 ? colectCount-- : 1;
+
 			return;
 		}
 		else if (other->GetTag() == "tile")
