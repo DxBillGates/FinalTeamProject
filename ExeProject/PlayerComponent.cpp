@@ -31,6 +31,7 @@ float PlayerComponent::worldRadius = 38000.0f;						//端この壁までの長さ
 float PlayerComponent::lockOnLength = 10000.0f;						//ロックオンできる距離
 float PlayerComponent::moreTimesLockOnLength = 10000.0f;			//連続で二回目以降の敵をロックオンできる距離
 int PlayerComponent::lockOnInterval = 300.0f;						//再度ロックオンできるまでのインターバル
+bool PlayerComponent::isGoTree = false;						//再度ロックオンできるまでのインターバル
 
 PlayerComponent::PlayerComponent()
 	: inputDevice(nullptr)
@@ -86,6 +87,7 @@ void PlayerComponent::Update(float deltaTime)
 {
 	frameRate = 1.0f / deltaTime;
 	const float f = 144.0f / frameRate;
+	isGoTree = false;
 
 	crashParticle.Update(f);
 
@@ -210,10 +212,10 @@ void PlayerComponent::OnCollision(GE::GameObject* other)
 	{
 		if (statas == PlayerStatas::STAY_TREE || statas == PlayerStatas::GO_TREE || statas == PlayerStatas::TITLE)
 		{
-
 		}
 		else
 		{
+			isGoTree = true;
 			if (InputManager::GetInstance()->GetActionButton())
 			{
 				stayLandLerpEasingCount = 0.0f;
@@ -282,7 +284,7 @@ void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 
 void PlayerComponent::OnCollisionExit(GE::GameObject* other)
 {
-	GE::Utility::Printf("PlayerComponent OnCollisionExit\n");
+
 }
 
 void PlayerComponent::OnCollision(GE::ICollider* hitCollider)

@@ -69,11 +69,12 @@ void ScreenUIManager::Start()
 	object["time_tenSeconds"] = Set(GE::Math::Vector3(240, 850, 0.0f), { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
 	object["time_oneSeconds"] = Set(GE::Math::Vector3(340, 850, 0.0f), { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
 #pragma endregion
-	//Crash時の説明
+
 	object["crash"] = Set(GE::Math::Vector3(center.x, center.y - 150.f, 0.f), { 400,100,0 }, GE::Color::White(), "crash_info_tex");
 	object["lockon_info"] = Set(GE::Math::Vector3(217, 600, 0.0f), GE::Math::Vector3(600, 64, 0) * 0.6f, GE::Color::White(), "lockon_info_tex");
-	object["dash_info"] = Set(GE::Math::Vector3(168, 670, 0.0f), GE::Math::Vector3(256, 64, 0)*1.1f, GE::Color::White(), "control_info_1_tex", { 512,384 }, { 512, 128 });
+	object["dash_info"] = Set(GE::Math::Vector3(168, 670, 0.0f), GE::Math::Vector3(256, 64, 0) * 1.1f, GE::Color::White(), "control_info_1_tex", { 512,384 }, { 512, 128 });
 	object["dash_info"].pivotPos = 2;
+	object["go_tree"] = Set(GE::Math::Vector3(center.x, center.y - 150.f, 0.f), GE::Math::Vector3(256, 64, 0) * 0.6f, GE::Color::White(), "control_info_2_tex");
 	//ジョイコン振ってるアニメーション
 	//object["gyro_shake"] = Set(object["crash"].transform.position - GE::Math::Vector3(300, 0, 0), { 150,150,0 }, GE::Color::White(), "gyro_shake_tex", { 896,128 }, { 128,128 });
 }
@@ -84,6 +85,7 @@ void ScreenUIManager::Update(float deltaTime)
 	object["control_info_2"].isDraw = true;
 	object["lockon_info"].isDraw = false;
 	object["dash_info"].isDraw = false;
+	object["go_tree"].isDraw = false;
 
 	//タイムリミット
 	object["time_minutes"].isDraw = true;
@@ -93,7 +95,10 @@ void ScreenUIManager::Update(float deltaTime)
 	object["time_oneSeconds"].isDraw = true;
 	object["time_oneSeconds"].pivotPos = TimeLimit::GetInstance()->GetOneSeconds();
 	object["time_symbol"].isDraw = true;
-
+	if (PlayerComponent::isGoTree)
+	{
+		object["go_tree"].isDraw = true;
+	}
 	switch (PlayerComponent::statas)
 	{
 	case PlayerComponent::PlayerStatas::CRASH:

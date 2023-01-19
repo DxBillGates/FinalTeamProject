@@ -191,7 +191,7 @@ bool Game::LoadContents()
 	nullTexture = new Texture();
 	nullTexture->Load("control_info_1.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "control_info_1_tex");
-	
+
 	nullTexture = new Texture();
 	nullTexture->Load("lockon_info.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "lockon_info_tex");
@@ -199,6 +199,10 @@ bool Game::LoadContents()
 	nullTexture = new Texture();
 	nullTexture->Load("crash_info.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "crash_info_tex");
+
+	nullTexture = new Texture();
+	nullTexture->Load("control_info_2.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "control_info_2_tex");
 
 	auto* testScene = sceneManager.AddScene(new SampleScene("SampleScene", sceneManager.GetSceneInitializer()));
 	sceneManager.AddScene(new Clear("ClearScene", sceneManager.GetSceneInitializer()));
