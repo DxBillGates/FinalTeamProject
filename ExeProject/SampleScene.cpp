@@ -70,24 +70,23 @@ void SampleScene::Update(float deltaTime)
 	//Collect::GetInstance()->Update(StartTree::collectCount, StartTree::goalCollect);
 	UIObject::GetInstance()->Update(deltaTime);
 	ScreenUIManager::GetInstance()->Update(deltaTime);
-	////ƒNƒŠƒAˆÈ~ðŒ
-	//if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::Q)
-	//	|| StartTree::isCollect)
-	//{
-	//	changeSceneInfo.flag = true;
-	//	changeSceneInfo.name = "ClearScene";
-	//	changeSceneInfo.initNextSceneFlag = true;
-	//}
-	//if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::E)
-	//	|| TimeLimit::GetInstance()->GetTimeOver())
-	//{
-	//	changeSceneInfo.flag = true;
-	//	changeSceneInfo.name = "OverScene";
-	//	changeSceneInfo.initNextSceneFlag = true;
-	//}
+	//ƒNƒŠƒAˆÈ~ðŒ
+	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::Q)
+		|| StartTree::isCollect)
+	{
+		changeSceneInfo.flag = true;
+		changeSceneInfo.name = "ClearScene";
+		changeSceneInfo.initNextSceneFlag = true;
+	}
+	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::E)
+		|| TimeLimit::GetInstance()->GetTimeOver())
+	{
+		changeSceneInfo.flag = true;
+		changeSceneInfo.name = "OverScene";
+		changeSceneInfo.initNextSceneFlag = true;
+	}
 
 	//Collect::GetInstance()->Update(StartTree::collectCount, StartTree::goalCollect);
-
 	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::Y))
 	{
 		changeSceneInfo.flag = true;
