@@ -8,6 +8,7 @@
 #include <GatesEngine/Header/GUI/GUIManager.h>
 #include <GatesEngine/Header/Graphics/FbxLoader.h>
 #include <GatesEngine/Header/Graphics/Texture.h>
+#include "Option.h"
 
 Game::Game()
 	: Application()
@@ -272,6 +273,7 @@ bool Game::Initialize()
 
 bool Game::Update()
 {
+	audioManager.Get("testBGM", 0)->Start();
 	GE::GUIManager::StartFrame();
 	Application::Update();
 
@@ -289,6 +291,8 @@ bool Game::Update()
 #ifdef _DEBUG
 	ImGui::Text("FPS : %.3f", 1.0f / timer.GetElapsedTime());
 #endif // _DEBUG
+
+	audioManager.Get("testBGM", 0)->SetVolume(sceneColor * OptionData::BGM_vol / 10.f);
 	return true;
 }
 
@@ -473,7 +477,16 @@ bool Game::Draw()
 	graphicsDevice.ExecuteRenderQueue();
 	graphicsDevice.ExecuteCommands();
 
+	graphicsDevice.SetCurrentRenderQueue(false);
+	graphicsDevice.SetShaderResourceDescriptorHeap();
+	graphicsDevice.SetLayer("defaultLayer");
+	//graphicsDevice.SetDefaultRenderTargetWithoutDSV();
+	sceneManager.LateDraw();
+	graphicsDevice.ExecuteRenderQueue();
+	graphicsDevice.ExecuteCommands();
+
 	// ƒuƒ‰[‚µ‚½Œ‹‰Ê‚ðŒ³‰æ‘œ‚É‡¬
+	graphicsDevice.SetCurrentRenderQueue(true);
 	graphicsDevice.SetShaderResourceDescriptorHeap();
 	graphicsDevice.SetDefaultRenderTarget();
 	graphicsDevice.SetShader("volumetricCloudShader");
@@ -500,6 +513,15 @@ bool Game::Draw()
 #endif // _DEBUG
 	material.color = { sceneColor,sceneColor ,sceneColor,1 };
 
+	//modelMatrix = GE::Math::Matrix4x4::Scale({ windowSize.x,windowSize.y,0 });
+	//windowSize.x /= 2;
+	//windowSize.y /= 2;
+	//modelMatrix *= GE::Math::Matrix4x4::Translate({ windowSize.x,windowSize.y,0 });
+
+	//cameraInfo = graphicsDevice.GetMainCamera()->GetCameraInfo();
+	//cameraInfo.viewMatrix = GE::Math::Matrix4x4::GetViewMatrixLookTo({ 0,0,0 }, { 0,0,1 }, { 0,1,0 });
+	//cameraInfo.projMatrix = GE::Math::Matrix4x4::GetOrthographMatrix(GE::Window::GetWindowSize());
+
 	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
 	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2, &material, sizeof(GE::Material)) });
@@ -512,9 +534,9 @@ bool Game::Draw()
 	graphicsDevice.DrawMesh("2DPlane");
 
 	//graphicsDevice.SetShaderResourceDescriptorHeap();
-	graphicsDevice.SetCurrentRenderQueue(false);
-	graphicsDevice.SetDefaultRenderTargetWithoutDSV();
-	sceneManager.LateDraw();
+	//graphicsDevice.SetCurrentRenderQueue(false);
+	//graphicsDevice.SetDefaultRenderTargetWithoutDSV();
+	//sceneManager.LateDraw();
 	graphicsDevice.ExecuteRenderQueue();
 
 	//ImVec2 texSize = { textureAnimationInfo.textureSize.x / 4,textureAnimationInfo.textureSize.y / 4 };
