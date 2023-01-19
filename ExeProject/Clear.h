@@ -2,6 +2,7 @@
 #include <GatesEngine/Header/GameFramework/Scene/Scene.h>
 #include <GatesEngine/Header/GameFramework/Collision/ICollider.h>
 #include <GatesEngine/Header/GameFramework/Component/Component.h>
+#include <GatesEngine/Header/GameFramework/Component/DirectionalLight.h>
 
 class ClearTex :public GE::Component
 {
@@ -14,7 +15,10 @@ public:
 
 class Clear : public GE::Scene
 {
+public:
+	static bool nowClear;
 private:
+	GE::DirectionalLight* directionalLight;
 public:
 	Clear();
 	Clear(const std::string& sceneName);

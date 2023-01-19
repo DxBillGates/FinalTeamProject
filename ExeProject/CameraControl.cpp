@@ -1,5 +1,6 @@
 #include "CameraControl.h"
 #include "PlayerComponent.h"
+#include"Clear.h"
 #include <GatesEngine/Header\GameFramework/GameSetting.h>
 #include <GatesEngine/Header/Util/Random.h           >
 #include"UIObject.h"
@@ -47,7 +48,13 @@ void CameraControl::Update(float deltaTime)
 
 	//ƒJƒƒ‰‚ÌXV
 	GE::Math::Vector3 newCameraPosition;
-	if (PlayerComponent::statas == PlayerComponent::PlayerStatas::TITLE)
+	if (Clear::nowClear)
+	{
+		target = targetObject->GetTransform()->position;
+		current_cameraDistance = normal_cameraDistance;
+		newCameraPosition = { 2000,9000,-6000 };
+	}
+	else if (PlayerComponent::statas == PlayerComponent::PlayerStatas::TITLE)
 	{
 		current_cameraDistance = 3000;
 		GE::Math::Vector3 wind = GE::Math::Vector3(sinf(count), cosf(count), cosf(-count)) * 30;
