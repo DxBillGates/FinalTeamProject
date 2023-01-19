@@ -39,6 +39,7 @@ void Clear::Initialize()
 	gameObjectManager.Start();
 
 	directionalLight->GetAngle() = { 10,190 };
+	CameraControl::GetInstance()->SetClearCameraPosition();
 
 	FieldObjectManager::GetInstance()->LoadPosition("Resources/tree.txt");
 }

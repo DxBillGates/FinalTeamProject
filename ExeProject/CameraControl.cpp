@@ -128,6 +128,11 @@ void CameraControl::ShakeStart(GE::Math::Vector2 range, int flame)
 	//shakeFlame = flame;
 }
 
+void CameraControl::SetClearCameraPosition()
+{
+	graphicsDevice->GetMainCamera()->SetPosition({ 2931, 9476, -7104 });
+}
+
 //EaseInŠÖŒW‚ª‚æ‚­‚í‚©‚ç‚È‚©‚Á‚½‚©‚çˆêŽž“I‚É’Ç‰Á
 const float CameraControl::easeIn(const float start, const float end, float time)
 {

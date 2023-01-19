@@ -44,6 +44,7 @@ public:
 	/// <param name="flame">—h‚ç‚·ƒtƒŒ[ƒ€”</param>
 	void ShakeStart(GE::Math::Vector2 range = { 10,10 }, int flame = 5);
 	void SetTargetObject(GE::GameObject* t) { targetObject = t; }
+	void SetClearCameraPosition();
 
 private:
 	CameraControl() = default;
