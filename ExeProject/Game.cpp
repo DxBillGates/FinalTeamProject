@@ -241,6 +241,7 @@ bool Game::Initialize()
 
 	// fps‚Ì•\Ž¦Ø‘Ö
 	timer.SetIsShow(false);
+	timer.SetFrameRate(60);
 
 	float gaussValue = 2.5f;
 	GE::Math::Vector2 right = { 1,0 };
@@ -285,7 +286,9 @@ bool Game::Update()
 	{
 		sceneColor = 1 - sceneManager.GetCurrentScene()->IsChangeScene().sceneTransitionFadeout.GetTime();
 	}
+#ifdef _DEBUG
 	ImGui::Text("FPS : %.3f", 1.0f / timer.GetElapsedTime());
+#endif // _DEBUG
 	return true;
 }
 
@@ -371,7 +374,9 @@ bool Game::Draw()
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
 	renderQueue->AddSetConstantBufferInfo({ 4,cbufferAllocater->BindAndAttachData(4,&textureAnimationInfo,sizeof(GE::TextureAnimationInfo)) });
 	static float BRIGHTNESS = 0.7f;
+#ifdef _DEBUG
 	ImGui::DragFloat("BrightnessSamplingValue", &BRIGHTNESS, 0.01f, 0, 1);
+#endif // _DEBUG
 	renderQueue->AddSetConstantBufferInfo({ 5,cbufferAllocater->BindAndAttachData(5,&BRIGHTNESS,sizeof(float)) });
 	renderQueue->AddSetShaderResource({ 16,graphicsDevice.GetLayerManager()->Get("resultLayer")->GetRenderTexture()->GetSRVNumber() });
 	graphicsDevice.DrawMesh("2DPlane");
@@ -450,7 +455,9 @@ bool Game::Draw()
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2, &material, sizeof(GE::Material)) });
 
 	static GE::Math::Vector3 dofInfo = { 0.7f,2.0f,0.4f };
+#ifdef _DEBUG
 	ImGui::DragFloat3("dofInfo", dofInfo.value, 0.001f);
+#endif // _DEBUG
 	GE::Math::Vector4 dof = { dofInfo.x,dofInfo.y ,dofInfo.z ,1 };
 	renderQueue->AddSetConstantBufferInfo({ 13,cbufferAllocater->BindAndAttachData(15, &dof, sizeof(GE::Math::Vector4)) });
 	renderQueue->AddSetShaderResource({ 16,graphicsDevice.GetLayerManager()->Get("resultLayer")->GetRenderTexture()->GetSRVNumber() });
@@ -482,6 +489,7 @@ bool Game::Draw()
 	};
 
 	RayInfo rayInfo;
+#ifdef _DEBUG
 	static GE::Math::Vector3 pos = { 0,0,0 };
 	static GE::Math::Vector3 scale = 2000;
 	ImGui::DragFloat3("CloudPos", pos.value, 1.0f);
@@ -489,6 +497,7 @@ bool Game::Draw()
 	rayInfo.boundMin = pos - scale / 2;
 	rayInfo.boundMax = pos + scale / 2;
 	ImGui::Text("color : %.3f", sceneColor);
+#endif // _DEBUG
 	material.color = { sceneColor,sceneColor ,sceneColor,1 };
 
 	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
