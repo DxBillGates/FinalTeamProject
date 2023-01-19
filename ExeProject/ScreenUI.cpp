@@ -71,6 +71,9 @@ void ScreenUIManager::Start()
 #pragma endregion
 	//Crash時の説明
 	object["crash"] = Set(GE::Math::Vector3(center.x, center.y - 150.f, 0.f), { 400,100,0 }, GE::Color::White(), "crash_info_tex");
+	object["lockon_info"] = Set(GE::Math::Vector3(217, 600, 0.0f), GE::Math::Vector3(600, 64, 0) * 0.6f, GE::Color::White(), "lockon_info_tex");
+	object["dash_info"] = Set(GE::Math::Vector3(168, 670, 0.0f), GE::Math::Vector3(256, 64, 0)*1.1f, GE::Color::White(), "control_info_1_tex", { 512,384 }, { 512, 128 });
+	object["dash_info"].pivotPos = 2;
 	//ジョイコン振ってるアニメーション
 	//object["gyro_shake"] = Set(object["crash"].transform.position - GE::Math::Vector3(300, 0, 0), { 150,150,0 }, GE::Color::White(), "gyro_shake_tex", { 896,128 }, { 128,128 });
 }
@@ -79,6 +82,9 @@ void ScreenUIManager::Update(float deltaTime)
 	object["crash"].isDraw = false;
 	object["gyro_shake"].isDraw = false;
 	object["control_info_2"].isDraw = true;
+	object["lockon_info"].isDraw = false;
+	object["dash_info"].isDraw = true;
+
 	//タイムリミット
 	object["time_minutes"].isDraw = true;
 	object["time_minutes"].pivotPos = TimeLimit::GetInstance()->GetMinutes();
@@ -92,6 +98,7 @@ void ScreenUIManager::Update(float deltaTime)
 	{
 	case PlayerComponent::PlayerStatas::CRASH:
 		object["crash"].isDraw = true;
+
 		//object["gyro_shake"].isDraw = true;
 		break;
 	case PlayerComponent::PlayerStatas::TITLE:
@@ -101,6 +108,13 @@ void ScreenUIManager::Update(float deltaTime)
 		object["time_symbol"].isDraw = false;
 		object["time_tenSeconds"].isDraw = false;
 		object["time_oneSeconds"].isDraw = false;
+		break;
+	case PlayerComponent::PlayerStatas::LOCKON_SHOOT:
+
+		break;
+	case PlayerComponent::PlayerStatas::MOVE:
+
+		object["lockon_info"].isDraw = true;
 		break;
 	}
 
