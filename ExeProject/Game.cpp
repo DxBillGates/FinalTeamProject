@@ -287,7 +287,8 @@ bool Game::Draw()
 		renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
 		graphicsDevice.DrawMesh("Grid");
 
-		Application::Draw();
+		//Application::Draw();
+		sceneManager.Draw();
 	}
 
 	graphicsDevice.ExecuteRenderQueue();
@@ -453,6 +454,10 @@ bool Game::Draw()
 	renderQueue->AddSetShaderResource({ 18,graphicsDevice.GetLayerManager()->Get("shadowLayer")->GetDepthTexture()->GetSRVNumber() });
 	graphicsDevice.DrawMesh("2DPlane");
 
+	//graphicsDevice.SetShaderResourceDescriptorHeap();
+	graphicsDevice.SetCurrentRenderQueue(false);
+	graphicsDevice.SetDefaultRenderTargetWithoutDSV();
+	sceneManager.LateDraw();
 	graphicsDevice.ExecuteRenderQueue();
 
 	//ImVec2 texSize = { textureAnimationInfo.textureSize.x / 4,textureAnimationInfo.textureSize.y / 4 };
