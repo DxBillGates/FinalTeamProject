@@ -7,7 +7,7 @@ class UIObject
 public:
 	struct Object
 	{
-		std::string tag = "Tag_Ga_Naiyo";
+		bool isDraw = true;
 		GE::Transform transform;
 		GE::Color color;
 		std::string textureName = "texture_null";
@@ -18,12 +18,12 @@ public:
 
 	GE::Math::Vector3 cameraPosition;
 private:
-	std::vector<Object> object;
+	std::map<std::string, Object> object;
 
 public:
 	static UIObject* GetInstance();
-	Object AddObject(std::string tag, GE::Math::Vector3 positon, GE::Math::Vector3 scale, GE::Color color, std::string textureName);
-	Object AddAnimaiotnObject(std::string tag, GE::Math::Vector3 positon, GE::Math::Vector3 scale, GE::Color color, std::string textureName,
+	Object AddObject(GE::Math::Vector3 positon, GE::Math::Vector3 scale, GE::Color color, std::string textureName);
+	Object AddAnimaiotnObject(GE::Math::Vector3 positon, GE::Math::Vector3 scale, GE::Color color, std::string textureName,
 		GE::Math::Vector2 texSize, GE::Math::Vector2 clipSize, GE::Math::Vector2 pivotPos = {});
 	void Start();
 	void Update(float deltaTime);

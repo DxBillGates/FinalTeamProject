@@ -2,13 +2,13 @@
 #include "PlayerComponent.h"
 #include <GatesEngine/Header/Graphics\Window.h>
 #include<cassert>
-FieldObjectDeBugTransform* FieldObjectDeBugTransform::GetInstance()
+FieldObjectDebugTransform* FieldObjectDebugTransform::GetInstance()
 {
-	static FieldObjectDeBugTransform instance;
+	static FieldObjectDebugTransform instance;
 	return &instance;
 }
 
-void FieldObjectDeBugTransform::Update()
+void FieldObjectDebugTransform::Update()
 {
 
 #ifdef _DEBUG
@@ -152,17 +152,17 @@ void FieldObjectDeBugTransform::Update()
 
 }
 
-void FieldObjectDeBugTransform::SetInputDevice(GE::InputDevice* iDevice)
+void FieldObjectDebugTransform::SetInputDevice(GE::InputDevice* iDevice)
 {
 	inputDevice = iDevice;
 }
 
-void FieldObjectDeBugTransform::SetGraphicsDevice(GE::IGraphicsDeviceDx12* gDevice)
+void FieldObjectDebugTransform::SetGraphicsDevice(GE::IGraphicsDeviceDx12* gDevice)
 {
 	graphicsDevice = gDevice;
 }
 
-void FieldObjectDeBugTransform::AddTarget(GE::GameObject* gameobject, GE::Math::Vector3 pivotLength)
+void FieldObjectDebugTransform::AddTarget(GE::GameObject* gameobject, GE::Math::Vector3 pivotLength)
 {
 #ifdef _DEBUG
 
@@ -187,7 +187,7 @@ void FieldObjectDeBugTransform::AddTarget(GE::GameObject* gameobject, GE::Math::
 }
 
 
-void FieldObjectDeBugTransform::Draw()
+void FieldObjectDebugTransform::Draw()
 {
 #ifdef _DEBUG
 
@@ -230,7 +230,7 @@ void FieldObjectDeBugTransform::Draw()
 #endif
 }
 
-void FieldObjectDeBugTransform::UnLoad()
+void FieldObjectDebugTransform::UnLoad()
 {
 #ifdef _DEBUG
 

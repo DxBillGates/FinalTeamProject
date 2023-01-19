@@ -18,9 +18,12 @@ void PlayerColectObject::Start(int colectMax, GE::GameObject* targetObject)
 	colectingObjs.resize(colectMax);
 	for (int i = 0; i < colectingObjs.size(); i++)
 	{
-		GE::Math::Vector3 random = { GE::RandomMaker::GetFloat(-50.0f,50.0f),GE::RandomMaker::GetFloat(100.0f,120.0f),GE::RandomMaker::GetFloat(-100.0f,0.0f) };
+		GE::Math::Vector3 random = { GE::RandomMaker::GetFloat(-50.0f,50.0f),GE::RandomMaker::GetFloat(80.0f,100.0f),GE::RandomMaker::GetFloat(-100.0f,0.0f) };
 		colectingObjs[i].LocalPosition = random;
-		colectingObjs[i].transform.scale = GE::RandomMaker::GetFloat(30.0f, 60.0f);
+		random = { GE::RandomMaker::GetFloat(50.0f, 100.0f) };
+		colectingObjs[i].transform.scale = random;
+		colectingObjs[i].LocalRotation = GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), GE::RandomMaker::GetFloat(0.0f, 6.28f));
+
 	}
 	fallenObject.transform.scale = { 50.f };
 }
@@ -34,6 +37,8 @@ void PlayerColectObject::Update(float deltaTime, int colectCount)
 		colectingObjs[i].transform.position = targetObject->GetTransform()->position - targetObject->GetTransform()->GetUp() * colectingObjs[i].LocalPosition.y
 			+ targetObject->GetTransform()->GetForward() * colectingObjs[i].LocalPosition.z
 			+ targetObject->GetTransform()->GetRight() * colectingObjs[i].LocalPosition.x;
+
+		colectingObjs[i].transform.rotation = targetObject->GetTransform()->rotation * colectingObjs[i].LocalRotation;
 	}
 	if (colect != 0)
 	{
@@ -67,7 +72,7 @@ void PlayerColectObject::DrawShadow(GE::IGraphicsDeviceDx12* graphicsDevice)
 
 		renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
 		renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
-		graphicsDevice->DrawMesh("Sphere");
+		graphicsDevice->DrawMesh("modelFrog");
 
 	}
 	//落下するオブジェクト
@@ -82,7 +87,7 @@ void PlayerColectObject::DrawShadow(GE::IGraphicsDeviceDx12* graphicsDevice)
 	}
 }
 
-void PlayerColectObject::Draw(GE::IGraphicsDeviceDx12* graphicsDevice,GE::GameObjectManager* manager)
+void PlayerColectObject::Draw(GE::IGraphicsDeviceDx12* graphicsDevice, GE::GameObjectManager* manager)
 {
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
 	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
@@ -107,7 +112,7 @@ void PlayerColectObject::Draw(GE::IGraphicsDeviceDx12* graphicsDevice,GE::GameOb
 		renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
 		renderQueue->AddSetShaderResource({ 17,graphicsDevice->GetLayerManager()->Get("shadowLayer")->GetDepthTexture()->GetSRVNumber() });
 
-		graphicsDevice->DrawMesh("Sphere");
+		graphicsDevice->DrawMesh("modelFrog");
 
 	}
 	//落下するオブジェクト
@@ -132,5 +137,5 @@ void PlayerColectObject::Draw(GE::IGraphicsDeviceDx12* graphicsDevice,GE::GameOb
 void PlayerColectObject::SetFallen(GE::Math::Vector3 normal)
 {
 	velocity = normal * 40.f;
+	//colectingObjs.pop_back();
 }
-

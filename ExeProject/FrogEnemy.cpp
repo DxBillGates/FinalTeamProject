@@ -64,7 +64,6 @@ void FrogEnemy::Update(float deltaTime)
 			frogState = FrogState::JUMPING;
 			currentAngle = angle;
 		}
-
 		jumpCount += f;
 		angle = GE::Math::Lerp(currentAngle, currentAngle + 90, jumpCount / (float)jumpInterval);
 

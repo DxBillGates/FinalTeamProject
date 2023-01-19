@@ -24,21 +24,39 @@ void GE::SceneManager::Update(float deltaTime)
 {
 	if (!currentScene)return;
 
+	bool beforeChangeSceneFlag = currentScene->IsChangeScene().flag;
 	currentScene->Update(deltaTime);
 
 	// 現在のシーンがシーン変更しようとしているか確認
 	ChangeSceneInfo& changeSceneInfo = currentScene->IsChangeScene();
+
+	bool isEndFadeIn = false;
+	if (changeSceneInfo.sceneTransitionFadein.GetOverTimeTrigger())
+	{
+		changeSceneInfo.sceneTransitionFadein.Initialize();
+		changeSceneInfo.sceneTransitionFadein.SetTime(1);
+		isEndFadeIn = true;
+	}
+	if (changeSceneInfo.sceneTransitionFadein.GetFlag() && isEndFadeIn == false)changeSceneInfo.sceneTransitionFadein.Update(deltaTime);
+
 	if (!changeSceneInfo.flag)return;
+	if (changeSceneInfo.flag && beforeChangeSceneFlag == false)
+	{
+		changeSceneInfo.sceneTransitionFadeout.SetMaxTimeProperty(1);
+		changeSceneInfo.sceneTransitionFadeout.SetFlag(true);
+	}
+	if (changeSceneInfo.sceneTransitionFadeout.GetOverTimeTrigger())
+	{
+		// シーンを変更して初期化するか確認
+		ChangeScene(changeSceneInfo.name);
 
-	// シーンを変更して初期化するか確認
-	ChangeScene(changeSceneInfo.name);
-
-	if (!changeSceneInfo.initNextSceneFlag)return;
-	changeSceneInfo = ChangeSceneInfo();
-
-	changeSceneInfo = ChangeSceneInfo();
-
-	currentScene->Initialize();
+		if (!changeSceneInfo.initNextSceneFlag)return;
+		changeSceneInfo = ChangeSceneInfo();
+		currentScene->Initialize();
+		return;
+	}
+	
+	changeSceneInfo.sceneTransitionFadeout.Update(deltaTime);
 }
 
 void GE::SceneManager::Draw()

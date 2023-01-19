@@ -2,6 +2,15 @@
 
 #include <GatesEngine/Header/Util/Utility.h          >
 #include <GatesEngine/Header/Graphics\Window.h       >
+#include <GatesEngine/Header/GameFramework/Component/SphereCollider.h>
+#include <GatesEngine/Header/Util/Random.h           >
+#include "PlayerComponent.h"
+#include "FieldObjectManager.h"
+#include "ClearBird.h"
+#include"StartTree.h"
+#include"CameraControl.h"
+
+bool Clear::nowClear = false;
 
 Clear::Clear()
 	:Clear("ClearScene")
@@ -24,17 +33,27 @@ Clear::~Clear()
 
 void Clear::Initialize()
 {
+	nowClear = true;
+
 	gameObjectManager.Awake();
 	gameObjectManager.Start();
+
+	gameObjectManager.FindGameObjectWithTag("directionalLight", "directionalLight")->GetTransform()->rotation = GE::Math::Quaternion::Euler({ 9,190,0 });
+
+	FieldObjectManager::GetInstance()->LoadPosition("Resources/tree.txt");
 }
 
 void Clear::Update(float deltaTime)
 {
+	//カメラコントロールの更新
+	CameraControl::GetInstance()->Update(deltaTime);
+
 	gameObjectManager.Update(deltaTime);
 
 	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE)
 		|| inputDevice->GetJoyconR()->GetTriggerButton(GE::JoyconButtonData::B))
 	{
+		nowClear = false;
 		changeSceneInfo.name = "SampleScene";
 		changeSceneInfo.flag = true;
 		changeSceneInfo.initNextSceneFlag = true;
@@ -43,7 +62,32 @@ void Clear::Update(float deltaTime)
 
 void Clear::Draw()
 {
+	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
+	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
+	GE::Camera* mainCamera = graphicsDevice->GetMainCamera();
+
+	GE::CameraInfo cameraInfo;
+	cameraInfo.viewMatrix = directionalLight->GetViewMatrix();
+	cameraInfo.projMatrix = directionalLight->GetProjectionMatrix();
+	cameraInfo.lightMatrix = directionalLight->GetVPMatrix();
+
+	graphicsDevice->ClearLayer("shadowLayer");
+	graphicsDevice->SetLayer("shadowLayer");
+	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
+	directionalLight->SetDirectionalLightInfo();
+	gameObjectManager.DrawShadow();
+
+	graphicsDevice->ExecuteRenderQueue();
+	graphicsDevice->ExecuteCommands();
+
+	graphicsDevice->SetShaderResourceDescriptorHeap();
+	cameraInfo = mainCamera->GetCameraInfo();
+	cameraInfo.lightMatrix = directionalLight->GetVPMatrix();
+	graphicsDevice->SetLayer("resultLayer");
+	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
+	directionalLight->SetDirectionalLightInfo();
 	gameObjectManager.Draw();
+	FieldObjectManager::GetInstance()->OtherDraw();
 }
 
 void Clear::LateDraw()
@@ -55,14 +99,38 @@ void Clear::Load()
 {
 	auto* Object = gameObjectManager.AddGameObject(new GE::GameObject("clear", "clear"));
 	//titleObject->SetDrawAxisEnabled(true);
-	Object->GetTransform()->position = { GE::Window::GetWindowSize().x / 2,GE::Window::GetWindowSize().y / 2,0 };
+	Object->GetTransform()->position = { 450,200,0 };
 	Object->GetTransform()->scale = { 700,400,0 };
 	auto* clearComponent = Object->AddComponent<ClearTex>();
+
+	{
+		auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject("directionalLight", "directionalLight"));
+		directionalLight = testObject->AddComponent<GE::DirectionalLight>();
+		//directionalLight->SetTarget(gameObjectManager.FindGameObjectWithTag("Player", "player")->GetTransform());
+		testObject->GetTransform()->position = { 0,0,0 };
+
+		//CameraControl::GetInstance()->SetTargetObject(testObject);
+	}
+
+	//飛び立つ鳥
+	for (int i = 0; i < StartTree::goalCollect; i++)
+	{
+		auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject("CBird", "CBird"));
+		testObject->GetTransform()->position = FieldObjectManager::StartPosition;
+		auto* sampleComponent = testObject->AddComponent<ClearBird>();
+		float randSign = GE::RandomMaker::GetFloat(-1.0f, 1.0f);
+		float randX = GE::RandomMaker::GetFloat(500.0f, 5000.0f);
+		sampleComponent->SetTarget({ randSign * randX,15000,15000 });
+		sampleComponent->startCount = i * 50;
+		if (i == 0)CameraControl::GetInstance()->SetTargetObject(testObject);
+	}
+	FieldObjectManager::GetInstance()->Start(&gameObjectManager);
 }
 
 void Clear::UnLoad()
 {
 	// gameObjectsを削除する
+	FieldObjectManager::GetInstance()->UnLoad();
 	Scene::UnLoad();
 }
 

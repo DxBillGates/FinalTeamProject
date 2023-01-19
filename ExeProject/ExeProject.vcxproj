@@ -167,6 +167,7 @@
     <ClCompile Include="BirdEnemy.cpp" />
     <ClCompile Include="CameraControl.cpp" />
     <ClCompile Include="Clear.cpp" />
+    <ClCompile Include="ClearBird.cpp" />
     <ClCompile Include="Collect.cpp" />
     <ClCompile Include="CrashParticle.cpp" />
     <ClCompile Include="Enemy.cpp" />
@@ -199,6 +200,7 @@
     <ClInclude Include="BirdEnemy.h" />
     <ClInclude Include="CameraControl.h" />
     <ClInclude Include="Clear.h" />
+    <ClInclude Include="ClearBird.h" />
     <ClInclude Include="Collect.h" />
     <ClInclude Include="CrashParticle.h" />
     <ClInclude Include="Enemy.h" />

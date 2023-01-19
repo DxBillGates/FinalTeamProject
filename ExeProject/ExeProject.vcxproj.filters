@@ -135,6 +135,9 @@
     <ClCompile Include="FrogEnemy.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
+    <ClCompile Include="ClearBird.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BirdEnemy.h">
@@ -216,6 +219,9 @@
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
     <ClInclude Include="FrogEnemy.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ClearBird.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
   </ItemGroup>

@@ -77,6 +77,12 @@ bool Game::LoadContents()
 	mesh->Create(device, cmdList, modelGroundLeaf1);
 	meshManager->Add(mesh, "Ground_Leaf1");
 
+	MeshData<Vertex_UV_Normal> modelFrog;
+	MeshCreater::LoadObjModelData("Resources/Model/frog", modelFrog);
+	mesh = new Mesh();
+	mesh->Create(device, cmdList, modelFrog);
+	meshManager->Add(mesh, "modelFrog");
+
 	meshManager->Add(FbxLoader::Load("Bird", &graphicsDevice), "Player");
 	meshManager->Add(FbxLoader::Load("hina", &graphicsDevice), "Hina");
 	meshManager->Add(FbxLoader::Load("Frog", &graphicsDevice), "Frog");
@@ -178,6 +184,21 @@ bool Game::LoadContents()
 	nullTexture->Load("back.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "texture_back");
 
+	nullTexture = new Texture();
+	nullTexture->Load("gyro_shake_tex.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "gyro_shake_tex");
+
+	nullTexture = new Texture();
+	nullTexture->Load("control_info_1.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "control_info_1_tex");
+	
+	nullTexture = new Texture();
+	nullTexture->Load("lockon_info.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "lockon_info_tex");
+
+	nullTexture = new Texture();
+	nullTexture->Load("crash_info.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "crash_info_tex");
 
 	auto* testScene = sceneManager.AddScene(new SampleScene("SampleScene", sceneManager.GetSceneInitializer()));
 	sceneManager.AddScene(new Clear("ClearScene", sceneManager.GetSceneInitializer()));
@@ -232,6 +253,8 @@ bool Game::Initialize()
 		gaussValue *= 2.0f;
 	}
 
+	sceneManager.GetCurrentScene()->IsChangeScene().sceneTransitionFadein.SetFlag(true);
+	sceneColor = 0;
 	return true;
 }
 
@@ -239,6 +262,18 @@ bool Game::Update()
 {
 	GE::GUIManager::StartFrame();
 	Application::Update();
+
+	GE::Scene* currentScene = sceneManager.GetCurrentScene();
+	GE::ChangeSceneInfo sceneInfo = currentScene->IsChangeScene();
+
+	if (sceneInfo.sceneTransitionFadein.GetFlag())
+	{
+		sceneColor = sceneInfo.sceneTransitionFadein.GetTime();
+	}
+	else
+	{
+		sceneColor = 1 - sceneManager.GetCurrentScene()->IsChangeScene().sceneTransitionFadeout.GetTime();
+	}
 	ImGui::Text("FPS : %.3f", 1.0f / timer.GetElapsedTime());
 	return true;
 }
@@ -289,7 +324,8 @@ bool Game::Draw()
 		renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
 		graphicsDevice.DrawMesh("Grid");
 
-		Application::Draw();
+		//Application::Draw();
+		sceneManager.Draw();
 	}
 
 	graphicsDevice.ExecuteRenderQueue();
@@ -402,7 +438,7 @@ bool Game::Draw()
 	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2, &material, sizeof(GE::Material)) });
 
-	static GE::Math::Vector3 dofInfo = { 0.4f,1.7f,0.4f };
+	static GE::Math::Vector3 dofInfo = { 0.7f,2.0f,0.4f };
 	ImGui::DragFloat3("dofInfo", dofInfo.value, 0.001f);
 	GE::Math::Vector4 dof = { dofInfo.x,dofInfo.y ,dofInfo.z ,1 };
 	renderQueue->AddSetConstantBufferInfo({ 13,cbufferAllocater->BindAndAttachData(15, &dof, sizeof(GE::Math::Vector4)) });
@@ -437,10 +473,12 @@ bool Game::Draw()
 	RayInfo rayInfo;
 	static GE::Math::Vector3 pos = { 0,0,0 };
 	static GE::Math::Vector3 scale = 2000;
-	ImGui::DragFloat3("CloudPos"  , pos.value, 1.0f);
+	ImGui::DragFloat3("CloudPos", pos.value, 1.0f);
 	ImGui::DragFloat3("CloudScale", scale.value, 1.0f);
 	rayInfo.boundMin = pos - scale / 2;
 	rayInfo.boundMax = pos + scale / 2;
+	ImGui::Text("color : %.3f", sceneColor);
+	material.color = { sceneColor,sceneColor ,sceneColor,1 };
 
 	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
 	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
@@ -453,6 +491,10 @@ bool Game::Draw()
 	renderQueue->AddSetShaderResource({ 18,graphicsDevice.GetLayerManager()->Get("shadowLayer")->GetDepthTexture()->GetSRVNumber() });
 	graphicsDevice.DrawMesh("2DPlane");
 
+	//graphicsDevice.SetShaderResourceDescriptorHeap();
+	graphicsDevice.SetCurrentRenderQueue(false);
+	graphicsDevice.SetDefaultRenderTargetWithoutDSV();
+	sceneManager.LateDraw();
 	graphicsDevice.ExecuteRenderQueue();
 
 	//ImVec2 texSize = { textureAnimationInfo.textureSize.x / 4,textureAnimationInfo.textureSize.y / 4 };

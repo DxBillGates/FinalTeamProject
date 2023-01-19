@@ -58,7 +58,7 @@ void CrashParticle::Update(float deltaTime)
 		{
 			if (count < fireTime)
 			{
-				count++;
+				count += deltaTime;
 			}
 			else
 			{
@@ -66,7 +66,7 @@ void CrashParticle::Update(float deltaTime)
 				count = 0.0f;
 			}
 			objects[i].velocity += GE::Math::Vector3(0, -2, 0);
-			objects[i].transform.position += objects[i].velocity;
+			objects[i].transform.position += objects[i].velocity*deltaTime;
 		}
 		else
 		{

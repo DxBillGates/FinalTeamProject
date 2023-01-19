@@ -11,6 +11,7 @@ public:
 		std::string textureName = "texture_null";
 		//足に掴んでいるオブジェクトのばらつき
 		GE::Math::Vector3 LocalPosition;
+		GE::Math::Quaternion LocalRotation;
 	};
 private:
 	std::vector<ColectingObject> colectingObjs;

@@ -40,7 +40,7 @@ void EnemyManager::Start(GE::GameObjectManager* gameObjectManager)
 		flogEnemyCollider->SetCenter({ 0,40,0 });
 		flogEnemyCollider->SetSize({ 80 });
 		frogEnemies.push_back(fEnemy);
-		FieldObjectDeBugTransform::GetInstance()->AddTarget(fEnemy, {100,100,100});
+		FieldObjectDebugTransform::GetInstance()->AddTarget(fEnemy, {100,100,100});
 	}
 }
 

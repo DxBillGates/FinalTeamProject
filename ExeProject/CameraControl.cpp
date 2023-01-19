@@ -1,5 +1,6 @@
 #include "CameraControl.h"
 #include "PlayerComponent.h"
+#include"Clear.h"
 #include <GatesEngine/Header\GameFramework/GameSetting.h>
 #include <GatesEngine/Header/Util/Random.h           >
 #include"UIObject.h"
@@ -26,12 +27,13 @@ void CameraControl::Initialize()
 	range = {};
 	cameraShake = {};
 
-	graphicsDevice->GetMainCamera()->SetPosition({ 0,5000,-20000 });
+	graphicsDevice->GetMainCamera()->SetPosition({ 37750,600,15000 });
 }
 
 void CameraControl::Update(float deltaTime)
 {
-	float LERP_VALUE = 0.02f * GE::GameSetting::Time::GetGameTime() * deltaTime;
+
+	float LERP_VALUE = 0.01f * GE::GameSetting::Time::GetGameTime() * deltaTime;
 
 	UIObject::GetInstance()->cameraPosition = position;
 	//ターゲトポジションセット
@@ -46,7 +48,13 @@ void CameraControl::Update(float deltaTime)
 
 	//カメラの更新
 	GE::Math::Vector3 newCameraPosition;
-	if (PlayerComponent::statas == PlayerComponent::PlayerStatas::TITLE)
+	if (Clear::nowClear)
+	{
+		target = targetObject->GetTransform()->position;
+		current_cameraDistance = normal_cameraDistance;
+		newCameraPosition = { 2000,9000,-6000 };
+	}
+	else if (PlayerComponent::statas == PlayerComponent::PlayerStatas::TITLE)
 	{
 		current_cameraDistance = 3000;
 		GE::Math::Vector3 wind = GE::Math::Vector3(sinf(count), cosf(count), cosf(-count)) * 30;
@@ -98,21 +106,21 @@ void CameraControl::Update(float deltaTime)
 	target += cameraShake * GE::GameSetting::Time::GetGameTime() * deltaTime;
 
 	//カメラシェイク
-	Shake();
+	Shake(deltaTime);
 
 	camera->SetDirection(direction);
 	camera->SetPosition(position);
 }
 
-void CameraControl::Shake()
+void CameraControl::Shake(float deltaTime)
 {
 	//ランダムで移動量
 	GE::Math::Vector2 randVel = GE::Math::Vector2(range.x > 0 ? GE::RandomMaker::GetFloat(-range.x, range.x) : 0, range.y > 0 ? GE::RandomMaker::GetFloat(-range.y, range.y) : 0);
 	//移動量をセットする
 	cameraShake = GE::Math::Vector3(randVel.x, randVel.y, 0);
 	//カメラシェイクの減衰
-	range.x > 0 ? range.x -= 1.0 * GE::GameSetting::Time::GetGameTime() : range.x = 0.0f;
-	range.y > 0 ? range.y -= 1.0f * GE::GameSetting::Time::GetGameTime() : range.y = 0.0f;
+	range.x > 0 ? range.x -= deltaTime * GE::GameSetting::Time::GetGameTime() : range.x = 0.0f;
+	range.y > 0 ? range.y -= deltaTime * GE::GameSetting::Time::GetGameTime() : range.y = 0.0f;
 }
 void CameraControl::ShakeStart(GE::Math::Vector2 range, int flame)
 {

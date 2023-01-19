@@ -4,6 +4,7 @@
 #include "..\..\Graphics\IGraphicsDeviceDx12.h"
 #include "..\..\GameFramework\GameObject\GameObjectManager.h"
 #include "..\..\GameFramework\Collision\CollisionManager.h"
+#include "..\FlagController.h"
 
 #include <string>
 
@@ -35,12 +36,18 @@ namespace GE
 		std::string name;
 		bool flag;
 		bool initNextSceneFlag;
+		FlagController sceneTransitionFadeout;
+		FlagController sceneTransitionFadein;
 
 		ChangeSceneInfo()
 			: name({})
 			, flag(false)
 			, initNextSceneFlag(false)
+			, sceneTransitionFadeout()
+			, sceneTransitionFadein()
 		{
+			sceneTransitionFadein.SetMaxTimeProperty(1);
+			sceneTransitionFadein.SetFlag(true);
 		}
 	};
 

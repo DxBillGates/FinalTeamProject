@@ -53,7 +53,7 @@ private:
 	void operator=(const CameraControl & obj) = delete;
 	CameraControl(const CameraControl & obj) = delete;
 
-	void Shake();
+	void Shake(float deltaTime);
 	//EaseInŠÖŒW‚ª‚æ‚­‚í‚©‚ç‚È‚©‚Á‚½‚©‚çˆêŽž“I‚É’Ç‰Á
 	const float easeIn(const float start, const float end, float time);
 };

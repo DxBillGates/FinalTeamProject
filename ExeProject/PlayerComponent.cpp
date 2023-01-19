@@ -18,7 +18,7 @@
 float PlayerComponent::frameRate;
 PlayerComponent::PlayerStatas PlayerComponent::statas;
 GE::Math::Vector3 PlayerComponent::onTheTreePosition = { 0,250,200 };	//木の上で体の高さ調整用
-int PlayerComponent::hitStopTime = 15;								// ヒットストップの長さ
+int PlayerComponent::hitStopTime = 50;								// ヒットストップの長さ
 float PlayerComponent::body_direction_LerpTime = 50.0f;				//ダッシュ後体の角度の遷移
 float PlayerComponent::pushStartTime = 20.0f;						//キーを押してから操作できるようになるまでのカウント
 float PlayerComponent::stayLandLerpTime = 150.0f;					//木に着陸するラープ長さ
@@ -65,7 +65,7 @@ void PlayerComponent::Start()
 
 	statasChangeCount = 0;
 
-	hitStopCount = hitStopTime;
+	hitStopCount = (float)hitStopTime;
 	stayLandLerpEasingCount = stayLandLerpTime;
 	//姿勢遷移
 	body_direction_LerpCount = body_direction_LerpTime;
@@ -100,7 +100,7 @@ void PlayerComponent::Update(float deltaTime)
 		if (hitStopCount < hitStopTime)
 		{
 			GE::GameSetting::Time::SetGameTime(0.01);
-			hitStopCount += 1;
+			hitStopCount += f;
 		}
 		else { GE::GameSetting::Time::SetGameTime(1.0); }
 	}
@@ -275,7 +275,7 @@ void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 			//収集物 +1
 			colectCount < colectMax ? colectCount++ : 0;
 		}
-		hitStopCount = 0;
+		hitStopCount = 0.0f;
 		CameraControl::GetInstance()->ShakeStart({ 50,50 }, 30);
 	}
 }
@@ -375,6 +375,7 @@ void PlayerComponent::Control(float deltaTime)
 		current_speed = normal_speed;
 		//移動
 		transform->position += transform->GetForward() * current_speed * deltaTime * GE::GameSetting::Time::GetGameTime();
+		transform->rotation *= GE::Math::Quaternion(GE::Math::Vector3(0, 0, 1), 0.03f * deltaTime * GE::GameSetting::Time::GetGameTime());
 
 		if (InputManager::GetInstance()->GetActionButton())
 		{
@@ -608,6 +609,9 @@ void PlayerComponent::Reflection(GE::Math::Vector3 normal)
 	audioManager->Use("hitWall")->Start();
 	transform->rotation = GE::Math::Quaternion::LookDirection(GE::Math::Vector3::Reflection(transform->GetForward(), normal, 2.0f));
 	CameraControl::GetInstance()->ShakeStart({ 50,50 }, 30);
+	//ロックオン中ならロックオンをキャンセル
+	isLockOn = false; dashEasingCount = 0.0f; body_direction_LerpCount = 0; lockOnEnemy.object = nullptr;
+
 }
 //EaseIn関係がよくわからなかったから一時的に追加
 const float PlayerComponent::easeIn(const float start, const float end, float time)
