@@ -378,7 +378,7 @@ void PlayerComponent::Control(float deltaTime)
 		LockOn();
 		break;
 	case PlayerComponent::PlayerStatas::DASH:
-		Dash(100.0f, 80.0f, deltaTime, transform->GetForward());
+		Dash(100.0f, 180.0f, deltaTime, transform->GetForward());
 		break;
 	case PlayerComponent::PlayerStatas::CRASH:
 		//ダッシュから切り替わった時用初期化
