@@ -52,6 +52,12 @@
     <FxCompile Include="Resources\Shader\MixedTexturePixelShader.hlsl">
       <Filter>シェーダーファイル</Filter>
     </FxCompile>
+    <FxCompile Include="Resources\Shader\VolumetricCloudPixelShader.hlsl">
+      <Filter>シェーダーファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shader\VolumetricCloudVertexShader.hlsl">
+      <Filter>シェーダーファイル</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BirdEnemy.cpp">
@@ -138,6 +144,9 @@
     <ClCompile Include="ClearBird.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
+    <ClCompile Include="VolumetricCloud.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BirdEnemy.h">
@@ -222,6 +231,9 @@
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
     <ClInclude Include="ClearBird.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="VolumetricCloud.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
   </ItemGroup>

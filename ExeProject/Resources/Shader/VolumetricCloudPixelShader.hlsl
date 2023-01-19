@@ -42,16 +42,16 @@ float4 main(RaymarchingVSOutput input) : SV_TARGET
 	float4 defaultLayerDepthColor = depthTexture.Sample(clampLinearSampler, input.uv);
 	float4 shadowLayerDepthColor = lightDepthTexture.Sample(clampLinearSampler, input.uv);
 
-	float3 rayDir = input.viewVector;
-	float2 rayBoxInfo = RayBoxDst(rayDir);
-	bool rayHitBox = rayBoxInfo.y > 0;
+	//float3 rayDir = input.viewVector;
+	//float2 rayBoxInfo = RayBoxDst(rayDir);
+	//bool rayHitBox = rayBoxInfo.y > 0;
 
-	if (rayHitBox)
-	{
-		defaultLayerColor.rgb = 0;
-	}
+	//if (rayHitBox)
+	//{
+	//	defaultLayerColor.rgb = 0;
+	//}
 
-	//float4 resultColor = float4(0,0,0,1);
+	////float4 resultColor = float4(0,0,0,1);
 
 	return float4((defaultLayerColor.rgb),1) * color;
 }

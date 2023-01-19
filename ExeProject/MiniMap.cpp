@@ -120,10 +120,6 @@ void MiniMap::Draw()
 	auto gameObjectsManager = pGameObjectManager->GetManager();
 	GE::Math::Vector3 drawPlayerPositionOffset = (*gameObjectsManager)["player"][0]->GetTransform()->position;
 
-	// ƒvƒŒƒCƒ„[•`‰æ
-	drawInfo = { MINIMAP_OFFSET, DRAW_PLAYER_SIZE, DRAW_PLAYER_COLOR };
-	Draw2D(drawInfo,pGraphicsDevice->GetTextureManager()->Get("Player_MiniMap"));
-
 	// “G•`‰æ
 	for (auto& enemy : (*gameObjectsManager)["enemy"])
 	{
@@ -171,4 +167,8 @@ void MiniMap::Draw()
 
 		Draw2D(drawInfo, MINIMAP_OFFSET, minPos, maxPos, texture);
 	}
+
+	// ƒvƒŒƒCƒ„[•`‰æ
+	drawInfo = { MINIMAP_OFFSET, DRAW_PLAYER_SIZE, DRAW_PLAYER_COLOR };
+	Draw2D(drawInfo, pGraphicsDevice->GetTextureManager()->Get("Player_MiniMap"));
 }
