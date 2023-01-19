@@ -237,6 +237,8 @@ bool Game::Initialize()
 		gaussValue *= 2.0f;
 	}
 
+	sceneManager.GetCurrentScene()->IsChangeScene().sceneTransitionFadein.SetFlag(true);
+	sceneColor = 0;
 	return true;
 }
 
@@ -244,6 +246,18 @@ bool Game::Update()
 {
 	GE::GUIManager::StartFrame();
 	Application::Update();
+
+	GE::Scene* currentScene = sceneManager.GetCurrentScene();
+	GE::ChangeSceneInfo sceneInfo = currentScene->IsChangeScene();
+
+	if (sceneInfo.sceneTransitionFadein.GetFlag())
+	{
+		sceneColor = sceneInfo.sceneTransitionFadein.GetTime();
+	}
+	else
+	{
+		sceneColor = 1 - sceneManager.GetCurrentScene()->IsChangeScene().sceneTransitionFadeout.GetTime();
+	}
 	ImGui::Text("FPS : %.3f", 1.0f / timer.GetElapsedTime());
 	return true;
 }
@@ -294,7 +308,8 @@ bool Game::Draw()
 		renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
 		graphicsDevice.DrawMesh("Grid");
 
-		Application::Draw();
+		//Application::Draw();
+		sceneManager.Draw();
 	}
 
 	graphicsDevice.ExecuteRenderQueue();
@@ -442,10 +457,12 @@ bool Game::Draw()
 	RayInfo rayInfo;
 	static GE::Math::Vector3 pos = { 0,0,0 };
 	static GE::Math::Vector3 scale = 2000;
-	ImGui::DragFloat3("CloudPos"  , pos.value, 1.0f);
+	ImGui::DragFloat3("CloudPos", pos.value, 1.0f);
 	ImGui::DragFloat3("CloudScale", scale.value, 1.0f);
 	rayInfo.boundMin = pos - scale / 2;
 	rayInfo.boundMax = pos + scale / 2;
+	ImGui::Text("color : %.3f", sceneColor);
+	material.color = { sceneColor,sceneColor ,sceneColor,1 };
 
 	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
 	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
@@ -458,6 +475,10 @@ bool Game::Draw()
 	renderQueue->AddSetShaderResource({ 18,graphicsDevice.GetLayerManager()->Get("shadowLayer")->GetDepthTexture()->GetSRVNumber() });
 	graphicsDevice.DrawMesh("2DPlane");
 
+	//graphicsDevice.SetShaderResourceDescriptorHeap();
+	graphicsDevice.SetCurrentRenderQueue(false);
+	graphicsDevice.SetDefaultRenderTargetWithoutDSV();
+	sceneManager.LateDraw();
 	graphicsDevice.ExecuteRenderQueue();
 
 	//ImVec2 texSize = { textureAnimationInfo.textureSize.x / 4,textureAnimationInfo.textureSize.y / 4 };

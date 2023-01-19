@@ -53,5 +53,5 @@ float4 main(RaymarchingVSOutput input) : SV_TARGET
 
 	//float4 resultColor = float4(0,0,0,1);
 
-	return float4((defaultLayerColor.rgb),1);
+	return float4((defaultLayerColor.rgb),1) * color;
 }

@@ -92,3 +92,8 @@ void GE::Utility::Timer::SetFrameRate(float value)
 
 	Utility::Printf("ãŒÀ‚ğ%ffps‚Éİ’è‚µ‚Ü‚µ‚½B\n", value);
 }
+
+void GE::Utility::Timer::ResetStartTime()
+{
+	QueryPerformanceCounter(&timeStart);
+}

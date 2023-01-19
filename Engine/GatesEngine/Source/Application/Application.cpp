@@ -402,6 +402,8 @@ int GE::Application::Run()
 
 	if (!Initialize())return -1;
 
+	timer.ResetStartTime();
+
 	while (!inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::ESC))
 	{
 		if (timer.Update())continue;
