@@ -184,6 +184,22 @@ bool Game::LoadContents()
 	sceneManager.AddScene(new Over("OverScene", sceneManager.GetSceneInitializer()));
 	sceneManager.ChangeScene("SampleScene");
 
+	nullTexture = new Texture();
+	nullTexture->Load("Enemy_MiniMap.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "Enemy_MiniMap");
+
+	nullTexture = new Texture();
+	nullTexture->Load("Enemy2_MiniMap.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "Enemy2_MiniMap");
+
+	nullTexture = new Texture();
+	nullTexture->Load("MiniMap.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "MiniMap");
+
+	nullTexture = new Texture();
+	nullTexture->Load("Player_MiniMap.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "Player_MiniMap");
+
 	return true;
 }
 

@@ -17,8 +17,8 @@ private:
 		GE::Color color;
 	};
 private:
-	void Draw2D(const Draw2DInfo& drawInfo);
-	void Draw2D(const Draw2DInfo& drawInfo,const GE::Math::Vector2& mapOffset,const GE::Math::Vector3& minPos,const GE::Math::Vector3& maxPos);
+	void Draw2D(const Draw2DInfo& drawInfo,GE::ITexture* texture = nullptr);
+	void Draw2D(const Draw2DInfo& drawInfo,const GE::Math::Vector2& mapOffset,const GE::Math::Vector3& minPos,const GE::Math::Vector3& maxPos, GE::ITexture* texture = nullptr);
 public:
 	void Initialize(GE::GameObjectManager* gameObjectManager, GE::IGraphicsDeviceDx12* graphicsDevice);
 	void Update(float deltaTime,float direction = 0);
