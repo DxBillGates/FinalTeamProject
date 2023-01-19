@@ -83,7 +83,7 @@ void ScreenUIManager::Update(float deltaTime)
 	object["gyro_shake"].isDraw = false;
 	object["control_info_2"].isDraw = true;
 	object["lockon_info"].isDraw = false;
-	object["dash_info"].isDraw = true;
+	object["dash_info"].isDraw = false;
 
 	//タイムリミット
 	object["time_minutes"].isDraw = true;
@@ -115,6 +115,8 @@ void ScreenUIManager::Update(float deltaTime)
 	case PlayerComponent::PlayerStatas::MOVE:
 
 		object["lockon_info"].isDraw = true;
+		object["dash_info"].isDraw = true;
+
 		break;
 	}
 

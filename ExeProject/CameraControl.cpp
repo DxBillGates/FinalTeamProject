@@ -32,7 +32,7 @@ void CameraControl::Initialize()
 void CameraControl::Update(float deltaTime)
 {
 
-	float LERP_VALUE = 0.01f * GE::GameSetting::Time::GetGameTime();
+	float LERP_VALUE = 0.01f * GE::GameSetting::Time::GetGameTime() * deltaTime;
 
 	UIObject::GetInstance()->cameraPosition = position;
 	//ターゲトポジションセット
