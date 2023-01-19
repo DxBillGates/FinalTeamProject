@@ -23,10 +23,16 @@ void NormalEnemy::Start()
 	GE::Utility::Printf("NormalEnemy Start()\n");
 	random = { GE::RandomMaker::GetFloat(-1000.0f,1000.0f),GE::RandomMaker::GetFloat(0.0f,1000.0f),GE::RandomMaker::GetFloat(-500.0f,500.0f) };//敵の位置のランダム変数
 	transform->position = random;//位置をランダム化
-	transform->scale = { 100.0f,100.0f,100.0f };
+	transform->scale = { 5 };//サイズ
 	speed = 10;
 	angle = GE::RandomMaker::GetFloat(0.0f, 20.0f);//敵の始動位置の調整
 	gameObject->SetColor(GE::Color::Red());
+	animator = GE::SkinMeshManager::GetInstance()->Get("Dragonfly");
+	animator.Initialize();
+	animator.PlayAnimation(0, true);
+
+	modelName = "Dragonfly";
+
 }
 void NormalEnemy::Update(float deltaTime)
 {
@@ -34,6 +40,8 @@ void NormalEnemy::Update(float deltaTime)
 	float range = 1.0f;//ホバリングの幅
 	angle += 1.0 * GE::GameSetting::Time::GetGameTime() * deltaTime;//ホバリングの速さ
 	transform->position = (transform->position + GE::Math::Vector3(0.0f, sinf(angle) * range * GE::GameSetting::Time::GetGameTime(), 0.0f));
+	animator.Update(deltaTime);
+
 }
 
 void NormalEnemy::DrawShadow()
@@ -49,10 +57,11 @@ void NormalEnemy::DrawShadow()
 	material.color = gameObject->GetColor();
 
 	GE::Math::Matrix4x4 modelMatrix = transform->GetMatrix();
+	animator.SetAnimationData(graphicsDevice, modelMatrix);
 
 	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
-	graphicsDevice->DrawMesh("Sphere");
+	graphicsDevice->DrawMesh(modelName);
 }
 
 void NormalEnemy::Draw()
@@ -62,23 +71,20 @@ void NormalEnemy::Draw()
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
 	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
 
-	graphicsDevice->SetShader("DefaultMeshWithShadowShader");
+	graphicsDevice->SetShader("DefaultSkinMeshShader");
 
-	renderQueue->AddSetShaderResource({ 17,graphicsDevice->GetLayerManager()->Get("shadowLayer")->GetDepthTexture()->GetSRVNumber() });
-
-	GE::Material material;
+	//transform->scale = { 200,200,2000 };
 	material.color = gameObject->GetColor();
-
 	GE::Math::Matrix4x4 modelMatrix = transform->GetMatrix();
+	animator.SetAnimationData(graphicsDevice, modelMatrix);
 
 	GE::CameraInfo cameraInfo = graphicsDevice->GetMainCamera()->GetCameraInfo();
 	cameraInfo.lightMatrix = gameObject->GetGameObjectManager()->FindGameObjectWithTag("directionalLight", "directionalLight")->GetComponent<GE::DirectionalLight>()->GetVPMatrix();
-
+	gameObject->GetGameObjectManager()->FindGameObjectWithTag("directionalLight", "directionalLight")->GetComponent<GE::DirectionalLight>()->SetDirectionalLightInfo();
 	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
-
-	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
-	graphicsDevice->DrawMesh("Sphere");
+	renderQueue->AddSetShaderResource({ 17,graphicsDevice->GetLayerManager()->Get("shadowLayer")->GetDepthTexture()->GetSRVNumber() });
+	graphicsDevice->DrawMesh(modelName);
 }
 
 void NormalEnemy::LateDraw()

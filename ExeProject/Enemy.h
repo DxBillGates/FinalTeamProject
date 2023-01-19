@@ -12,7 +12,7 @@ public:
 		DEAD,
 	};
 	Statas statas = Statas::ALIVE;
-
+	std::string modelName = "Sphere";
 protected:
 	float speed = 0.0f;
 	GE::Math::Vector3 bodyDirection = {};

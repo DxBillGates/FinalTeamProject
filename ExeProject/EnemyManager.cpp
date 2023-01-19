@@ -20,7 +20,7 @@ void EnemyManager::Start(GE::GameObjectManager* gameObjectManager)
 		auto* sampleComponent = enemy->AddComponent<NormalEnemy>();
 		auto* normalEnemyCollider = enemy->AddComponent<GE::SphereCollider>();
 		normalEnemyCollider->SetCenter({ 0,0,0 });
-		normalEnemyCollider->SetSize({ 2 });
+		normalEnemyCollider->SetSize({ 40 });
 		nEnemies.push_back(enemy);
 	}
 	for (int i = 0; i < 0; ++i)

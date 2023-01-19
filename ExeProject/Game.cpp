@@ -83,9 +83,16 @@ bool Game::LoadContents()
 	mesh->Create(device, cmdList, modelFrog);
 	meshManager->Add(mesh, "modelFrog");
 
+	MeshData<Vertex_UV_Normal> modelDragonfly;
+	MeshCreater::LoadObjModelData("Resources/Model/Dragonfly", modelDragonfly);
+	mesh = new Mesh();
+	mesh->Create(device, cmdList, modelDragonfly);
+	meshManager->Add(mesh, "modelDragonfly");
+
 	meshManager->Add(FbxLoader::Load("Bird", &graphicsDevice), "Player");
 	meshManager->Add(FbxLoader::Load("hina", &graphicsDevice), "Hina");
 	meshManager->Add(FbxLoader::Load("Frog", &graphicsDevice), "Frog");
+	meshManager->Add(FbxLoader::Load("Dragonfly", &graphicsDevice), "Dragonfly");
 
 	//Œø‰Ê‰¹hit_wall
 	{

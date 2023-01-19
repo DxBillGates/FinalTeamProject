@@ -110,7 +110,7 @@ void PlayerComponent::Update(float deltaTime)
 	Control(f);
 	CameraControl::GetInstance()->SetTargetObject(gameObject);
 	//収集物
-	PlayerColectObject::GetInstance()->Update(f, colectCount);
+	PlayerColectObject::GetInstance()->Update(f);
 	//カメラコントロールの更新
 	CameraControl::GetInstance()->Update(f);
 
@@ -236,6 +236,7 @@ void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 			Reflection(gameObject->GetHitNormal());
 			crashParticle.Fire(transform->position, gameObject->GetHitNormal(), other->GetColor());
 			PlayerColectObject::GetInstance()->SetFallen(gameObject->GetHitNormal());
+			colectCount > 0 ? colectCount-- : 1;
 			return;
 		}
 		else if (other->GetTag() == "tile")
@@ -276,6 +277,7 @@ void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 			audioManager->Use("catch2")->Start();
 			//収集物 +1
 			colectCount < colectMax ? colectCount++ : 0;
+			PlayerColectObject::GetInstance()->AddObject("model" + other->GetComponent<Enemy>()->modelName);
 		}
 		hitStopCount = 0.0f;
 		CameraControl::GetInstance()->ShakeStart({ 50,50 }, 30);
@@ -420,6 +422,7 @@ void PlayerComponent::Control(float deltaTime)
 			StartTree::collectCount += colectCount;
 			TimeLimit::GetInstance()->AddSeconds(10 * colectCount);
 			colectCount = 0;
+			PlayerColectObject::GetInstance()->ClearObject();
 			//着陸
 			statas = PlayerStatas::STAY_TREE;
 		}

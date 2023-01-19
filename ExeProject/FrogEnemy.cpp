@@ -41,6 +41,8 @@ void FrogEnemy::Start()
 	jumpCount = GE::RandomMaker::GetFloat(1.0f, 90.0f);
 
 	gameObject->SetColor(GE::Color::Red());
+
+	modelName = "Frog";
 }
 
 void FrogEnemy::Update(float deltaTime)
@@ -99,7 +101,7 @@ void FrogEnemy::DrawShadow()
 	animator.SetAnimationData(graphicsDevice, modelMatrix);
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
 
-	graphicsDevice->DrawMesh("Frog");
+	graphicsDevice->DrawMesh(modelName);
 }
 
 void FrogEnemy::Draw()
@@ -122,7 +124,7 @@ void FrogEnemy::Draw()
 	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
 	renderQueue->AddSetShaderResource({ 17,graphicsDevice->GetLayerManager()->Get("shadowLayer")->GetDepthTexture()->GetSRVNumber() });
-	graphicsDevice->DrawMesh("Frog");
+	graphicsDevice->DrawMesh(modelName);
 }
 
 void FrogEnemy::LateDraw()

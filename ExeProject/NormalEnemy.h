@@ -8,6 +8,8 @@ class NormalEnemy : public Enemy
 private:
 	GE::Math::Vector3 random;
 	float angle = 0.0f;
+	GE::SkinMeshAnimator animator;
+
 public:
 	NormalEnemy();
 

@@ -13,26 +13,13 @@ PlayerColectObject* PlayerColectObject::GetInstance()
 void PlayerColectObject::Start(int colectMax, GE::GameObject* targetObject)
 {
 	this->targetObject = targetObject;
-	colect = 0;
-	// 足でつかんでいるオブジェクトの初期化
-	colectingObjs.resize(colectMax);
-	for (int i = 0; i < colectingObjs.size(); i++)
-	{
-		GE::Math::Vector3 random = { GE::RandomMaker::GetFloat(-50.0f,50.0f),GE::RandomMaker::GetFloat(80.0f,100.0f),GE::RandomMaker::GetFloat(-100.0f,0.0f) };
-		colectingObjs[i].LocalPosition = random;
-		random = { GE::RandomMaker::GetFloat(50.0f, 100.0f) };
-		colectingObjs[i].transform.scale = random;
-		colectingObjs[i].LocalRotation = GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), GE::RandomMaker::GetFloat(0.0f, 6.28f));
-
-	}
 	fallenObject.transform.scale = { 50.f };
 }
 
-void PlayerColectObject::Update(float deltaTime, int colectCount)
+void PlayerColectObject::Update(float deltaTime)
 {
-	colect = colectCount;
 	//足でつかんでいる取集物の更新
-	for (int i = 0; i < colect; i++)
+	for (int i = 0; i < colectingObjs.size(); i++)
 	{
 		colectingObjs[i].transform.position = targetObject->GetTransform()->position - targetObject->GetTransform()->GetUp() * colectingObjs[i].LocalPosition.y
 			+ targetObject->GetTransform()->GetForward() * colectingObjs[i].LocalPosition.z
@@ -40,7 +27,7 @@ void PlayerColectObject::Update(float deltaTime, int colectCount)
 
 		colectingObjs[i].transform.rotation = targetObject->GetTransform()->rotation * colectingObjs[i].LocalRotation;
 	}
-	if (colect != 0)
+	if (colectingObjs.size() != 0)
 	{
 		if (targetObject->GetComponent<PlayerComponent>()->statas == PlayerComponent::PlayerStatas::CRASH)
 		{
@@ -65,18 +52,18 @@ void PlayerColectObject::DrawShadow(GE::IGraphicsDeviceDx12* graphicsDevice)
 	material.color = GE::Color::Red();
 
 	//所持しているえさの描画
-	for (int i = 0; i < colect; i++)
+	for (int i = 0; i < colectingObjs.size(); i++)
 	{
 		GE::Math::Matrix4x4 modelMatrix;
 		modelMatrix = colectingObjs[i].transform.GetMatrix();
 
 		renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
 		renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
-		graphicsDevice->DrawMesh("modelFrog");
+		graphicsDevice->DrawMesh(colectingObjs[i].modelName);
 
 	}
 	//落下するオブジェクト
-	if (targetObject->GetComponent<PlayerComponent>()->statas == PlayerComponent::PlayerStatas::CRASH && colect != 0)
+	if (targetObject->GetComponent<PlayerComponent>()->statas == PlayerComponent::PlayerStatas::CRASH && colectingObjs.size() != 0)
 	{
 		GE::Math::Matrix4x4 modelMatrix;
 		modelMatrix = fallenObject.transform.GetMatrix();
@@ -98,7 +85,7 @@ void PlayerColectObject::Draw(GE::IGraphicsDeviceDx12* graphicsDevice, GE::GameO
 	material.color = GE::Color::Red();
 
 	//所持しているえさの描画
-	for (int i = 0; i < colect; i++)
+	for (int i = 0; i < colectingObjs.size(); i++)
 	{
 		GE::Math::Matrix4x4 modelMatrix;
 		modelMatrix = colectingObjs[i].transform.GetMatrix();
@@ -112,11 +99,11 @@ void PlayerColectObject::Draw(GE::IGraphicsDeviceDx12* graphicsDevice, GE::GameO
 		renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
 		renderQueue->AddSetShaderResource({ 17,graphicsDevice->GetLayerManager()->Get("shadowLayer")->GetDepthTexture()->GetSRVNumber() });
 
-		graphicsDevice->DrawMesh("modelFrog");
+		graphicsDevice->DrawMesh(colectingObjs[i].modelName);
 
 	}
 	//落下するオブジェクト
-	if (targetObject->GetComponent<PlayerComponent>()->statas == PlayerComponent::PlayerStatas::CRASH && colect != 0)
+	if (targetObject->GetComponent<PlayerComponent>()->statas == PlayerComponent::PlayerStatas::CRASH && colectingObjs.size() != 0)
 	{
 		GE::Math::Matrix4x4 modelMatrix;
 		modelMatrix = fallenObject.transform.GetMatrix();
@@ -136,6 +123,37 @@ void PlayerColectObject::Draw(GE::IGraphicsDeviceDx12* graphicsDevice, GE::GameO
 
 void PlayerColectObject::SetFallen(GE::Math::Vector3 normal)
 {
+	if (colectingObjs.size() == 0)return;
+
 	velocity = normal * 40.f;
-	//colectingObjs.pop_back();
+	colectingObjs.pop_back();
+}
+
+void PlayerColectObject::AddObject(std::string modelName)
+{
+	colectingObjs.push_back(SetColectObject({}, {}, {}, GE::Color::Red(), modelName));
+
+}
+
+void PlayerColectObject::ClearObject()
+{
+	colectingObjs.clear();
+}
+
+PlayerColectObject::ColectingObject PlayerColectObject::SetColectObject(GE::Math::Vector3 pos, GE::Math::Quaternion rot, GE::Math::Vector3 scl, GE::Color color, std::string modelName)
+{
+	ColectingObject result;
+
+	result.transform.position = pos;
+	result.transform.rotation = rot;
+	//result.transform.scale = scl;
+	result.color = color;
+	result.modelName = modelName;
+
+	GE::Math::Vector3 random = { GE::RandomMaker::GetFloat(-50.0f,50.0f),GE::RandomMaker::GetFloat(80.0f,100.0f),GE::RandomMaker::GetFloat(-100.0f,0.0f) };
+	result.LocalPosition = random;
+	random = { GE::RandomMaker::GetFloat(50.0f, 100.0f) };
+	result.transform.scale = random;
+	result.LocalRotation = GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), GE::RandomMaker::GetFloat(0.0f, 6.28f));
+	return result;
 }

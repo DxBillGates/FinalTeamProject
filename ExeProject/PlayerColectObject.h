@@ -8,7 +8,7 @@ public:
 	{
 		GE::Transform transform;
 		GE::Color color = { 1,1,1,1 };
-		std::string textureName = "texture_null";
+		std::string modelName = "Sphere";
 		//足に掴んでいるオブジェクトのばらつき
 		GE::Math::Vector3 LocalPosition;
 		GE::Math::Quaternion LocalRotation;
@@ -20,20 +20,23 @@ private:
 	GE::GameObject* targetObject;
 
 	GE::Math::Vector3 velocity;
-	int colect;
 public:
 	static PlayerColectObject* GetInstance();
 	void Start(int colectMax, GE::GameObject* targetObject);
-	void Update(float deltaTime, int colectCount);
+	void Update(float deltaTime);
 	void DrawShadow(GE::IGraphicsDeviceDx12* graphicsDevice);
 	void Draw(GE::IGraphicsDeviceDx12* graphicsDevice, GE::GameObjectManager* manager);
 	void UnLoad();
 	void SetFallen(GE::Math::Vector3 normal);
+	void AddObject(std::string modelName);
+	void ClearObject();
 private:
 	PlayerColectObject() = default;
 
 	~PlayerColectObject() = default;
 	void operator=(const PlayerColectObject& obj) = delete;
 	PlayerColectObject(const PlayerColectObject& obj) = delete;
+
+	ColectingObject SetColectObject(GE::Math::Vector3 pos, GE::Math::Quaternion ro, GE::Math::Vector3 scl,GE::Color color,std::string modelName);
 };
 
