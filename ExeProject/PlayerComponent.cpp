@@ -247,6 +247,8 @@ void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 			Reflection(GE::Math::Vector3(0, 1, 0));
 			crashParticle.Fire(transform->position, GE::Math::Vector3(0, 1, 0), other->GetColor());
 			PlayerColectObject::GetInstance()->SetFallen({ 0,1,0 });
+			colectCount > 0 ? colectCount-- : 1;
+
 			return;
 
 		}
@@ -258,6 +260,8 @@ void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 			Reflection(hitNotmal);
 			crashParticle.Fire(transform->position, GE::Math::Vector3(0, 1, 0), other->GetColor());
 			PlayerColectObject::GetInstance()->SetFallen(hitNotmal);
+			colectCount > 0 ? colectCount-- : 1;
+
 
 		}
 	}
