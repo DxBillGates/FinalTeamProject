@@ -458,7 +458,7 @@ bool Game::Draw()
 	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2, &material, sizeof(GE::Material)) });
 
-	static GE::Math::Vector3 dofInfo = { 0.7f,2.0f,0.4f };
+	static GE::Math::Vector3 dofInfo = { 0.57f,1.85f,-0.1f };
 #ifdef _DEBUG
 	ImGui::DragFloat3("dofInfo", dofInfo.value, 0.001f);
 #endif // _DEBUG

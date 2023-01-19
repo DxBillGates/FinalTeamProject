@@ -378,7 +378,7 @@ void PlayerComponent::Control(float deltaTime)
 		LockOn();
 		break;
 	case PlayerComponent::PlayerStatas::DASH:
-		Dash(100.0f, 180.0f, deltaTime, transform->GetForward());
+		Dash(100.0f, 90.0f, deltaTime, transform->GetForward());
 		break;
 	case PlayerComponent::PlayerStatas::CRASH:
 		//ダッシュから切り替わった時用初期化
@@ -426,7 +426,7 @@ void PlayerComponent::Control(float deltaTime)
 			animator.PlayAnimation(3, false);
 			//収集物お持ち帰り
 			StartTree::collectCount += colectCount;
-			TimeLimit::GetInstance()->AddSeconds(10 * colectCount);
+			TimeLimit::GetInstance()->AddSeconds(20 * colectCount);
 			colectCount = 0;
 			PlayerColectObject::GetInstance()->ClearObject();
 			//着陸
