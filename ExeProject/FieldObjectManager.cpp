@@ -86,7 +86,7 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 		object->GetTransform()->scale = { 200,300,200 };
 		auto* collider = object->AddComponent < GE::SphereCollider >();
 		collider->SetCenter({ 0,0,0 });
-		collider->SetSize({ 10 });
+		collider->SetSize({ 10.5 });
 		nest = object;
 	}
 	//’Êí‚Ì–Ø
