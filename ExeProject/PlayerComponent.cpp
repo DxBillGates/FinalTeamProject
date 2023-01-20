@@ -30,7 +30,7 @@ int PlayerComponent::colectMax = 10;								//一度に掴めるえさの数
 float PlayerComponent::worldRadius = 38000.0f;						//端この壁までの長さ
 float PlayerComponent::lockOnLength = 10000.0f;						//ロックオンできる距離
 float PlayerComponent::moreTimesLockOnLength = 10000.0f;			//連続で二回目以降の敵をロックオンできる距離
-int PlayerComponent::lockOnInterval = 300.0f;						//再度ロックオンできるまでのインターバル
+int PlayerComponent::lockOnInterval = 250.0f;						//再度ロックオンできるまでのインターバル
 bool PlayerComponent::isGoTree = false;						//再度ロックオンできるまでのインターバル
 
 PlayerComponent::PlayerComponent()
@@ -426,7 +426,7 @@ void PlayerComponent::Control(float deltaTime)
 			animator.PlayAnimation(3, false);
 			//収集物お持ち帰り
 			StartTree::collectCount += colectCount;
-			TimeLimit::GetInstance()->AddSeconds(20 * colectCount);
+			TimeLimit::GetInstance()->AddSeconds(100 * colectCount);
 			colectCount = 0;
 			PlayerColectObject::GetInstance()->ClearObject();
 			//着陸
@@ -514,6 +514,10 @@ void PlayerComponent::KeyboardMoveControl(float deltaTime)
 	// ジョイコン操作中の際の姿勢制御
 	GE::Joycon* joycon = inputDevice->GetJoyconL();
 	if (joycon == nullptr)return;
+	if (joycon->GetTriggerButton(GE::JoyconButtonData::MINUS))
+	{
+		quat = {0,0,0,1};
+	}
 	GE::Math::Vector3 gyroData = joycon->GetSensorFusion();
 	gyro = { (float)gyroData.y,(float)-gyroData.z,(float)-gyroData.x };
 	const float OFFSET = 0.5f;
