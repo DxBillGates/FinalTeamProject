@@ -535,9 +535,9 @@ void PlayerComponent::KeyboardMoveControl(float deltaTime)
 	const float GYRO_OFFSET = 0.05f;
 	GE::Math::Vector3 quatVector = { quat.x,quat.y,quat.z, };
 
-	body_direction.x += quatVector.x / 20.f;
-	body_direction.y += quatVector.y / 20.f;
-	body_direction.z += quatVector.z / 20.f;
+	body_direction.x += quatVector.x / 10.f;
+	body_direction.y += quatVector.y / 10.f;
+	body_direction.z += quatVector.z / 10.f;
 
 	GE::Math::Vector3 bodyDirectionMax;
 	bodyDirectionMax = { 1.0f,100000,0.75f };
