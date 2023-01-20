@@ -66,7 +66,7 @@ void SampleScene::Update(float deltaTime)
 	directionalLightAngle.x += GE::GameSetting::Time::GetDeltaTime();
 	GE::Math::Vector3 minAngle = { 10,directionalLightAngle.y,0 };
 	GE::Math::Vector3 maxAngle = { 170,directionalLightAngle.y,0 };
-	directionalLightAngle = GE::Math::Vector3::Min(minAngle,GE::Math::Vector3::Max(maxAngle,directionalLightAngle));
+	directionalLightAngle = GE::Math::Vector3::Min(minAngle, GE::Math::Vector3::Max(maxAngle, directionalLightAngle));
 	directionalLight->GetAngle().x = directionalLightAngle.x;
 
 	Title::GetInstance()->Select();
