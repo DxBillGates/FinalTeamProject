@@ -614,7 +614,7 @@ void PlayerComponent::Dash(float dash_speed, float dash_time, float deltaTime, G
 	{
 		current_speed = easeIn(dash_speed, normal_speed, dashEasingCount / dash_time);
 	}
-	if (dashEasingCount < dash_time) { dashEasingCount += 1 * GE::GameSetting::Time::GetGameTime() * deltaTime; }
+	if (dashEasingCount < dash_time) { dashEasingCount += 1 * GE::GameSetting::Time::GetGameTime(); }
 	else { statas = PlayerStatas::MOVE; dashEasingCount = 0.0f; body_direction_LerpCount = 0; animator.PlayAnimation(1, false); }
 
 	body_direction_LockOn = GE::Math::Quaternion::LookDirection(direction);
