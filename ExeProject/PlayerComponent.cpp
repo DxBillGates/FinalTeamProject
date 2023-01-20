@@ -217,7 +217,7 @@ void PlayerComponent::OnCollision(GE::GameObject* other)
 		else
 		{
 			isGoTree = true;
-			if (InputManager::GetInstance()->GetActionButton())
+			if (colectCount > 0)
 			{
 				stayLandLerpEasingCount = 0.0f;
 				currentPosition = transform->position;
@@ -329,12 +329,9 @@ void PlayerComponent::Control(float deltaTime)
 {
 	const float distance = abs(GE::Math::Vector3::Distance(transform->position, FieldObjectManager::GetInstance()->StartPosition));
 
-	if (statas != PlayerStatas::CRASH)
+	if (worldRadius < distance)
 	{
-		if (worldRadius < distance)
-		{
-			Reflection(GE::Math::Vector3(transform->position - FieldObjectManager::StartPosition).Normalize());
-		}
+		Reflection(-GE::Math::Vector3(transform->position - FieldObjectManager::StartPosition).Normalize(), true);
 	}
 	bool loop = false;
 	switch (statas)
@@ -625,11 +622,18 @@ void PlayerComponent::Dash(float dash_speed, float dash_time, float deltaTime, G
 	transform->position += transform->GetForward() * current_speed * deltaTime * GE::GameSetting::Time::GetGameTime();
 }
 
-void PlayerComponent::Reflection(GE::Math::Vector3 normal)
+void PlayerComponent::Reflection(GE::Math::Vector3 normal, bool reflection)
 {
 	statas = PlayerStatas::CRASH;
 	audioManager->Use("hitWall")->Start();
-	transform->rotation = GE::Math::Quaternion::LookDirection(GE::Math::Vector3::Reflection(transform->GetForward(), normal, 2.0f));
+	if (!reflection)
+	{
+		transform->rotation = GE::Math::Quaternion::LookDirection(GE::Math::Vector3::Reflection(transform->GetForward(), normal, 2.0f));
+	}
+	else
+	{
+		transform->rotation = GE::Math::Quaternion::LookDirection(normal);
+	}
 	CameraControl::GetInstance()->ShakeStart({ 50,50 }, 30);
 	//ロックオン中ならロックオンをキャンセル
 	isLockOn = false; dashEasingCount = 0.0f; body_direction_LerpCount = 0; lockOnEnemy.object = nullptr;
