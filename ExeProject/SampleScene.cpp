@@ -20,6 +20,7 @@
 #include"FieldObjectDeBugTransform.h"
 #include <GatesEngine/External/DirectXTex/DirectXTex.h>
 #include "VolumetricCloud.h"
+#include "PlayerColectObject.h"
 
 SampleScene::SampleScene()
 	: SampleScene("SampleScene")
@@ -214,6 +215,7 @@ void SampleScene::UnLoad()
 	FieldObjectManager::GetInstance()->UnLoad();
 	FieldObjectDebugTransform::GetInstance()->UnLoad();
 	UIObject::GetInstance()->UnLoad();
+	PlayerColectObject::GetInstance()->ClearObject();
 	ScreenUIManager::GetInstance()->UnLoad();
 	// gameObjects‚ğíœ‚·‚é
 	Scene::UnLoad();

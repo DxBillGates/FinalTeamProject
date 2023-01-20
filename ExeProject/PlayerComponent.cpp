@@ -476,7 +476,9 @@ void PlayerComponent::Control(float deltaTime)
 			body_direction_LerpCount += 1 * GE::GameSetting::Time::GetGameTime();
 			transform->rotation = GE::Math::Quaternion::Lerp(body_direction_LockOn, BODY_DIRECTION, body_direction_LerpCount / body_direction_LerpTime);
 		}
-		else { transform->rotation = BODY_DIRECTION; }
+		else {
+			transform->rotation = BODY_DIRECTION;
+		}
 
 		if (statas != PlayerStatas::TITLE)
 		{
@@ -516,7 +518,7 @@ void PlayerComponent::KeyboardMoveControl(float deltaTime)
 	if (joycon == nullptr)return;
 	if (joycon->GetTriggerButton(GE::JoyconButtonData::MINUS))
 	{
-		quat = {0,0,0,1};
+		quat = { 0,0,0,1 };
 	}
 	GE::Math::Vector3 gyroData = joycon->GetSensorFusion();
 	gyro = { (float)gyroData.y,(float)-gyroData.z,(float)-gyroData.x };
@@ -532,7 +534,7 @@ void PlayerComponent::KeyboardMoveControl(float deltaTime)
 	if (InputManager::GetInstance()->GetCurrentInputDeviceState() != InputManager::InputDeviceState::JOYCON)return;
 	const float GYRO_OFFSET = 0.05f;
 	GE::Math::Vector3 quatVector = { quat.x,quat.y,quat.z, };
-	 
+
 	body_direction.x += quatVector.x / 20.f;
 	body_direction.y += quatVector.y / 20.f;
 	body_direction.z += quatVector.z / 20.f;
