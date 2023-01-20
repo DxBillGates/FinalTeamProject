@@ -426,7 +426,7 @@ void PlayerComponent::Control(float deltaTime)
 			animator.PlayAnimation(3, false);
 			//ŽûW•¨‚¨Ž‚¿‹A‚è
 			StartTree::collectCount += colectCount;
-			TimeLimit::GetInstance()->AddSeconds(100 * colectCount);
+			TimeLimit::GetInstance()->AddSeconds(60 * colectCount);
 			colectCount = 0;
 			PlayerColectObject::GetInstance()->ClearObject();
 			//’…—¤
