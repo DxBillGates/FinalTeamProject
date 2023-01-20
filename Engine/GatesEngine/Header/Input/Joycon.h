@@ -193,6 +193,7 @@ namespace GE
 		Vector3Int16 accelerometer;
 		Vector3Int16 gyroscope;
 
+		Math::Vector3 preAccf, preGyrof;
 		Math::Vector3 accf, gyrof;
 
 		Vector2Int16 stickData;
@@ -221,7 +222,10 @@ namespace GE
 		bool GetTriggerButton(JoyconButtonData buttonType);
 		bool GetReleaseButton(JoyconButtonData buttonType);
 
+		GE::Math::Vector3 GetPreAccelerometer();
 		GE::Math::Vector3 GetAccelerometer();
+		float GetDefaultAccelerometerDiff();
+		GE::Math::Vector3 GetPreGyroscope();
 		GE::Math::Vector3 GetGyroscope();
 		GE::Math::Vector3 GetSensorFusion();
 		

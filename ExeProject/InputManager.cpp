@@ -121,7 +121,7 @@ bool InputManager::GetActionButton(bool isJoyconAcc)
 
 		GE::Math::Vector3 acc = joyconL->GetAccelerometer();
 		Vector3 accVector = { (float)acc.x,(float)acc.y,(float)acc.z };
-		if (accVector.Length() > 2)return true;
+		if (accVector.Length() > 2 && joyconR->GetButton(GE::JoyconButtonData::R))return true;
 
 		break;
 	}

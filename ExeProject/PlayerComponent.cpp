@@ -307,6 +307,7 @@ void PlayerComponent::OnGui()
 
 	ImGui::DragFloat("Speed", &current_speed, dragSpeed, 0, maxValue);
 	ImGui::DragFloat3("GyroVector", gyro.value, dragSpeed, -1, 1);
+	ImGui::DragFloat3("TotalGyroVector", totalGyro.value, dragSpeed, -1, 1);
 	ImGui::InputFloat4("quat", quat.value);
 	ImGui::InputFloat3("accelerometer", accelerometer.value);
 
@@ -317,6 +318,9 @@ void PlayerComponent::OnGui()
 	GE::Math::Vector2 value = { (float)joycon->GetStick().x,(float)joycon->GetStick().y };
 	ImGui::InputFloat2("joyStick", value.value);
 	ImGui::Checkbox("IsDraw", &isDraw);
+	ImGui::Text("%.3f", accelerometer.Length());
+	ImGui::Text("%.3f", joycon->GetDefaultAccelerometerDiff());
+	ImGui::Text("%.3f", joycon->GetGyroscope().Length());
 }
 bool PlayerComponent::IsSpeedy()
 {
@@ -514,27 +518,30 @@ void PlayerComponent::KeyboardMoveControl(float deltaTime)
 	// ジョイコン操作中の際の姿勢制御
 	GE::Joycon* joycon = inputDevice->GetJoyconL();
 	if (joycon == nullptr)return;
-	if (joycon->GetTriggerButton(GE::JoyconButtonData::MINUS))
+
+	float preJoyconAccDiff = GE::Math::Vector3::Dot(joycon->GetPreAccelerometer(), { 0,0,1 });
+	float joyconAccDiff = joycon->GetDefaultAccelerometerDiff();
+	float preJoyconGyroLength = joycon->GetPreGyroscope().Length();
+	float joyconGyroLength = joycon->GetGyroscope().Length();
+	accelerometer = joycon->GetAccelerometer();
+
+	if (joyconAccDiff > 0.95f && joyconGyroLength < 20)
 	{
 		quat = { 0,0,0,1 };
 	}
 
-
-	accelerometer = joycon->GetAccelerometer();
-	GE::Math::Vector3 GRAVITY_VECTOR = GE::Math::Vector3(0, 0, 1);
-	float defaultAccDiff = GE::Math::Vector3::Dot(accelerometer, GRAVITY_VECTOR);
-
-	if (defaultAccDiff > 0.95f)
+	if (joycon->GetTriggerButton(GE::JoyconButtonData::MINUS))
 	{
 		quat = { 0,0,0,1 };
 	}
 
 	GE::Math::Vector3 gyroData = joycon->GetSensorFusion();
 	gyro = { (float)gyroData.y,(float)-gyroData.z,(float)-gyroData.x };
-	const float OFFSET = 0.5f;
-	if (gyro.x < OFFSET && gyro.x > -OFFSET)gyro.x = 0;
-	if (gyro.y < OFFSET && gyro.y > -OFFSET)gyro.y = 0;
-	if (gyro.z < OFFSET && gyro.z > -OFFSET)gyro.z = 0;
+
+	if (accelerometer.Length() > 1.5f)
+	{
+		gyro = { 0,0,0 };
+	}
 
 	// コントローラーから姿勢を更新し続ける
 	quat *= GE::Math::Quaternion(gyro.Normalize(), GE::Math::ConvertToRadian(gyro.Length() * 1.f / 144.f));

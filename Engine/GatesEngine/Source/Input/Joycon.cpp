@@ -125,6 +125,10 @@ void GE::Joycon::Update()
 	int accelIndex = 13;
 	int gyroIndex = 19;
 	const Vector3Int16 OFFSET = { 19,-27,-17 };
+
+	preAccf = accf;
+	preGyrof = gyrof;
+
 	for (int i = 0; i < 3; ++i, accelIndex += 2, gyroIndex += 2)
 	{
 		memcpy_s(&accelerometer.value[i], sizeof(int16_t), &joycon->readBuffer[accelIndex], sizeof(int16_t));
@@ -219,9 +223,26 @@ bool GE::Joycon::GetReleaseButton(JoyconButtonData buttonType)
 	return GetRelease(beforeState, currentState, (int)buttonType);
 }
 
+GE::Math::Vector3 GE::Joycon::GetPreAccelerometer()
+{
+	return preAccf;
+}
+
 GE::Math::Vector3 GE::Joycon::GetAccelerometer()
 {
 	return accf;
+}
+
+float GE::Joycon::GetDefaultAccelerometerDiff()
+{
+	// èdóÕÇæÇØÇ™ï∑Ç¢ÇƒÇ¢ÇÈèÛë‘
+	Math::Vector3 defaultAcclerometer = Math::Vector3(0, 0, 1);
+	return Math::Vector3::Dot(defaultAcclerometer,accf);
+}
+
+GE::Math::Vector3 GE::Joycon::GetPreGyroscope()
+{
+	return preGyrof;
 }
 
 GE::Math::Vector3 GE::Joycon::GetGyroscope()

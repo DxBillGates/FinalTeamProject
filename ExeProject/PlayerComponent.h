@@ -60,6 +60,8 @@ private:
 	//ロックオン時の向き
 	GE::Math::Vector3 lockOnDashDirection;
 
+	GE::Math::Vector3 totalGyro;
+	GE::Math::Quaternion preQuat;
 	GE::Math::Quaternion quat;
 	GE::Math::Vector3 body_direction;				//体の向き計算用
 	GE::Math::Quaternion body_direction_LockOn;		//ロックオン時の体の向き計算用
