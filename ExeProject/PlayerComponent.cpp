@@ -304,6 +304,7 @@ void PlayerComponent::OnGui()
 {
 	float dragSpeed = 0.1f;
 	float maxValue = 100;
+
 	ImGui::DragFloat("Speed", &current_speed, dragSpeed, 0, maxValue);
 	ImGui::DragFloat3("GyroVector", gyro.value, dragSpeed, -1, 1);
 	ImGui::InputFloat4("quat", quat.value);
@@ -517,6 +518,17 @@ void PlayerComponent::KeyboardMoveControl(float deltaTime)
 	{
 		quat = { 0,0,0,1 };
 	}
+
+
+	accelerometer = joycon->GetAccelerometer();
+	GE::Math::Vector3 GRAVITY_VECTOR = GE::Math::Vector3(0, 0, 1);
+	float defaultAccDiff = GE::Math::Vector3::Dot(accelerometer, GRAVITY_VECTOR);
+
+	if (defaultAccDiff > 0.95f)
+	{
+		quat = { 0,0,0,1 };
+	}
+
 	GE::Math::Vector3 gyroData = joycon->GetSensorFusion();
 	gyro = { (float)gyroData.y,(float)-gyroData.z,(float)-gyroData.x };
 	const float OFFSET = 0.5f;
