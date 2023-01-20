@@ -130,7 +130,7 @@ private:
 	/// <param name="loop">Trueの間はダッシュし続ける。Falseになるとdash_timeのフレーム数かけて減速する。最初からfalseだとdash_timeフレーム数加速する</param>
 	void Dash(float dash_speed, float dash_time, float deltaTime, GE::Math::Vector3 direction, bool loop = false);
 
-	void Reflection(GE::Math::Vector3 normal);
+	void Reflection(GE::Math::Vector3 normal, bool reflection = false);
 	//EaseIn関係がよくわからなかったから一時的に追加
 	const float easeIn(const float start, const float end, float time);
 
