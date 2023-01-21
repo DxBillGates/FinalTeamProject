@@ -478,13 +478,13 @@ bool Game::Draw()
 	graphicsDevice.ExecuteRenderQueue();
 	graphicsDevice.ExecuteCommands();
 
-	graphicsDevice.SetCurrentRenderQueue(false);
-	graphicsDevice.SetShaderResourceDescriptorHeap();
-	graphicsDevice.SetLayer("defaultLayer");
-	//graphicsDevice.SetDefaultRenderTargetWithoutDSV();
-	sceneManager.LateDraw();
-	graphicsDevice.ExecuteRenderQueue();
-	graphicsDevice.ExecuteCommands();
+	//graphicsDevice.SetCurrentRenderQueue(false);
+	//graphicsDevice.SetShaderResourceDescriptorHeap();
+	//graphicsDevice.SetLayer("defaultLayer");
+	////graphicsDevice.SetDefaultRenderTargetWithoutDSV();
+	//sceneManager.LateDraw();
+	//graphicsDevice.ExecuteRenderQueue();
+	//graphicsDevice.ExecuteCommands();
 
 	// ÉuÉâÅ[ÇµÇΩåãâ Çå≥âÊëúÇ…çáê¨
 	graphicsDevice.SetCurrentRenderQueue(true);
@@ -547,6 +547,13 @@ bool Game::Draw()
 	//graphicsDevice.SetCurrentRenderQueue(false);
 	//graphicsDevice.SetDefaultRenderTargetWithoutDSV();
 	//sceneManager.LateDraw();
+	graphicsDevice.ExecuteRenderQueue();
+
+	graphicsDevice.SetCurrentRenderQueue(false);
+	graphicsDevice.SetDefaultRenderTarget();
+	graphicsDevice.SetShaderResourceDescriptorHeap();
+	//graphicsDevice.SetDefaultRenderTargetWithoutDSV();
+	sceneManager.LateDraw();
 	graphicsDevice.ExecuteRenderQueue();
 
 	//ImVec2 texSize = { textureAnimationInfo.textureSize.x / 4,textureAnimationInfo.textureSize.y / 4 };
