@@ -12,6 +12,10 @@ cbuffer RayInfo : register(b13)
 	float3 boundMin;
 	float pad;
 	float3 boundMax;
+	float pad2;
+	float samplingValue;
+	float threshold;
+	float2 center;
 };
 
 float2 RayBoxDst(float3 rayDir)
@@ -53,5 +57,18 @@ float4 main(RaymarchingVSOutput input) : SV_TARGET
 
 	////float4 resultColor = float4(0,0,0,1);
 
-	return float4((defaultLayerColor.rgb),1) * color;
+	float4 radial = float4(0, 0, 0, 0);
+	float2 pos = input.uv - center;
+	float dist = length(pos);
+	float factor = threshold / samplingValue * dist;
+
+	for (int i = 0; i < (int)samplingValue; ++i)
+	{
+		float uvOffset = 1.0f - factor * float(i);
+		radial += defaultLayerTexture.Sample(clampLinearSampler, pos * uvOffset + center);
+	}
+
+	radial /= samplingValue;
+
+	return float4((radial.rgb),1) * color;
 }

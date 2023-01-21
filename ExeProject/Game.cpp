@@ -8,6 +8,7 @@
 #include <GatesEngine/Header/GUI/GUIManager.h>
 #include <GatesEngine/Header/Graphics/FbxLoader.h>
 #include <GatesEngine/Header/Graphics/Texture.h>
+#include "PlayerComponent.h"
 #include "Option.h"
 
 Game::Game()
@@ -499,17 +500,26 @@ bool Game::Draw()
 		GE::Math::Vector3 boundMin;
 		float pad;
 		GE::Math::Vector3 boundMax;
+		float pad2;
+		float samplingValue = 8;
+		float threshold = 0;
+		GE::Math::Vector2 center = { 0.5f };
 	};
 
-	RayInfo rayInfo;
+	static RayInfo rayInfo;
 #ifdef _DEBUG
-	static GE::Math::Vector3 pos = { 0,0,0 };
-	static GE::Math::Vector3 scale = 2000;
-	ImGui::DragFloat3("CloudPos", pos.value, 1.0f);
-	ImGui::DragFloat3("CloudScale", scale.value, 1.0f);
-	rayInfo.boundMin = pos - scale / 2;
-	rayInfo.boundMax = pos + scale / 2;
-	ImGui::Text("color : %.3f", sceneColor);
+	//static GE::Math::Vector3 pos = { 0,0,0 };
+	//static GE::Math::Vector3 scale = 2000;
+	//ImGui::DragFloat3("CloudPos", pos.value, 1.0f);
+	//ImGui::DragFloat3("CloudScale", scale.value, 1.0f);
+	//rayInfo.boundMin = pos - scale / 2;
+	//rayInfo.boundMax = pos + scale / 2;
+	//ImGui::Text("color : %.3f", sceneColor);
+	ImGui::DragFloat("SamplingValue", &rayInfo.samplingValue, 1, 1, 16);
+	ImGui::DragFloat("Threshold", &rayInfo.threshold, 0.01f, 0, 1);
+	ImGui::DragFloat2("uv", rayInfo.center.value, 0.01f, 0, 1);
+
+	rayInfo.threshold = GE::Math::Lerp(0, 1, (PlayerComponent::current_speed - 20) / 100.0f);
 #endif // _DEBUG
 	material.color = { sceneColor,sceneColor ,sceneColor,1 };
 
