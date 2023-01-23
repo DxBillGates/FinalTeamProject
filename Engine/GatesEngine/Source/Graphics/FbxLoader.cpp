@@ -165,7 +165,7 @@ void GE::FbxLoader::ParseAnimation(FbxScene* fbxScene, int animationCount)
 
 		animationData.startTime = takeInfo->mLocalTimeSpan.GetStart();
 		animationData.endTime = takeInfo->mLocalTimeSpan.GetStop();
-		animationData.frameTime.SetTime(0,0,0,1,0, FbxTime::EMode::eFrames60);
+		animationData.frameTime.SetTime(0, 0, 0, 1, 0, FbxTime::EMode::eFrames60);
 	}
 }
 
@@ -180,7 +180,7 @@ void GE::FbxLoader::ParseSkin(FbxMesh* fbxMesh, std::vector<Bone>& bones)
 	bones.reserve(clusterCount);
 
 	// fbxMatrix ‚©‚ç Math::Matrix4x4 ‚É•ÏŠ·
-	auto ConvertMatrixFromFbxMatrix = [](Math::Matrix4x4& dst,const FbxAMatrix& src)
+	auto ConvertMatrixFromFbxMatrix = [](Math::Matrix4x4& dst, const FbxAMatrix& src)
 	{
 		for (int i = 0; i < 4; ++i)
 		{
@@ -254,7 +254,7 @@ void GE::FbxLoader::ParseSkin(FbxMesh* fbxMesh, std::vector<Bone>& bones)
 			if (++weightArrayIndex >= MAX_BONE_INDEX_COUNT)
 			{
 				float weight = 0;
-				for (int j = 1;j < MAX_BONE_INDEX_COUNT; ++j)
+				for (int j = 1; j < MAX_BONE_INDEX_COUNT; ++j)
 				{
 					weight += vertices[i].boneWeight[j];
 				}
@@ -320,22 +320,31 @@ GE::Mesh* GE::FbxLoader::Load(const std::string& modelName, IGraphicsDeviceDx12*
 
 	for (auto& bone : currentLoadModelData->bones)
 	{
-		for (int i = 0;i < currentLoadModelData->animationDatas.size();++i)
+		for (int i = 0; i < currentLoadModelData->animationDatas.size(); ++i)
 		{
 			fbxScene->SetCurrentAnimationStack(currentLoadModelData->animationDatas[i].animStack);
 			auto node = bone.fbxCluster->GetLink();
 			auto startTime = currentLoadModelData->animationDatas[i].startTime;
 			auto endTime = currentLoadModelData->animationDatas[i].endTime;
-			auto centerTime = (endTime - startTime) / 2;
+			FbxTime centerTime;
+			Math::Matrix4x4 startMatrix, endMatrix, centerMatrix;
 			FbxAMatrix fbxStartMatrix = node->EvaluateGlobalTransform(startTime);
-			FbxAMatrix fbxCenterMatrix = node->EvaluateGlobalTransform(centerTime);
-			FbxAMatrix fbxEndMatrix = node->EvaluateGlobalTransform(endTime);
-			Math::Matrix4x4 startMatrix, endMatrix,centerMatrix;
 			ConvertMatrixFromFbxMatrix(startMatrix, fbxStartMatrix);
-			ConvertMatrixFromFbxMatrix(centerMatrix, fbxCenterMatrix);
-			ConvertMatrixFromFbxMatrix(endMatrix, fbxEndMatrix);
 			bone.animationMatrixes[i].push_back(startMatrix);
-			bone.animationMatrixes[i].push_back(centerMatrix);
+
+			const int MAX_ANIMATION = 16;
+			FbxTime timePerAnimationDatas = endTime / MAX_ANIMATION;
+			FbxTime comparisonTime = 0;
+			for (int j = 1; j < MAX_ANIMATION - 1; ++j,comparisonTime += timePerAnimationDatas)
+			{
+				FbxAMatrix fbxCenterMatrix = node->EvaluateGlobalTransform(comparisonTime);
+				ConvertMatrixFromFbxMatrix(centerMatrix, fbxCenterMatrix);
+				bone.animationMatrixes[i].push_back(centerMatrix);
+			}
+			//auto centerTime = (endTime - startTime) / 2;
+
+			FbxAMatrix fbxEndMatrix = node->EvaluateGlobalTransform(endTime);
+			ConvertMatrixFromFbxMatrix(endMatrix, fbxEndMatrix);
 			bone.animationMatrixes[i].push_back(endMatrix);
 		}
 	}

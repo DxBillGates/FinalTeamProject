@@ -244,7 +244,7 @@ bool Game::Initialize()
 
 	// fps‚Ì•\Ž¦Ø‘Ö
 	timer.SetIsShow(false);
-	timer.SetFrameRate(60);
+	timer.SetFrameRate(144);
 
 	float gaussValue = 2.5f;
 	GE::Math::Vector2 right = { 1,0 };
@@ -515,8 +515,8 @@ bool Game::Draw()
 	ImGui::DragFloat2("uv", rayInfo.center.value, 0.01f, 0, 1);
 	ImGui::End();
 
-	rayInfo.threshold = GE::Math::Lerp(0, 1, (PlayerComponent::current_speed - 20) / 100.0f);
 #endif // _DEBUG
+	rayInfo.threshold = GE::Math::Lerp(0, 1, (PlayerComponent::current_speed - 20) / 100.0f);
 	material.color = { sceneColor,sceneColor ,sceneColor,1 };
 
 	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
