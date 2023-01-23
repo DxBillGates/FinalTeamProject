@@ -35,6 +35,7 @@ void GE::SkinMeshAnimator::PlayAnimation(int index, bool loopFlag)
 	if (index >= (int)skinMeshData->animationDatas.size())return;
 
 	currentPlayAnimationData = &skinMeshData->animationDatas[index];
+	currentPlayAnimationData->index = index;
 
 	skinMeshData->fbxScene->SetCurrentAnimationStack(currentPlayAnimationData->animStack);
 
@@ -125,8 +126,40 @@ void GE::SkinMeshAnimator::Update(float deltaTime)
 		if (i >= MAX_BONES)break;
 
 		Math::Matrix4x4 currentPose;
-		FbxAMatrix fbxCurrentPose = skinMeshData->bones[i].fbxCluster->GetLink()->EvaluateGlobalTransform(currentTime);
-		ConvertMatrixFromFbxMatrix(currentPose, fbxCurrentPose);
+		FbxAMatrix fbxCurrentPose /*= skinMeshData->bones[i].fbxCluster->GetLink()->EvaluateGlobalTransform(currentTime);
+		ConvertMatrixFromFbxMatrix(currentPose, fbxCurrentPose)*/;
+
+		auto startTime = currentPlayAnimationData->startTime;
+		auto endTime = currentPlayAnimationData->endTime;
+		auto centerTime = (endTime - startTime) / 2;
+		int currentTimeIndex = 0;
+
+		const int MAX_ANIMATION = 16;
+		FbxTime timePerAnimationDatas = endTime / MAX_ANIMATION;
+		FbxTime comparisonTime = 0;
+
+		for (int i = 0; i < MAX_ANIMATION; ++i,comparisonTime += timePerAnimationDatas)
+		{
+			if (currentTime < comparisonTime)
+			{
+				currentTimeIndex = i - 1;
+				break;
+			}
+		}
+
+		int beforeTimeIndex = currentTimeIndex - 1;
+		if (currentTimeIndex <= 0)
+		{
+			beforeTimeIndex = 0;
+			currentTimeIndex = 0;
+		}
+		float lerp = currentTime.GetSecondDouble() / endTime.GetSecondDouble();
+		GE::Math::Matrix4x4 s, e;
+
+		s = skinMeshData->bones[i].animationMatrixes[currentPlayAnimationData->index][beforeTimeIndex];
+		e = skinMeshData->bones[i].animationMatrixes[currentPlayAnimationData->index][currentTimeIndex];
+		GE::Math::Matrix4x4 lerpMatrix = GE::Math::Matrix4x4::Lerp(s, e, lerp);
+		currentPose = lerpMatrix;
 
 		skinMeshInfo.bones[i] = skinMeshData->bones[i].invInitialPose * currentPose;
 	}

@@ -78,14 +78,14 @@ void SampleScene::Update(float deltaTime)
 	UIObject::GetInstance()->Update(deltaTime);
 	ScreenUIManager::GetInstance()->Update(deltaTime);
 	//ƒNƒŠƒAˆÈ~ðŒ
-	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::Q)
+	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::D1)
 		|| StartTree::isCollect)
 	{
 		changeSceneInfo.flag = true;
 		changeSceneInfo.name = "ClearScene";
 		changeSceneInfo.initNextSceneFlag = true;
 	}
-	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::E)
+	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::D2)
 		|| TimeLimit::GetInstance()->GetTimeOver())
 	{
 		changeSceneInfo.flag = true;

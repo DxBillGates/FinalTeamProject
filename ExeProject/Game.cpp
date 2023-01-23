@@ -10,6 +10,7 @@
 #include <GatesEngine/Header/Graphics/Texture.h>
 #include "PlayerComponent.h"
 #include "Option.h"
+#include "Title.h"
 
 Game::Game()
 	: Application()
@@ -255,7 +256,7 @@ bool Game::Initialize()
 
 	// fps‚Ì•\Ž¦Ø‘Ö
 	timer.SetIsShow(false);
-	timer.SetFrameRate(60);
+	timer.SetFrameRate(144);
 
 	float gaussValue = 2.5f;
 	GE::Math::Vector2 right = { 1,0 };
@@ -302,10 +303,14 @@ bool Game::Update()
 		sceneColor = 1 - sceneManager.GetCurrentScene()->IsChangeScene().sceneTransitionFadeout.GetTime();
 	}
 #ifdef _DEBUG
+	ImGui::Begin("Debug");
 	ImGui::Text("FPS : %.3f", 1.0f / timer.GetElapsedTime());
+	ImGui::End();
 #endif // _DEBUG
 
 	audioManager.Get("testBGM", 0)->SetVolume(sceneColor * OptionData::BGM_vol / 10.f);
+
+	if (Title::GetInstance()->isExit == true)return false;
 	return true;
 }
 
@@ -341,14 +346,6 @@ bool Game::Draw()
 		renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2, &material, sizeof(GE::Material)) });
 		renderQueue->AddSetConstantBufferInfo({ 3,cbufferAllocater->BindAndAttachData(3, &directionalLight, sizeof(GE::DirectionalLightInfo)) });
 		graphicsDevice.DrawMesh("Sphere");
-
-		/*graphicsDevice.SetShader("DefaultMeshWithTextureShader");
-		modelMatrix = GE::Math::Matrix4x4::Identity();
-		modelMatrix *= GE::Math::Matrix4x4::Scale({ 50 });
-		renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
-		renderQueue->AddSetShaderResource({ 4,graphicsDevice.GetTextureManager()->Get("texture_null")->GetSRVNumber() });
-		graphicsDevice.DrawMesh("Skydome");*/
-
 
 		graphicsDevice.SetShader("DefaultLineShader");
 		modelMatrix = GE::Math::Matrix4x4::Identity();
@@ -392,7 +389,9 @@ bool Game::Draw()
 	renderQueue->AddSetConstantBufferInfo({ 4,cbufferAllocater->BindAndAttachData(4,&textureAnimationInfo,sizeof(GE::TextureAnimationInfo)) });
 	static float BRIGHTNESS = 0.81f;
 #ifdef _DEBUG
+	ImGui::Begin("Debug");
 	ImGui::DragFloat("BrightnessSamplingValue", &BRIGHTNESS, 0.01f, 0, 1);
+	ImGui::End();
 #endif // _DEBUG
 	renderQueue->AddSetConstantBufferInfo({ 5,cbufferAllocater->BindAndAttachData(5,&BRIGHTNESS,sizeof(float)) });
 	renderQueue->AddSetShaderResource({ 16,graphicsDevice.GetLayerManager()->Get("resultLayer")->GetRenderTexture()->GetSRVNumber() });
@@ -473,7 +472,9 @@ bool Game::Draw()
 
 	static GE::Math::Vector3 dofInfo = { 0.57f,1.85f,-0.1f };
 #ifdef _DEBUG
+	ImGui::Begin("Debug");
 	ImGui::DragFloat3("dofInfo", dofInfo.value, 0.001f);
+	ImGui::End();
 #endif // _DEBUG
 	GE::Math::Vector4 dof = { dofInfo.x,dofInfo.y ,dofInfo.z ,1 };
 	renderQueue->AddSetConstantBufferInfo({ 13,cbufferAllocater->BindAndAttachData(15, &dof, sizeof(GE::Math::Vector4)) });
@@ -490,22 +491,15 @@ bool Game::Draw()
 	graphicsDevice.ExecuteRenderQueue();
 	graphicsDevice.ExecuteCommands();
 
-	//graphicsDevice.SetCurrentRenderQueue(false);
-	//graphicsDevice.SetShaderResourceDescriptorHeap();
-	//graphicsDevice.SetLayer("defaultLayer");
-	////graphicsDevice.SetDefaultRenderTargetWithoutDSV();
-	//sceneManager.LateDraw();
-	//graphicsDevice.ExecuteRenderQueue();
-	//graphicsDevice.ExecuteCommands();
-
 	// ƒuƒ‰[‚µ‚½Œ‹‰Ê‚ðŒ³‰æ‘œ‚É‡¬
 	graphicsDevice.SetCurrentRenderQueue(true);
 	graphicsDevice.SetShaderResourceDescriptorHeap();
+#ifdef _DEBUG
+	graphicsDevice.SetLayer("MainLayer");
+#else
 	graphicsDevice.SetDefaultRenderTarget();
+#endif // _DEBUG
 	graphicsDevice.SetShader("volumetricCloudShader");
-
-	//cameraInfo.invProjMatrix = GE::Math::Matrix4x4::Inverse(cameraInfo.projMatrix);
-	//cameraInfo.invViewMatrix = GE::Math::Matrix4x4::Inverse(cameraInfo.viewMatrix);
 
 	struct RayInfo
 	{
@@ -527,22 +521,15 @@ bool Game::Draw()
 	//rayInfo.boundMin = pos - scale / 2;
 	//rayInfo.boundMax = pos + scale / 2;
 	//ImGui::Text("color : %.3f", sceneColor);
+	ImGui::Begin("Debug");
 	ImGui::DragFloat("SamplingValue", &rayInfo.samplingValue, 1, 1, 16);
 	ImGui::DragFloat("Threshold", &rayInfo.threshold, 0.01f, 0, 1);
 	ImGui::DragFloat2("uv", rayInfo.center.value, 0.01f, 0, 1);
+	ImGui::End();
 
-	rayInfo.threshold = GE::Math::Lerp(0, 1, (PlayerComponent::current_speed - 20) / 100.0f);
 #endif // _DEBUG
+	rayInfo.threshold = GE::Math::Lerp(0, 1, (PlayerComponent::current_speed - 20) / 100.0f);
 	material.color = { sceneColor,sceneColor ,sceneColor,1 };
-
-	//modelMatrix = GE::Math::Matrix4x4::Scale({ windowSize.x,windowSize.y,0 });
-	//windowSize.x /= 2;
-	//windowSize.y /= 2;
-	//modelMatrix *= GE::Math::Matrix4x4::Translate({ windowSize.x,windowSize.y,0 });
-
-	//cameraInfo = graphicsDevice.GetMainCamera()->GetCameraInfo();
-	//cameraInfo.viewMatrix = GE::Math::Matrix4x4::GetViewMatrixLookTo({ 0,0,0 }, { 0,0,1 }, { 0,1,0 });
-	//cameraInfo.projMatrix = GE::Math::Matrix4x4::GetOrthographMatrix(GE::Window::GetWindowSize());
 
 	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
 	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
@@ -562,15 +549,30 @@ bool Game::Draw()
 	graphicsDevice.ExecuteRenderQueue();
 
 	graphicsDevice.SetCurrentRenderQueue(false);
+#ifdef _DEBUG
+	graphicsDevice.SetLayer("MainLayer");
+#else
 	graphicsDevice.SetDefaultRenderTarget();
+#endif // _DEBUG
 	graphicsDevice.SetShaderResourceDescriptorHeap();
-	//graphicsDevice.SetDefaultRenderTargetWithoutDSV();
 	sceneManager.LateDraw();
 	graphicsDevice.ExecuteRenderQueue();
 
-	//ImVec2 texSize = { textureAnimationInfo.textureSize.x / 4,textureAnimationInfo.textureSize.y / 4 };
-	//GE::IDepthTexture* dofRenderTexture = graphicsDevice.GetLayerManager()->Get("resultLayer")->GetDepthTexture();
-	//ImGui::Image((ImTextureID)dofRenderTexture->GetGPUHandle().ptr, texSize);
+#ifdef _DEBUG
+	graphicsDevice.SetLayer("MainLayer");
+	graphicsDevice.SetCurrentRenderQueue(false);
+	graphicsDevice.SetDefaultRenderTarget();
+	graphicsDevice.SetShaderResourceDescriptorHeap();
+	graphicsDevice.GetRenderQueue()->AddCommand();
+	graphicsDevice.ExecuteRenderQueue();
+
+	ImGui::Begin("Game");
+	ImVec2 texSize = ImGui::GetWindowSize();
+	texSize.x -= 20;
+	texSize.y -= 25;
+	ImGui::Image((ImTextureID)graphicsDevice.GetLayerManager()->Get("MainLayer")->GetRenderTexture()->GetGPUHandle().ptr,texSize);
+	ImGui::End();
+#endif // _DEBUG
 
 	GE::GUIManager::EndFrame();
 	graphicsDevice.ExecuteCommands();

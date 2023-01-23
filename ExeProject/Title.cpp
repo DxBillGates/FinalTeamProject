@@ -24,6 +24,7 @@ void Title::Awake(GE::GameObjectManager* gameObjectManager, GE::IGraphicsDeviceD
 	decided = false;
 	option.Awake(gameObjectManager);
 
+	isExit = false;
 	isActive = false;
 
 }
@@ -31,6 +32,7 @@ void Title::Awake(GE::GameObjectManager* gameObjectManager, GE::IGraphicsDeviceD
 void Title::Update(GE::AudioManager* audioManager)
 {
 	if (!isActive)return;
+
 	//ƒIƒvƒVƒ‡ƒ“’†ˆ—
 	option.Update(audioManager);
 }
@@ -38,6 +40,7 @@ void Title::Update(GE::AudioManager* audioManager)
 void Title::Select()
 {
 	if (!isActive)return;
+
 	if (decided) {
 		return;
 	}
@@ -101,7 +104,8 @@ void Title::Select()
 			break;
 		case Title::States::exit:
 			GE::Utility::Printf("Title exit()\n");
-			states = States::start;
+			//states = States::start;
+			isExit = true;
 			break;
 		default:
 			break;
@@ -112,7 +116,6 @@ void Title::Select()
 
 bool Title::GetSelect(Title::States s)
 {
-
 	if (decided)
 	{
 		if (s == states)

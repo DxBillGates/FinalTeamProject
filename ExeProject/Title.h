@@ -39,6 +39,7 @@ public:
 	Stage stage;
 	bool isActive;
 	float alpha = 0.0f;
+	bool isExit;
 private:
 	Title() = default;
 	~Title() = default;

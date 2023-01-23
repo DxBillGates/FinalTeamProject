@@ -363,9 +363,15 @@ bool GE::Application::LoadContents()
 		layerManager->Add(new Layer(dofRenderTexture, nullptr), "DofLayer_" + std::to_string(i));
 	}
 
+	{
+		RenderTexture* renderTarget = new RenderTexture();
+		renderTarget->Create(device, shaderResourceHeap, mainWindow.GetWindowSize(), Color::Black());
+		layerManager->Add(new Layer(renderTarget, nullptr), "defaultLayer");
+	}
+
 	RenderTexture* renderTarget = new RenderTexture();
 	renderTarget->Create(device, shaderResourceHeap, mainWindow.GetWindowSize(), Color::Black());
-	layerManager->Add(new Layer(renderTarget, nullptr), "defaultLayer");
+	layerManager->Add(new Layer(renderTarget, nullptr), "MainLayer");
 
 	return true;
 }

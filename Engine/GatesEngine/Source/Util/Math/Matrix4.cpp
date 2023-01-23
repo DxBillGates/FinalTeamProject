@@ -296,6 +296,19 @@ GE::Math::Matrix4x4 GE::Math::Matrix4x4::GetViewportMatrix(const Vector2& size)
 	return result;
 }
 
+GE::Math::Matrix4x4 GE::Math::Matrix4x4::Lerp(const Matrix4x4& s, const Matrix4x4& e, float t)
+{
+	Matrix4x4 result;
+	for (int i = 0; i < 4; ++i)
+	{
+		for (int j = 0; j < 4; ++j)
+		{
+			result.m[i][j] = Math::Lerp(s.m[i][j], e.m[i][j], t);
+		}
+	}
+	return result;
+}
+
 GE::Math::Matrix4x4 & GE::Math::operator*=(Matrix4x4 & m1, const Matrix4x4 & m2)
 {
 	Matrix4x4 result;

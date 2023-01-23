@@ -32,7 +32,7 @@ void CameraControl::Initialize()
 
 void CameraControl::Update(float deltaTime)
 {
-
+	if (PlayerComponent::statas == PlayerComponent::PlayerStatas::DEBUG)return;
 	float LERP_VALUE = 0.01f * GE::GameSetting::Time::GetGameTime() * deltaTime;
 
 	UIObject::GetInstance()->cameraPosition = position;

@@ -17,7 +17,7 @@ namespace GE
 		std::string name;
 		Math::Matrix4x4 invInitialPose;
 		FbxCluster* fbxCluster;
-
+		std::map<int, std::vector<GE::Math::Matrix4x4>> animationMatrixes;
 		Bone(const std::string& name)
 			: name(name)
 			, invInitialPose()
