@@ -306,6 +306,40 @@ GE::Mesh* GE::FbxLoader::Load(const std::string& modelName, IGraphicsDeviceDx12*
 
 	currentLoadModelData->fbxScene = fbxScene;
 
+	// fbxMatrix ‚©‚ç Math::Matrix4x4 ‚É•ÏŠ·
+	auto ConvertMatrixFromFbxMatrix = [](Math::Matrix4x4& dst, const FbxAMatrix& src)
+	{
+		for (int i = 0; i < 4; ++i)
+		{
+			for (int j = 0; j < 4; ++j)
+			{
+				dst.m[i][j] = (float)src.Get(i, j);
+			}
+		}
+	};
+
+	for (auto& bone : currentLoadModelData->bones)
+	{
+		for (int i = 0;i < currentLoadModelData->animationDatas.size();++i)
+		{
+			fbxScene->SetCurrentAnimationStack(currentLoadModelData->animationDatas[i].animStack);
+			auto node = bone.fbxCluster->GetLink();
+			auto startTime = currentLoadModelData->animationDatas[i].startTime;
+			auto endTime = currentLoadModelData->animationDatas[i].endTime;
+			auto centerTime = (endTime - startTime) / 2;
+			FbxAMatrix fbxStartMatrix = node->EvaluateGlobalTransform(startTime);
+			FbxAMatrix fbxCenterMatrix = node->EvaluateGlobalTransform(centerTime);
+			FbxAMatrix fbxEndMatrix = node->EvaluateGlobalTransform(endTime);
+			Math::Matrix4x4 startMatrix, endMatrix,centerMatrix;
+			ConvertMatrixFromFbxMatrix(startMatrix, fbxStartMatrix);
+			ConvertMatrixFromFbxMatrix(centerMatrix, fbxCenterMatrix);
+			ConvertMatrixFromFbxMatrix(endMatrix, fbxEndMatrix);
+			bone.animationMatrixes[i].push_back(startMatrix);
+			bone.animationMatrixes[i].push_back(centerMatrix);
+			bone.animationMatrixes[i].push_back(endMatrix);
+		}
+	}
+
 	return currentLoadModelData->mesh;
 }
 

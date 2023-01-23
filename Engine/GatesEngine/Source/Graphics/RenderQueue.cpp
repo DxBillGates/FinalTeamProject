@@ -58,6 +58,7 @@ void GE::RenderQueue::AddCommand()
 	};
 	renderingCommands.emplace_back(addCommand);
 
+	currentSetDrawMesh = nullptr;
 	currentSetConstantBufferViews.clear();
 	currentSetShaderResources.clear();
 }
@@ -118,6 +119,8 @@ void GE::RenderQueue::Execute(ID3D12GraphicsCommandList* cmdList, IShaderResourc
 		else if (topologyType == GraphicsPipelinePrimitiveTopolotyType::PATCH)primitiveType = D3D_PRIMITIVE_TOPOLOGY_4_CONTROL_POINT_PATCHLIST;
 
 		cmdList->IASetPrimitiveTopology(primitiveType);
+
+		if (command.drawMesh == nullptr)continue;
 
 		command.drawMesh->Draw();
 	}

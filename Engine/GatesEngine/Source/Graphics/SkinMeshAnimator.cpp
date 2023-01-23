@@ -128,6 +128,19 @@ void GE::SkinMeshAnimator::Update(float deltaTime)
 		FbxAMatrix fbxCurrentPose = skinMeshData->bones[i].fbxCluster->GetLink()->EvaluateGlobalTransform(currentTime);
 		ConvertMatrixFromFbxMatrix(currentPose, fbxCurrentPose);
 
+		//auto startTime = currentPlayAnimationData->startTime;
+		//auto endTime = currentPlayAnimationData->endTime;
+		//auto centerTime = (endTime - startTime) / 2;
+		//int currentTimeIndex = currentTime < centerTime ? 0 : 1;
+
+		//int beforeTimeIndex = currentTimeIndex - 1 < 0 ? 0 : currentTimeIndex - 1;
+		//float lerp = currentTime.GetSecondDouble() / endTime.GetSecondDouble();
+		//GE::Math::Matrix4x4 s, e;
+		//s = skinMeshData->bones[i].animationMatrixes[currentPlayAnimationData->index][beforeTimeIndex];
+		//e = skinMeshData->bones[i].animationMatrixes[currentPlayAnimationData->index][currentTimeIndex];
+		//GE::Math::Matrix4x4 lerpMatrix = GE::Math::Matrix4x4::Lerp(s, e, lerp);
+		//currentPose = lerpMatrix;
+
 		skinMeshInfo.bones[i] = skinMeshData->bones[i].invInitialPose * currentPose;
 	}
 }
