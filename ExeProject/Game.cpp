@@ -491,6 +491,13 @@ bool Game::Draw()
 	graphicsDevice.ExecuteRenderQueue();
 	graphicsDevice.ExecuteCommands();
 
+	graphicsDevice.SetCurrentRenderQueue(false);
+	graphicsDevice.SetLayer("defaultLayer");
+	graphicsDevice.SetShaderResourceDescriptorHeap();
+	sceneManager.LateDraw();
+	graphicsDevice.ExecuteRenderQueue();
+	graphicsDevice.ExecuteCommands();
+
 	// ÉuÉâÅ[ÇµÇΩåãâ Çå≥âÊëúÇ…çáê¨
 	graphicsDevice.SetCurrentRenderQueue(true);
 	graphicsDevice.SetShaderResourceDescriptorHeap();
@@ -546,16 +553,6 @@ bool Game::Draw()
 	//graphicsDevice.SetCurrentRenderQueue(false);
 	//graphicsDevice.SetDefaultRenderTargetWithoutDSV();
 	//sceneManager.LateDraw();
-	graphicsDevice.ExecuteRenderQueue();
-
-	graphicsDevice.SetCurrentRenderQueue(false);
-#ifdef _DEBUG
-	graphicsDevice.SetLayer("MainLayer");
-#else
-	graphicsDevice.SetDefaultRenderTarget();
-#endif // _DEBUG
-	graphicsDevice.SetShaderResourceDescriptorHeap();
-	sceneManager.LateDraw();
 	graphicsDevice.ExecuteRenderQueue();
 
 #ifdef _DEBUG

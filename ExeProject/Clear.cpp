@@ -100,8 +100,9 @@ void Clear::Load()
 {
 	auto* Object = gameObjectManager.AddGameObject(new GE::GameObject("clear", "clear"));
 	//titleObject->SetDrawAxisEnabled(true);
-	Object->GetTransform()->position = { 450,200,0 };
-	Object->GetTransform()->scale = { 800,400,0 };
+	GE::Math::Vector2 diffWindowSize = GE::Window::GetDiffWindowSize();
+	Object->GetTransform()->position = { 450 * diffWindowSize.x,200 * diffWindowSize.y,0 };
+	Object->GetTransform()->scale = { 800 * diffWindowSize.x,400 * diffWindowSize.y,0 };
 	auto* clearComponent = Object->AddComponent<ClearTex>();
 
 	{

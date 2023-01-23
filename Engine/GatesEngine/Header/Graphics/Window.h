@@ -96,6 +96,9 @@ namespace GE
 		/// <returns>MainWindowのサイズ</returns>
 		static Vector2 GetWindowSize();
 
+		// 設定されているサイズと比較してどれくらい違うかを返す
+		static Vector2 GetDiffWindowSize(const Math::Vector2& comp = {1920,1009});
+
 		/// <summary>
 		/// MainWindowのアスペクト比を返す関数
 		/// </summary>

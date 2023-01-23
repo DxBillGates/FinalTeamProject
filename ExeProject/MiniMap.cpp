@@ -9,8 +9,9 @@ void MiniMap::Draw2D(const Draw2DInfo& drawInfo, GE::ITexture* texture)
 	if (texture == nullptr)pGraphicsDevice->SetShader("DefaultSpriteShader");
 	else pGraphicsDevice->SetShader("DefaultSpriteWithTextureShader");
 
-	GE::Math::Matrix4x4 modelMatrix = GE::Math::Matrix4x4::Scale({ drawInfo.size.x,drawInfo.size.y,1 });
-	GE::Math::Vector2 pos = drawInfo.pos;
+	GE::Math::Vector2 diffWindowSize = GE::Window::GetDiffWindowSize();
+	GE::Math::Matrix4x4 modelMatrix = GE::Math::Matrix4x4::Scale({ drawInfo.size.x * diffWindowSize.x,drawInfo.size.y * diffWindowSize.y,1 });
+	GE::Math::Vector2 pos = { drawInfo.pos.x * diffWindowSize.x,drawInfo.pos.y * diffWindowSize.y };
 
 	modelMatrix *= GE::Math::Matrix4x4::Translate({ pos.x,pos.y,0 });
 
@@ -45,7 +46,8 @@ void MiniMap::Draw2D(const Draw2DInfo& drawInfo, const GE::Math::Vector2& mapOff
 	if (texture == nullptr)pGraphicsDevice->SetShader("DefaultSpriteShader");
 	else pGraphicsDevice->SetShader("DefaultSpriteWithTextureShader");
 
-	GE::Math::Matrix4x4 modelMatrix = GE::Math::Matrix4x4::Scale({ drawInfo.size.x,drawInfo.size.y,1 });
+	GE::Math::Vector2 diffWindowSize = GE::Window::GetDiffWindowSize();
+	GE::Math::Matrix4x4 modelMatrix = GE::Math::Matrix4x4::Scale({ drawInfo.size.x * diffWindowSize.x,drawInfo.size.y * diffWindowSize.y,1 });
 	GE::Math::Vector2 pos = drawInfo.pos;
 	
 	modelMatrix *= GE::Math::Matrix4x4::RotationZ(-angle);
@@ -62,8 +64,8 @@ void MiniMap::Draw2D(const Draw2DInfo& drawInfo, const GE::Math::Vector2& mapOff
 		pos = mapOffset - direction.Normalize() * maxDistance;
 	}
 	GE::Math::Vector3 fixedPos = GE::Math::Vector3::Min(minPos, GE::Math::Vector3::Max(maxPos, { modelMatrix.m[3][0],modelMatrix.m[3][1],0 }));
-	modelMatrix.m[3][0] = pos.x;
-	modelMatrix.m[3][1] = pos.y;
+	modelMatrix.m[3][0] = pos.x * diffWindowSize.x;
+	modelMatrix.m[3][1] = pos.y * diffWindowSize.y;
 
 	GE::Material material;
 	material.color = drawInfo.color;

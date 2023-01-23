@@ -13,6 +13,7 @@
 
 
 
+
 ScreenUIManager* ScreenUIManager::GetInstance()
 {
 	static ScreenUIManager instance;
@@ -21,9 +22,10 @@ ScreenUIManager* ScreenUIManager::GetInstance()
 
 ScreenUIManager::SpriteInfo ScreenUIManager::Set(GE::Math::Vector3 pos, GE::Math::Vector3 scale, GE::Color color, std::string textureName)
 {
+	GE::Math::Vector2 currentWindowSizeDiff = GE::Window::GetDiffWindowSize();
 	SpriteInfo result;
-	result.transform.position = pos;
-	result.transform.scale = scale;
+	result.transform.position = { pos.x * currentWindowSizeDiff.x,pos.y * currentWindowSizeDiff.y,0 };
+	result.transform.scale = { scale.x * currentWindowSizeDiff.x,scale.y * currentWindowSizeDiff.y,0 };
 	result.color = color;
 	result.textureName = textureName;
 	return result;
@@ -31,9 +33,10 @@ ScreenUIManager::SpriteInfo ScreenUIManager::Set(GE::Math::Vector3 pos, GE::Math
 
 ScreenUIManager::SpriteInfo ScreenUIManager::Set(GE::Math::Vector3 pos, GE::Math::Vector3 scale, GE::Color color, std::string textureName, GE::Math::Vector2 texSize, GE::Math::Vector2 clipSize)
 {
+	GE::Math::Vector2 currentWindowSizeDiff = GE::Window::GetDiffWindowSize();
 	SpriteInfo result;
-	result.transform.position = pos;
-	result.transform.scale = scale;
+	result.transform.position = {pos.x * currentWindowSizeDiff.x,pos.y * currentWindowSizeDiff.y,0};
+	result.transform.scale = {scale.x * currentWindowSizeDiff.x,scale.y * currentWindowSizeDiff.y,0};
 	result.color = color;
 	result.textureName = textureName;
 	result.texSize = texSize;

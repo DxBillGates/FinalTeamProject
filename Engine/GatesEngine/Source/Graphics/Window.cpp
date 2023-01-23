@@ -169,6 +169,11 @@ GE::Math::Vector2 GE::Window::GetWindowSize()
 	return size;
 }
 
+GE::Math::Vector2 GE::Window::GetDiffWindowSize(const Math::Vector2& comp)
+{
+	return {size.x / comp.x,size.y / comp.y};
+}
+
 float GE::Window::GetWindowAspect()
 {
 	return size.x / size.y;
