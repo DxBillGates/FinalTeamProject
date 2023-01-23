@@ -1,6 +1,7 @@
 #include "FieldObjectDeBugTransform.h"
 #include "PlayerComponent.h"
 #include <GatesEngine/Header/Graphics\Window.h>
+#include <GatesEngine/Header/GUI/GUIManager.h>
 #include<cassert>
 FieldObjectDebugTransform* FieldObjectDebugTransform::GetInstance()
 {
@@ -10,12 +11,18 @@ FieldObjectDebugTransform* FieldObjectDebugTransform::GetInstance()
 
 void FieldObjectDebugTransform::Update()
 {
-
 #ifdef _DEBUG
+	GE::Math::Vector2 windowPos,windowSize;
+	ImGui::Begin("Game");
+	auto pos = ImGui::GetWindowPos();
+	auto size = ImGui::GetWindowSize();
+	windowPos = { pos.x,pos.y };
+	windowSize = { size.x,size.y };
+	ImGui::End();
 	if (PlayerComponent::statas != PlayerComponent::PlayerStatas::DEBUG)return;
 	//マウスのレイ
 	const auto& cameraInfo = graphicsDevice->GetMainCamera()->GetCameraInfo();
-	GE::Math::GetScreenToRay(inputDevice->GetMouse()->GetClientMousePos(), &rayPos, &rayDir, cameraInfo.viewMatrix, cameraInfo.projMatrix, GE::Math::Matrix4x4::GetViewportMatrix(GE::Window::GetWindowSize()));
+	GE::Math::GetScreenToRay(inputDevice->GetMouse()->GetClientMousePos(), &rayPos, &rayDir, cameraInfo.viewMatrix, cameraInfo.projMatrix, GE::Math::Matrix4x4::GetViewportMatrix(windowSize,windowPos));
 	//モード切替
 	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::LCONTROL))
 	{

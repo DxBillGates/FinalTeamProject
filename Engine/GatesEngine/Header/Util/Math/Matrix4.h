@@ -189,7 +189,7 @@ namespace GE
 			/// <returns></returns>
 			static Matrix4x4 GetOrthographMatrix(const Vector2& size, float nearClip, float farClip);
 
-			static Matrix4x4 GetViewportMatrix(const Vector2& size);
+			static Matrix4x4 GetViewportMatrix(const Vector2& size, const Vector2& offset = {});
 
 			static Matrix4x4 Lerp(const Matrix4x4& s, const Matrix4x4& e, float t);
 		};

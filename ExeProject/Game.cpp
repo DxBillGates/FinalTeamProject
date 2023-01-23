@@ -244,7 +244,7 @@ bool Game::Initialize()
 
 	// fps‚Ì•\¦Ø‘Ö
 	timer.SetIsShow(false);
-	timer.SetFrameRate(144);
+	timer.SetFrameRate(60);
 
 	float gaussValue = 2.5f;
 	GE::Math::Vector2 right = { 1,0 };
