@@ -24,6 +24,8 @@ void Title::Awake(GE::GameObjectManager* gameObjectManager, GE::IGraphicsDeviceD
 	decided = false;
 	option.Awake(gameObjectManager);
 
+	isExit = false;
+
 }
 
 void Title::Update(GE::AudioManager* audioManager)
@@ -97,7 +99,8 @@ void Title::Select()
 			break;
 		case Title::States::exit:
 			GE::Utility::Printf("Title exit()\n");
-			states = States::start;
+			//states = States::start;
+			isExit = true;
 			break;
 		default:
 			break;

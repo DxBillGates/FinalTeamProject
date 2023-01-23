@@ -10,6 +10,7 @@
 #include <GatesEngine/Header/Graphics/Texture.h>
 #include "PlayerComponent.h"
 #include "Option.h"
+#include "Title.h"
 
 Game::Game()
 	: Application()
@@ -294,6 +295,8 @@ bool Game::Update()
 #endif // _DEBUG
 
 	audioManager.Get("testBGM", 0)->SetVolume(sceneColor * OptionData::BGM_vol / 10.f);
+
+	if (Title::GetInstance()->isExit == true)return false;
 	return true;
 }
 
