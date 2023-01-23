@@ -87,7 +87,9 @@ void Option::Back()
 {
 	if (select == Select::Back)
 	{
-		if (GE::InputDevice::GetInstance()->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE))
+		if (GE::InputDevice::GetInstance()->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE)
+			|| GE::InputDevice::GetInstance()->GetJoyconR()->GetTriggerButton(GE::JoyconButtonData::B))
+
 		{
 			Title::GetInstance()->Back();
 			select = Select::BGM_VOL;
@@ -102,7 +104,7 @@ void Option::Update(GE::AudioManager* audioManager)
 	KeySelect();
 
 	//‰¹—Ê’²®‚ğ‚µ‚½‚È‚ç
-	if(bgmChange)
+	if (bgmChange)
 	{
 		float set = OptionData::BGM_vol / 10.0f;
 		//•ÏX€–Ú

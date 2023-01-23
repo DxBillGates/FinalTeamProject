@@ -24,16 +24,20 @@ void Title::Awake(GE::GameObjectManager* gameObjectManager, GE::IGraphicsDeviceD
 	decided = false;
 	option.Awake(gameObjectManager);
 
+	isActive = false;
+
 }
 
 void Title::Update(GE::AudioManager* audioManager)
 {
+	if (!isActive)return;
 	//ƒIƒvƒVƒ‡ƒ“’†ˆ—
 	option.Update(audioManager);
 }
 
 void Title::Select()
 {
+	if (!isActive)return;
 	if (decided) {
 		return;
 	}
@@ -108,6 +112,7 @@ void Title::Select()
 
 bool Title::GetSelect(Title::States s)
 {
+
 	if (decided)
 	{
 		if (s == states)

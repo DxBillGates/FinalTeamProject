@@ -19,12 +19,12 @@ void TimeLimit::Start(GE::GameObjectManager* gameObjectManager)
 	time = DEFAULT_TIME * 60;
 	minutes = tenSeconds = oneSeconds = 0; // 各時間値初期化
 	timeOver = false;//タイムオーバーフラグ
+	isActive = false;
 }
 
 void TimeLimit::Update()
 {
 
-	if (PlayerComponent::statas == PlayerComponent::PlayerStatas::TITLE)return;
 
 	if (time <= 0)
 	{
@@ -36,6 +36,10 @@ void TimeLimit::Update()
 		tenSeconds = (int)time % 60 / 10;//秒数の計算(十の位)
 		oneSeconds = (int)time % 60 % 10;//秒数の計算(一の位)
 	}
+
+	if (PlayerComponent::statas == PlayerComponent::PlayerStatas::TITLE
+		|| PlayerComponent::statas == PlayerComponent::PlayerStatas::TITLE_MENU
+		|| !isActive)return;
 
 	time -= GE::GameSetting::Time::GetDeltaTime();
 }

@@ -43,17 +43,18 @@ void UIObject::Start()
 	GE::Utility::Printf("TestTreeComponent Start()\n");
 	object["chick"] =
 		AddObject(FieldObjectManager::GetInstance()->StartPosition + GE::Math::Vector3(0, 1000, 0), { 500 }, GE::Color(1, 1, 1, 1), "texture_Chick");
-
 	object["colect"] =
 		AddAnimaiotnObject(FieldObjectManager::GetInstance()->StartPosition + GE::Math::Vector3(0, 600, 0), { 250 }, GE::Color(1, 1, 1, 1), "texture_Number", { 320,64 }, { 32,64 });
-	object["symbol"] =
-		AddAnimaiotnObject({}, { 250 }, GE::Color(1, 1, 1, 1), "texture_symbol", { 64,64 }, { 32,64 }, { 1,0 });
-	object["colectMax"] =
-		AddAnimaiotnObject({}, { 250 }, GE::Color(1, 1, 1, 1), "texture_Number", { 320,64 }, { 32,64 }, { 1,0 });
+	object["symbol"] =AddAnimaiotnObject({}, { 250 }, GE::Color(1, 1, 1, 1), "texture_symbol", { 64,64 }, { 32,64 }, { 1,0 });
+	object["colectMax"] =AddAnimaiotnObject({}, { 250 }, GE::Color(1, 1, 1, 1), "texture_Number", { 320,64 }, { 32,64 }, { 1,0 });
+	object["control_info"] =AddObject({}, { 512,1,384 }, GE::Color(1, 1, 1, 1), "control_info_1_tex");
 
-	object["control_info"] =
-		AddObject({}, { 512,1,384 }, GE::Color(1, 1, 1, 1), "control_info_1_tex");
 	object["control_info"].isDraw = true;
+	object["colect"].isDraw = false;
+	object["symbol"].isDraw = false;
+	object["colectMax"].isDraw = false;
+	object["chick"].isDraw = false;
+
 }
 
 void UIObject::Update(float deltaTime)
@@ -68,12 +69,9 @@ void UIObject::Update(float deltaTime)
 
 	//Ç≤ÇËâüÇµ
 	object["colect"].pivotPos = { (float)StartTree::collectCount,0 };
-	object["colect"].isDraw = true;
 	object["symbol"].transform.position = object["colect"].transform.position + object["colect"].transform.GetRight() * object["colect"].transform.scale.x;
-	object["symbol"].isDraw = true;
 	object["colectMax"].pivotPos = { (float)StartTree::goalCollect,0 };
 	object["colectMax"].transform.position = object["symbol"].transform.position + object["symbol"].transform.GetRight() * object["symbol"].transform.scale.x;
-	object["colectMax"].isDraw = true;
 	//ê‡ñæUI
 	GE::Math::Vector3 infoPos = object["colectMax"].transform.GetRight() * GE::Math::Matrix4x4::RotationY(1.2f) * 800;
 	object["control_info"].transform.position = object["colectMax"].transform.position + infoPos + GE::Math::Vector3(0, -310, 0);
@@ -82,12 +80,16 @@ void UIObject::Update(float deltaTime)
 	switch (PlayerComponent::statas)
 	{
 	case PlayerComponent::PlayerStatas::TITLE:
-		object["colect"].isDraw = false;
-		object["symbol"].isDraw = false;
-		object["colectMax"].isDraw = false;
+		break;
+	case PlayerComponent::PlayerStatas::TITLE_MENU:
 		break;
 	case PlayerComponent::PlayerStatas::STAY_TREE:
 		object["control_info"].isDraw = true;	//ê‡ñæUI
+		object["colect"].isDraw = true;
+		object["symbol"].isDraw = true;
+		object["colectMax"].isDraw = true;
+		object["chick"].isDraw = true;
+
 		break;
 	case PlayerComponent::PlayerStatas::MOVE:
 		break;

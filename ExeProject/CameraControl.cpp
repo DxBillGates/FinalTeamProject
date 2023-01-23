@@ -54,7 +54,7 @@ void CameraControl::Update(float deltaTime)
 		current_cameraDistance = normal_cameraDistance;
 		newCameraPosition = { 2000,9000,-6000 };
 	}
-	else if (PlayerComponent::statas == PlayerComponent::PlayerStatas::TITLE)
+	else if (PlayerComponent::statas == PlayerComponent::PlayerStatas::TITLE || PlayerComponent::statas == PlayerComponent::PlayerStatas::TITLE_MENU)
 	{
 		current_cameraDistance = 3000;
 		GE::Math::Vector3 wind = GE::Math::Vector3(sinf(count), cosf(count), cosf(-count)) * 30;

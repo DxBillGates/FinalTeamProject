@@ -14,6 +14,8 @@ private:
 
 public:
 	std::string tag;
+	//開始しても初めて飛び立つまでカウントしない用
+	bool isActive;
 public:
 	static TimeLimit* GetInstance();
 	void Start(GE::GameObjectManager* gameObjectManager);

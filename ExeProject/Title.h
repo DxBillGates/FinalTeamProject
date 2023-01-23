@@ -12,7 +12,7 @@ class Title
 {
 private:
 	GE::InputDevice* inputDevice;
-
+	
 	bool decided = false;
 	Option option;
 
@@ -37,7 +37,7 @@ public:
 
 	States states;
 	Stage stage;
-
+	bool isActive;
 	float alpha = 0.0f;
 private:
 	Title() = default;

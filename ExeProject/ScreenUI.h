@@ -14,6 +14,8 @@ public:
 		GE::Math::Vector2 texSize = { 1 };
 		GE::Math::Vector2 pivotPos = {};
 		GE::Math::Vector2 clipSize = { 1 };
+		
+		float lerpCount = 0.0f;
 	};
 private:
 	struct  LoadObj
@@ -23,9 +25,13 @@ private:
 		GE::Math::Vector3 scale;
 		GE::Color col;
 	};
-	std::map<std::string,SpriteInfo> object;
+	std::map<std::string, SpriteInfo> object;
 
 	float a = 0.f;
+
+	GE::Math::Vector2 winSize;
+	GE::Math::Vector2 center;
+
 public:
 	static ScreenUIManager* GetInstance();
 	void Start();
@@ -46,4 +52,11 @@ private:
 
 	SpriteInfo Set(GE::Math::Vector3 pos, GE::Math::Vector3 scale, GE::Color color, std::string textureName);
 	SpriteInfo Set(GE::Math::Vector3 pos, GE::Math::Vector3 scale, GE::Color color, std::string textureName, GE::Math::Vector2 texSize, GE::Math::Vector2 clipSize);
+
+	float SetLerp(std::string name, float lerpTime, float deltaTime);
+	//タイトルメニューを描画するか
+	void TitleMenuActive(bool isActive);
+	//オプションメニューを描画するか
+	void OptionMenuActive(bool isActive);
+
 };

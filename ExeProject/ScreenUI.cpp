@@ -40,20 +40,48 @@ ScreenUIManager::SpriteInfo ScreenUIManager::Set(GE::Math::Vector3 pos, GE::Math
 	result.clipSize = clipSize;
 	return result;
 }
+void ScreenUIManager::TitleMenuActive(bool isActive)
+{
+	object["title_start"].isDraw = isActive;
+	object["title_option"].isDraw = isActive;
+	object["title_exit"].isDraw = isActive;
+	object["title_name"].isDraw = isActive;
+}
+
+void ScreenUIManager::OptionMenuActive(bool isActive)
+{
+	object["option_bgm"].isDraw = isActive;
+	object["option_se"].isDraw = isActive;
+	object["option_back"].isDraw = isActive;
+	object["option_right"].isDraw = isActive;
+	object["option_left"].isDraw = isActive;
+}
+float ScreenUIManager::SetLerp(std::string name, float lerpTime, float deltaTime)
+{
+	if (object[name].lerpCount < lerpTime)
+	{
+		object[name].lerpCount += deltaTime;
+		return object[name].lerpCount / lerpTime;
+	}
+	else
+	{
+		return 1.0f;
+	}
+}
 void ScreenUIManager::Start()
 {
-	GE::Math::Vector2 winSize = GE::Window::GetWindowSize();
-	GE::Math::Vector2 center = winSize / 2.0f;
+	winSize = GE::Window::GetWindowSize();
+	center = winSize / 2.0f;
+	a = 0.0f;
 
 	//微調整の座標手打ちだから環境でずれそう
-
 #pragma region オプション
-	object["option_bgm"] = Set(GE::Math::Vector3(center.x, center.y, 0.0f), { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
-	object["option_se"] = Set(GE::Math::Vector3(center.x, center.y + 100, 0.0f), { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
-	object["option_back"] = Set(GE::Math::Vector3(center.x, center.y + 200, 0.0f), { 150,100,0 }, GE::Color::White(), "texture_back");
-	object["option_right"] = Set(GE::Math::Vector3(center.x + 200, center.y + 200, 0.0f), { 100,100,0 }, GE::Color::White(), "texture_next");
+	object["option_bgm"] = Set({}, { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
+	object["option_se"] = Set({}, { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
+	object["option_back"] = Set({}, { 150, 100, 0 }, GE::Color::White(), "texture_back");
+	object["option_right"] = Set({}, { 100,100,0 }, GE::Color::White(), "texture_next");
 	object["option_right"].transform.rotation = GE::Math::Quaternion::Euler({ 0, 0, 180 });
-	object["option_left"] = Set(GE::Math::Vector3(center.x - 200, center.y + 200, 0.0f), { 100,100,0 }, GE::Color::White(), "texture_next");
+	object["option_left"] = Set({}, { 100,100,0 }, GE::Color::White(), "texture_next");
 #pragma endregion
 
 #pragma region タイトル
@@ -77,9 +105,20 @@ void ScreenUIManager::Start()
 	object["go_tree"] = Set(GE::Math::Vector3(center.x, center.y - 150.f, 0.f), GE::Math::Vector3(256, 64, 0) * 0.6f, GE::Color::White(), "control_info_2_tex");
 	//ジョイコン振ってるアニメーション
 	//object["gyro_shake"] = Set(object["crash"].transform.position - GE::Math::Vector3(300, 0, 0), { 150,150,0 }, GE::Color::White(), "gyro_shake_tex", { 896,128 }, { 128,128 });
+
+	//遷移の値初期化
+	for (auto o : object)
+	{
+		o.second.lerpCount = 0.0f;
+	}
 }
 void ScreenUIManager::Update(float deltaTime)
 {
+	const float f = 144.0f / (1.0f / deltaTime);
+	const float addCount = 0.1f * f;
+	//Title
+	TitleMenuActive(false);
+
 	object["crash"].isDraw = false;
 	object["gyro_shake"].isDraw = false;
 	object["control_info_2"].isDraw = true;
@@ -107,12 +146,27 @@ void ScreenUIManager::Update(float deltaTime)
 		//object["gyro_shake"].isDraw = true;
 		break;
 	case PlayerComponent::PlayerStatas::TITLE:
+		object["title_name"].isDraw = true;
 
-		//タイムリミット
+		//タイムリミット描画しない
 		object["time_minutes"].isDraw = false;
 		object["time_symbol"].isDraw = false;
 		object["time_tenSeconds"].isDraw = false;
 		object["time_oneSeconds"].isDraw = false;
+		break;
+	case PlayerComponent::PlayerStatas::TITLE_MENU:
+		//タイムリミット描画しない
+		object["time_minutes"].isDraw = false;
+		object["time_symbol"].isDraw = false;
+		object["time_tenSeconds"].isDraw = false;
+		object["time_oneSeconds"].isDraw = false;
+
+		//タイトル描画
+		TitleMenuActive(true);
+		//横からフェードイン
+		object["title_start"].transform.position = GE::Math::Vector3::Lerp(GE::Math::Vector3(winSize.x + 1000, center.y, 0.0f), GE::Math::Vector3(winSize.x - 300, center.y, 0.0f), SetLerp("title_start", 5.0f, addCount));
+		object["title_option"].transform.position = GE::Math::Vector3::Lerp(GE::Math::Vector3(winSize.x + 1000, center.y + 100, 0.0f), GE::Math::Vector3(winSize.x - 300, center.y + 100, 0.0f), SetLerp("title_option", 6.0f, addCount));
+		object["title_exit"].transform.position = GE::Math::Vector3::Lerp(GE::Math::Vector3(winSize.x + 1000, center.y + 200, 0.0f), GE::Math::Vector3(winSize.x - 300, center.y + 200, 0.0f), SetLerp("title_exit", 7.0f, addCount));
 		break;
 	case PlayerComponent::PlayerStatas::LOCKON_SHOOT:
 
@@ -125,59 +179,62 @@ void ScreenUIManager::Update(float deltaTime)
 		break;
 	}
 
-	const float f = 144.0f / (1.0f / deltaTime);
-
-	//a += 0.05f * f;
-	//int b = GE::Math::Lerp(0, 30, sin(a));
-	//object["gyro_shake"].pivotPos = abs(b / 7);
-
 #pragma region オプション中
+	OptionMenuActive(false);
 	if (Title::GetInstance()->GetSelect(Title::States::option))
 	{
-		object["option_bgm"].isDraw = true;
+		TitleMenuActive(false);
+		OptionMenuActive(true);
+		object["option_right"].transform.position.x = GE::Math::Lerp(winSize.x + 1000, winSize.x - 200, SetLerp("option_right", 5.0f, addCount));
+		object["option_left"].transform.position.x = GE::Math::Lerp(winSize.x + 1000, winSize.x - 450, SetLerp("option_left", 5.0f, addCount));
+
 		object["option_bgm"].pivotPos.x = OptionData::BGM_vol;
 		object["option_bgm"].color = GE::Color::White();
+		object["option_bgm"].transform.position = GE::Math::Vector3::Lerp(GE::Math::Vector3(winSize.x + 1000, center.y, 0.0f), GE::Math::Vector3(winSize.x - 300, center.y, 0.0f), SetLerp("option_bgm", 5.0f, addCount));
+
 		if (Option::select == Option::Select::BGM_VOL) { object["option_bgm"].color = GE::Color::Red(); }
-		object["option_se"].isDraw = true;
 		object["option_se"].pivotPos.x = OptionData::SE_vol;
 		object["option_se"].color = GE::Color::White();
+		object["option_se"].transform.position = GE::Math::Vector3::Lerp(GE::Math::Vector3(winSize.x + 1000, center.y + 100, 0.0f), GE::Math::Vector3(winSize.x - 305, center.y + 100, 0.0f), SetLerp("option_se", 6.0f, addCount));
+
 		if (Option::select == Option::Select::SE_VOL) { object["option_se"].color = GE::Color::Red(); }
-		object["option_back"].isDraw = true;
+		object["option_back"].transform.position = GE::Math::Vector3::Lerp(GE::Math::Vector3(winSize.x + 1000, center.y + 200, 0.0f), GE::Math::Vector3(winSize.x - 300, center.y + 200, 0.0f), SetLerp("option_back", 7.0f, addCount));
 		if (Option::select == Option::Select::Back)
 		{
 			object["option_back"].color = GE::Color::Red();
 			object["option_right"].isDraw = false;
 			object["option_left"].isDraw = false;
+			//タイトルメニューの遷移初期化
+			object["title_start"].lerpCount = 0.f;
+			object["title_option"].lerpCount = 0.f;
+			object["title_exit"].lerpCount = 0.f;
+			object["title_name"].lerpCount = 0.f;
+
 		}
 		else
 		{
 			object["option_back"].color = GE::Color::White();
-			object["option_right"].isDraw = true;
 			object["option_right"].transform.position.y = (GE::Window::GetWindowSize().y / 2) + (int)Option::select * 100;
-			object["option_left"].isDraw = true;
 			object["option_left"].transform.position.y = (GE::Window::GetWindowSize().y / 2) + (int)Option::select * 100;
 		}
 	}
 	else
 	{
-		object["option_bgm"].isDraw = false;
-		object["option_se"].isDraw = false;
-		object["option_back"].isDraw = false;
-		object["option_right"].isDraw = false;
-		object["option_left"].isDraw = false;
+		//オプションメニューの遷移初期化
+		object["option_bgm"].lerpCount = 0.f;
+		object["option_se"].lerpCount = 0.f;
+		object["option_back"].lerpCount = 0.f;
+		object["option_right"].lerpCount = 0.f;
+		object["option_left"].lerpCount = 0.f;
 	}
 #pragma endregion
 
 #pragma region タイトル
 	if (!Title::GetInstance()->GetDecid())
 	{
-		object["title_start"].isDraw = true;
 		object["title_start"].color = GE::Color::White();
-		object["title_option"].isDraw = true;
 		object["title_option"].color = GE::Color::White();
-		object["title_exit"].isDraw = true;
 		object["title_exit"].color = GE::Color::White();
-		object["title_name"].isDraw = true;
 
 		switch (Title::GetInstance()->states)
 		{
@@ -193,13 +250,6 @@ void ScreenUIManager::Update(float deltaTime)
 		default:
 			break;
 		}
-	}
-	else
-	{
-		object["title_start"].isDraw = false;
-		object["title_option"].isDraw = false;
-		object["title_exit"].isDraw = false;
-		object["title_name"].isDraw = false;
 	}
 #pragma endregion
 

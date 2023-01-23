@@ -211,7 +211,7 @@ void PlayerComponent::OnCollision(GE::GameObject* other)
 
 	if (other->GetTag() == "nest")
 	{
-		if (statas == PlayerStatas::STAY_TREE || statas == PlayerStatas::GO_TREE || statas == PlayerStatas::TITLE)
+		if (statas == PlayerStatas::STAY_TREE || statas == PlayerStatas::GO_TREE || statas == PlayerStatas::TITLE || statas == PlayerStatas::TITLE_MENU)
 		{
 		}
 		else
@@ -229,7 +229,7 @@ void PlayerComponent::OnCollision(GE::GameObject* other)
 
 void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 {
-	if (statas != PlayerStatas::GO_TREE && statas != PlayerStatas::STAY_TREE && statas != PlayerStatas::TITLE)
+	if (statas != PlayerStatas::GO_TREE && statas != PlayerStatas::STAY_TREE && statas != PlayerStatas::TITLE && statas != PlayerStatas::TITLE_MENU)
 	{
 		if (other->GetTag() == "ground" || other->GetTag() == "StartTree")
 		{
@@ -344,10 +344,20 @@ void PlayerComponent::Control(float deltaTime)
 	case PlayerComponent::PlayerStatas::TITLE:
 
 		transform->position = FieldObjectManager::GetInstance()->StartPosition + onTheTreePosition;
+		if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE)
+			|| inputDevice->GetJoyconR()->GetTriggerButton(GE::JoyconButtonData::B))
+		{
+			statas = PlayerStatas::TITLE_MENU;
+			Title::GetInstance()->isActive = true;
+		}
+
+		break;
+	case PlayerComponent::PlayerStatas::TITLE_MENU:
+
 		if (Title::GetInstance()->GetSelect(Title::States::start))
 		{
-			Title::GetInstance()->states = Title::States::serectNum;
 			statas = PlayerStatas::STAY_TREE;
+			Title::GetInstance()->states = Title::States::serectNum;
 		}
 
 		break;
@@ -441,6 +451,7 @@ void PlayerComponent::Control(float deltaTime)
 			transform->position = FieldObjectManager::GetInstance()->StartPosition + onTheTreePosition;
 			if (InputManager::GetInstance()->GetActionButton())
 			{
+				TimeLimit::GetInstance()->isActive = true;
 				startCouunt += deltaTime;
 				//MoveFromStop
 				animator.PlayAnimation(2, false);

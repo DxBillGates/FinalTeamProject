@@ -70,7 +70,8 @@ private:
 public:
 	enum class PlayerStatas
 	{
-		TITLE,		//タイトル、木で待機
+		TITLE,			//タイトル、木で待機
+		TITLE_MENU,		//タイトルメニュー、木で待機
 		DEBUG,			//その場に停止
 		MOVE,			//通常移動
 		DASH,			//ダッシュ
