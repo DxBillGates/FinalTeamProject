@@ -81,6 +81,8 @@ void GE::GUIManager::StartFrame(bool isShowDemo)
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 
+	ImGui::DockSpaceOverViewport();
+
 	if (isShowDemo)
 	{
 		bool isOpen = true;
