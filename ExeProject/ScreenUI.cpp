@@ -106,7 +106,8 @@ void ScreenUIManager::Start()
 	object["dash_info"] = Set(GE::Math::Vector3(168, 670, 0.0f), GE::Math::Vector3(256, 64, 0) * 1.1f, GE::Color::White(), "control_info_1_tex", { 512,384 }, { 512, 128 });
 	object["dash_info"].pivotPos = 2;
 	object["go_tree"] = Set(GE::Math::Vector3(center.x, center.y - 150.f, 0.f), GE::Math::Vector3(256, 64, 0) * 0.6f, GE::Color::White(), "control_info_2_tex");
-
+	object["push_b"] = Set(GE::Math::Vector3(winSize.x - 300.f, winSize.y - 100.f, 0.f), GE::Math::Vector3(256, 64, 0) * 0.6f, GE::Color::White(), "push_b_tex");
+	object["push_b"].isDraw = true;
 	//遷移の値初期化
 	for (auto o : object)
 	{
@@ -159,7 +160,6 @@ void ScreenUIManager::Update(float deltaTime)
 		object["time_symbol"].isDraw = false;
 		object["time_tenSeconds"].isDraw = false;
 		object["time_oneSeconds"].isDraw = false;
-
 		//タイトル描画
 		TitleMenuActive(true);
 		//横からフェードイン
@@ -169,6 +169,7 @@ void ScreenUIManager::Update(float deltaTime)
 		break;
 	case PlayerComponent::PlayerStatas::STAY_TREE:
 		object["title_name"].isDraw = false;
+		object["push_b"].isDraw = false;
 
 		break;
 	case PlayerComponent::PlayerStatas::LOCKON_SHOOT:

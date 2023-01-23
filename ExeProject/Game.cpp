@@ -214,6 +214,10 @@ bool Game::LoadContents()
 	textureManager->Add(nullTexture, "control_info_2_tex");
 
 	nullTexture = new Texture();
+	nullTexture->Load("push_b.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "push_b_tex");
+
+	nullTexture = new Texture();
 	nullTexture->Load("bgm_info.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "bgm_info_tex");
 
