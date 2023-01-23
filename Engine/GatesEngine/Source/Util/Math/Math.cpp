@@ -70,12 +70,12 @@ void GE::Math::GetScreenToRay(const Vector2& pos, Vector3* outPos, Vector3* outD
 
 	Matrix4x4 inverse = Matrix4x4::Inverse(viewPort) * Matrix4x4::Inverse(proj) * Matrix4x4::Inverse(view);
 	nearPos = Matrix4x4::Transform(nearPos, inverse);
-	farPos = Matrix4x4::Transform(nearPos, inverse);
+	farPos = Matrix4x4::Transform(farPos, inverse);
 
 	if (outPos == nullptr)return;
 	if (outDir == nullptr)return;
 	// ƒŒƒC‚Ì•ûŒü‚ğZo
 	*outPos = nearPos;
 	*outDir = *outPos - farPos;
-	*outDir = Vector3::Normalize(*outDir);
+	*outDir = -Vector3::Normalize(*outDir);
 }
