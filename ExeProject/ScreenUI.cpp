@@ -45,13 +45,14 @@ void ScreenUIManager::TitleMenuActive(bool isActive)
 	object["title_start"].isDraw = isActive;
 	object["title_option"].isDraw = isActive;
 	object["title_exit"].isDraw = isActive;
-	object["title_name"].isDraw = isActive;
 }
 
 void ScreenUIManager::OptionMenuActive(bool isActive)
 {
-	object["option_bgm"].isDraw = isActive;
-	object["option_se"].isDraw = isActive;
+	object["bgm_num"].isDraw = isActive;
+	object["se_num"].isDraw = isActive;
+	object["bgm_info"].isDraw = isActive;
+	object["se_info"].isDraw = isActive;
 	object["option_back"].isDraw = isActive;
 	object["option_right"].isDraw = isActive;
 	object["option_left"].isDraw = isActive;
@@ -76,8 +77,10 @@ void ScreenUIManager::Start()
 
 	//微調整の座標手打ちだから環境でずれそう
 #pragma region オプション
-	object["option_bgm"] = Set({}, { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
-	object["option_se"] = Set({}, { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
+	object["bgm_num"] = Set({}, { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
+	object["se_num"] = Set({}, { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
+	object["bgm_info"] = Set({}, { 200, 100, 0 }, GE::Color::White(), "bgm_info_tex");
+	object["se_info"] = Set({}, { 100,100,0 }, GE::Color::White(), "se_info_tex");
 	object["option_back"] = Set({}, { 150, 100, 0 }, GE::Color::White(), "texture_back");
 	object["option_right"] = Set({}, { 100,100,0 }, GE::Color::White(), "texture_next");
 	object["option_right"].transform.rotation = GE::Math::Quaternion::Euler({ 0, 0, 180 });
@@ -103,8 +106,6 @@ void ScreenUIManager::Start()
 	object["dash_info"] = Set(GE::Math::Vector3(168, 670, 0.0f), GE::Math::Vector3(256, 64, 0) * 1.1f, GE::Color::White(), "control_info_1_tex", { 512,384 }, { 512, 128 });
 	object["dash_info"].pivotPos = 2;
 	object["go_tree"] = Set(GE::Math::Vector3(center.x, center.y - 150.f, 0.f), GE::Math::Vector3(256, 64, 0) * 0.6f, GE::Color::White(), "control_info_2_tex");
-	//ジョイコン振ってるアニメーション
-	//object["gyro_shake"] = Set(object["crash"].transform.position - GE::Math::Vector3(300, 0, 0), { 150,150,0 }, GE::Color::White(), "gyro_shake_tex", { 896,128 }, { 128,128 });
 
 	//遷移の値初期化
 	for (auto o : object)
@@ -142,8 +143,6 @@ void ScreenUIManager::Update(float deltaTime)
 	{
 	case PlayerComponent::PlayerStatas::CRASH:
 		object["crash"].isDraw = true;
-
-		//object["gyro_shake"].isDraw = true;
 		break;
 	case PlayerComponent::PlayerStatas::TITLE:
 		object["title_name"].isDraw = true;
@@ -168,6 +167,10 @@ void ScreenUIManager::Update(float deltaTime)
 		object["title_option"].transform.position = GE::Math::Vector3::Lerp(GE::Math::Vector3(winSize.x + 1000, center.y + 100, 0.0f), GE::Math::Vector3(winSize.x - 300, center.y + 100, 0.0f), SetLerp("title_option", 6.0f, addCount));
 		object["title_exit"].transform.position = GE::Math::Vector3::Lerp(GE::Math::Vector3(winSize.x + 1000, center.y + 200, 0.0f), GE::Math::Vector3(winSize.x - 300, center.y + 200, 0.0f), SetLerp("title_exit", 7.0f, addCount));
 		break;
+	case PlayerComponent::PlayerStatas::STAY_TREE:
+		object["title_name"].isDraw = false;
+
+		break;
 	case PlayerComponent::PlayerStatas::LOCKON_SHOOT:
 
 		break;
@@ -185,19 +188,21 @@ void ScreenUIManager::Update(float deltaTime)
 	{
 		TitleMenuActive(false);
 		OptionMenuActive(true);
-		object["option_right"].transform.position.x = GE::Math::Lerp(winSize.x + 1000, winSize.x - 200, SetLerp("option_right", 5.0f, addCount));
-		object["option_left"].transform.position.x = GE::Math::Lerp(winSize.x + 1000, winSize.x - 450, SetLerp("option_left", 5.0f, addCount));
+		object["option_right"].transform.position.x = GE::Math::Lerp(winSize.x + 1000, winSize.x - 200, SetLerp("bgm_num", 5.0f, addCount));
+		object["option_left"].transform.position.x = GE::Math::Lerp(winSize.x + 1000, winSize.x - 450, SetLerp("bgm_num", 5.0f, addCount));
 
-		object["option_bgm"].pivotPos.x = OptionData::BGM_vol;
-		object["option_bgm"].color = GE::Color::White();
-		object["option_bgm"].transform.position = GE::Math::Vector3::Lerp(GE::Math::Vector3(winSize.x + 1000, center.y, 0.0f), GE::Math::Vector3(winSize.x - 300, center.y, 0.0f), SetLerp("option_bgm", 5.0f, addCount));
+		object["bgm_num"].pivotPos.x = OptionData::BGM_vol;
+		object["bgm_num"].color = GE::Color::White();
+		object["bgm_num"].transform.position = GE::Math::Vector3::Lerp(GE::Math::Vector3(winSize.x + 1000, center.y, 0.0f), GE::Math::Vector3(winSize.x - 300, center.y, 0.0f), SetLerp("bgm_num", 5.0f, addCount));
+		object["bgm_info"].transform.position = GE::Math::Vector3::Lerp(GE::Math::Vector3(winSize.x + 700, center.y, 0.0f), GE::Math::Vector3(winSize.x - 600, center.y, 0.0f), SetLerp("bgm_num", 5.0f, addCount));
 
-		if (Option::select == Option::Select::BGM_VOL) { object["option_bgm"].color = GE::Color::Red(); }
-		object["option_se"].pivotPos.x = OptionData::SE_vol;
-		object["option_se"].color = GE::Color::White();
-		object["option_se"].transform.position = GE::Math::Vector3::Lerp(GE::Math::Vector3(winSize.x + 1000, center.y + 100, 0.0f), GE::Math::Vector3(winSize.x - 305, center.y + 100, 0.0f), SetLerp("option_se", 6.0f, addCount));
+		if (Option::select == Option::Select::BGM_VOL) { object["bgm_num"].color = GE::Color::Red(); }
+		object["se_num"].pivotPos.x = OptionData::SE_vol;
+		object["se_num"].color = GE::Color::White();
+		object["se_num"].transform.position = GE::Math::Vector3::Lerp(GE::Math::Vector3(winSize.x + 1000, center.y + 100, 0.0f), GE::Math::Vector3(winSize.x - 305, center.y + 100, 0.0f), SetLerp("se_num", 6.0f, addCount));
+		object["se_info"].transform.position = GE::Math::Vector3::Lerp(GE::Math::Vector3(winSize.x + 700, center.y + 100, 0.0f), GE::Math::Vector3(winSize.x - 605, center.y + 100, 0.0f), SetLerp("se_num", 6.0f, addCount));
 
-		if (Option::select == Option::Select::SE_VOL) { object["option_se"].color = GE::Color::Red(); }
+		if (Option::select == Option::Select::SE_VOL) { object["se_num"].color = GE::Color::Red(); }
 		object["option_back"].transform.position = GE::Math::Vector3::Lerp(GE::Math::Vector3(winSize.x + 1000, center.y + 200, 0.0f), GE::Math::Vector3(winSize.x - 300, center.y + 200, 0.0f), SetLerp("option_back", 7.0f, addCount));
 		if (Option::select == Option::Select::Back)
 		{
@@ -221,8 +226,8 @@ void ScreenUIManager::Update(float deltaTime)
 	else
 	{
 		//オプションメニューの遷移初期化
-		object["option_bgm"].lerpCount = 0.f;
-		object["option_se"].lerpCount = 0.f;
+		object["bgm_num"].lerpCount = 0.f;
+		object["se_num"].lerpCount = 0.f;
 		object["option_back"].lerpCount = 0.f;
 		object["option_right"].lerpCount = 0.f;
 		object["option_left"].lerpCount = 0.f;

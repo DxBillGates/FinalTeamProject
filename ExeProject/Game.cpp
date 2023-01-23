@@ -213,6 +213,14 @@ bool Game::LoadContents()
 	nullTexture->Load("control_info_2.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "control_info_2_tex");
 
+	nullTexture = new Texture();
+	nullTexture->Load("bgm_info.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "bgm_info_tex");
+
+	nullTexture = new Texture();
+	nullTexture->Load("se_info.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "se_info_tex");
+
 	auto* testScene = sceneManager.AddScene(new SampleScene("SampleScene", sceneManager.GetSceneInitializer()));
 	sceneManager.AddScene(new Clear("ClearScene", sceneManager.GetSceneInitializer()));
 	sceneManager.AddScene(new Over("OverScene", sceneManager.GetSceneInitializer()));

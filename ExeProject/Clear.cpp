@@ -101,7 +101,7 @@ void Clear::Load()
 	auto* Object = gameObjectManager.AddGameObject(new GE::GameObject("clear", "clear"));
 	//titleObject->SetDrawAxisEnabled(true);
 	Object->GetTransform()->position = { 450,200,0 };
-	Object->GetTransform()->scale = { 700,400,0 };
+	Object->GetTransform()->scale = { 800,400,0 };
 	auto* clearComponent = Object->AddComponent<ClearTex>();
 
 	{
