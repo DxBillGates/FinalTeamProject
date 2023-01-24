@@ -47,8 +47,13 @@ void MiniMap::Draw2D(const Draw2DInfo& drawInfo, const GE::Math::Vector2& mapOff
 	else pGraphicsDevice->SetShader("DefaultSpriteWithTextureShader");
 
 	GE::Math::Vector2 diffWindowSize = GE::Window::GetDiffWindowSize();
-	GE::Math::Matrix4x4 modelMatrix = GE::Math::Matrix4x4::Scale({ drawInfo.size.x * diffWindowSize.x,drawInfo.size.y * diffWindowSize.y,1 });
 	GE::Math::Vector2 pos = drawInfo.pos;
+	float distance = GE::Math::Vector2::Distance(mapOffset, pos);
+	float maxDistance = maxPos.x - mapOffset.x;
+	float distanceLerp = GE::Math::Lerp(0.5,1,1 - distance / maxDistance);
+
+	GE::Math::Vector3 scale = GE::Math::Vector3(drawInfo.size.x * diffWindowSize.x,drawInfo.size.y * diffWindowSize.y,1) * distanceLerp;
+	GE::Math::Matrix4x4 modelMatrix = GE::Math::Matrix4x4::Scale(scale);
 	
 	modelMatrix *= GE::Math::Matrix4x4::RotationZ(-angle);
 	modelMatrix *= GE::Math::Matrix4x4::Translate({ pos.x - mapOffset.x,pos.y - mapOffset.y,0 });
@@ -57,8 +62,8 @@ void MiniMap::Draw2D(const Draw2DInfo& drawInfo, const GE::Math::Vector2& mapOff
 
 	pos = GE::Math::Vector2(modelMatrix.m[3][0], modelMatrix.m[3][1]);
 	GE::Math::Vector2 direction = mapOffset - pos;
-	float distance = GE::Math::Vector2::Distance(mapOffset, pos);
-	float maxDistance = maxPos.x - mapOffset.x;
+	//float distance = GE::Math::Vector2::Distance(mapOffset, pos);
+	//float maxDistance = maxPos.x - mapOffset.x;
 	if (distance > maxDistance)
 	{
 		pos = mapOffset - direction.Normalize() * maxDistance;
@@ -108,7 +113,7 @@ void MiniMap::Draw()
 
 	const float DRAW_PLAYER_SIZE = 32;
 	const GE::Color DRAW_PLAYER_COLOR = GE::Color::White();
-	const float DRAW_ENEMY_SIZE = 16;
+	const float DRAW_ENEMY_SIZE = 24;
 	const GE::Color DRAW_ENEMY_COLOR = GE::Color::White();
 
 	const GE::Math::Vector2 MINIMAP_OFFSET = { 1746,842 };

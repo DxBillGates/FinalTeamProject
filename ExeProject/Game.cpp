@@ -491,12 +491,12 @@ bool Game::Draw()
 	graphicsDevice.ExecuteRenderQueue();
 	graphicsDevice.ExecuteCommands();
 
-	graphicsDevice.SetCurrentRenderQueue(false);
-	graphicsDevice.SetLayer("defaultLayer");
-	graphicsDevice.SetShaderResourceDescriptorHeap();
-	sceneManager.LateDraw();
-	graphicsDevice.ExecuteRenderQueue();
-	graphicsDevice.ExecuteCommands();
+	//graphicsDevice.SetCurrentRenderQueue(false);
+	//graphicsDevice.SetLayer("defaultLayer");
+	//graphicsDevice.SetShaderResourceDescriptorHeap();
+	//sceneManager.LateDraw();
+	//graphicsDevice.ExecuteRenderQueue();
+	//graphicsDevice.ExecuteCommands();
 
 	// ƒuƒ‰[‚µ‚½Œ‹‰Ê‚ðŒ³‰æ‘œ‚É‡¬
 	graphicsDevice.SetCurrentRenderQueue(true);
@@ -549,10 +549,14 @@ bool Game::Draw()
 	renderQueue->AddSetShaderResource({ 18,graphicsDevice.GetLayerManager()->Get("shadowLayer")->GetDepthTexture()->GetSRVNumber() });
 	graphicsDevice.DrawMesh("2DPlane");
 
-	//graphicsDevice.SetShaderResourceDescriptorHeap();
-	//graphicsDevice.SetCurrentRenderQueue(false);
-	//graphicsDevice.SetDefaultRenderTargetWithoutDSV();
-	//sceneManager.LateDraw();
+	graphicsDevice.SetShaderResourceDescriptorHeap();
+	graphicsDevice.SetCurrentRenderQueue(false);
+#ifdef _DEBUG
+	graphicsDevice.SetLayer("MainLayer");
+#else
+	graphicsDevice.SetDefaultRenderTarget();
+#endif // _DEBUG
+	sceneManager.LateDraw();
 	graphicsDevice.ExecuteRenderQueue();
 
 #ifdef _DEBUG
