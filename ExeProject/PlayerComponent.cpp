@@ -217,6 +217,8 @@ void PlayerComponent::OnCollision(GE::GameObject* other)
 			if (colectCount > 0)
 			{
 				stayLandLerpEasingCount = 0.0f;
+				dashEasingCount = 0.0f;
+				current_speed = normal_speed;
 				currentPosition = transform->position;
 				statas = PlayerStatas::GO_TREE;
 			}
@@ -446,18 +448,15 @@ void PlayerComponent::Control(float deltaTime)
 				TimeLimit::GetInstance()->isActive = true;
 				startCouunt += deltaTime;
 				//MoveFromStop
-				animator.PlayAnimation(2, false);
+				animator.PlayAnimation(0, false);
 				audioManager->Use("flapping1")->Start();
 			}
 		}
-		else if (startCouunt < 2.0f) { startCouunt++; }//1フレーム更新しないとSkinMeshAnimator::IsEndがTrueのままになるからいったんこれで…
 		else
 		{
 			if (animator.IsEndAnimation())
 			{
 				statas = PlayerStatas::MOVE;
-				//Flapping
-				animator.PlayAnimation(1, false);
 			}
 			else
 			{

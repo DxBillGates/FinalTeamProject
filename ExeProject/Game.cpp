@@ -79,6 +79,12 @@ bool Game::LoadContents()
 	mesh = new Mesh();
 	mesh->Create(device, cmdList, modelGroundLeaf1);
 	meshManager->Add(mesh, "Ground_Leaf1");
+	
+	MeshData<Vertex_UV_Normal> modelGroundLeaf2;
+	MeshCreater::LoadObjModelData("Resources/Model/ground_leaf1_b", modelGroundLeaf2);
+	mesh = new Mesh();
+	mesh->Create(device, cmdList, modelGroundLeaf2);
+	meshManager->Add(mesh, "Ground_Leaf2");
 
 	MeshData<Vertex_UV_Normal> modelFrog;
 	MeshCreater::LoadObjModelData("Resources/Model/frog", modelFrog);
