@@ -239,11 +239,13 @@ void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 		}
 		else if (other->GetTag() == "tile")
 		{
-			//各法線セット
-			Reflection(GE::Math::Vector3(0, 1, 0));
-			crashParticle.Fire(transform->position, GE::Math::Vector3(0, 1, 0), other->GetColor());
-			return;
-
+			if (statas != PlayerStatas::LOCKON_SHOOT)
+			{
+				//各法線セット
+				Reflection(GE::Math::Vector3(0, 1, 0));
+				crashParticle.Fire(transform->position, GE::Math::Vector3(0, 1, 0), other->GetColor());
+				return;
+			}
 		}
 		else if (other->GetTag() == "fieldtree")
 		{
@@ -267,7 +269,8 @@ void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 			if (other == lockOnEnemy.object)
 			{
 				lockOnEnemy.object = nullptr;
-				lockOnDashDirection = { transform->GetForward().x,-transform->GetForward().y ,transform->GetForward().z };
+				if (lockOnDashDirection.y < 0)
+					lockOnDashDirection = { transform->GetForward().x,-transform->GetForward().y ,transform->GetForward().z };
 			}
 			audioManager->Use("catch2")->Start();
 			//収集物 +1

@@ -127,6 +127,7 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 		auto* collider = object->AddComponent < GE::BoxCollider >();
 		collider->SetCenter({0,100,0});
 		collider->SetSize(GE::Math::Vector3(100000, 100, 100000));
+		tile = object;
 
 	}
 
@@ -451,6 +452,10 @@ void FieldObjectManager::OtherDraw()
 
 }
 
+GE::GameObject* FieldObjectManager::GetTile()
+{
+	return tile;
+}
 void FieldObjectManager::UnLoad()
 {
 	fieldTree.clear();

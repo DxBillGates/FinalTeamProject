@@ -27,6 +27,7 @@ private:
 	GE::GameObject* fieldLeaf = nullptr;
 	GE::GameObject* startTree = nullptr;
 	GE::GameObject* nest = nullptr;
+	GE::GameObject* tile = nullptr;
 	GE::GameObject* skydome = nullptr;
 
 	GE::IGraphicsDeviceDx12* graphicsDevice;
@@ -52,7 +53,10 @@ public:
 	//component‚ğŒp³‚µ‚Ä‚¢‚È‚¢•`‰æ‚ÌŒÄ‚Ño‚µ
 	void OtherDraw();
 
+	GE::GameObject* GetTile();
+
 	void UnLoad();
+
 private:
 	FieldObjectManager() = default;
 
