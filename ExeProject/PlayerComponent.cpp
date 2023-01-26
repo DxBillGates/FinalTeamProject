@@ -19,7 +19,6 @@ float PlayerComponent::frameRate;
 PlayerComponent::PlayerStatas PlayerComponent::statas;
 GE::Math::Vector3 PlayerComponent::onTheTreePosition = { 0,250,200 };	//木の上で体の高さ調整用
 int PlayerComponent::hitStopTime = 50;								// ヒットストップの長さ
-float PlayerComponent::body_direction_LerpTime = 50.0f;				//ダッシュ後体の角度の遷移
 float PlayerComponent::pushStartTime = 20.0f;						//キーを押してから操作できるようになるまでのカウント
 float PlayerComponent::stayLandLerpTime = 150.0f;					//木に着陸するラープ長さ
 GE::Math::Vector3 PlayerComponent::gravity = { 0,0.5,0 };			//重力
@@ -68,8 +67,6 @@ void PlayerComponent::Start()
 
 	hitStopCount = (float)hitStopTime;
 	stayLandLerpEasingCount = stayLandLerpTime;
-	//姿勢遷移
-	body_direction_LerpCount = body_direction_LerpTime;
 	//レティクルの位置
 	center = GE::Window::GetWindowSize() / 2.0 + GE::Math::Vector2(0, -100);
 
@@ -236,9 +233,6 @@ void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 			//各法線セット
 			Reflection(gameObject->GetHitNormal());
 			crashParticle.Fire(transform->position, gameObject->GetHitNormal(), other->GetColor());
-			PlayerColectObject::GetInstance()->SetFallen(gameObject->GetHitNormal());
-			colectCount > 0 ? colectCount-- : 1;
-
 			return;
 		}
 		else if (other->GetTag() == "tile")
@@ -246,9 +240,6 @@ void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 			//各法線セット
 			Reflection(GE::Math::Vector3(0, 1, 0));
 			crashParticle.Fire(transform->position, GE::Math::Vector3(0, 1, 0), other->GetColor());
-			PlayerColectObject::GetInstance()->SetFallen({ 0,1,0 });
-			colectCount > 0 ? colectCount-- : 1;
-
 			return;
 
 		}
@@ -256,13 +247,9 @@ void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 		{
 			GE::Math::Vector3 dir = transform->position - other->GetTransform()->position;
 			dir = dir.Normalize();
-			GE::Math::Vector3 hitNotmal = GE::Math::Vector3(dir.x, 0, dir.z);
-			Reflection(hitNotmal);
+			GE::Math::Vector3 hitNormal = GE::Math::Vector3(dir.x, 0, dir.z);
+			Reflection(hitNormal);
 			crashParticle.Fire(transform->position, GE::Math::Vector3(0, 1, 0), other->GetColor());
-			PlayerColectObject::GetInstance()->SetFallen(hitNotmal);
-			colectCount > 0 ? colectCount-- : 1;
-
-
 		}
 	}
 	//GE::Utility::Printf("PlayerComponent OnCollisionEnter\n");
@@ -334,6 +321,12 @@ void PlayerComponent::Control(float deltaTime)
 {
 	const float distance = abs(GE::Math::Vector3::Distance(transform->position, FieldObjectManager::GetInstance()->StartPosition));
 
+	GE::Math::Quaternion BODY_DIRECTION =
+		GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), body_direction.y)
+		* GE::Math::Quaternion(GE::Math::Vector3(0, 0, 1), body_direction.z)
+		* GE::Math::Quaternion(GE::Math::Vector3(1, 0, 0), body_direction.x);
+
+
 	if (worldRadius < distance)
 	{
 		Reflection(-GE::Math::Vector3(transform->position - FieldObjectManager::StartPosition).Normalize(), true);
@@ -390,19 +383,18 @@ void PlayerComponent::Control(float deltaTime)
 		LockOn();
 		break;
 	case PlayerComponent::PlayerStatas::DASH:
-		Dash(100.0f, 90.0f, deltaTime, transform->GetForward());
+		NormalDash(100.0f, 90.0f, deltaTime);
 		break;
 	case PlayerComponent::PlayerStatas::CRASH:
 		//ダッシュから切り替わった時用初期化
 		current_speed = normal_speed;
 		//移動
 		transform->position += transform->GetForward() * current_speed * deltaTime * GE::GameSetting::Time::GetGameTime();
-		transform->rotation *= GE::Math::Quaternion(GE::Math::Vector3(0, 0, 1), 0.03f * deltaTime * GE::GameSetting::Time::GetGameTime());
+		//body_direction.z += 0.03f * deltaTime * GE::GameSetting::Time::GetGameTime();
 
 		if (InputManager::GetInstance()->GetActionButton())
 		{
 			//体のオイラー角を取得してセット
-			body_direction = transform->rotation.EulerRadian();
 			animator.PlayAnimation(0, false);
 			statas = PlayerStatas::MOVE;
 			audioManager->Use("flapping1")->Start();
@@ -415,7 +407,7 @@ void PlayerComponent::Control(float deltaTime)
 		{
 			if (lockOnEnemy.object->GetComponent<Enemy>()->statas != Enemy::Statas::DEAD)
 			{
-				lockOnEnemy.direction = GE::Math::Vector3(lockOnEnemy.object->GetTransform()->position - transform->position).Normalize();
+				lockOnEnemy.direction = GE::Math::Vector3(lockOnEnemy.object->GetTransform()->position + GE::Math::Vector3(0, 100, 0) - transform->position).Normalize();
 				loop = true;
 			}
 			else {
@@ -477,28 +469,12 @@ void PlayerComponent::Control(float deltaTime)
 	default:
 		break;
 	}
-	if (statas != PlayerStatas::CRASH)
+	if (statas != PlayerStatas::TITLE && statas != PlayerStatas::CRASH)
 	{
-		GE::Math::Quaternion BODY_DIRECTION =
-			GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), body_direction.y)
-			* GE::Math::Quaternion(GE::Math::Vector3(0, 0, 1), body_direction.z)
-			* GE::Math::Quaternion(GE::Math::Vector3(1, 0, 0), body_direction.x);
-		//ダッシュ後体の角度の遷移
-		if (body_direction_LerpCount < body_direction_LerpTime)
-		{
-			body_direction_LerpCount += 1 * GE::GameSetting::Time::GetGameTime();
-			transform->rotation = GE::Math::Quaternion::Lerp(body_direction_LockOn, BODY_DIRECTION, body_direction_LerpCount / body_direction_LerpTime);
-		}
-		else {
-			transform->rotation = BODY_DIRECTION;
-		}
-
-		if (statas != PlayerStatas::TITLE)
-		{
-			//キーボードで移動操作
-			KeyboardMoveControl(deltaTime);
-		}
+		//キーボードで移動操作
+		KeyboardMoveControl(deltaTime);
 	}
+	transform->rotation = BODY_DIRECTION;
 }
 void PlayerComponent::KeyboardMoveControl(float deltaTime)
 {
@@ -556,7 +532,6 @@ void PlayerComponent::KeyboardMoveControl(float deltaTime)
 
 	// コントローラーから姿勢を更新し続ける
 	quat *= GE::Math::Quaternion(gyro.Normalize(), GE::Math::ConvertToRadian(gyro.Length() * 1.f / 144.f));
-
 
 	if (InputManager::GetInstance()->GetCurrentInputDeviceState() != InputManager::InputDeviceState::JOYCON)return;
 	const float GYRO_OFFSET = 0.05f;
@@ -637,37 +612,57 @@ void PlayerComponent::Dash(float dash_speed, float dash_time, float deltaTime, G
 	{
 		current_speed = dash_speed;
 		dashEasingCount = 0.0f;
-		body_direction_LerpCount = 0;
 	}
 	else
 	{
 		current_speed = easeIn(dash_speed, normal_speed, dashEasingCount / dash_time);
 	}
 	if (dashEasingCount < dash_time) { dashEasingCount += 1 * GE::GameSetting::Time::GetGameTime(); }
-	else { statas = PlayerStatas::MOVE; dashEasingCount = 0.0f; body_direction_LerpCount = 0; animator.PlayAnimation(1, false); }
+	else {
+		statas = PlayerStatas::MOVE; dashEasingCount = 0.0f; animator.PlayAnimation(1, false); ;
+	}
 
-	body_direction_LockOn = GE::Math::Quaternion::LookDirection(direction);
-	transform->rotation = body_direction_LockOn;
+	body_direction = GE::Math::Quaternion::LookDirection(direction).EulerRadian();
 
 	transform->position += transform->GetForward() * current_speed * deltaTime * GE::GameSetting::Time::GetGameTime();
 }
 
+void PlayerComponent::NormalDash(float dash_speed, float dash_time, float deltaTime)
+{
+	//FlyAnimation
+	if (dashEasingCount == 0.0f) {
+		animator.PlayAnimation(0, false);
+		audioManager->Use("flapping1")->Start();
+		audioManager->Use("air1")->Start();
+	}
+	current_speed = easeIn(dash_speed, normal_speed, dashEasingCount / dash_time);
+
+	if (dashEasingCount < dash_time) { dashEasingCount += 1 * GE::GameSetting::Time::GetGameTime(); }
+	else {
+		statas = PlayerStatas::MOVE; dashEasingCount = 0.0f; animator.PlayAnimation(1, false); ;
+	}
+
+	transform->position += transform->GetForward() * current_speed * deltaTime * GE::GameSetting::Time::GetGameTime();
+}
 void PlayerComponent::Reflection(GE::Math::Vector3 normal, bool reflection)
 {
 	statas = PlayerStatas::CRASH;
 	audioManager->Use("hitWall")->Start();
 	if (!reflection)
 	{
-		transform->rotation = GE::Math::Quaternion::LookDirection(GE::Math::Vector3::Reflection(transform->GetForward(), normal, 2.0f));
+		body_direction = GE::Math::Quaternion::LookDirection(GE::Math::Vector3::Reflection(transform->GetForward(), normal, 2.0f)).EulerRadian();
 	}
 	else
 	{
-		transform->rotation = GE::Math::Quaternion::LookDirection(normal);
+		body_direction = GE::Math::Quaternion::LookDirection(normal).EulerRadian();
 	}
 	CameraControl::GetInstance()->ShakeStart({ 50,50 }, 30);
 	//ロックオン中ならロックオンをキャンセル
-	isLockOn = false; dashEasingCount = 0.0f; body_direction_LerpCount = 0; lockOnEnemy.object = nullptr;
+	isLockOn = false; dashEasingCount = 0.0f; lockOnEnemy.object = nullptr;
 
+	//収集物落下
+	PlayerColectObject::GetInstance()->SetFallen(normal);
+	colectCount > 0 ? colectCount-- : 1;
 }
 //EaseIn関係がよくわからなかったから一時的に追加
 const float PlayerComponent::easeIn(const float start, const float end, float time)

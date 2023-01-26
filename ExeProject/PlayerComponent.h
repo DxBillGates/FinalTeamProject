@@ -20,7 +20,6 @@ private:
 	static float pushStartTime;		//キーを押してから操作できるようになるまでのカウント
 	static float stayLandLerpTime;	//木に戻るラープ
 	static int colectMax;			//収集物の同時にもてる最大個数
-	static float body_direction_LerpTime; //秒数
 	static float worldRadius;				//世界の大きさの半径(端っこの壁までの距離)
 	static float lockOnLength;				//敵をロックオンできる距離
 	static float moreTimesLockOnLength;		//連続で二回目以降の敵をロックオンできる距離
@@ -42,7 +41,6 @@ private:
 	int colectCount;				//取集物を何個集めたか
 	float hitStopCount;				//ヒットストップカウント用
 	float startCouunt;				//開始時のカウント
-	int body_direction_LerpCount;	//元の姿勢に戻るときの遷移
 	int lockOnIntervalCount;		//ロックオンのインターバルのカウント
 
 	int statasChangeCount;			//インプットが次のPlayerStatasでも動かないように1フレーム繰越すよう
@@ -64,7 +62,6 @@ private:
 	GE::Math::Quaternion preQuat;
 	GE::Math::Quaternion quat;
 	GE::Math::Vector3 body_direction;				//体の向き計算用
-	GE::Math::Quaternion body_direction_LockOn;		//ロックオン時の体の向き計算用
 
 	GE::Math::Vector3 currentPosition;//巣に着陸するときのラープ用
 public:
@@ -132,6 +129,8 @@ private:
 	/// <param name="direction">向き</param>
 	/// <param name="loop">Trueの間はダッシュし続ける。Falseになるとdash_timeのフレーム数かけて減速する。最初からfalseだとdash_timeフレーム数加速する</param>
 	void Dash(float dash_speed, float dash_time, float deltaTime, GE::Math::Vector3 direction, bool loop = false);
+
+	void NormalDash(float dash_speed, float dash_time, float deltaTime);
 
 	void Reflection(GE::Math::Vector3 normal, bool reflection = false);
 	//EaseIn関係がよくわからなかったから一時的に追加
