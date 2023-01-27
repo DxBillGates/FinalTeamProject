@@ -41,8 +41,9 @@ void GE::GUI::Inspector::OnGui()
 
 			ImGui::DragFloat3("Position", currentSelectGameObject->GetTransform()->position.value, dragSpeed, dragMinValue, drawMaxValue);
 			Math::Vector3 rotation = currentSelectGameObject->GetTransform()->rotation.EulerAngle();
-			ImGui::DragFloat3("Rotation",rotation.value, dragSpeed, dragMinValue, drawMaxValue);
-			currentSelectGameObject->GetTransform()->rotation = Math::Quaternion::Euler(rotation);
+			auto isChangeValue = ImGui::DragFloat3("Rotation",rotation.value, dragSpeed, dragMinValue, drawMaxValue);
+			if(isChangeValue)
+				currentSelectGameObject->GetTransform()->rotation = Math::Quaternion::Euler(rotation);
 			ImGui::DragFloat3("Scale   ", currentSelectGameObject->GetTransform()->scale.value   , dragSpeed, dragMinValue, drawMaxValue);
 			ImGui::TreePop();
 		}
