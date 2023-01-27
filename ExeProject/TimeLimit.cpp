@@ -12,7 +12,6 @@ TimeLimit* TimeLimit::GetInstance()
 	return &instance;
 }
 
-
 void TimeLimit::Start(GE::GameObjectManager* gameObjectManager)
 {
 	const int DEFAULT_TIME = 1;//§ŒÀŠÔ(•ªw’è)
@@ -26,7 +25,6 @@ void TimeLimit::Start(GE::GameObjectManager* gameObjectManager)
 	addAngle = 0.075f;
 	range = 0.5f;
 	tScale = {};
-
 	interval = 0;
 }
 
