@@ -135,6 +135,12 @@ bool Game::LoadContents()
 		audio = audioManager.AddAudio(new GE::Audio(audioData, "flapping1"));
 		audio->SetVolume(0.3f);
 	}
+	//Œø‰Ê‰¹hine
+	{
+		auto* audioData = audioManager.AddAudioData(new GE::AudioData("Resources/Audio/hine.wav"), "hine1");
+		auto* audio = audioManager.AddAudio(new GE::Audio(audioData, "hine1"));
+		audio->SetVolume(0.2f);
+	}
 	auto* textureManager = graphicsDevice.GetTextureManager();
 	Texture* nullTexture = new Texture();
 	nullTexture->Load("title.png", device, shaderResourceHeap);

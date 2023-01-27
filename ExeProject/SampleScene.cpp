@@ -73,7 +73,7 @@ void SampleScene::Update(float deltaTime)
 	gameObjectManager.Update(deltaTime);
 	collisionManager.Update();
 	Title::GetInstance()->Update(audioManager);
-	TimeLimit::GetInstance()->Update();
+	TimeLimit::GetInstance()->Update(audioManager);
 	//Collect::GetInstance()->Update(StartTree::collectCount, StartTree::goalCollect);
 	UIObject::GetInstance()->Update(deltaTime);
 	ScreenUIManager::GetInstance()->Update(deltaTime);
