@@ -173,23 +173,34 @@ Vector3 GE::Math::Quaternion::EulerRadian()
 	Matrix4x4 matrix = this->Rotation();
 	Vector3 angle;
 
-	if (matrix._32 != 1)
-	{
-		angle.x = std::asinf(-matrix._32);
-		angle.y = std::atan2f(matrix._31, matrix._33);
-		angle.z = std::atan2f(matrix._12, matrix._22);
-	}
-	else if (matrix._32 == 1)
+	float sx = 2 * y * w + 2 * x * z;
+	bool unlocked = std::fabsf(sx) < 0.999f;
+	angle.x = std::asinf(sx);
+	angle.y = unlocked ? std::atan2f(-(2 * x * z - 2 * y * w), 2 * w * w + 2 * z * z - 1) : 0;
+	angle.z = unlocked ? std::atan2f(-(2 * x * y - 2 * z * w), 2 * w * w + 2 * y * y - 1) : std::atan2f((2 * x * y + 2 * z * w), 2 * w * w + 2 * x * x - 1);
+	return angle;
+
+	float epsilon = 0.000001f;
+	float sign = matrix._32 / matrix._32;
+	float comparison = matrix._32 + epsilon * sign;
+	comparison = comparison > 1 * sign ? 1 * sign : matrix._32;
+	if (comparison == 1)
 	{
 		angle.x = PI / 2;
 		angle.y = 0;
 		angle.z = std::atan2f(matrix._21, matrix._11);
 	}
-	else if (matrix._32 == -1)
+	else if (comparison == -1)
 	{
 		angle.x = -PI / 2;
 		angle.y = 0;
 		angle.z = std::atan2f(matrix._21, matrix._11);
+	}
+	else
+	{
+		angle.x = std::asinf(matrix._32);
+		angle.y = std::atan2f(-matrix._31, matrix._33);
+		angle.z = std::atan2f(-matrix._12, matrix._22);
 	}
 
 	return angle;
