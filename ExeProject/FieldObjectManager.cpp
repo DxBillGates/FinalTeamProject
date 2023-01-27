@@ -2,6 +2,8 @@
 #include "FieldObject.h"
 #include "FieldTree.h"
 #include "BirdChild.h"
+#include "Clear.h"
+#include "Over.h"
 #include <GatesEngine/Header/GameFramework/Component/SphereCollider.h>
 #include <GatesEngine/Header/GameFramework/Component/MeshCollider.h>
 #include <GatesEngine/Header/GameFramework/Component/BoxCollider.h>
@@ -133,14 +135,17 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 
 	//êó
 	{
-		for (int i = 0; i < 4; ++i)
+		if (!Clear::nowClear && !Over::nowOver)
 		{
-			auto* object = gameObjectManager->AddGameObject(new GE::GameObject("birdChild", "BirdChild"));
-			auto* sampleComponent = object->AddComponent<BirdChild>();
-			object->GetTransform()->position = {};
-			object->GetTransform()->scale = { 2 };
-			birdChild.push_back(object);
-			FieldObjectDebugTransform::GetInstance()->AddTarget(object);
+			for (int i = 0; i < 4; ++i)
+			{
+				auto* object = gameObjectManager->AddGameObject(new GE::GameObject("birdChild", "BirdChild"));
+				auto* sampleComponent = object->AddComponent<BirdChild>();
+				object->GetTransform()->position = {};
+				object->GetTransform()->scale = { 2 };
+				birdChild.push_back(object);
+				FieldObjectDebugTransform::GetInstance()->AddTarget(object);
+			}
 		}
 	}
 
