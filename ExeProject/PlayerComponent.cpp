@@ -18,19 +18,19 @@
 float PlayerComponent::frameRate;
 PlayerComponent::PlayerStatas PlayerComponent::statas;
 GE::Math::Vector3 PlayerComponent::onTheTreePosition = { 0,250,200 };	//木の上で体の高さ調整用
-int PlayerComponent::hitStopTime = 50;								// ヒットストップの長さ
-float PlayerComponent::pushStartTime = 20.0f;						//キーを押してから操作できるようになるまでのカウント
-float PlayerComponent::stayLandLerpTime = 150.0f;					//木に着陸するラープ長さ
-GE::Math::Vector3 PlayerComponent::gravity = { 0,0.5,0 };			//重力
-float PlayerComponent::normal_speed = 20.0f;						//通常時のスピード
-float PlayerComponent::current_speed = normal_speed;				//現在のスピード
-float PlayerComponent::damageSpeed = 0.0f;							//敵にヒットしたときにダメージが入るスピード
-int PlayerComponent::colectMax = 10;								//一度に掴めるえさの数
-float PlayerComponent::worldRadius = 38000.0f;						//端この壁までの長さ
-float PlayerComponent::lockOnLength = 10000.0f;						//ロックオンできる距離
-float PlayerComponent::moreTimesLockOnLength = 10000.0f;			//連続で二回目以降の敵をロックオンできる距離
-int PlayerComponent::lockOnInterval = 250.0f;						//再度ロックオンできるまでのインターバル
-bool PlayerComponent::isGoTree = false;						//再度ロックオンできるまでのインターバル
+int PlayerComponent::hitStopTime = 50;									// ヒットストップの長さ
+float PlayerComponent::pushStartTime = 20.0f;							//キーを押してから操作できるようになるまでのカウント
+float PlayerComponent::stayLandLerpTime = 150.0f;						//木に着陸するラープ長さ
+GE::Math::Vector3 PlayerComponent::gravity = { 0,0.5,0 };				//重力
+float PlayerComponent::normal_speed = 20.0f;							//通常時のスピード
+float PlayerComponent::current_speed = normal_speed;					//現在のスピード
+float PlayerComponent::damageSpeed = 0.0f;								//敵にヒットしたときにダメージが入るスピード
+int PlayerComponent::colectMax = 10;									//一度に掴めるえさの数
+float PlayerComponent::worldRadius = 38000.0f;							//端この壁までの長さ
+float PlayerComponent::lockOnLength = 10000.0f;							//ロックオンできる距離
+float PlayerComponent::moreTimesLockOnLength = 10000.0f;				//連続で二回目以降の敵をロックオンできる距離
+int PlayerComponent::lockOnInterval = 250.0f;							//再度ロックオンできるまでのインターバル
+bool PlayerComponent::isGoTree = false;
 
 PlayerComponent::PlayerComponent()
 	: inputDevice(nullptr)
@@ -88,7 +88,6 @@ void PlayerComponent::Update(float deltaTime)
 
 	crashParticle.Update(f);
 
-	//testBGM->Start();
 	InputManager::GetInstance()->Update();
 	const auto& cameraInfo = graphicsDevice->GetMainCamera()->GetCameraInfo();
 	GE::Math::GetScreenToRay(center, &rayPos, &rayDir, cameraInfo.viewMatrix, cameraInfo.projMatrix, GE::Math::Matrix4x4::GetViewportMatrix(GE::Window::GetWindowSize()));
@@ -141,7 +140,6 @@ void PlayerComponent::Update(float deltaTime)
 			statas = PlayerStatas::GO_TREE;
 		}
 	}
-
 	animator.Update(deltaTime);
 }
 
@@ -641,13 +639,15 @@ void PlayerComponent::NormalDash(float dash_speed, float dash_time, float deltaT
 
 	if (dashEasingCount < dash_time) { dashEasingCount += 1 * GE::GameSetting::Time::GetGameTime(); }
 	else {
-		statas = PlayerStatas::MOVE; dashEasingCount = 0.0f; animator.PlayAnimation(1, false); ;
+		statas = PlayerStatas::MOVE; dashEasingCount = 0.0f; animator.PlayAnimation(1, false);
 	}
 
 	transform->position += transform->GetForward() * current_speed * deltaTime * GE::GameSetting::Time::GetGameTime();
 }
 void PlayerComponent::Reflection(GE::Math::Vector3 normal, bool reflection)
 {
+	auto a = transform->GetForward();
+	printf("%.3f,%.3f,%.3f\n", a.x, a.y, a.z);
 	statas = PlayerStatas::CRASH;
 	audioManager->Use("hitWall")->Start();
 	if (!reflection)
@@ -658,6 +658,9 @@ void PlayerComponent::Reflection(GE::Math::Vector3 normal, bool reflection)
 	{
 		body_direction = GE::Math::Quaternion::LookDirection(normal).EulerRadian();
 	}
+	a = GE::Math::Vector3::Reflection(transform->GetForward(), normal, 2.0f);
+	printf("%.3f,%.3f,%.3f\n", a.x, a.y, a.z);
+
 	CameraControl::GetInstance()->ShakeStart({ 50,50 }, 30);
 	//ロックオン中ならロックオンをキャンセル
 	isLockOn = false; dashEasingCount = 0.0f; lockOnEnemy.object = nullptr;

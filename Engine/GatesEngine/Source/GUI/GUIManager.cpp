@@ -80,8 +80,10 @@ void GE::GUIManager::StartFrame(bool isShowDemo)
 	ImGui_ImplDX12_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
+#ifdef _DEBUG
 
 	ImGui::DockSpaceOverViewport();
+#endif // _DEBUG
 
 	if (isShowDemo)
 	{

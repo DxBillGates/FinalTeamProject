@@ -66,7 +66,7 @@ void FrogEnemy::Update(float deltaTime)
 			frogState = FrogState::JUMPING;
 			currentAngle = angle;
 		}
-		jumpCount += f;
+		jumpCount += f * GE::GameSetting::Time::GetGameTime();
 		angle = GE::Math::Lerp(currentAngle, currentAngle + 90, jumpCount / (float)jumpInterval);
 
 		break;
@@ -78,11 +78,11 @@ void FrogEnemy::Update(float deltaTime)
 		}
 		break;
 	case FrogState::JUMPING:
-		velocity += gravity;
+		velocity += gravity * GE::GameSetting::Time::GetGameTime();
 		break;
 	}
 	transform->rotation = GE::Math::Quaternion::Euler({ 0,angle,0 });
-	transform->position += GE::Math::Vector3(transform->GetForward().x * velocity.x, velocity.y, transform->GetForward().z * velocity.z);
+	transform->position += GE::Math::Vector3(transform->GetForward().x * velocity.x, velocity.y, transform->GetForward().z * velocity.z) * f * GE::GameSetting::Time::GetGameTime();
 }
 
 void FrogEnemy::DrawShadow()

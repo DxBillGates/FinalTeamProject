@@ -34,6 +34,7 @@ private:
 	GE::Mesh* mesh;
 	std::map<std::string, GE::MeshData<GE::Vertex_UV_Normal>> groundModels;
 	GE::MeshData<GE::Vertex_UV_Normal> startTreeModel;
+	GE::MeshData<GE::Vertex_UV_Normal> tileModel;
 
 private:
 	void AddGroundModel(std::string fileName);
