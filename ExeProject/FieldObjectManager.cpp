@@ -49,12 +49,31 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 	auto device = graphicsDevice->GetDevice();
 	auto cmdList = graphicsDevice->GetCmdList();
 
+	//巣
+	{
+		auto* object = gameObjectManager->AddGameObject(new GE::GameObject("nest", "nest"));
+		auto* sampleComponent = object->AddComponent<FieldObjectComponent>();
+		object->GetComponent<FieldObjectComponent>()->modelName = "Nest";
+		object->GetComponent<FieldObjectComponent>()->shaderName = "DefaultMeshShader";
+		object->SetColor(GE::Color(0.8f, 0.6f, 0.6f, 1.f));
+		StartPosition = nst.pos;
+		object->GetTransform()->position = StartPosition;
+		object->GetTransform()->scale = nst.scale;
+		object->GetTransform()->rotation = GE::Math::Quaternion::Euler(nst.rot);
+		auto* collider = object->AddComponent < GE::SphereCollider >();
+		collider->SetCenter({ 0,0,0 });
+		collider->SetSize({ 10.5 });
+		nest = object;
+	}
 	//スタートの止まり木
 	{
 		auto* object = gameObjectManager->AddGameObject(new GE::GameObject("StartTree", "StartTree"));
 		auto* sampleComponent = object->AddComponent<StartTree>();
 		auto* collider = object->AddComponent < GE::MeshCollider >();
 		collider->SetMesh(&startTreeModel);
+		object->GetTransform()->position = st.pos;
+		object->GetTransform()->scale = st.scale;
+		object->GetTransform()->rotation = GE::Math::Quaternion::Euler(st.rot);
 		startTree = object;
 	}
 
@@ -72,40 +91,29 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 		object->GetComponent<FieldObjectComponent>()->modelName = "Skydome";
 		object->GetComponent<FieldObjectComponent>()->shaderName = "CelestialSphereShader";
 		object->SetColor(GE::Color(1.f, 1.f, 1.f, 1));
+		object->GetTransform()->position = StartPosition;
 		object->GetTransform()->scale = { 400 };
 		object->GetTransform()->rotation = GE::Math::Quaternion::Euler(GE::Math::Vector3(0, 0, 180));
 		skydome = object;
 	}
-	//巣
-	{
-		auto* object = gameObjectManager->AddGameObject(new GE::GameObject("nest", "nest"));
-		auto* sampleComponent = object->AddComponent<FieldObjectComponent>();
-		object->GetComponent<FieldObjectComponent>()->modelName = "Nest";
-		object->GetComponent<FieldObjectComponent>()->shaderName = "DefaultMeshShader";
-		object->SetColor(GE::Color(0.8f, 0.6f, 0.6f, 1.f));
-		object->GetTransform()->scale = { 200,300,200 };
-		auto* collider = object->AddComponent < GE::SphereCollider >();
-		collider->SetCenter({ 0,0,0 });
-		collider->SetSize({ 10.5 });
-		nest = object;
-	}
 	//通常の木
 	{
-		for (int i = 0; i < 7; ++i)
+		for (int i = 0; i < ft.size(); ++i)
 		{
 			auto* object = gameObjectManager->AddGameObject(new GE::GameObject("fieldtree", "fieldtree"));
 			auto* sampleComponent = object->AddComponent<FieldTree>();
-			object->GetTransform()->position = {};
-			object->GetTransform()->scale = { 400 };
+			object->GetTransform()->position = ft[i].pos;
+			object->GetTransform()->scale = ft[i].scale;
+			object->GetTransform()->rotation = GE::Math::Quaternion::Euler(ft[i].rot);
 			fieldTree.push_back(object);
 			auto* collider = object->AddComponent < GE::BoxCollider >();
 			collider->SetSize(GE::Math::Vector3(1.5f, 15, 1.5f));
-			FieldObjectDebugTransform::GetInstance()->AddTarget(object, {3,10,3});
+			FieldObjectDebugTransform::GetInstance()->AddTarget(object, { 3,10,3 });
 		}
 	}
-	//フィールドの草
+	//フィールドの地形の草
 	{
-		auto* object = gameObjectManager->AddGameObject(new GE::GameObject("leaf", "leaf"));
+		auto* object = gameObjectManager->AddGameObject(new GE::GameObject("groundLeaf", "groundLeaf"));
 		auto* sampleComponent = object->AddComponent<FieldObjectComponent>();
 		object->GetTransform()->position = { 1000,100,-15000 };
 		object->GetTransform()->scale = { 2000 };
@@ -121,26 +129,47 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 		auto* sampleComponent = object->AddComponent<FieldObjectComponent>();
 		object->GetComponent<FieldObjectComponent>()->modelName = "Plane";
 		sampleComponent->shaderName = "DefaultMeshWithShadowShader";
-		object->GetTransform()->scale = { 100000,100,100000 };
+		object->GetTransform()->scale = { 100000,1,100000 };
 		object->GetTransform()->position = { 0,-130.f,0 };
 		object->SetColor(GE::Color(0.2f, 0.5f, 0.2f, 1.0f));
 		auto* collider = object->AddComponent < GE::BoxCollider >();
-		collider->SetSize(GE::Math::Vector3(100000, 1, 100000));
+		collider->SetCenter({ 0,100,0 });
+		collider->SetSize(GE::Math::Vector3(100000, 100, 100000));
+		tile = object;
 
 	}
 
 	//雛
 	{
-		for (int i = 0; i < 4; ++i)
+		for (int i = 0; i < bc.size(); ++i)
 		{
 			auto* object = gameObjectManager->AddGameObject(new GE::GameObject("birdChild", "BirdChild"));
 			auto* sampleComponent = object->AddComponent<BirdChild>();
-			object->GetTransform()->position = {};
-			object->GetTransform()->scale = { 2 };
+			object->GetTransform()->position = bc[i].pos;
+			object->GetTransform()->scale = bc[i].scale;
+			object->GetTransform()->rotation = GE::Math::Quaternion::Euler(bc[i].rot);
 			birdChild.push_back(object);
 			FieldObjectDebugTransform::GetInstance()->AddTarget(object);
 		}
 	}
+
+	{
+		for (int i = 0; i < nl.size(); ++i)
+		{
+
+			auto* object = gameObjectManager->AddGameObject(new GE::GameObject("leaf", "leaf"));
+			auto* sampleComponent = object->AddComponent<FieldObjectComponent>();
+			object->GetTransform()->position = nl[i].pos;
+			object->GetTransform()->scale = nl[i].scale;
+			object->GetTransform()->rotation = GE::Math::Quaternion::Euler(nl[i].rot);
+			object->GetComponent<FieldObjectComponent>()->modelName = "Ground_Leaf2";
+			sampleComponent->shaderName = "DefaultMeshWithTextureAndAdsCompositiongShader";
+			object->GetComponent<FieldObjectComponent>()->textureName = "leafTex1";
+			normalLeaf.push_back(object);
+			FieldObjectDebugTransform::GetInstance()->AddTarget(object);
+		}
+	}
+
 }
 void FieldObjectManager::AddGroundModel(std::string fileName)
 {
@@ -176,10 +205,6 @@ void FieldObjectManager::LoadModel(const std::string& filename)
 
 void FieldObjectManager::LoadPosition(const std::string& filename)
 {
-	std::vector<obj> ft;
-	std::vector<obj> bc;
-	obj st;
-	obj nst;
 
 	std::ifstream file;
 	//ファイルを開く
@@ -283,37 +308,37 @@ void FieldObjectManager::LoadPosition(const std::string& filename)
 			result.col.a = 1.0f;
 			nst = result;
 		}
+		else if (key == "NormalLeaf")
+		{
+			obj result;
+			line_stream >> result.pos.x;
+			line_stream >> result.pos.y;
+			line_stream >> result.pos.z;
+
+			line_stream >> result.rot.x;
+			line_stream >> result.rot.y;
+			line_stream >> result.rot.z;
+
+			line_stream >> result.scale.x;
+			line_stream >> result.scale.y;
+			line_stream >> result.scale.z;
+
+			line_stream >> result.col.r;
+			line_stream >> result.col.g;
+			line_stream >> result.col.b;
+			result.col.a = 1.0f;
+			nl.emplace_back(result);
+		}
 	}
 	file.close();
-	//ファイルの座標セット
-	int index = ft.size() < fieldTree.size() ? ft.size() : fieldTree.size();
-	for (int i = 0; i < index; i++)
-	{
-		fieldTree[i]->GetTransform()->position = ft[i].pos;
-		fieldTree[i]->GetTransform()->rotation = GE::Math::Quaternion::Euler(ft[i].rot);
-		fieldTree[i]->GetTransform()->scale = ft[i].scale;
-	}
-	//雛
-	index = bc.size() < birdChild.size() ? bc.size() : birdChild.size();
-	for (int i = 0; i < index; i++)
-	{
-		birdChild[i]->GetTransform()->position = bc[i].pos;
-		birdChild[i]->GetTransform()->rotation = GE::Math::Quaternion::Euler(bc[i].rot);
-		birdChild[i]->GetTransform()->scale = bc[i].scale;
-	}
-	//開始時の木
-	startTree->GetTransform()->position = st.pos;
-	startTree->GetComponent<StartTree>()->rotation_euler = st.rot;
-	startTree->GetTransform()->scale = st.scale;
-	//巣
-	nest->GetTransform()->position = nst.pos;
-	nest->GetTransform()->scale = nst.scale;
-	StartPosition = nst.pos;
-	skydome->GetTransform()->position = StartPosition;
 }
 
 void FieldObjectManager::SaveCurrentPosition(const std::string& filename)
 {
+	GE::Math::Vector3 pos;
+	GE::Math::Vector3 scale;
+	GE::Math::Vector3 rota;
+
 	std::ofstream writing_file;
 	writing_file.open(filename, std::ios::out);
 	//内容初期化
@@ -322,9 +347,9 @@ void FieldObjectManager::SaveCurrentPosition(const std::string& filename)
 	//普通の木
 	for (int i = 0; i < fieldTree.size(); i++)
 	{
-		GE::Math::Vector3 pos = fieldTree[i]->GetTransform()->position;
-		GE::Math::Vector3 scale = fieldTree[i]->GetTransform()->scale;
-		GE::Math::Vector3 rota = fieldTree[i]->GetTransform()->rotation.EulerAngle();
+		pos = fieldTree[i]->GetTransform()->position;
+		scale = fieldTree[i]->GetTransform()->scale;
+		rota = fieldTree[i]->GetTransform()->rotation.EulerAngle();
 		GE::Color col = fieldTree[i]->GetColor();
 
 		writing_file << "FieldTree " << pos.x << " " << pos.y << " " << pos.z <<
@@ -335,9 +360,9 @@ void FieldObjectManager::SaveCurrentPosition(const std::string& filename)
 	//雛
 	for (int i = 0; i < birdChild.size(); i++)
 	{
-		GE::Math::Vector3 pos = birdChild[i]->GetTransform()->position;
-		GE::Math::Vector3 scale = birdChild[i]->GetTransform()->scale;
-		GE::Math::Vector3 rota = birdChild[i]->GetTransform()->rotation.EulerAngle();
+		pos = birdChild[i]->GetTransform()->position;
+		scale = birdChild[i]->GetTransform()->scale;
+		rota = birdChild[i]->GetTransform()->rotation.EulerAngle();
 		GE::Color col = birdChild[i]->GetColor();
 
 		writing_file << "BirdChild " << pos.x << " " << pos.y << " " << pos.z <<
@@ -345,10 +370,23 @@ void FieldObjectManager::SaveCurrentPosition(const std::string& filename)
 			" " << scale.x << " " << scale.x << " " << scale.x <<
 			" " << col.r << " " << col.g << " " << col.b << " " << col.a << std::endl;
 	}
+	//床の草
+	for (int i = 0; i < normalLeaf.size(); i++)
+	{
+		pos = normalLeaf[i]->GetTransform()->position;
+		scale = normalLeaf[i]->GetTransform()->scale;
+		rota = normalLeaf[i]->GetTransform()->rotation.EulerAngle();
+		GE::Color col = normalLeaf[i]->GetColor();
+
+		writing_file << "NormalLeaf " << pos.x << " " << pos.y << " " << pos.z <<
+			" " << rota.x << " " << rota.y << " " << rota.z <<
+			" " << scale.x << " " << scale.x << " " << scale.x <<
+			" " << col.r << " " << col.g << " " << col.b << " " << col.a << std::endl;
+	}
 	//開始時の木
-	GE::Math::Vector3 pos = startTree->GetTransform()->position;
-	GE::Math::Vector3 scale = startTree->GetTransform()->scale;
-	GE::Math::Vector3 rota = startTree->GetTransform()->rotation.EulerAngle();
+	pos = startTree->GetTransform()->position;
+	scale = startTree->GetTransform()->scale;
+	rota = startTree->GetTransform()->rotation.EulerAngle();
 	GE::Color col = startTree->GetColor();
 
 	writing_file << "StartTree " << pos.x << " " << pos.y << " " << pos.z <<
@@ -386,9 +424,14 @@ void FieldObjectManager::OtherDraw()
 
 }
 
+GE::GameObject* FieldObjectManager::GetTile()
+{
+	return tile;
+}
 void FieldObjectManager::UnLoad()
 {
 	fieldTree.clear();
 	birdChild.clear();
+	normalLeaf.clear();
 	//delete mesh;
 }

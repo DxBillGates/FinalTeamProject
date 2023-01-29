@@ -71,7 +71,7 @@ void BirdEnemy::LateDraw()
 void BirdEnemy::OnCollision(GE::GameObject* other)
 {
 	GE::Utility::Printf("BirdEnemy OnCollision(GameObject* other) : hit\n");
-	
+
 }
 
 void BirdEnemy::OnCollision(GE::ICollider* hitCollider)
@@ -83,11 +83,8 @@ void BirdEnemy::OnCollisionEnter(GE::GameObject* other)
 {
 	if (statas == Statas::ALIVE)
 	{
-		if (PlayerComponent::IsSpeedy())//ˆê’èã‚Ì‘¬“x
-		{
-			statas = Statas::DEAD;
-			gameObject->Destroy();
-		}
+		statas = Statas::DEAD;
+		gameObject->Destroy();
 	}
 }
 

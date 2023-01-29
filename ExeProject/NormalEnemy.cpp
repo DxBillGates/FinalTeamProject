@@ -21,9 +21,6 @@ void NormalEnemy::Awake()
 void NormalEnemy::Start()
 {
 	GE::Utility::Printf("NormalEnemy Start()\n");
-	random = { GE::RandomMaker::GetFloat(-1000.0f,1000.0f),GE::RandomMaker::GetFloat(0.0f,1000.0f),GE::RandomMaker::GetFloat(-500.0f,500.0f) };//敵の位置のランダム変数
-	transform->position = random;//位置をランダム化
-	transform->scale = { 5 };//サイズ
 	speed = 10;
 	angle = GE::RandomMaker::GetFloat(0.0f, 20.0f);//敵の始動位置の調整
 	gameObject->SetColor(GE::Color::Red());

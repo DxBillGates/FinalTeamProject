@@ -18,6 +18,10 @@ private:
 		GE::Math::Vector3 scale;
 		GE::Color col;
 	};
+	std::vector<obj>ne;
+	std::vector<obj>be;
+	std::vector<obj>fe;
+
 	GE::GameObjectManager* gameObjectManager = nullptr;
 	std::vector<GE::GameObject*> nEnemies;
 	std::vector<GE::GameObject*> birdEnemies;

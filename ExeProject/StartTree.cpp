@@ -24,7 +24,6 @@ void StartTree::Start()
 	GE::Utility::Printf("TestTreeComponent Start()\n");
 
 	gameObject->SetColor(GE::Color::Red());
-	transform->scale = { 1 };
 	collectCount = 0;
 	isCollect = false;
 
@@ -40,8 +39,6 @@ void StartTree::Update(float deltaTime)
 	{
 		isCollect = true;
 	}
-
-	transform->rotation = GE::Math::Quaternion::Euler(rotation_euler);
 }
 
 void StartTree::DrawShadow()
@@ -131,5 +128,4 @@ void StartTree::OnCollision(GE::ICollider* hitCollider)
 
 void StartTree::OnGui()
 {
-	ImGui::InputFloat3("Rotation_Euler", rotation_euler.value);
 }

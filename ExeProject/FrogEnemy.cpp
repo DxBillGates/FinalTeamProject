@@ -24,10 +24,6 @@ void FrogEnemy::Awake()
 void FrogEnemy::Start()
 {
 	GE::Utility::Printf("FrogEnemy Start()\n");
-	random = GE::RandomMaker::GetFloat(-1.0f, 1.0f);
-	float randPos = GE::RandomMaker::GetFloat(100.0f, 1000.0f);
-	transform->position = { 0.0f,400.0f,0.0f };//位置をランダム化
-	transform->scale = { 5 };//サイズ
 	float randSpeed = GE::RandomMaker::GetFloat(10.0f, 25.0f);
 
 	animator = GE::SkinMeshManager::GetInstance()->Get("Frog");

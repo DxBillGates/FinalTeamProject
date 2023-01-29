@@ -2,6 +2,7 @@
 #include "SampleScene.h"
 #include "Clear.h"
 #include "Over.h"
+#include "DashModeScene.h"
 #include <GatesEngine/Header/Util/Random.h>
 #include <GatesEngine/Header/Util/Utility.h>
 #include <GatesEngine/Header/Graphics/CBufferStruct.h>
@@ -235,6 +236,7 @@ bool Game::LoadContents()
 	auto* testScene = sceneManager.AddScene(new SampleScene("SampleScene", sceneManager.GetSceneInitializer()));
 	sceneManager.AddScene(new Clear("ClearScene", sceneManager.GetSceneInitializer()));
 	sceneManager.AddScene(new Over("OverScene", sceneManager.GetSceneInitializer()));
+	sceneManager.AddScene(new DashModeScene("DashModeScene", sceneManager.GetSceneInitializer()));
 	sceneManager.ChangeScene("SampleScene");
 
 	nullTexture = new Texture();

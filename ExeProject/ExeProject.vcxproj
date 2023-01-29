@@ -170,6 +170,7 @@
     <ClCompile Include="ClearBird.cpp" />
     <ClCompile Include="Collect.cpp" />
     <ClCompile Include="CrashParticle.cpp" />
+    <ClCompile Include="DashModeScene.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="EnemyManager.cpp" />
     <ClCompile Include="FieldObject.cpp" />
@@ -203,6 +204,7 @@
     <ClInclude Include="ClearBird.h" />
     <ClInclude Include="Collect.h" />
     <ClInclude Include="CrashParticle.h" />
+    <ClInclude Include="DashModeScene.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="EnemyManager.h" />
     <ClInclude Include="FieldObject.h" />
@@ -401,6 +403,7 @@
     <Image Include="AppIcon.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="Resources\dashModeEnemies.txt" />
     <Text Include="Resources\enemies.txt" />
     <Text Include="Resources\tree.txt" />
   </ItemGroup>

@@ -14,10 +14,12 @@ EnemyManager* EnemyManager::GetInstance()
 void EnemyManager::Start(GE::GameObjectManager* gameObjectManager)
 {
 	this->gameObjectManager = gameObjectManager;
-	for (int i = 0; i < 12; ++i)
+	for (int i = 0; i < ne.size(); ++i)
 	{
 		auto* enemy = gameObjectManager->AddGameObject(new GE::GameObject("Enemy", "enemy"));
 		auto* sampleComponent = enemy->AddComponent<NormalEnemy>();
+		enemy->GetTransform()->position = ne[i].pos;
+		enemy->GetTransform()->scale = ne[i].scale;
 		auto* normalEnemyCollider = enemy->AddComponent<GE::SphereCollider>();
 		normalEnemyCollider->SetCenter({ 0,0,0 });
 		normalEnemyCollider->SetSize({ 40 });
@@ -25,7 +27,7 @@ void EnemyManager::Start(GE::GameObjectManager* gameObjectManager)
 		FieldObjectDebugTransform::GetInstance()->AddTarget(enemy, { 100,100,100 });
 
 	}
-	for (int i = 0; i < 0; ++i)
+	for (int i = 0; i < be.size(); ++i)
 	{
 		auto* bEnemy = gameObjectManager->AddGameObject(new GE::GameObject("BirdEnemy", "enemy"));
 		auto* bComponent = bEnemy->AddComponent<BirdEnemy>();
@@ -34,24 +36,22 @@ void EnemyManager::Start(GE::GameObjectManager* gameObjectManager)
 		birdEnemyCollider->SetSize({ 2 });
 		birdEnemies.push_back(bEnemy);
 	}
-	for (int i = 0; i < 8; ++i)
+	for (int i = 0; i < fe.size(); ++i)
 	{
 		auto* fEnemy = gameObjectManager->AddGameObject(new GE::GameObject("FrogEnemy", "frog"));
 		auto* fComponent = fEnemy->AddComponent<FrogEnemy>();
+		fEnemy->GetTransform()->position = fe[i].pos;
+		fEnemy->GetTransform()->scale = fe[i].scale;
 		auto* flogEnemyCollider = fEnemy->AddComponent<GE::SphereCollider>();
 		flogEnemyCollider->SetCenter({ 0,40,0 });
 		flogEnemyCollider->SetSize({ 80 });
 		frogEnemies.push_back(fEnemy);
-		FieldObjectDebugTransform::GetInstance()->AddTarget(fEnemy, {100,100,100});
+		FieldObjectDebugTransform::GetInstance()->AddTarget(fEnemy, { 100,100,100 });
 	}
 }
 
 void EnemyManager::LoadPosition(const std::string& filename)
 {
-	std::vector<obj>ne;
-	std::vector<obj>be;
-	std::vector<obj>fe;
-
 	std::ifstream file;
 	//ファイルを開く
 	file.open(filename);
@@ -133,25 +133,6 @@ void EnemyManager::LoadPosition(const std::string& filename)
 		}
 	}
 	file.close();
-	//ファイルの座標セット
-	int index = ne.size() < nEnemies.size() ? ne.size() : nEnemies.size();
-	for (int i = 0; i < index; i++)
-	{
-		nEnemies[i]->GetTransform()->position = ne[i].pos;
-		nEnemies[i]->GetTransform()->scale = ne[i].scale;
-	}
-	index = be.size() < birdEnemies.size() ? be.size() : birdEnemies.size();
-	for (int i = 0; i < index; i++)
-	{
-		birdEnemies[i]->GetTransform()->position = be[i].pos;
-		birdEnemies[i]->GetTransform()->scale = be[i].scale;
-	}
-	index = fe.size() < frogEnemies.size() ? fe.size() : frogEnemies.size();
-	for (int i = 0; i < index; i++)
-	{
-		frogEnemies[i]->GetTransform()->position = fe[i].pos;
-		frogEnemies[i]->GetTransform()->scale = fe[i].scale;
-	}
 }
 
 void EnemyManager::SaveCurrentPosition(const std::string& filename)

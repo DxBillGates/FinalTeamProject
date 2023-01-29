@@ -147,6 +147,9 @@
     <ClCompile Include="VolumetricCloud.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
+    <ClCompile Include="DashModeScene.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BirdEnemy.h">
@@ -234,6 +237,9 @@
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
     <ClInclude Include="VolumetricCloud.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="DashModeScene.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
   </ItemGroup>
@@ -428,5 +434,6 @@
   <ItemGroup>
     <Text Include="Resources\enemies.txt" />
     <Text Include="Resources\tree.txt" />
+    <Text Include="Resources\dashModeEnemies.txt" />
   </ItemGroup>
 </Project>

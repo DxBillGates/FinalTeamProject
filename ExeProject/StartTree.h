@@ -9,7 +9,6 @@ public:
 	static bool isCollect;			//w’èŒÂ”W‚ß‚½‚©‚Ç‚¤‚©	
 	GE::Color body_Color = { 0.7f, 0.3f, 0.1f, 1.0f };
 	GE::Color leaf_Color = { 1.0f,1.0f,1.0f,1.0f };
-	GE::Math::Vector3 rotation_euler;
 
 	StartTree();
 	void Awake();

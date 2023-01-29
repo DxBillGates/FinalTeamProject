@@ -24,13 +24,13 @@ float PlayerComponent::stayLandLerpTime = 150.0f;						//木に着陸するラープ長さ
 GE::Math::Vector3 PlayerComponent::gravity = { 0,0.5,0 };				//重力
 float PlayerComponent::normal_speed = 20.0f;							//通常時のスピード
 float PlayerComponent::current_speed = normal_speed;					//現在のスピード
-float PlayerComponent::damageSpeed = 0.0f;								//敵にヒットしたときにダメージが入るスピード
 int PlayerComponent::colectMax = 10;									//一度に掴めるえさの数
 float PlayerComponent::worldRadius = 38000.0f;							//端この壁までの長さ
 float PlayerComponent::lockOnLength = 10000.0f;							//ロックオンできる距離
 float PlayerComponent::moreTimesLockOnLength = 10000.0f;				//連続で二回目以降の敵をロックオンできる距離
 int PlayerComponent::lockOnInterval = 250.0f;							//再度ロックオンできるまでのインターバル
 bool PlayerComponent::isGoTree = false;
+bool PlayerComponent::dashMode = false;
 
 PlayerComponent::PlayerComponent()
 	: inputDevice(nullptr)
@@ -79,6 +79,8 @@ void PlayerComponent::Start()
 	animator.PlayAnimation(3, false);
 	//収集物
 	PlayerColectObject::GetInstance()->Start(colectMax, gameObject);
+
+
 }
 void PlayerComponent::Update(float deltaTime)
 {
@@ -102,6 +104,17 @@ void PlayerComponent::Update(float deltaTime)
 		}
 		else { GE::GameSetting::Time::SetGameTime(1.0); }
 	}
+
+	if (dashMode)
+	{
+		normal_speed = 50.0f;
+	}
+	else
+	{
+		normal_speed = 20.0f;
+	}
+	current_speed = normal_speed;
+
 	//操作
 	Control(f);
 	CameraControl::GetInstance()->SetTargetObject(gameObject);
@@ -228,53 +241,62 @@ void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 {
 	if (statas != PlayerStatas::GO_TREE && statas != PlayerStatas::STAY_TREE && statas != PlayerStatas::TITLE && statas != PlayerStatas::TITLE_MENU)
 	{
-		if (other->GetTag() == "ground" || other->GetTag() == "StartTree")
+		if (dashMode)
 		{
-			//各法線セット
-			Reflection(gameObject->GetHitNormal());
-			crashParticle.Fire(transform->position, gameObject->GetHitNormal(), other->GetColor());
-			return;
-		}
-		else if (other->GetTag() == "tile")
-		{
-			if (statas != PlayerStatas::LOCKON_SHOOT)
+			if (other->GetTag() == "ground" || other->GetTag() == "StartTree" || other->GetTag() == "tile" || other->GetTag() == "fieldtree")
 			{
 				//各法線セット
-				Reflection(GE::Math::Vector3(0, 1, 0));
-				crashParticle.Fire(transform->position, GE::Math::Vector3(0, 1, 0), other->GetColor());
+				Reflection(gameObject->GetHitNormal());
+				crashParticle.Fire(transform->position, gameObject->GetHitNormal(), other->GetColor());
+				statas = PlayerStatas::OVER;
+				dashMode = false;
 				return;
-			}
-		}
-		else if (other->GetTag() == "fieldtree")
-		{
-			GE::Math::Vector3 dir = transform->position - other->GetTransform()->position;
-			dir = dir.Normalize();
-			GE::Math::Vector3 hitNormal = GE::Math::Vector3(dir.x, 0, dir.z);
-			Reflection(hitNormal);
-			crashParticle.Fire(transform->position, GE::Math::Vector3(0, 1, 0), other->GetColor());
-		}
-	}
-	//GE::Utility::Printf("PlayerComponent OnCollisionEnter\n");
-	if (other->GetTag() == "enemy" || other->GetTag() == "frog")
-	{
-		//一定上の速度を満たしていない
-		if (!IsSpeedy())
-		{
 
+			}
 		}
 		else
 		{
-			if (other == lockOnEnemy.object)
+			if (other->GetTag() == "ground" || other->GetTag() == "StartTree")
 			{
-				lockOnEnemy.object = nullptr;
-				if (lockOnDashDirection.y < 0)
-					lockOnDashDirection = { transform->GetForward().x,-transform->GetForward().y ,transform->GetForward().z };
+				//各法線セット
+				Reflection(gameObject->GetHitNormal());
+				crashParticle.Fire(transform->position, gameObject->GetHitNormal(), other->GetColor());
+				return;
 			}
-			audioManager->Use("catch2")->Start();
-			//収集物 +1
-			colectCount < colectMax ? colectCount++ : 0;
-			PlayerColectObject::GetInstance()->AddObject("model" + other->GetComponent<Enemy>()->modelName);
+			else if (other->GetTag() == "tile")
+			{
+				if (statas != PlayerStatas::LOCKON_SHOOT)
+				{
+					//各法線セット
+					Reflection(GE::Math::Vector3(0, 1, 0));
+					crashParticle.Fire(transform->position, GE::Math::Vector3(0, 1, 0), other->GetColor());
+					return;
+				}
+			}
+			else if (other->GetTag() == "fieldtree")
+			{
+				GE::Math::Vector3 dir = transform->position - other->GetTransform()->position;
+				dir = dir.Normalize();
+				GE::Math::Vector3 hitNormal = GE::Math::Vector3(dir.x, 0, dir.z);
+				Reflection(hitNormal);
+				crashParticle.Fire(transform->position, GE::Math::Vector3(0, 1, 0), other->GetColor());
+			}
 		}
+	}
+
+	//GE::Utility::Printf("PlayerComponent OnCollisionEnter\n");
+	if (other->GetTag() == "enemy" || other->GetTag() == "frog")
+	{
+		if (other == lockOnEnemy.object)
+		{
+			lockOnEnemy.object = nullptr;
+			if (lockOnDashDirection.y < 0)
+				lockOnDashDirection = { transform->GetForward().x,-transform->GetForward().y ,transform->GetForward().z };
+		}
+		audioManager->Use("catch2")->Start();
+		//収集物 +1
+		colectCount < colectMax ? colectCount++ : 0;
+		PlayerColectObject::GetInstance()->AddObject("model" + other->GetComponent<Enemy>()->modelName);
 		hitStopCount = 0.0f;
 		CameraControl::GetInstance()->ShakeStart({ 50,50 }, 30);
 	}
@@ -312,14 +334,6 @@ void PlayerComponent::OnGui()
 	ImGui::Text("%.3f", joycon->GetDefaultAccelerometerDiff());
 	ImGui::Text("%.3f", joycon->GetGyroscope().Length());
 }
-bool PlayerComponent::IsSpeedy()
-{
-	if (current_speed > damageSpeed)
-	{
-		return true;
-	}
-	return false;
-}
 void PlayerComponent::Control(float deltaTime)
 {
 	const float distance = abs(GE::Math::Vector3::Distance(transform->position, FieldObjectManager::GetInstance()->StartPosition));
@@ -349,11 +363,17 @@ void PlayerComponent::Control(float deltaTime)
 
 		break;
 	case PlayerComponent::PlayerStatas::TITLE_MENU:
-
-		if (Title::GetInstance()->GetSelect(Title::States::start))
+		if (!dashMode)
+		{
+			if (Title::GetInstance()->GetSelect(Title::States::start))
+			{
+				statas = PlayerStatas::STAY_TREE;
+				Title::GetInstance()->states = Title::States::serectNum;
+			}
+		}
+		else
 		{
 			statas = PlayerStatas::STAY_TREE;
-			Title::GetInstance()->states = Title::States::serectNum;
 		}
 
 		break;
@@ -361,29 +381,32 @@ void PlayerComponent::Control(float deltaTime)
 		break;
 	case PlayerComponent::PlayerStatas::MOVE:
 		transform->position += transform->GetForward() * current_speed * deltaTime * GE::GameSetting::Time::GetGameTime() - gravity;
-		//Key押したらPlayerState::DASHに変わる
-		if (InputManager::GetInstance()->GetActionButton()) { statas = PlayerStatas::DASH; }
-		if (lockOnIntervalCount >= lockOnInterval)
+		if (!dashMode)
 		{
-			if (InputManager::GetInstance()->GetLockonButton())
+			//Key押したらPlayerState::DASHに変わる
+			if (InputManager::GetInstance()->GetActionButton()) { statas = PlayerStatas::DASH; }
+			if (lockOnIntervalCount >= lockOnInterval)
 			{
-				isLockOnStart = true;
-				//最も近くて前方にいる敵をセット
-				SearchNearEnemy();
+				if (InputManager::GetInstance()->GetLockonButton())
+				{
+					isLockOnStart = true;
+					//最も近くて前方にいる敵をセット
+					SearchNearEnemy();
+				}
+				else
+				{
+					isLockOnStart = false;
+				}
 			}
 			else
 			{
+				lockOnIntervalCount += deltaTime;
 				isLockOnStart = false;
 			}
+
+			//ロックオンして攻撃
+			LockOn();
 		}
-		else
-		{
-			lockOnIntervalCount += deltaTime;
-			isLockOnStart = false;
-		}
-		//RayCast(deltaTime);
-		//ロックオンして攻撃
-		LockOn();
 		break;
 	case PlayerComponent::PlayerStatas::DASH:
 		NormalDash(100.0f, 90.0f, deltaTime);

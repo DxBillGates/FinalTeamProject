@@ -20,6 +20,12 @@ private:
 		GE::Math::Vector3 scale;
 		GE::Color col;
 	};
+	std::vector<obj> ft;
+	std::vector<obj> bc;
+	std::vector<obj> nl;
+	obj st;
+	obj nst;
+
 	GE::GameObjectManager* gameObjectManager = nullptr;
 	std::vector<GE::GameObject*> fieldTree;
 	std::vector<GE::GameObject*> birdChild;

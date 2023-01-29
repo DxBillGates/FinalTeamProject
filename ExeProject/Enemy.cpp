@@ -45,11 +45,8 @@ void Enemy::OnCollisionEnter(GE::GameObject* other)
 	{
 		if (other->GetTag() == "player")
 		{
-			if (PlayerComponent::IsSpeedy())//ˆê’èã‚Ì‘¬“x
-			{
-				statas = Statas::DEAD;
-				gameObject->Destroy();
-			}
+			statas = Statas::DEAD;
+			gameObject->Destroy();
 		}
 	}
 }

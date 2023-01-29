@@ -53,9 +53,6 @@ void SampleScene::Initialize()
 
 	gameObjectManager.Awake();
 	gameObjectManager.Start();
-	//ノーマルエネミー座標ファイル読み込み、座標反映
-	EnemyManager::GetInstance()->LoadPosition("Resources/enemies.txt");
-	FieldObjectManager::GetInstance()->LoadPosition("Resources/tree.txt");
 	UIObject::GetInstance()->Start();
 	ScreenUIManager::GetInstance()->Start();
 }
@@ -98,6 +95,14 @@ void SampleScene::Update(float deltaTime)
 	{
 		changeSceneInfo.flag = true;
 		changeSceneInfo.name = "SampleScene";
+		changeSceneInfo.initNextSceneFlag = true;
+	}
+
+	if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::LCONTROL) &&
+		inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::L))
+	{
+		changeSceneInfo.flag = true;
+		changeSceneInfo.name = "DashModeScene";
 		changeSceneInfo.initNextSceneFlag = true;
 	}
 
@@ -182,9 +187,12 @@ void SampleScene::Load()
 		auto* sampleComponent = testObject->AddComponent<MiniMapViewer>();
 		sampleComponent->SetPlayer(gameObjectManager.FindGameObject("Player")->GetComponent<PlayerComponent>());
 	}
+
+	EnemyManager::GetInstance()->LoadPosition("Resources/enemies.txt");
 	EnemyManager::GetInstance()->Start(&gameObjectManager);
 	FieldObjectDebugTransform::GetInstance()->SetInputDevice(inputDevice);
 	FieldObjectDebugTransform::GetInstance()->SetGraphicsDevice(graphicsDevice);
+	FieldObjectManager::GetInstance()->LoadPosition("Resources/tree.txt");
 	FieldObjectManager::GetInstance()->Start(&gameObjectManager);
 	/*FieldObjectManager::GetInstance()->SetGroundMesh(groundModel);
 	FieldObjectManager::GetInstance()->SetStartTreeMesh(startTreeModel);*/

@@ -12,11 +12,11 @@ public:
 	static float normal_speed;		//通常時のスピード
 	static float frameRate;
 	static bool isGoTree;
+	static bool dashMode;
 private:
 	static GE::Math::Vector3 onTheTreePosition;	//木の上で体の高さ調整用
 	static GE::Math::Vector3 gravity;	//重力
 	static int hitStopTime;
-	static float damageSpeed;
 	static float pushStartTime;		//キーを押してから操作できるようになるまでのカウント
 	static float stayLandLerpTime;	//木に戻るラープ
 	static int colectMax;			//収集物の同時にもてる最大個数
@@ -76,6 +76,7 @@ public:
 		LOCKON_SHOOT,	//敵をロックオンして攻撃
 		GO_TREE,		//巣の木に着陸中
 		STAY_TREE,		//木で待機
+		OVER,			//
 	};
 	static PlayerStatas statas;				//Playerの状態
 	//RayCast用
@@ -94,11 +95,6 @@ public:
 	void OnCollisionExit(GE::GameObject* other)override;
 	void OnCollision(GE::ICollider* hitCollider) override;
 	void OnGui() override;
-	/// <summary>
-	/// 一定以上のスピードになっているかを取得するため
-	/// </summary>
-	/// <returns></returns>
-	static bool IsSpeedy();
 private:
 	/// <summary>
 	/// 操作関係
