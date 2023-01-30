@@ -117,7 +117,7 @@ void PlayerComponent::Update(float deltaTime)
 	{
 		combo = 0;
 	}
-
+	//ƒQ[ƒ€ƒ‚[ƒh•Ê‚Ì‘¬‚³İ’è
 	if (dashMode)
 	{
 		normal_speed = 100.0f;

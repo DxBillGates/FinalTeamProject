@@ -171,6 +171,12 @@ void DashModeScene::Load()
 		testObject->GetTransform()->position = { 0,0,0 };
 	}
 
+	{
+		auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject("miniMap", "miniMap"));
+		auto* sampleComponent = testObject->AddComponent<MiniMapViewer>();
+		sampleComponent->SetPlayer(gameObjectManager.FindGameObject("Player")->GetComponent<PlayerComponent>());
+	}
+
 }
 
 void DashModeScene::UnLoad()
