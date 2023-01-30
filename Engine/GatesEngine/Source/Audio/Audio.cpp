@@ -38,8 +38,18 @@ void GE::Audio::Start()
 	if (!isPlay)
 	{
 		isEnd = false;
+		isPlay = true;
 		sourceVoice->SubmitSourceBuffer(pSoundData->GetAudioBuffer());
 		sourceVoice->Start();
+	}
+}
+
+void GE::Audio::Stop()
+{
+	if (isPlay)
+	{
+		isPlay = false;
+		sourceVoice->Stop();
 	}
 }
 

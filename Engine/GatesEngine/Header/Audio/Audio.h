@@ -21,6 +21,7 @@ namespace GE
 		static void SetAudioEngine();
 		void CreateVoice();
 		void Start();
+		void Stop();
 		bool GetIsStart();
 		bool GetIsPlay();
 		bool GetIsEnd();
