@@ -54,7 +54,7 @@ void SampleScene::Initialize()
 	gameObjectManager.Awake();
 	gameObjectManager.Start();
 	UIObject::GetInstance()->Start();
-	ScreenUIManager::GetInstance()->Start();
+	ScreenUIManager::GetInstance()->NormalModeStart();
 }
 
 void SampleScene::Update(float deltaTime)
@@ -73,7 +73,7 @@ void SampleScene::Update(float deltaTime)
 	TimeLimit::GetInstance()->Update();
 	//Collect::GetInstance()->Update(StartTree::collectCount, StartTree::goalCollect);
 	UIObject::GetInstance()->Update(deltaTime);
-	ScreenUIManager::GetInstance()->Update(deltaTime);
+	ScreenUIManager::GetInstance()->NormalModeUpdate(deltaTime);
 	//ƒNƒŠƒAˆÈ~ðŒ
 	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::D1)
 		|| StartTree::isCollect)

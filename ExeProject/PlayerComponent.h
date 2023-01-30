@@ -13,6 +13,7 @@ public:
 	static float frameRate;
 	static bool isGoTree;
 	static bool dashMode;
+	static int combo;				//何コンボ？
 private:
 	static GE::Math::Vector3 onTheTreePosition;	//木の上で体の高さ調整用
 	static GE::Math::Vector3 gravity;	//重力
@@ -24,6 +25,7 @@ private:
 	static float lockOnLength;				//敵をロックオンできる距離
 	static float moreTimesLockOnLength;		//連続で二回目以降の敵をロックオンできる距離
 	static int lockOnInterval;				//ロックオンのインターバルの長さ
+	static float comboInterval;				//連続で敵を倒してコンボとなるまでのインターバル(大きいほどコンボにつながりやすい)
 
 	GE::AudioManager* audioManager;
 	GE::InputDevice* inputDevice;
@@ -42,6 +44,7 @@ private:
 	float hitStopCount;				//ヒットストップカウント用
 	float startCouunt;				//開始時のカウント
 	int lockOnIntervalCount;		//ロックオンのインターバルのカウント
+	float comboCount;
 
 	int statasChangeCount;			//インプットが次のPlayerStatasでも動かないように1フレーム繰越すよう
 	struct LockOnEnemy

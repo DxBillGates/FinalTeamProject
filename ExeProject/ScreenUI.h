@@ -14,9 +14,10 @@ public:
 		GE::Math::Vector2 texSize = { 1 };
 		GE::Math::Vector2 pivotPos = {};
 		GE::Math::Vector2 clipSize = { 1 };
-		
+
 		float lerpCount = 0.0f;
 	};
+	GE::Math::Vector2 viveVelocity;
 private:
 	struct  LoadObj
 	{
@@ -34,9 +35,12 @@ private:
 
 public:
 	static ScreenUIManager* GetInstance();
-	void Start();
-	void Update(float deltaTime);
+	void NormalModeStart();
+	void DashModeStart();
+	void NormalModeUpdate(float deltaTime);
+	void DashModeUpdate(float deltaTime);
 	void DrawSprite(GE::IGraphicsDeviceDx12* graphicsDevice);
+	GE::Math::Vector3 Vivlate(float deltaTime);
 	//ファイルに保存されている座標取得
 	void LoadPosition(const std::string& filename);
 	//現在の座標をファイルに保存

@@ -14,6 +14,7 @@
 #include "Title.h"
 #include "TimeLimit.h"
 #include "PlayerColectObject.h"
+#include "ScreenUI.h"
 
 float PlayerComponent::frameRate;
 PlayerComponent::PlayerStatas PlayerComponent::statas;
@@ -29,8 +30,10 @@ float PlayerComponent::worldRadius = 38000.0f;							//端この壁までの長さ
 float PlayerComponent::lockOnLength = 10000.0f;							//ロックオンできる距離
 float PlayerComponent::moreTimesLockOnLength = 10000.0f;				//連続で二回目以降の敵をロックオンできる距離
 int PlayerComponent::lockOnInterval = 250.0f;							//再度ロックオンできるまでのインターバル
+float PlayerComponent::comboInterval = 70.0f;
 bool PlayerComponent::isGoTree = false;
 bool PlayerComponent::dashMode = false;
+int PlayerComponent::combo = 0;
 
 PlayerComponent::PlayerComponent()
 	: inputDevice(nullptr)
@@ -80,6 +83,8 @@ void PlayerComponent::Start()
 	//収集物
 	PlayerColectObject::GetInstance()->Start(colectMax, gameObject);
 
+	comboCount = comboInterval;
+	combo = 0;
 
 }
 void PlayerComponent::Update(float deltaTime)
@@ -103,6 +108,14 @@ void PlayerComponent::Update(float deltaTime)
 			hitStopCount += f;
 		}
 		else { GE::GameSetting::Time::SetGameTime(1.0); }
+	}
+	if (comboCount < comboInterval)
+	{
+		comboCount += 1.0f * f * GE::GameSetting::Time::GetGameTime();
+	}
+	else
+	{
+		combo = 0;
 	}
 
 	if (dashMode)
@@ -304,7 +317,13 @@ void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 		}
 		else
 		{
+			//コンボ加算と初期化
+			comboCount = 0.0f;
+			combo++;
+			//パーティクル
 			crashParticle.Fire(transform->position, -transform->GetForward(), other->GetColor());
+
+			ScreenUIManager::GetInstance()->viveVelocity = { 80,80 };
 		}
 
 		audioManager->Use("catch2")->Start();

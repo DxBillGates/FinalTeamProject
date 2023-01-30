@@ -35,8 +35,8 @@ ScreenUIManager::SpriteInfo ScreenUIManager::Set(GE::Math::Vector3 pos, GE::Math
 {
 	GE::Math::Vector2 currentWindowSizeDiff = GE::Window::GetDiffWindowSize();
 	SpriteInfo result;
-	result.transform.position = {pos.x * currentWindowSizeDiff.x,pos.y * currentWindowSizeDiff.y,0};
-	result.transform.scale = {scale.x * currentWindowSizeDiff.x,scale.y * currentWindowSizeDiff.y,0};
+	result.transform.position = { pos.x * currentWindowSizeDiff.x,pos.y * currentWindowSizeDiff.y,0 };
+	result.transform.scale = { scale.x * currentWindowSizeDiff.x,scale.y * currentWindowSizeDiff.y,0 };
 	result.color = color;
 	result.textureName = textureName;
 	result.texSize = texSize;
@@ -72,7 +72,7 @@ float ScreenUIManager::SetLerp(std::string name, float lerpTime, float deltaTime
 		return 1.0f;
 	}
 }
-void ScreenUIManager::Start()
+void ScreenUIManager::NormalModeStart()
 {
 	winSize = GE::Window::GetWindowSize();
 	center = winSize / 2.0f;
@@ -117,7 +117,19 @@ void ScreenUIManager::Start()
 		o.second.lerpCount = 0.0f;
 	}
 }
-void ScreenUIManager::Update(float deltaTime)
+
+void ScreenUIManager::DashModeStart()
+{
+	object["combo"] = Set(GE::Math::Vector3(1500, winSize.y / 2 - 220.0f, 0.0f), { 256,128,0 }, GE::Color::White(), "combo_tex");
+	object["comboNum"] = Set(GE::Math::Vector3(1300, winSize.y / 2 - 220.0f, 0.0f), { 128,128,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
+
+	//遷移の値初期化
+	for (auto o : object)
+	{
+		o.second.lerpCount = 0.0f;
+	}
+}
+void ScreenUIManager::NormalModeUpdate(float deltaTime)
 {
 	const float f = 144.0f / (1.0f / deltaTime);
 	const float addCount = 0.1f * f;
@@ -185,7 +197,6 @@ void ScreenUIManager::Update(float deltaTime)
 
 		break;
 	}
-
 #pragma region オプション中
 	OptionMenuActive(false);
 	if (Title::GetInstance()->GetSelect(Title::States::option))
@@ -263,6 +274,29 @@ void ScreenUIManager::Update(float deltaTime)
 #pragma endregion
 
 }
+void ScreenUIManager::DashModeUpdate(float deltaTime)
+{
+	const float f = 144.0f / (1.0f / deltaTime);
+
+	GE::Math::Vector3 vive = Vivlate(f);
+	GE::Math::Vector3 comboPos = GE::Math::Vector3(1500, winSize.y / 2 - 220.0f, 0.0f);
+	GE::Math::Vector3 comboNumPos = GE::Math::Vector3(1300, winSize.y / 2 - 220.0f, 0.0f);
+	if (PlayerComponent::combo != 0)
+	{
+		object["combo"].isDraw = true;
+		object["comboNum"].isDraw = true;
+		object["combo"].transform.position = comboPos + vive;
+		object["comboNum"].transform.position = comboNumPos + vive;
+		object["comboNum"].pivotPos = PlayerComponent::combo;
+
+
+	}
+	else
+	{
+		object["combo"].isDraw = false;
+		object["comboNum"].isDraw = false;
+	}
+}
 
 void ScreenUIManager::DrawSprite(GE::IGraphicsDeviceDx12* graphicsDevice)
 {
@@ -312,7 +346,17 @@ void ScreenUIManager::DrawSprite(GE::IGraphicsDeviceDx12* graphicsDevice)
 	}
 }
 
+GE::Math::Vector3 ScreenUIManager::Vivlate(float deltaTime)
+{
+	//カメラシェイクの減衰
+	viveVelocity.x > 0 ? viveVelocity.x -= 1.0f * (int)deltaTime : viveVelocity.x = 0.0f;
+	viveVelocity.y > 0 ? viveVelocity.y -= 1.0 * (int)deltaTime : viveVelocity.y = 0.0f;
 
+	//ランダムで移動量
+	GE::Math::Vector2 randVel = GE::Math::Vector2(viveVelocity.x > 0 ? rand() % (int)viveVelocity.x - viveVelocity.x / 2 : 0, viveVelocity.y > 0 ? rand() % (int)viveVelocity.y - viveVelocity.y / 2 : 0);
+	//移動量をセットする
+	return GE::Math::Vector3(randVel.x, randVel.y, 0);
+}
 void ScreenUIManager::LoadPosition(const std::string& filename)
 {
 	std::vector<LoadObj> ft;

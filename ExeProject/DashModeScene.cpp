@@ -40,6 +40,7 @@ void DashModeScene::Initialize()
 	gameObjectManager.Awake();
 	gameObjectManager.Start();
 	directionalLight->GetAngle() = { 10,190 };
+	ScreenUIManager::GetInstance()->DashModeStart();
 }
 
 void DashModeScene::Update(float deltaTime)
@@ -57,6 +58,7 @@ void DashModeScene::Update(float deltaTime)
 
 	FieldObjectManager::GetInstance()->OtherUpdate();
 	FieldObjectDebugTransform::GetInstance()->Update();
+	ScreenUIManager::GetInstance()->DashModeUpdate(deltaTime);
 
 	bool enemyDead = true;
 	for (int i = 0; i < EnemyManager::GetInstance()->GetAllEnemies().size(); i++)
@@ -92,12 +94,12 @@ void DashModeScene::Update(float deltaTime)
 	view = cameraInfo.viewMatrix;
 	proj = cameraInfo.projMatrix;
 	viewPort = GE::Math::Matrix4x4::GetViewportMatrix(windowSize, windowPos);
-	GE::Math::Vector3 playerScreenPosition = GE::Math::Matrix4x4::Transform(gameObjectManager.FindGameObjectWithTag("Player","player")->GetTransform()->position, view * proj);
+	GE::Math::Vector3 playerScreenPosition = GE::Math::Matrix4x4::Transform(gameObjectManager.FindGameObjectWithTag("Player", "player")->GetTransform()->position, view * proj);
 	playerScreenPosition -= -1;
 	playerScreenPosition /= 2;
 	blurUV = { playerScreenPosition.x,playerScreenPosition.y };
 	blurSampling = 16;
-	blurThreshold = 1;
+	blurThreshold = 0.5f;
 }
 
 void DashModeScene::Draw()
@@ -136,6 +138,7 @@ void DashModeScene::Draw()
 void DashModeScene::LateDraw()
 {
 	gameObjectManager.LateDraw();
+	ScreenUIManager::GetInstance()->DrawSprite(graphicsDevice);
 }
 
 void DashModeScene::Load()

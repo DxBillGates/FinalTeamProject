@@ -255,6 +255,10 @@ bool Game::LoadContents()
 	nullTexture->Load("Player_MiniMap.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "Player_MiniMap");
 
+	nullTexture = new Texture();
+	nullTexture->Load("combo_tex.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "combo_tex");
+
 	return true;
 }
 
