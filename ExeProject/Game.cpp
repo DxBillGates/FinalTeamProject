@@ -136,6 +136,12 @@ bool Game::LoadContents()
 		audio = audioManager.AddAudio(new GE::Audio(audioData, "flapping1"));
 		audio->SetVolume(0.3f);
 	}
+	//BGM2
+	{
+		auto* audioData = audioManager.AddAudioData(new GE::AudioData("Resources/Audio/flapping.wav"), "BGM2");
+		auto* audio = audioManager.AddAudio(new GE::Audio(audioData, "BGM2"));
+		audio->SetVolume(0.2f);
+	}
 	auto* textureManager = graphicsDevice.GetTextureManager();
 	Texture* nullTexture = new Texture();
 	nullTexture->Load("title.png", device, shaderResourceHeap);
@@ -299,7 +305,6 @@ bool Game::Initialize()
 
 bool Game::Update()
 {
-	audioManager.Get("testBGM", 0)->Start();
 	GE::GUIManager::StartFrame();
 	Application::Update();
 

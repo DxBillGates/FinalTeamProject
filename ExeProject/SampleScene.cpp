@@ -59,6 +59,8 @@ void SampleScene::Initialize()
 
 void SampleScene::Update(float deltaTime)
 {
+	audioManager->Get("testBGM", 0)->Start();
+
 	GE::Math::Vector3 directionalLightAngle = { directionalLight->GetAngle().x,directionalLight->GetAngle().y,0 };
 	directionalLightAngle.x += GE::GameSetting::Time::GetDeltaTime();
 	GE::Math::Vector3 minAngle = { 10,directionalLightAngle.y,0 };

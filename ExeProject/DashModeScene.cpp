@@ -45,6 +45,8 @@ void DashModeScene::Initialize()
 
 void DashModeScene::Update(float deltaTime)
 {
+	audioManager->Get("BGM2", 0)->Start();
+
 	gameObjectManager.Update(deltaTime);
 	collisionManager.Update();
 
