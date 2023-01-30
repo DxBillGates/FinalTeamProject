@@ -59,16 +59,8 @@ void SampleScene::Initialize()
 
 void SampleScene::Update(float deltaTime)
 {
-	//audioManager->Get("testBGM", 0)->Start();
+	audioManager->Get("testBGM", 0)->Start();
 
-	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::G))
-	{
-		audioManager->Get("testBGM", 0)->Stop();
-	}
-	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::H))
-	{
-		audioManager->Get("testBGM", 0)->Start();
-	}
 
 	GE::Math::Vector3 directionalLightAngle = { directionalLight->GetAngle().x,directionalLight->GetAngle().y,0 };
 	directionalLightAngle.x += GE::GameSetting::Time::GetDeltaTime();
@@ -231,6 +223,8 @@ void SampleScene::Load()
 
 void SampleScene::UnLoad()
 {
+	audioManager->Get("testBGM", 0)->Stop();
+
 	Title::GetInstance()->ClearGameObject();
 	EnemyManager::GetInstance()->UnLoad();
 	FieldObjectManager::GetInstance()->UnLoad();

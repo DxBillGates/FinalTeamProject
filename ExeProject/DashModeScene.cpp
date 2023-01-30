@@ -183,7 +183,7 @@ void DashModeScene::Load()
 
 void DashModeScene::UnLoad()
 {
-
+	audioManager->Get("BGM2", 0)->Stop();
 	EnemyManager::GetInstance()->UnLoad();
 	FieldObjectManager::GetInstance()->UnLoad();
 	FieldObjectDebugTransform::GetInstance()->UnLoad();
