@@ -116,6 +116,8 @@ void SampleScene::Update(float deltaTime)
 
 	FieldObjectManager::GetInstance()->OtherUpdate();
 	FieldObjectDebugTransform::GetInstance()->Update();
+
+	blurThreshold = GE::Math::Lerp(0, 0.5f, (PlayerComponent::current_speed - 20) / 100.0f);
 }
 
 void SampleScene::Draw()

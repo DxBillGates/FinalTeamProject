@@ -64,6 +64,10 @@ namespace GE
 		IGraphicsDeviceDx12* graphicsDevice;
 		GameObjectManager gameObjectManager;
 		CollisionManager collisionManager;
+
+		float blurSampling;
+		Math::Vector2 blurUV;
+		float blurThreshold;
 	public:
 		Scene();
 		Scene(const std::string& sceneName);
@@ -81,5 +85,8 @@ namespace GE
 		ChangeSceneInfo& IsChangeScene();
 
 		void SetSceneInitializer(const SceneInitializer& initializer);
+		float GetBlurSampling();
+		Math::Vector2 GetBlurUV();
+		float GetBlurThreshold();
 	};
 }

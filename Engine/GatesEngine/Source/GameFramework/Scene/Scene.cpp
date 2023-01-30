@@ -14,6 +14,9 @@ GE::Scene::Scene(const std::string& sceneName)
 	, graphicsDevice(nullptr)
 	, gameObjectManager(GameObjectManager())
 	, collisionManager(CollisionManager())
+	, blurSampling(8)
+	, blurUV({0.5f,0.5f})
+	, blurThreshold(0)
 {
 	collisionManager.SetGameObjectManager(gameObjectManager.GetManager());
 }
@@ -51,4 +54,19 @@ void GE::Scene::SetSceneInitializer(const SceneInitializer& initializer)
 	inputDevice = initializer.inputDevice;
 	graphicsDevice = initializer.graphicsDevice;
 	isSetInitializer = true;
+}
+
+float GE::Scene::GetBlurSampling()
+{
+	return blurSampling;
+}
+
+GE::Math::Vector2 GE::Scene::GetBlurUV()
+{
+	return blurUV;
+}
+
+float GE::Scene::GetBlurThreshold()
+{
+	return blurThreshold;
 }

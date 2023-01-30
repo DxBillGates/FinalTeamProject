@@ -14,6 +14,7 @@
 #include"EnemyManager.h"
 #include <GatesEngine/External/DirectXTex/DirectXTex.h>
 #include "PlayerColectObject.h"
+#include <GatesEngine/External/imgui/imgui.h>
 
 DashModeScene::DashModeScene()
 	:DashModeScene("DashModeSceneScene")
@@ -72,6 +73,31 @@ void DashModeScene::Update(float deltaTime)
 		changeSceneInfo.flag = true;
 		changeSceneInfo.initNextSceneFlag = true;
 	}
+
+	GE::Math::Matrix4x4 viewPort, proj, view;
+	auto pos = ImGui::GetWindowPos();
+	auto size = ImGui::GetWindowSize();
+	GE::Math::Vector2 windowPos;
+	GE::Math::Vector2 windowSize;
+#ifdef _DEBUG
+	windowPos = { pos.x,pos.y };
+	windowSize = { size.x,size.y };
+#else
+	windowPos = { 0, 0 };
+	windowSize = GE::Window::GetWindowSize();
+#endif // _DEBUG
+
+	const auto& cameraInfo = graphicsDevice->GetMainCamera()->GetCameraInfo();
+
+	view = cameraInfo.viewMatrix;
+	proj = cameraInfo.projMatrix;
+	viewPort = GE::Math::Matrix4x4::GetViewportMatrix(windowSize, windowPos);
+	GE::Math::Vector3 playerScreenPosition = GE::Math::Matrix4x4::Transform(gameObjectManager.FindGameObjectWithTag("Player","player")->GetTransform()->position, view * proj);
+	playerScreenPosition -= -1;
+	playerScreenPosition /= 2;
+	blurUV = { playerScreenPosition.x,playerScreenPosition.y };
+	blurSampling = 16;
+	blurThreshold = 1;
 }
 
 void DashModeScene::Draw()

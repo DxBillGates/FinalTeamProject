@@ -528,6 +528,9 @@ bool Game::Draw()
 	};
 
 	static RayInfo rayInfo;
+	rayInfo.center = sceneManager.GetCurrentScene()->GetBlurUV();
+	rayInfo.threshold = sceneManager.GetCurrentScene()->GetBlurThreshold();
+	rayInfo.samplingValue = sceneManager.GetCurrentScene()->GetBlurSampling();
 #ifdef _DEBUG
 	//static GE::Math::Vector3 pos = { 0,0,0 };
 	//static GE::Math::Vector3 scale = 2000;
@@ -543,7 +546,6 @@ bool Game::Draw()
 	ImGui::End();
 
 #endif // _DEBUG
-	rayInfo.threshold = GE::Math::Lerp(0, 0.5f, (PlayerComponent::current_speed - 20) / 100.0f);
 	material.color = { sceneColor,sceneColor ,sceneColor,1 };
 
 	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
