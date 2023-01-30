@@ -190,6 +190,10 @@ void EnemyManager::UnLoad()
 	nEnemies.clear();
 	birdEnemies.clear();
 	frogEnemies.clear();
+
+	ne.clear();
+	be.clear();
+	fe.clear();
 }
 
 std::vector<GE::GameObject*> EnemyManager::GetAllEnemies()

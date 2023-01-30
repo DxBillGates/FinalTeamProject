@@ -433,5 +433,9 @@ void FieldObjectManager::UnLoad()
 	fieldTree.clear();
 	birdChild.clear();
 	normalLeaf.clear();
+
+	ft.clear();
+	bc.clear();
+	nl.clear();
 	//delete mesh;
 }
