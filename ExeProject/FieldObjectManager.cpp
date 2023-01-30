@@ -2,6 +2,7 @@
 #include "FieldObject.h"
 #include "FieldTree.h"
 #include "BirdChild.h"
+#include "PlayerComponent.h"
 #include <GatesEngine/Header/GameFramework/Component/SphereCollider.h>
 #include <GatesEngine/Header/GameFramework/Component/MeshCollider.h>
 #include <GatesEngine/Header/GameFramework/Component/BoxCollider.h>
@@ -92,7 +93,14 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 		object->GetComponent<FieldObjectComponent>()->shaderName = "CelestialSphereShader";
 		object->SetColor(GE::Color(1.f, 1.f, 1.f, 1));
 		object->GetTransform()->position = StartPosition;
-		object->GetTransform()->scale = { 400 };
+		if (PlayerComponent::dashMode)
+		{
+			object->GetTransform()->scale = { 800 };
+		}
+		else
+		{
+			object->GetTransform()->scale = { 400 };
+		}
 		object->GetTransform()->rotation = GE::Math::Quaternion::Euler(GE::Math::Vector3(0, 0, 180));
 		skydome = object;
 	}
@@ -134,7 +142,7 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 		object->SetColor(GE::Color(0.2f, 0.5f, 0.2f, 1.0f));
 		auto* collider = object->AddComponent < GE::BoxCollider >();
 		collider->SetCenter({ 0,100,0 });
-		collider->SetSize(GE::Math::Vector3(100000, 100, 100000));
+		collider->SetSize(GE::Math::Vector3(200000, 100, 200000));
 		tile = object;
 
 	}

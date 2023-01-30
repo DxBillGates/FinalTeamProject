@@ -29,12 +29,12 @@ private:
 
 public:
 	static EnemyManager* GetInstance();
-	void Start(GE::GameObjectManager* gameObjectManager);
+	void Start(GE::GameObjectManager* gameObjectManager, bool dashMode = false);
 	//ファイルに保存されている座標取得
 	void LoadPosition(const std::string& filename);
 	//現在の敵たちの座標をファイルに保存
 	void SaveCurrentPosition(const std::string& filename);
-
+	
 	void UnLoad();
 	std::vector<GE::GameObject*> GetNormalEnemies() { return nEnemies; }
 	std::vector<GE::GameObject*> GetBirdEnemies() { return birdEnemies; }

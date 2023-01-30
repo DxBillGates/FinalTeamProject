@@ -33,14 +33,18 @@ void NormalEnemy::Start()
 }
 void NormalEnemy::Update(float deltaTime)
 {
+	if (statas == Statas::DEAD) { return; }
 	const GE::Math::Axis& axis = transform->GetMatrix().GetAxis();
 	float range = 3.0f;//ホバリングの幅
 	const float f = 144.0f / (1.0f / deltaTime);
 
-	angle += 0.02f * GE::GameSetting::Time::GetGameTime() * f;//ホバリングの速さ
+	if (!PlayerComponent::dashMode)
+	{
+		angle += 0.02f * GE::GameSetting::Time::GetGameTime() * f;//ホバリングの速さ
 
-	transform->rotation = GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), angle);
-	transform->position += transform->GetForward() * speed * GE::GameSetting::Time::GetGameTime() * f;
+		transform->rotation = GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), angle);
+		transform->position += transform->GetForward() * speed * GE::GameSetting::Time::GetGameTime() * f;
+	}
 	animator.Update(deltaTime);
 
 }

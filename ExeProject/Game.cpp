@@ -543,7 +543,7 @@ bool Game::Draw()
 	ImGui::End();
 
 #endif // _DEBUG
-	rayInfo.threshold = GE::Math::Lerp(0, 1, (PlayerComponent::current_speed - 20) / 100.0f);
+	rayInfo.threshold = GE::Math::Lerp(0, 0.5f, (PlayerComponent::current_speed - 20) / 100.0f);
 	material.color = { sceneColor,sceneColor ,sceneColor,1 };
 
 	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });

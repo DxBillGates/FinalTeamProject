@@ -34,9 +34,16 @@ void CameraControl::Update(float deltaTime)
 {
 	if (PlayerComponent::statas == PlayerComponent::PlayerStatas::DEBUG)return;
 	float LERP_VALUE = 0.01f * GE::GameSetting::Time::GetGameTime() * deltaTime;
-
 	UIObject::GetInstance()->cameraPosition = position;
-	//ターゲトポジションセット
+
+	if (PlayerComponent::dashMode)
+	{
+		LERP_VALUE = 0.05f * GE::GameSetting::Time::GetGameTime() * deltaTime;
+	}
+	else
+	{
+		LERP_VALUE = 0.01f * GE::GameSetting::Time::GetGameTime() * deltaTime;
+	}
 
 	//体の角度計算
 	if (abs(targetObject->GetTransform()->GetForward().y) < 0.6)

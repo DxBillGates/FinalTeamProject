@@ -39,9 +39,6 @@ void DashModeScene::Initialize()
 	gameObjectManager.Awake();
 	gameObjectManager.Start();
 	directionalLight->GetAngle() = { 10,190 };
-
-	PlayerComponent::dashMode = true;
-
 }
 
 void DashModeScene::Update(float deltaTime)
@@ -60,7 +57,16 @@ void DashModeScene::Update(float deltaTime)
 	FieldObjectManager::GetInstance()->OtherUpdate();
 	FieldObjectDebugTransform::GetInstance()->Update();
 
-	if (PlayerComponent::statas == PlayerComponent::PlayerStatas::OVER)
+	bool enemyDead = true;
+	for (int i = 0; i < EnemyManager::GetInstance()->GetAllEnemies().size(); i++)
+	{
+		if (EnemyManager::GetInstance()->GetAllEnemies()[i]->GetComponent<Enemy>()->statas == Enemy::Statas::ALIVE)
+		{
+			enemyDead = false;
+		}
+	}
+
+	if (PlayerComponent::statas == PlayerComponent::PlayerStatas::OVER || enemyDead)
 	{
 		changeSceneInfo.name = "SampleScene";
 		changeSceneInfo.flag = true;
@@ -96,7 +102,9 @@ void DashModeScene::Draw()
 	directionalLight->SetDirectionalLightInfo();
 
 	gameObjectManager.Draw();
+	FieldObjectDebugTransform::GetInstance()->Draw();
 	FieldObjectManager::GetInstance()->OtherDraw();
+
 }
 
 void DashModeScene::LateDraw()
@@ -114,8 +122,10 @@ void DashModeScene::Load()
 		playerCollider->SetCenter({ 0,0,0 });
 		playerCollider->SetSize({ 20 });
 	}
+	PlayerComponent::dashMode = true;
+
 	EnemyManager::GetInstance()->LoadPosition("Resources/dashModeEnemies.txt");
-	EnemyManager::GetInstance()->Start(&gameObjectManager);
+	EnemyManager::GetInstance()->Start(&gameObjectManager, true);
 	FieldObjectManager::GetInstance()->LoadPosition("Resources/tree.txt");
 	FieldObjectManager::GetInstance()->Start(&gameObjectManager);
 	collisionManager.AddTagCombination("player", "enemy");
@@ -136,8 +146,13 @@ void DashModeScene::Load()
 
 void DashModeScene::UnLoad()
 {
+
 	EnemyManager::GetInstance()->UnLoad();
 	FieldObjectManager::GetInstance()->UnLoad();
+	FieldObjectDebugTransform::GetInstance()->UnLoad();
+	UIObject::GetInstance()->UnLoad();
+	PlayerColectObject::GetInstance()->ClearObject();
+	ScreenUIManager::GetInstance()->UnLoad();
 	// gameObjects‚ğíœ‚·‚é
 	Scene::UnLoad();
 

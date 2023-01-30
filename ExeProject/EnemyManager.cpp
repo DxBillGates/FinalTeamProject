@@ -11,7 +11,7 @@ EnemyManager* EnemyManager::GetInstance()
 	return &instance;
 }
 
-void EnemyManager::Start(GE::GameObjectManager* gameObjectManager)
+void EnemyManager::Start(GE::GameObjectManager* gameObjectManager, bool dashMode)
 {
 	this->gameObjectManager = gameObjectManager;
 	for (int i = 0; i < ne.size(); ++i)
@@ -22,7 +22,8 @@ void EnemyManager::Start(GE::GameObjectManager* gameObjectManager)
 		enemy->GetTransform()->scale = ne[i].scale;
 		auto* normalEnemyCollider = enemy->AddComponent<GE::SphereCollider>();
 		normalEnemyCollider->SetCenter({ 0,0,0 });
-		normalEnemyCollider->SetSize({ 40 });
+		if (!dashMode) { normalEnemyCollider->SetSize({ 40 }); }
+		else { normalEnemyCollider->SetSize({ 80 }); }
 		nEnemies.push_back(enemy);
 		FieldObjectDebugTransform::GetInstance()->AddTarget(enemy, { 100,100,100 });
 

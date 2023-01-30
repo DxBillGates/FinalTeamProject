@@ -107,11 +107,13 @@ void PlayerComponent::Update(float deltaTime)
 
 	if (dashMode)
 	{
-		normal_speed = 50.0f;
+		normal_speed = 100.0f;
+		worldRadius = 76000.0f;
 	}
 	else
 	{
 		normal_speed = 20.0f;
+		worldRadius = 38000.0f;
 	}
 	current_speed = normal_speed;
 
@@ -287,16 +289,25 @@ void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 	//GE::Utility::Printf("PlayerComponent OnCollisionEnter\n");
 	if (other->GetTag() == "enemy" || other->GetTag() == "frog")
 	{
-		if (other == lockOnEnemy.object)
+		if (!dashMode)
 		{
-			lockOnEnemy.object = nullptr;
-			if (lockOnDashDirection.y < 0)
-				lockOnDashDirection = { transform->GetForward().x,-transform->GetForward().y ,transform->GetForward().z };
+
+			if (other == lockOnEnemy.object)
+			{
+				lockOnEnemy.object = nullptr;
+				if (lockOnDashDirection.y < 0)
+					lockOnDashDirection = { transform->GetForward().x,-transform->GetForward().y ,transform->GetForward().z };
+			}
+			//é˚èWï® +1
+			colectCount < colectMax ? colectCount++ : 0;
+			PlayerColectObject::GetInstance()->AddObject("model" + other->GetComponent<Enemy>()->modelName);
 		}
+		else
+		{
+			crashParticle.Fire(transform->position, -transform->GetForward(), other->GetColor());
+		}
+
 		audioManager->Use("catch2")->Start();
-		//é˚èWï® +1
-		colectCount < colectMax ? colectCount++ : 0;
-		PlayerColectObject::GetInstance()->AddObject("model" + other->GetComponent<Enemy>()->modelName);
 		hitStopCount = 0.0f;
 		CameraControl::GetInstance()->ShakeStart({ 50,50 }, 30);
 	}
@@ -342,7 +353,6 @@ void PlayerComponent::Control(float deltaTime)
 		GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), body_direction.y)
 		* GE::Math::Quaternion(GE::Math::Vector3(0, 0, 1), body_direction.z)
 		* GE::Math::Quaternion(GE::Math::Vector3(1, 0, 0), body_direction.x);
-
 
 	if (worldRadius < distance)
 	{
