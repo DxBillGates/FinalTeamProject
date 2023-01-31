@@ -139,16 +139,6 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 		tile = object;
 
 	}
-	//
-	{
-		auto* object = gameObjectManager->AddGameObject(new GE::GameObject("back", "back"));
-		auto* sampleComponent = object->AddComponent<FieldObjectComponent>();
-		object->GetComponent<FieldObjectComponent>()->modelName = "modelMountainBuckground";
-		sampleComponent->shaderName = "DefaultMeshWithShadowShader";
-		object->GetTransform()->position = { 1000,0,-15000 };
-		object->GetTransform()->scale = { 6000 };
-		object->SetColor(GE::Color(0.1f, 0.45f, 0.1f, 1.0f));
-	}
 
 	//—
 	{
@@ -163,7 +153,10 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 			FieldObjectDebugTransform::GetInstance()->AddTarget(object);
 		}
 	}
-
+	AddBackModel(gameObjectManager, "modelBack1");
+	AddBackModel(gameObjectManager, "modelBack2");
+	AddBackModel(gameObjectManager, "modelBack3");
+	AddBackModel(gameObjectManager, "modelBack4");
 	{
 		for (int i = 0; i < nl.size(); ++i)
 		{
@@ -212,6 +205,17 @@ void FieldObjectManager::LoadModel(const std::string& filename)
 	meshManager->Add(mesh, filename);
 
 	groundModels[filename] = model;
+}
+
+void FieldObjectManager::AddBackModel(GE::GameObjectManager* gameObjectManager, std::string modelName)
+{
+	auto* object = gameObjectManager->AddGameObject(new GE::GameObject("back", "back"));
+	auto* sampleComponent = object->AddComponent<FieldObjectComponent>();
+	object->GetComponent<FieldObjectComponent>()->modelName = modelName;
+	sampleComponent->shaderName = "DefaultMeshWithShadowShader";
+	object->GetTransform()->position = { 1000,0,-15000 };
+	object->GetTransform()->scale = { 6000 };
+	object->SetColor(GE::Color(0.1f, 0.45f, 0.1f, 1.0f));
 }
 
 void FieldObjectManager::LoadPosition(const std::string& filename)

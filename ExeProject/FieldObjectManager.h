@@ -45,6 +45,8 @@ private:
 private:
 	void AddGroundModel(std::string fileName);
 	void LoadModel(const std::string& filename);
+	//”wŒiƒ‚ƒfƒ‹”z’u
+	void AddBackModel(GE::GameObjectManager* gameObjectManager, std::string modelName);
 public:
 	static FieldObjectManager* GetInstance();
 	void LoadModels();

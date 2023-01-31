@@ -99,11 +99,29 @@ bool Game::LoadContents()
 	mesh->Create(device, cmdList, modelDragonfly);
 	meshManager->Add(mesh, "modelDragonfly");
 	
-	MeshData<Vertex_UV_Normal> modelMountainBuckground;
-	MeshCreater::LoadObjModelData("Resources/Model/_Mountain/mountain_background", modelMountainBuckground);
+	MeshData<Vertex_UV_Normal> modelBack1;
+	MeshCreater::LoadObjModelData("Resources/Model/_Mountain/back1", modelBack1);
 	mesh = new Mesh();
-	mesh->Create(device, cmdList, modelMountainBuckground);
-	meshManager->Add(mesh, "modelMountainBuckground");
+	mesh->Create(device, cmdList, modelBack1);
+	meshManager->Add(mesh, "modelBack1");
+	
+	MeshData<Vertex_UV_Normal> modelBack2;
+	MeshCreater::LoadObjModelData("Resources/Model/_Mountain/back2", modelBack2);
+	mesh = new Mesh();
+	mesh->Create(device, cmdList, modelBack2);
+	meshManager->Add(mesh, "modelBack2");
+
+	MeshData<Vertex_UV_Normal> modelBack3;
+	MeshCreater::LoadObjModelData("Resources/Model/_Mountain/back3", modelBack3);
+	mesh = new Mesh();
+	mesh->Create(device, cmdList, modelBack3);
+	meshManager->Add(mesh, "modelBack3");
+
+	MeshData<Vertex_UV_Normal> modelBack4;
+	MeshCreater::LoadObjModelData("Resources/Model/_Mountain/back4", modelBack4);
+	mesh = new Mesh();
+	mesh->Create(device, cmdList, modelBack4);
+	meshManager->Add(mesh, "modelBack4");
 
 	meshManager->Add(FbxLoader::Load("Bird", &graphicsDevice), "Player");
 	meshManager->Add(FbxLoader::Load("hina", &graphicsDevice), "Hina");
@@ -147,6 +165,12 @@ bool Game::LoadContents()
 		auto* audioData = audioManager.AddAudioData(new GE::AudioData("Resources/Audio/BGM2.wav"), "BGM2");
 		auto* audio = audioManager.AddAudio(new GE::Audio(audioData, "BGM2"));
 		audio->SetVolume(0.05f);
+	}
+	//BGM2
+	{
+		auto* audioData = audioManager.AddAudioData(new GE::AudioData("Resources/Audio/jag.wav"), "jag");
+		auto* audio = audioManager.AddAudio(new GE::Audio(audioData, "jag"));
+		audio->SetVolume(0.3f);
 	}
 	auto* textureManager = graphicsDevice.GetTextureManager();
 	Texture* nullTexture = new Texture();
@@ -493,7 +517,7 @@ bool Game::Draw()
 	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2, &material, sizeof(GE::Material)) });
 
-	static GE::Math::Vector3 dofInfo = { 0.57f,1.85f,-0.1f };
+	static GE::Math::Vector3 dofInfo = { 0.62f,1.3f,-0.1f };
 #ifdef _DEBUG
 	ImGui::Begin("Debug");
 	ImGui::DragFloat3("dofInfo", dofInfo.value, 0.001f);

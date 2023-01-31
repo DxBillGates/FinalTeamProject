@@ -318,6 +318,7 @@ void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 			//コンボ加算と初期化
 			comboCount = 0.0f;
 			combo++;
+			if (combo > 3) { audioManager->Use("jag")->Start(); }
 			//パーティクル
 			crashParticle.Fire(transform->position, -transform->GetForward(), other->GetColor());
 
