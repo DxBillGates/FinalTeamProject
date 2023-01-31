@@ -18,5 +18,6 @@ public:
 	bool Initialize() override;
 	bool Update() override;
 	bool Draw() override;
+	void YamadaPostEffect();
 };
 

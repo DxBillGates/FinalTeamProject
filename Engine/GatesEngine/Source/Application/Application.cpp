@@ -288,7 +288,7 @@ bool GE::Application::LoadContents()
 	dafaultSpriteWithTexturePipeline->Create(device, { GraphicsPipelineInputLayout::POSITION,GraphicsPipelineInputLayout::UV }, cbv5srv1RootSignature, pipelineInfo);
 	graphicsPipelineManager->Add(dafaultSpriteWithTexturePipeline, "DefaultSpriteWithTextureShader");
 	GraphicsPipeline* spriteTextureForPosteffectPipeline = new GraphicsPipeline({ &defaultSpriteWithTextureVertexShader,nullptr,nullptr,nullptr,&spriteTextureForPosteffectPixelShader });
-	spriteTextureForPosteffectPipeline->Create(device, { GraphicsPipelineInputLayout::POSITION,GraphicsPipelineInputLayout::UV }, cbv5srv1RootSignature, pipelineInfo);
+	spriteTextureForPosteffectPipeline->Create(device, { GraphicsPipelineInputLayout::POSITION,GraphicsPipelineInputLayout::UV }, testRootSignature, pipelineInfo);
 	graphicsPipelineManager->Add(spriteTextureForPosteffectPipeline, "SpriteTextureForPosteffectShader");
 	// gauss blur shader
 	GraphicsPipeline* gaussBlurPipeline = new GraphicsPipeline({ &defaultSpriteVertexShader,nullptr,nullptr,nullptr,&gaussBlurPixelShader });
@@ -372,6 +372,10 @@ bool GE::Application::LoadContents()
 	RenderTexture* renderTarget = new RenderTexture();
 	renderTarget->Create(device, shaderResourceHeap, mainWindow.GetWindowSize(), Color::Black());
 	layerManager->Add(new Layer(renderTarget, nullptr), "MainLayer");
+
+	RenderTexture* finalPostEffectRenderTexture = new RenderTexture();
+	finalPostEffectRenderTexture->Create(device, shaderResourceHeap, mainWindow.GetWindowSize(), Color::Black());
+	layerManager->Add(new Layer(finalPostEffectRenderTexture, nullptr), "finalPostEffectLayer");
 
 	return true;
 }
