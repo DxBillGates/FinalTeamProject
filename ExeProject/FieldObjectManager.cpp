@@ -93,14 +93,7 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 		object->GetComponent<FieldObjectComponent>()->shaderName = "CelestialSphereShader";
 		object->SetColor(GE::Color(1.f, 1.f, 1.f, 1));
 		object->GetTransform()->position = StartPosition;
-		if (PlayerComponent::dashMode)
-		{
-			object->GetTransform()->scale = { 800 };
-		}
-		else
-		{
-			object->GetTransform()->scale = { 400 };
-		}
+		object->GetTransform()->scale = { 1200 };
 		object->GetTransform()->rotation = GE::Math::Quaternion::Euler(GE::Math::Vector3(0, 0, 180));
 		skydome = object;
 	}
@@ -137,7 +130,7 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 		auto* sampleComponent = object->AddComponent<FieldObjectComponent>();
 		object->GetComponent<FieldObjectComponent>()->modelName = "Plane";
 		sampleComponent->shaderName = "DefaultMeshWithShadowShader";
-		object->GetTransform()->scale = { 100000,1,100000 };
+		object->GetTransform()->scale = { 200000,1,200000 };
 		object->GetTransform()->position = { 0,-130.f,0 };
 		object->SetColor(GE::Color(0.2f, 0.5f, 0.2f, 1.0f));
 		auto* collider = object->AddComponent < GE::BoxCollider >();
@@ -145,6 +138,16 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 		collider->SetSize(GE::Math::Vector3(200000, 100, 200000));
 		tile = object;
 
+	}
+	//
+	{
+		auto* object = gameObjectManager->AddGameObject(new GE::GameObject("back", "back"));
+		auto* sampleComponent = object->AddComponent<FieldObjectComponent>();
+		object->GetComponent<FieldObjectComponent>()->modelName = "modelMountainBuckground";
+		sampleComponent->shaderName = "DefaultMeshWithShadowShader";
+		object->GetTransform()->position = { 1000,0,-15000 };
+		object->GetTransform()->scale = { 6000 };
+		object->SetColor(GE::Color(0.1f, 0.45f, 0.1f, 1.0f));
 	}
 
 	//êó

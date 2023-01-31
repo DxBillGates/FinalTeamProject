@@ -98,6 +98,12 @@ bool Game::LoadContents()
 	mesh = new Mesh();
 	mesh->Create(device, cmdList, modelDragonfly);
 	meshManager->Add(mesh, "modelDragonfly");
+	
+	MeshData<Vertex_UV_Normal> modelMountainBuckground;
+	MeshCreater::LoadObjModelData("Resources/Model/_Mountain/mountain_background", modelMountainBuckground);
+	mesh = new Mesh();
+	mesh->Create(device, cmdList, modelMountainBuckground);
+	meshManager->Add(mesh, "modelMountainBuckground");
 
 	meshManager->Add(FbxLoader::Load("Bird", &graphicsDevice), "Player");
 	meshManager->Add(FbxLoader::Load("hina", &graphicsDevice), "Hina");

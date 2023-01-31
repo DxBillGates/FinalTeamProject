@@ -26,7 +26,7 @@ GE::Math::Vector3 PlayerComponent::gravity = { 0,0.5,0 };				//重力
 float PlayerComponent::normal_speed = 20.0f;							//通常時のスピード
 float PlayerComponent::current_speed = normal_speed;					//現在のスピード
 int PlayerComponent::colectMax = 10;									//一度に掴めるえさの数
-float PlayerComponent::worldRadius = 38000.0f;							//端この壁までの長さ
+float PlayerComponent::worldRadius = 76000.0f;							//端この壁までの長さ
 float PlayerComponent::lockOnLength = 10000.0f;							//ロックオンできる距離
 float PlayerComponent::moreTimesLockOnLength = 10000.0f;				//連続で二回目以降の敵をロックオンできる距離
 int PlayerComponent::lockOnInterval = 250.0f;							//再度ロックオンできるまでのインターバル
@@ -121,12 +121,10 @@ void PlayerComponent::Update(float deltaTime)
 	if (dashMode)
 	{
 		normal_speed = 100.0f;
-		worldRadius = 76000.0f;
 	}
 	else
 	{
 		normal_speed = 20.0f;
-		worldRadius = 38000.0f;
 	}
 	current_speed = normal_speed;
 
