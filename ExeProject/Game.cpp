@@ -518,11 +518,8 @@ bool Game::Draw()
 	// ブラーした結果を元画像に合成
 	graphicsDevice.SetCurrentRenderQueue(true);
 	graphicsDevice.SetShaderResourceDescriptorHeap();
-#ifdef _DEBUG
+
 	graphicsDevice.SetLayer("MainLayer");
-#else
-	graphicsDevice.SetDefaultRenderTarget();
-#endif // _DEBUG
 	graphicsDevice.SetShader("volumetricCloudShader");
 
 	struct RayInfo
@@ -568,10 +565,12 @@ bool Game::Draw()
 	renderQueue->AddSetShaderResource({ 18,graphicsDevice.GetLayerManager()->Get("shadowLayer")->GetDepthTexture()->GetSRVNumber() });
 	graphicsDevice.DrawMesh("2DPlane");
 
+	YamadaPostEffect();
+
 	graphicsDevice.SetShaderResourceDescriptorHeap();
 	graphicsDevice.SetCurrentRenderQueue(false);
 #ifdef _DEBUG
-	graphicsDevice.SetLayer("MainLayer");
+	graphicsDevice.SetLayer("finalPostEffectLayer");
 #else
 	graphicsDevice.SetDefaultRenderTarget();
 #endif // _DEBUG
@@ -579,7 +578,7 @@ bool Game::Draw()
 	graphicsDevice.ExecuteRenderQueue();
 
 #ifdef _DEBUG
-	graphicsDevice.SetLayer("MainLayer");
+	//graphicsDevice.SetLayer("MainLayer");
 	graphicsDevice.SetCurrentRenderQueue(false);
 	graphicsDevice.SetDefaultRenderTarget();
 	graphicsDevice.SetShaderResourceDescriptorHeap();
@@ -590,7 +589,7 @@ bool Game::Draw()
 	ImVec2 texSize = ImGui::GetWindowSize();
 	texSize.x -= 20;
 	texSize.y -= 25;
-	ImGui::Image((ImTextureID)graphicsDevice.GetLayerManager()->Get("MainLayer")->GetRenderTexture()->GetGPUHandle().ptr,texSize);
+	ImGui::Image((ImTextureID)graphicsDevice.GetLayerManager()->Get("finalPostEffectLayer")->GetRenderTexture()->GetGPUHandle().ptr,texSize);
 	ImGui::End();
 #endif // _DEBUG
 
@@ -598,4 +597,53 @@ bool Game::Draw()
 	graphicsDevice.ExecuteCommands();
 	graphicsDevice.ScreenFlip();
 	return true;
+}
+
+void Game::YamadaPostEffect()
+{
+#pragma region いじらんといて～
+	auto windowSize = GE::Window::GetWindowSize();
+	GE::Math::Matrix4x4 modelMatrix = GE::Math::Matrix4x4::Scale({ windowSize.x,windowSize.y,0 });
+	windowSize.x /= 2;
+	windowSize.y /= 2;
+	modelMatrix *= GE::Math::Matrix4x4::Translate({ windowSize.x,windowSize.y,0 });
+	GE::Material material;
+	material.color = GE::Color::White();
+
+	GE::CameraInfo cameraInfo;
+	cameraInfo = graphicsDevice.GetMainCamera()->GetCameraInfo();
+	cameraInfo.viewMatrix = GE::Math::Matrix4x4::GetViewMatrixLookTo({ 0,0,0 }, { 0,0,1 }, { 0,1,0 });
+	cameraInfo.projMatrix = GE::Math::Matrix4x4::GetOrthographMatrix(GE::Window::GetWindowSize());
+
+	GE::TextureAnimationInfo textureAnimationInfo;
+	textureAnimationInfo.clipSize = { 1,1 };
+	textureAnimationInfo.textureSize = { 1,1 };
+
+	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice.GetCBufferAllocater();
+	graphicsDevice.SetCurrentRenderQueue(true);
+	GE::RenderQueue* renderQueue = graphicsDevice.GetRenderQueue();
+	graphicsDevice.SetShaderResourceDescriptorHeap();
+
+#ifdef _DEBUG
+	graphicsDevice.SetLayer("finalPostEffectLayer");
+#else
+	graphicsDevice.SetDefaultRenderTarget();
+#endif // _DEBUG
+	graphicsDevice.SetShader("SpriteTextureForPosteffectShader");
+	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
+	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
+	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2, &material, sizeof(GE::Material)) });
+	renderQueue->AddSetConstantBufferInfo({ 4,cbufferAllocater->BindAndAttachData(4,&textureAnimationInfo,sizeof(GE::TextureAnimationInfo)) });
+	renderQueue->AddSetShaderResource({ 16,graphicsDevice.GetLayerManager()->Get("MainLayer")->GetRenderTexture()->GetSRVNumber() });
+#pragma endregion
+
+	//// 5 ~ 13まで自由にシェーダーに構造体遅れる
+	//renderQueue->AddSetConstantBufferInfo({ **,cbufferAllocater->BindAndAttachData(**, &***, sizeof(***)) });
+	//// 17 ~ 31まで自由にテクスチャセットできる
+	//renderQueue->AddSetShaderResource({ **,graphicsDevice.GetLayerManager()->Get("***")->GetDepthTexture()->GetSRVNumber()});
+
+	graphicsDevice.DrawMesh("2DPlane");
+
+	graphicsDevice.ExecuteRenderQueue();
+	graphicsDevice.ExecuteCommands();
 }
