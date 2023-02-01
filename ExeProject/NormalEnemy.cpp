@@ -29,11 +29,14 @@ void NormalEnemy::Start()
 	animator.PlayAnimation(0, true);
 
 	modelName = "Dragonfly";
+	Enemy::Start();
 
 }
 void NormalEnemy::Update(float deltaTime)
 {
-	if (statas == Statas::DEAD) { return; }
+	Enemy::Update(deltaTime);
+
+	if (statas != Statas::ALIVE) { return; }
 	const GE::Math::Axis& axis = transform->GetMatrix().GetAxis();
 	float range = 3.0f;//ƒzƒoƒŠƒ“ƒO‚Ì•
 	const float f = 144.0f / (1.0f / deltaTime);
@@ -51,7 +54,7 @@ void NormalEnemy::Update(float deltaTime)
 
 void NormalEnemy::DrawShadow()
 {
-	if (statas == Statas::DEAD) { return; }
+	if (statas != Statas::ALIVE) { return; }
 
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
 	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
@@ -71,7 +74,7 @@ void NormalEnemy::DrawShadow()
 
 void NormalEnemy::Draw()
 {
-	if (statas == Statas::DEAD) { return; }
+	if (statas != Statas::ALIVE) { return; }
 
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
 	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
@@ -94,29 +97,6 @@ void NormalEnemy::Draw()
 
 void NormalEnemy::LateDraw()
 {
-	//const float SPRITE_SIZE = 100;
-
-	//GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
-	//GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
-
-	//graphicsDevice->SetShader("DefaultSpriteShader");
-
-	//GE::Math::Matrix4x4 modelMatrix = GE::Math::Matrix4x4::Scale({ SPRITE_SIZE });
-	//GE::Math::Vector2 mousePos = inputDevice->GetMouse()->GetClientMousePos();
-	////GE::Utility::Printf("%d,%d\n",(int)mousePos.x, (int)mousePos.y);
-
-	//modelMatrix *= GE::Math::Matrix4x4::Translate({ mousePos.x,mousePos.y,0 });
-	//GE::Material material;
-	//material.color = GE::Color::White();
-
-	//GE::CameraInfo cameraInfo;
-	//cameraInfo.viewMatrix = GE::Math::Matrix4x4::GetViewMatrixLookTo({ 0,1,0 }, { 0,0,1 }, { 0,1,0 });
-	//cameraInfo.projMatrix = GE::Math::Matrix4x4::GetOrthographMatrix(GE::Window::GetWindowSize());
-
-	//renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
-	//renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
-	//renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
-	//graphicsDevice->DrawMesh("2DPlane");
 }
 
 void NormalEnemy::OnCollision(GE::GameObject* other)

@@ -101,7 +101,7 @@ void DashModeScene::Update(float deltaTime)
 	playerScreenPosition /= 2;
 	blurUV = { playerScreenPosition.x,playerScreenPosition.y };
 	blurSampling = 16;
-	blurThreshold = 0.5f;
+	blurThreshold = 0.3f;
 }
 
 void DashModeScene::Draw()

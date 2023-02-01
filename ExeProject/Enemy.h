@@ -9,10 +9,13 @@ public:
 	enum class Statas
 	{
 		ALIVE,
+		REST,
 		DEAD,
 	};
 	Statas statas = Statas::ALIVE;
 	std::string modelName = "Sphere";
+	float restInterval;
+	float restCount;
 protected:
 	float speed = 0.0f;
 	GE::Math::Vector3 bodyDirection = {};

@@ -40,6 +40,8 @@ void FieldObjectManager::LoadModels()
 	LoadModel("mountain5");
 	LoadModel("mountain6");
 	LoadModel("mountain7");
+	LoadModel("mountain8");
+	LoadModel("mountain9");
 }
 
 void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
@@ -85,6 +87,8 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 	AddGroundModel("mountain5");
 	AddGroundModel("mountain6");
 	AddGroundModel("mountain7");
+	AddGroundModel("mountain8");
+	AddGroundModel("mountain9");
 	//•Ç‰¼
 	{
 		auto* object = gameObjectManager->AddGameObject(new GE::GameObject("skydome", "skydome"));

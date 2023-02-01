@@ -166,6 +166,15 @@ void PlayerComponent::Update(float deltaTime)
 			statas = PlayerStatas::GO_TREE;
 		}
 	}
+	//°ŠÑ’Ê‚µ‚½‚ç‹­§‘—ŠÒ
+	float tileHigher = FieldObjectManager::GetInstance()->GetTile()->GetTransform()->position.y - 100;
+	if (transform->position.y < tileHigher)
+	{
+		stayLandLerpEasingCount = 0.0f;
+		currentPosition = transform->position;
+		statas = PlayerStatas::GO_TREE;
+	}
+
 	animator.Update(deltaTime);
 }
 

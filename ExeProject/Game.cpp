@@ -166,10 +166,12 @@ bool Game::LoadContents()
 		auto* audio = audioManager.AddAudio(new GE::Audio(audioData, "BGM2"));
 		audio->SetVolume(0.05f);
 	}
-	//BGM2
+	//jag
 	{
 		auto* audioData = audioManager.AddAudioData(new GE::AudioData("Resources/Audio/jag.wav"), "jag");
 		auto* audio = audioManager.AddAudio(new GE::Audio(audioData, "jag"));
+		audio->SetVolume(0.3f);
+		audio = audioManager.AddAudio(new GE::Audio(audioData, "jag"));
 		audio->SetVolume(0.3f);
 	}
 	auto* textureManager = graphicsDevice.GetTextureManager();

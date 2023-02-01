@@ -102,7 +102,6 @@ void CameraControl::Update(float deltaTime)
 		camera->GetCameraInfo().cameraPos.z,
 	};
 
-
 	//ƒ_ƒbƒVƒ…Žž
 	if (PlayerComponent::statas == PlayerComponent::PlayerStatas::DASH
 		|| PlayerComponent::statas == PlayerComponent::PlayerStatas::LOCKON_SHOOT)
