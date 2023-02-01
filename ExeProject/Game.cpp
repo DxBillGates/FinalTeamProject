@@ -74,12 +74,6 @@ bool Game::LoadContents()
 	mesh = new Mesh();
 	mesh->Create(device, cmdList, modelTreeLeaf3);
 	meshManager->Add(mesh, "Tree_Leaf3");
-
-	MeshData<Vertex_UV_Normal> modelGroundLeaf1;
-	MeshCreater::LoadObjModelData("Resources/Model/ground_leaf1_a", modelGroundLeaf1);
-	mesh = new Mesh();
-	mesh->Create(device, cmdList, modelGroundLeaf1);
-	meshManager->Add(mesh, "Ground_Leaf1");
 	
 	MeshData<Vertex_UV_Normal> modelGroundLeaf2;
 	MeshCreater::LoadObjModelData("Resources/Model/ground_leaf1_b", modelGroundLeaf2);
@@ -98,30 +92,6 @@ bool Game::LoadContents()
 	mesh = new Mesh();
 	mesh->Create(device, cmdList, modelDragonfly);
 	meshManager->Add(mesh, "modelDragonfly");
-	
-	MeshData<Vertex_UV_Normal> modelBack1;
-	MeshCreater::LoadObjModelData("Resources/Model/_Mountain/back1", modelBack1);
-	mesh = new Mesh();
-	mesh->Create(device, cmdList, modelBack1);
-	meshManager->Add(mesh, "modelBack1");
-	
-	MeshData<Vertex_UV_Normal> modelBack2;
-	MeshCreater::LoadObjModelData("Resources/Model/_Mountain/back2", modelBack2);
-	mesh = new Mesh();
-	mesh->Create(device, cmdList, modelBack2);
-	meshManager->Add(mesh, "modelBack2");
-
-	MeshData<Vertex_UV_Normal> modelBack3;
-	MeshCreater::LoadObjModelData("Resources/Model/_Mountain/back3", modelBack3);
-	mesh = new Mesh();
-	mesh->Create(device, cmdList, modelBack3);
-	meshManager->Add(mesh, "modelBack3");
-
-	MeshData<Vertex_UV_Normal> modelBack4;
-	MeshCreater::LoadObjModelData("Resources/Model/_Mountain/back4", modelBack4);
-	mesh = new Mesh();
-	mesh->Create(device, cmdList, modelBack4);
-	meshManager->Add(mesh, "modelBack4");
 
 	meshManager->Add(FbxLoader::Load("Bird", &graphicsDevice), "Player");
 	meshManager->Add(FbxLoader::Load("hina", &graphicsDevice), "Hina");

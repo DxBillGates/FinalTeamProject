@@ -33,15 +33,28 @@ void FieldObjectManager::LoadModels()
 	meshManager->Add(mesh, "startTree");
 	startTreeModel = model;
 
-	LoadModel("mountain1");
-	LoadModel("mountain2");
-	LoadModel("mountain3");
-	LoadModel("mountain4");
-	LoadModel("mountain5");
-	LoadModel("mountain6");
-	LoadModel("mountain7");
-	LoadModel("mountain8");
-	LoadModel("mountain9");
+	LoadModel("_Mountain/", "mountain1");
+	LoadModel("_Mountain/", "mountain2");
+	LoadModel("_Mountain/", "mountain3");
+	LoadModel("_Mountain/", "mountain4");
+	LoadModel("_Mountain/", "mountain5");
+	LoadModel("_Mountain/", "mountain6");
+	LoadModel("_Mountain/", "mountain7");
+	LoadModel("_Mountain/", "mountain8");
+	LoadModel("_Mountain/", "mountain9");
+
+	LoadModel("_Mountain/", "back1");
+	LoadModel("_Mountain/", "back2");
+	LoadModel("_Mountain/", "back3");
+	LoadModel("_Mountain/", "back4");
+
+	LoadModel("_Ground_Leaf/", "leaf1");
+	LoadModel("_Ground_Leaf/", "leaf2");
+	LoadModel("_Ground_Leaf/", "leaf3");
+	LoadModel("_Ground_Leaf/", "leaf4");
+	LoadModel("_Ground_Leaf/", "leaf5");
+	LoadModel("_Ground_Leaf/", "leaf6");
+	LoadModel("_Ground_Leaf/", "leaf7");
 }
 
 void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
@@ -116,18 +129,13 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 			FieldObjectDebugTransform::GetInstance()->AddTarget(object, { 3,10,3 });
 		}
 	}
-	//フィールドの地形の草
-	{
-		auto* object = gameObjectManager->AddGameObject(new GE::GameObject("groundLeaf", "groundLeaf"));
-		auto* sampleComponent = object->AddComponent<FieldObjectComponent>();
-		object->GetTransform()->position = { 1000,100,-15000 };
-		object->GetTransform()->scale = { 2000 };
-		object->GetTransform()->rotation = GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), -5.0f);
-		object->GetComponent<FieldObjectComponent>()->modelName = "Ground_Leaf1";
-		sampleComponent->shaderName = "DefaultMeshWithTextureAndAdsCompositiongShader";
-		object->GetComponent<FieldObjectComponent>()->textureName = "leafTex1";
-		fieldLeaf = object;
-	}
+	AddLeafModel("leaf1");
+	AddLeafModel("leaf2");
+	AddLeafModel("leaf3");
+	AddLeafModel("leaf4");
+	AddLeafModel("leaf5");
+	AddLeafModel("leaf6");
+	AddLeafModel("leaf7");
 	//床
 	{
 		auto* object = gameObjectManager->AddGameObject(new GE::GameObject("tile", "tile"));
@@ -157,10 +165,10 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 			FieldObjectDebugTransform::GetInstance()->AddTarget(object);
 		}
 	}
-	AddBackModel(gameObjectManager, "modelBack1");
-	AddBackModel(gameObjectManager, "modelBack2");
-	AddBackModel(gameObjectManager, "modelBack3");
-	AddBackModel(gameObjectManager, "modelBack4");
+	AddBackModel(gameObjectManager, "back1");
+	AddBackModel(gameObjectManager, "back2");
+	AddBackModel(gameObjectManager, "back3");
+	AddBackModel(gameObjectManager, "back4");
 	{
 		for (int i = 0; i < nl.size(); ++i)
 		{
@@ -194,7 +202,20 @@ void FieldObjectManager::AddGroundModel(std::string fileName)
 	object->GetTransform()->rotation = GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), -5.0f);
 }
 
-void FieldObjectManager::LoadModel(const std::string& filename)
+void FieldObjectManager::AddLeafModel(std::string fileName)
+{
+	auto* object = gameObjectManager->AddGameObject(new GE::GameObject("Leaf", "Leaf"));
+	auto* sampleComponent = object->AddComponent<FieldObjectComponent>();
+	object->GetComponent<FieldObjectComponent>()->modelName = fileName;
+	sampleComponent->shaderName = "DefaultMeshWithShadowShader";
+	object->GetComponent<FieldObjectComponent>()->shaderName = "DefaultMeshWithTextureAndAdsCompositiongShader";
+	object->GetComponent<FieldObjectComponent>()->textureName = "leafTex1";
+	object->GetTransform()->position = { 1000,100,-15000 };
+	object->GetTransform()->scale = { 2000 };
+	object->GetTransform()->rotation = GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), -5.0f);
+}
+
+void FieldObjectManager::LoadModel(const std::string& filePath, const std::string& filename)
 {
 	//地形
 	GE::MeshData<GE::Vertex_UV_Normal> model;
@@ -202,7 +223,7 @@ void FieldObjectManager::LoadModel(const std::string& filename)
 	auto device = graphicsDevice->GetDevice();
 	auto cmdList = graphicsDevice->GetCmdList();
 
-	GE::MeshCreater::LoadObjModelData("Resources/Model/_Mountain/" + filename, model);
+	GE::MeshCreater::LoadObjModelData("Resources/Model/" + filePath + filename, model);
 	mesh = new GE::Mesh();
 
 	mesh->Create(device, cmdList, model);
