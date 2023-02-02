@@ -174,6 +174,7 @@ void SampleScene::Load()
 		playerCollider->SetSize({ 20 });
 		col1 = playerCollider;
 	}
+	PlayerComponent::dashMode = false;
 
 	{
 		auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject("test2", "testTag"));

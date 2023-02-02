@@ -75,7 +75,7 @@ void DashModeScene::Update(float deltaTime)
 		}
 	}
 
-	if (PlayerComponent::statas == PlayerComponent::PlayerStatas::OVER 
+	if (PlayerComponent::statas == PlayerComponent::PlayerStatas::OVER
 		|| enemyDead
 		|| TimeLimit::GetInstance()->GetTimeOver())
 	{
