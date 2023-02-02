@@ -201,6 +201,7 @@ void SampleScene::Load()
 	FieldObjectManager::GetInstance()->Start(&gameObjectManager);
 	/*FieldObjectManager::GetInstance()->SetGroundMesh(groundModel);
 	FieldObjectManager::GetInstance()->SetStartTreeMesh(startTreeModel);*/
+	TimeLimit::GetInstance()->TimeSet = { 3,0 };
 	TimeLimit::GetInstance()->Start(&gameObjectManager);
 	//Collect::GetInstance()->Start(&gameObjectManager);
 

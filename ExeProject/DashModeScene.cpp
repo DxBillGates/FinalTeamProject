@@ -12,6 +12,7 @@
 #include"FieldObjectDeBugTransform.h"
 #include"FieldObjectManager.h"
 #include"EnemyManager.h"
+#include"TimeLimit.h"
 #include <GatesEngine/External/DirectXTex/DirectXTex.h>
 #include "PlayerColectObject.h"
 #include <GatesEngine/External/imgui/imgui.h>
@@ -60,6 +61,7 @@ void DashModeScene::Update(float deltaTime)
 
 	FieldObjectManager::GetInstance()->OtherUpdate();
 	FieldObjectDebugTransform::GetInstance()->Update();
+	TimeLimit::GetInstance()->Update(audioManager);
 	ScreenUIManager::GetInstance()->DashModeUpdate(deltaTime);
 
 	bool enemyDead = true;
@@ -71,7 +73,9 @@ void DashModeScene::Update(float deltaTime)
 		}
 	}
 
-	if (PlayerComponent::statas == PlayerComponent::PlayerStatas::OVER || enemyDead)
+	if (PlayerComponent::statas == PlayerComponent::PlayerStatas::OVER 
+		|| enemyDead
+		|| TimeLimit::GetInstance()->GetTimeOver())
 	{
 		changeSceneInfo.name = "SampleScene";
 		changeSceneInfo.flag = true;
@@ -101,7 +105,7 @@ void DashModeScene::Update(float deltaTime)
 	playerScreenPosition /= 2;
 	blurUV = { playerScreenPosition.x,playerScreenPosition.y };
 	blurSampling = 16;
-	blurThreshold = 0.001f;
+	blurThreshold = 0.3f;
 }
 
 void DashModeScene::Draw()
@@ -159,6 +163,9 @@ void DashModeScene::Load()
 	EnemyManager::GetInstance()->Start(&gameObjectManager, true);
 	FieldObjectManager::GetInstance()->LoadPosition("Resources/tree.txt");
 	FieldObjectManager::GetInstance()->Start(&gameObjectManager);
+	TimeLimit::GetInstance()->TimeSet = { 0,10 };
+	TimeLimit::GetInstance()->Start(&gameObjectManager);
+
 	collisionManager.AddTagCombination("player", "enemy");
 	collisionManager.AddTagCombination("player", "frog");
 	collisionManager.AddTagCombination("player", "ground");

@@ -329,6 +329,7 @@ void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 			combo++;
 			//パーティクル
 			crashParticle.Fire(transform->position, -transform->GetForward(), other->GetColor());
+			TimeLimit::GetInstance()->AddSeconds(combo);
 
 			ScreenUIManager::GetInstance()->viveVelocity = { 80,80 };
 		}
@@ -493,7 +494,7 @@ void PlayerComponent::Control(float deltaTime)
 			animator.PlayAnimation(3, false);
 			//収集物お持ち帰り
 			StartTree::collectCount += colectCount;
-			TimeLimit::GetInstance()->AddSeconds(60 * colectCount);
+			TimeLimit::GetInstance()->AddSeconds(10 * colectCount);
 			colectCount = 0;
 			PlayerColectObject::GetInstance()->ClearObject();
 			//着陸

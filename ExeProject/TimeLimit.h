@@ -22,6 +22,8 @@ private:
 
 public:
 	std::string tag;
+	//Xが分単位、Yが秒単位
+	GE::Math::Vector2 TimeSet;
 	//開始しても初めて飛び立つまでカウントしない用
 	bool isActive;
 public:

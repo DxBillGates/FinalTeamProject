@@ -40,6 +40,7 @@ public:
 	void NormalModeUpdate(float deltaTime);
 	void DashModeUpdate(float deltaTime);
 	void DrawSprite(GE::IGraphicsDeviceDx12* graphicsDevice);
+	void TimeLimitActive(float deltaTime);
 	GE::Math::Vector3 Vivlate(float deltaTime);
 	//ファイルに保存されている座標取得
 	void LoadPosition(const std::string& filename);

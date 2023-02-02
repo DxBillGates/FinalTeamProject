@@ -120,6 +120,13 @@ void ScreenUIManager::DashModeStart()
 	object["combo"] = Set(GE::Math::Vector3(1500, winSize.y / 2 - 220.0f, 0.0f), { 256,128,0 }, GE::Color::White(), "combo_tex");
 	object["comboNum"] = Set(GE::Math::Vector3(1300, winSize.y / 2 - 220.0f, 0.0f), { 128,128,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
 
+#pragma region タイムリミット
+	object["time_minutes"] = Set(GE::Math::Vector3(80, 950, 0.0f), { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
+	object["time_symbol"] = Set(GE::Math::Vector3(160, 950, 0.0f), { 50,100,0 }, GE::Color::White(), "texture_symbol", { 64,64 }, { 32,64 });
+	object["time_tenSeconds"] = Set(GE::Math::Vector3(240, 950, 0.0f), { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
+	object["time_oneSeconds"] = Set(GE::Math::Vector3(340, 950, 0.0f), { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
+#pragma endregion
+
 	//遷移の値初期化
 	for (auto o : object)
 	{
@@ -140,15 +147,7 @@ void ScreenUIManager::NormalModeUpdate(float deltaTime)
 	object["dash_info"].isDraw = false;
 	object["go_tree"].isDraw = false;
 
-	//タイムリミット
-	object["time_minutes"].isDraw = true;
-	object["time_minutes"].pivotPos = TimeLimit::GetInstance()->GetMinutes();
-	object["time_tenSeconds"].isDraw = true;
-	object["time_tenSeconds"].pivotPos = TimeLimit::GetInstance()->GetTenSeconds();
-	object["time_oneSeconds"].isDraw = true;
-	object["time_oneSeconds"].pivotPos = TimeLimit::GetInstance()->GetOneSeconds();
-	object["time_symbol"].isDraw = true;
-
+	TimeLimitActive(f);
 	if (TimeLimit::GetInstance()->GetLimit())
 	{
 
@@ -201,18 +200,8 @@ void ScreenUIManager::NormalModeUpdate(float deltaTime)
 	case PlayerComponent::PlayerStatas::TITLE:
 		object["title_name"].isDraw = true;
 
-		//タイムリミット描画しない
-		object["time_minutes"].isDraw = false;
-		object["time_symbol"].isDraw = false;
-		object["time_tenSeconds"].isDraw = false;
-		object["time_oneSeconds"].isDraw = false;
 		break;
 	case PlayerComponent::PlayerStatas::TITLE_MENU:
-		//タイムリミット描画しない
-		object["time_minutes"].isDraw = false;
-		object["time_symbol"].isDraw = false;
-		object["time_tenSeconds"].isDraw = false;
-		object["time_oneSeconds"].isDraw = false;
 		//タイトル描画
 		TitleMenuActive(true);
 		//横からフェードイン
@@ -319,6 +308,9 @@ void ScreenUIManager::DashModeUpdate(float deltaTime)
 	GE::Math::Vector3 vive = Vivlate(f);
 	GE::Math::Vector3 comboPos = GE::Math::Vector3(1500, winSize.y / 2 - 220.0f, 0.0f);
 	GE::Math::Vector3 comboNumPos = GE::Math::Vector3(1300, winSize.y / 2 - 220.0f, 0.0f);
+
+	TimeLimitActive(f);
+
 	if (PlayerComponent::combo != 0)
 	{
 		object["combo"].isDraw = true;
@@ -334,8 +326,38 @@ void ScreenUIManager::DashModeUpdate(float deltaTime)
 		object["combo"].isDraw = false;
 		object["comboNum"].isDraw = false;
 	}
+
 }
 
+void ScreenUIManager::TimeLimitActive(float deltaTime)
+{
+	//タイムリミット
+	object["time_minutes"].isDraw = true;
+	object["time_minutes"].pivotPos = TimeLimit::GetInstance()->GetMinutes();
+	object["time_tenSeconds"].isDraw = true;
+	object["time_tenSeconds"].pivotPos = TimeLimit::GetInstance()->GetTenSeconds();
+	object["time_oneSeconds"].isDraw = true;
+	object["time_oneSeconds"].pivotPos = TimeLimit::GetInstance()->GetOneSeconds();
+	object["time_symbol"].isDraw = true;
+
+	switch (PlayerComponent::statas)
+	{
+	case PlayerComponent::PlayerStatas::TITLE:
+		//タイムリミット描画しない
+		object["time_minutes"].isDraw = false;
+		object["time_symbol"].isDraw = false;
+		object["time_tenSeconds"].isDraw = false;
+		object["time_oneSeconds"].isDraw = false;
+		break;
+	case PlayerComponent::PlayerStatas::TITLE_MENU:
+		//タイムリミット描画しない
+		object["time_minutes"].isDraw = false;
+		object["time_symbol"].isDraw = false;
+		object["time_tenSeconds"].isDraw = false;
+		object["time_oneSeconds"].isDraw = false;
+		break;
+	}
+}
 void ScreenUIManager::DrawSprite(GE::IGraphicsDeviceDx12* graphicsDevice)
 {
 	for (auto o : object)
@@ -383,6 +405,7 @@ void ScreenUIManager::DrawSprite(GE::IGraphicsDeviceDx12* graphicsDevice)
 		}
 	}
 }
+
 
 GE::Math::Vector3 ScreenUIManager::Vivlate(float deltaTime)
 {

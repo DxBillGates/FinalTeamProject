@@ -14,8 +14,7 @@ TimeLimit* TimeLimit::GetInstance()
 
 void TimeLimit::Start(GE::GameObjectManager* gameObjectManager)
 {
-	const int DEFAULT_TIME = 3;//制限時間(分指定)
-	time = DEFAULT_TIME * 60;
+	time = TimeSet.x * 60 + TimeSet.y;
 	minutes = tenSeconds = oneSeconds = 0; // 各時間値初期化
 	timeOver = false;//タイムオーバーフラグ
 	limit = false;
@@ -54,10 +53,14 @@ void TimeLimit::Update(GE::AudioManager* audioManager)
 	{
 		limit = true;
 		interval++;
-		//10秒に一回なる
-		if ((int)time % 60 > 0 && (int)time % 60 % 10 == 0)
+		//通常シーンの時のみ鳴るように
+		if (!PlayerComponent::dashMode)
 		{
-			audioManager->Use("hine1")->Start();//音
+			//10秒に一回なる
+			if ((int)time % 60 > 0 && (int)time % 60 % 10 == 0)
+			{
+				audioManager->Use("hine1")->Start();//音
+			}
 		}
 	}
 	else
