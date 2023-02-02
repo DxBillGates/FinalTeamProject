@@ -143,6 +143,8 @@ bool Game::LoadContents()
 		audio->SetVolume(0.3f);
 		audio = audioManager.AddAudio(new GE::Audio(audioData, "jag"));
 		audio->SetVolume(0.3f);
+		audio = audioManager.AddAudio(new GE::Audio(audioData, "jag"));
+		audio->SetVolume(0.3f);
 	}
 	auto* textureManager = graphicsDevice.GetTextureManager();
 	Texture* nullTexture = new Texture();
@@ -190,12 +192,12 @@ bool Game::LoadContents()
 	textureManager->Add(nullTexture, "texture_Chick");
 
 	nullTexture = new Texture();
-	nullTexture->Load("texture_tree_leaf.png", device, shaderResourceHeap);
-	textureManager->Add(nullTexture, "texture_tree_leaf");
-
-	nullTexture = new Texture();
 	nullTexture->Load("crash_info.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "crash_info");
+
+	nullTexture = new Texture();
+	nullTexture->Load("texture_tree_leaf.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "texture_tree_leaf");
 
 	nullTexture = new Texture();
 	nullTexture->Load("groundTex1.png", device, shaderResourceHeap);
@@ -204,6 +206,11 @@ bool Game::LoadContents()
 	nullTexture = new Texture();
 	nullTexture->Load("texture_ground_leaf1.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "leafTex1");
+	
+	nullTexture = new Texture();
+	nullTexture->Load("groundTex2.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "groundTex2");
+
 
 	nullTexture = new Texture();
 	nullTexture->Load("back.png", device, shaderResourceHeap);

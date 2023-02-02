@@ -144,7 +144,8 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 		sampleComponent->shaderName = "DefaultMeshWithShadowShader";
 		object->GetTransform()->scale = { 200000,1,200000 };
 		object->GetTransform()->position = { 0,-130.f,0 };
-		object->SetColor(GE::Color(0.2f, 0.5f, 0.2f, 1.0f));
+		if (PlayerComponent::dashMode) { object->SetColor(GE::Color(0.6f, 0.3f, 0.05f, 1.f)); }
+		else { object->SetColor(GE::Color(0.2f, 0.5f, 0.2f, 1.0f)); }
 		auto* collider = object->AddComponent < GE::BoxCollider >();
 		collider->SetCenter({ 0,100,0 });
 		collider->SetSize(GE::Math::Vector3(200000, 100, 200000));
@@ -181,6 +182,9 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 			object->GetComponent<FieldObjectComponent>()->modelName = "Ground_Leaf2";
 			sampleComponent->shaderName = "DefaultMeshWithTextureAndAdsCompositiongShader";
 			object->GetComponent<FieldObjectComponent>()->textureName = "leafTex1";
+			if (PlayerComponent::dashMode) { object->SetColor({ 1,0,0,1 }); }
+			else { object->SetColor({ 0,1,0,1 }); }
+
 			normalLeaf.push_back(object);
 			FieldObjectDebugTransform::GetInstance()->AddTarget(object);
 		}
@@ -196,7 +200,10 @@ void FieldObjectManager::AddGroundModel(std::string fileName)
 	object->GetComponent<FieldObjectComponent>()->modelName = fileName;
 	sampleComponent->shaderName = "DefaultMeshWithShadowShader";
 	object->GetComponent<FieldObjectComponent>()->shaderName = "DefaultMeshWithTextureAndAdsCompositiongShader";
-	object->GetComponent<FieldObjectComponent>()->textureName = "groundTex1";
+
+	if (PlayerComponent::dashMode) { object->GetComponent<FieldObjectComponent>()->textureName = "groundTex2"; }
+	else { object->GetComponent<FieldObjectComponent>()->textureName = "groundTex1"; }
+
 	object->GetTransform()->position = { 1000,0,-15000 };
 	object->GetTransform()->scale = { 2000 };
 	object->GetTransform()->rotation = GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), -5.0f);
@@ -210,6 +217,9 @@ void FieldObjectManager::AddLeafModel(std::string fileName)
 	sampleComponent->shaderName = "DefaultMeshWithShadowShader";
 	object->GetComponent<FieldObjectComponent>()->shaderName = "DefaultMeshWithTextureAndAdsCompositiongShader";
 	object->GetComponent<FieldObjectComponent>()->textureName = "leafTex1";
+	if (PlayerComponent::dashMode) { object->SetColor({ 1,0,0,1 }); }
+	else { object->SetColor({ 0,1,0,1 }); }
+
 	object->GetTransform()->position = { 1000,100,-15000 };
 	object->GetTransform()->scale = { 2000 };
 	object->GetTransform()->rotation = GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), -5.0f);
@@ -240,7 +250,9 @@ void FieldObjectManager::AddBackModel(GE::GameObjectManager* gameObjectManager, 
 	sampleComponent->shaderName = "DefaultMeshWithShadowShader";
 	object->GetTransform()->position = { 1000,0,-15000 };
 	object->GetTransform()->scale = { 6000 };
-	object->SetColor(GE::Color(0.1f, 0.45f, 0.1f, 1.0f));
+
+	if (PlayerComponent::dashMode) { object->SetColor(GE::Color(0.5f, 0.2f, 0.025f, 1.f)); }
+	else { object->SetColor(GE::Color(0.1f, 0.45f, 0.1f, 1.0f)); }
 }
 
 void FieldObjectManager::LoadPosition(const std::string& filename)

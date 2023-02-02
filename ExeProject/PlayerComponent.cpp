@@ -327,14 +327,14 @@ void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 			//コンボ加算と初期化
 			comboCount = 0.0f;
 			combo++;
-			if (combo > 3) { audioManager->Use("jag")->Start(); }
 			//パーティクル
 			crashParticle.Fire(transform->position, -transform->GetForward(), other->GetColor());
 
 			ScreenUIManager::GetInstance()->viveVelocity = { 80,80 };
 		}
+		if (combo > 3) { audioManager->Use("jag")->Start(); }
+		else { audioManager->Use("catch2")->Start(); }
 
-		audioManager->Use("catch2")->Start();
 		hitStopCount = 0.0f;
 		CameraControl::GetInstance()->ShakeStart({ 50,50 }, 30);
 	}

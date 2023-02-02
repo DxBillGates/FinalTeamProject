@@ -4,6 +4,7 @@
 #include <GatesEngine/Header/GUI\GUIManager.h>
 
 #include"StartTree.h"
+#include"PlayerComponent.h"
 
 int StartTree::goalCollect = 5;
 int StartTree::collectCount;
@@ -26,6 +27,10 @@ void StartTree::Start()
 	gameObject->SetColor(GE::Color::Red());
 	collectCount = 0;
 	isCollect = false;
+
+	if (PlayerComponent::dashMode) { leaf_Color = { 1,0.6f,0.2f,1 }; }
+	else { leaf_Color = { 0.3f,1,0.3f,1 }; }
+
 
 }
 

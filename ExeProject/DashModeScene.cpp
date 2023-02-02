@@ -39,7 +39,7 @@ void DashModeScene::Initialize()
 {
 	gameObjectManager.Awake();
 	gameObjectManager.Start();
-	directionalLight->GetAngle() = { 10,190 };
+	//directionalLight->GetAngle() = { 10,190 };
 	ScreenUIManager::GetInstance()->DashModeStart();
 }
 
@@ -55,7 +55,7 @@ void DashModeScene::Update(float deltaTime)
 		inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::S))
 	{
 		EnemyManager::GetInstance()->SaveCurrentPosition("Resources/dashModeEnemies.txt");
-		FieldObjectManager::GetInstance()->SaveCurrentPosition("Resources/tree.txt");
+		//FieldObjectManager::GetInstance()->SaveCurrentPosition("Resources/tree.txt");
 	}
 
 	FieldObjectManager::GetInstance()->OtherUpdate();
@@ -101,7 +101,7 @@ void DashModeScene::Update(float deltaTime)
 	playerScreenPosition /= 2;
 	blurUV = { playerScreenPosition.x,playerScreenPosition.y };
 	blurSampling = 16;
-	blurThreshold = 0.3f;
+	blurThreshold = 0.001f;
 }
 
 void DashModeScene::Draw()

@@ -7,6 +7,7 @@
 
 #include "FieldTree.h"
 #include "FieldObjectDeBugTransform.h"
+#include "PlayerComponent.h"
 
 
 FieldTree::FieldTree()
@@ -22,6 +23,9 @@ void FieldTree::Awake()
 void FieldTree::Start()
 {
 	GE::Utility::Printf("NormalTree Start()\n");
+	if (PlayerComponent::dashMode) { leaf_Color = { 1,0.6f,0.2f,1 }; }
+	else { leaf_Color = { 0.3f,1,0.3f,1 }; }
+
 }
 void FieldTree::Update(float deltaTime)
 {
@@ -55,7 +59,7 @@ void FieldTree::TreeLeafDraw()
 	GE::Material material;
 	GE::Math::Matrix4x4 modelMatrix = transform->GetMatrix();
 
-	material.color = GE::Color(0.5f, 0.5f, 0.5f, 1.0f);
+	material.color =leaf_Color;
 	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
 	renderQueue->AddSetShaderResource({ 16,graphicsDevice->GetTextureManager()->Get("texture_tree_leaf")->GetSRVNumber() });
