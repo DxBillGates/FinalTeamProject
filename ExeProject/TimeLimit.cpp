@@ -12,20 +12,24 @@ TimeLimit* TimeLimit::GetInstance()
 	return &instance;
 }
 
-
 void TimeLimit::Start(GE::GameObjectManager* gameObjectManager)
 {
 	const int DEFAULT_TIME = 3;//制限時間(分指定)
 	time = DEFAULT_TIME * 60;
 	minutes = tenSeconds = oneSeconds = 0; // 各時間値初期化
 	timeOver = false;//タイムオーバーフラグ
+	limit = false;
 	isActive = false;
+
+	angle = 0.0f;
+	addAngle = 0.075f;
+	range = 0.5f;
+	tScale = {};
+	interval = 0;
 }
 
-void TimeLimit::Update()
+void TimeLimit::Update(GE::AudioManager* audioManager)
 {
-
-
 	if (time <= 0)
 	{
 		timeOver = true;
@@ -40,6 +44,26 @@ void TimeLimit::Update()
 	if (PlayerComponent::statas == PlayerComponent::PlayerStatas::TITLE
 		|| PlayerComponent::statas == PlayerComponent::PlayerStatas::TITLE_MENU
 		|| !isActive)return;
+
+	//演出の計算
+	angle += addAngle;
+	tScale = { sinf(angle) * range, sinf(angle) * range, 0.0f };
+
+	//制限時間が30秒以下になったら
+	if (minutes == 0 && (int)time % 60 <= 30)
+	{
+		limit = true;
+		interval++;
+		//10秒に一回なる
+		if ((int)time % 60 > 0 && (int)time % 60 % 10 == 0)
+		{
+			audioManager->Use("hine1")->Start();//音
+		}
+	}
+	else
+	{
+		limit = false;
+	}
 
 	time -= GE::GameSetting::Time::GetDeltaTime();
 }

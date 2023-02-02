@@ -11,9 +11,6 @@
 #include"Title.h"
 #include"TimeLimit.h"
 
-
-
-
 ScreenUIManager* ScreenUIManager::GetInstance()
 {
 	static ScreenUIManager instance;
@@ -98,10 +95,10 @@ void ScreenUIManager::NormalModeStart()
 #pragma endregion
 
 #pragma region タイムリミット
-	object["time_minutes"] = Set(GE::Math::Vector3(80, 850, 0.0f), { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
-	object["time_symbol"] = Set(GE::Math::Vector3(160, 850, 0.0f), { 50,100,0 }, GE::Color::White(), "texture_symbol", { 64,64 }, { 32,64 });
-	object["time_tenSeconds"] = Set(GE::Math::Vector3(240, 850, 0.0f), { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
-	object["time_oneSeconds"] = Set(GE::Math::Vector3(340, 850, 0.0f), { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
+	object["time_minutes"] = Set(GE::Math::Vector3(80, 950, 0.0f), { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
+	object["time_symbol"] = Set(GE::Math::Vector3(160, 950, 0.0f), { 50,100,0 }, GE::Color::White(), "texture_symbol", { 64,64 }, { 32,64 });
+	object["time_tenSeconds"] = Set(GE::Math::Vector3(240, 950, 0.0f), { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
+	object["time_oneSeconds"] = Set(GE::Math::Vector3(340, 950, 0.0f), { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
 #pragma endregion
 
 	object["crash"] = Set(GE::Math::Vector3(center.x, center.y - 150.f, 0.f), { 400,100,0 }, GE::Color::White(), "crash_info_tex");
@@ -151,6 +148,47 @@ void ScreenUIManager::NormalModeUpdate(float deltaTime)
 	object["time_oneSeconds"].isDraw = true;
 	object["time_oneSeconds"].pivotPos = TimeLimit::GetInstance()->GetOneSeconds();
 	object["time_symbol"].isDraw = true;
+
+	if (TimeLimit::GetInstance()->GetLimit())
+	{
+
+		object["time_minutes"].color = GE::Color::Red();
+		object["time_minutes"].transform.scale += TimeLimit::GetInstance()->GetTScale();
+		if (object["time_minutes"].transform.scale.x < 100)
+		{
+			object["time_minutes"].transform.scale = { 100,100,0 };
+		}
+
+		object["time_tenSeconds"].color = GE::Color::Red();
+		object["time_tenSeconds"].transform.scale += TimeLimit::GetInstance()->GetTScale();
+		if (object["time_tenSeconds"].transform.scale.x < 100)
+		{
+			object["time_tenSeconds"].transform.scale = { 100,100,0 };
+		}
+
+		object["time_oneSeconds"].color = GE::Color::Red();
+		object["time_oneSeconds"].transform.scale += TimeLimit::GetInstance()->GetTScale();
+		if (object["time_oneSeconds"].transform.scale.x < 100)
+		{
+			object["time_oneSeconds"].transform.scale = { 100,100,0 };
+		}
+
+		object["time_symbol"].color = GE::Color::Red();
+	}
+	else
+	{
+		object["time_minutes"].color = GE::Color::White();
+		object["time_minutes"].transform.scale = { 100,100,0 };
+
+		object["time_tenSeconds"].color = GE::Color::White();
+		object["time_tenSeconds"].transform.scale = { 100,100,0 };
+
+		object["time_oneSeconds"].color = GE::Color::White();
+		object["time_oneSeconds"].transform.scale = { 100,100,0 };
+
+		object["time_symbol"].color = GE::Color::White();
+	}
+
 	if (PlayerComponent::isGoTree)
 	{
 		object["go_tree"].isDraw = true;
