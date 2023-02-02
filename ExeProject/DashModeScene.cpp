@@ -42,6 +42,7 @@ void DashModeScene::Initialize()
 	gameObjectManager.Start();
 	//directionalLight->GetAngle() = { 10,190 };
 	ScreenUIManager::GetInstance()->DashModeStart();
+	UIObject::GetInstance()->DashModeStart();
 }
 
 void DashModeScene::Update(float deltaTime)
@@ -63,6 +64,7 @@ void DashModeScene::Update(float deltaTime)
 	FieldObjectDebugTransform::GetInstance()->Update();
 	TimeLimit::GetInstance()->Update(audioManager);
 	ScreenUIManager::GetInstance()->DashModeUpdate(deltaTime);
+	UIObject::GetInstance()->DashModeUpdate(deltaTime);
 
 	bool enemyDead = true;
 	for (int i = 0; i < EnemyManager::GetInstance()->GetAllEnemies().size(); i++)
@@ -137,6 +139,7 @@ void DashModeScene::Draw()
 
 	gameObjectManager.Draw();
 	FieldObjectDebugTransform::GetInstance()->Draw();
+	UIObject::GetInstance()->Draw(graphicsDevice);
 	FieldObjectManager::GetInstance()->OtherDraw();
 
 }

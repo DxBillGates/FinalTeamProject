@@ -34,6 +34,7 @@ float PlayerComponent::comboInterval = 70.0f;
 bool PlayerComponent::isGoTree = false;
 bool PlayerComponent::dashMode = false;
 int PlayerComponent::combo = 0;
+int PlayerComponent::takeEnemyCount = 0;
 
 PlayerComponent::PlayerComponent()
 	: inputDevice(nullptr)
@@ -85,6 +86,7 @@ void PlayerComponent::Start()
 
 	comboCount = comboInterval;
 	combo = 0;
+	takeEnemyCount = 0;
 
 }
 void PlayerComponent::Update(float deltaTime)
@@ -327,10 +329,11 @@ void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 			//コンボ加算と初期化
 			comboCount = 0.0f;
 			combo++;
+			takeEnemyCount++;
 			//パーティクル
 			crashParticle.Fire(transform->position, -transform->GetForward(), other->GetColor());
 			TimeLimit::GetInstance()->AddSeconds(combo);
-
+			//コンボUIシェイク！
 			ScreenUIManager::GetInstance()->viveVelocity = { 80,80 };
 		}
 		if (combo > 3) { audioManager->Use("jag")->Start(); }

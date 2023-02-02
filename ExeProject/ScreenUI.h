@@ -35,9 +35,9 @@ private:
 
 public:
 	static ScreenUIManager* GetInstance();
-	void NormalModeStart();
+	void SampleSceneStart();
 	void DashModeStart();
-	void NormalModeUpdate(float deltaTime);
+	void SampleSceneUpdate(float deltaTime);
 	void DashModeUpdate(float deltaTime);
 	void DrawSprite(GE::IGraphicsDeviceDx12* graphicsDevice);
 	void TimeLimitActive(float deltaTime);

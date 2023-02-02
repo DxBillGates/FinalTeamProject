@@ -38,16 +38,16 @@ UIObject::Object UIObject::AddAnimaiotnObject(GE::Math::Vector3 positon, GE::Mat
 }
 
 
-void UIObject::Start()
+void UIObject::SampleSceneStart()
 {
 	GE::Utility::Printf("TestTreeComponent Start()\n");
 	object["chick"] =
 		AddObject(FieldObjectManager::GetInstance()->StartPosition + GE::Math::Vector3(0, 1000, 0), { 500 }, GE::Color(1, 1, 1, 1), "texture_Chick");
 	object["colect"] =
 		AddAnimaiotnObject(FieldObjectManager::GetInstance()->StartPosition + GE::Math::Vector3(0, 600, 0), { 250 }, GE::Color(1, 1, 1, 1), "texture_Number", { 320,64 }, { 32,64 });
-	object["symbol"] =AddAnimaiotnObject({}, { 250 }, GE::Color(1, 1, 1, 1), "texture_symbol", { 64,64 }, { 32,64 }, { 1,0 });
-	object["colectMax"] =AddAnimaiotnObject({}, { 250 }, GE::Color(1, 1, 1, 1), "texture_Number", { 320,64 }, { 32,64 }, { 1,0 });
-	object["control_info"] =AddObject({}, { 512,1,384 }, GE::Color(1, 1, 1, 1), "control_info_1_tex");
+	object["symbol"] = AddAnimaiotnObject({}, { 250 }, GE::Color(1, 1, 1, 1), "texture_symbol", { 64,64 }, { 32,64 }, { 1,0 });
+	object["colectMax"] = AddAnimaiotnObject({}, { 250 }, GE::Color(1, 1, 1, 1), "texture_Number", { 320,64 }, { 32,64 }, { 1,0 });
+	object["control_info"] = AddObject({}, { 512,1,384 }, GE::Color(1, 1, 1, 1), "control_info_1_tex");
 
 	object["control_info"].isDraw = true;
 	object["colect"].isDraw = false;
@@ -57,7 +57,15 @@ void UIObject::Start()
 
 }
 
-void UIObject::Update(float deltaTime)
+void UIObject::DashModeStart()
+{
+	object["control_info_2"] = AddObject({}, GE::Math::Vector3(512, 1, 384) * 2, GE::Color(1, 1, 1, 1), "control_info_2_tex");
+
+	object["control_info_2"].isDraw = true;
+
+}
+
+void UIObject::SampleSceneUpdate(float deltaTime)
 {
 	//èÌÇ…ÉJÉÅÉâÇ…ê≥ñ Çå¸ÇØÇÈ
 	for (auto& o : object)
@@ -97,6 +105,31 @@ void UIObject::Update(float deltaTime)
 		break;
 	}
 
+}
+
+void UIObject::DashModeUpdate(float deltaTime)
+{
+	//èÌÇ…ÉJÉÅÉâÇ…ê≥ñ Çå¸ÇØÇÈ
+	for (auto& o : object)
+	{
+		GE::Math::Vector3 dir = cameraPosition - o.second.transform.position;
+		dir.y = 0.0f;
+		o.second.transform.rotation = GE::Math::Quaternion::LookDirection(dir.Normalize()) * GE::Math::Quaternion::Euler({ 90, 0, 180 });
+	}
+
+	object["control_info_2"].transform.position = FieldObjectManager::GetInstance()->StartPosition + GE::Math::Vector3(0, 700, 0);
+	object["control_info_2"].isDraw = false;
+
+	switch (PlayerComponent::statas)
+	{
+	case PlayerComponent::PlayerStatas::TITLE:
+		break;
+	case PlayerComponent::PlayerStatas::TITLE_MENU:
+		break;
+	case PlayerComponent::PlayerStatas::STAY_TREE:
+		object["control_info_2"].isDraw = true;	//ê‡ñæUI
+		break;
+	}
 }
 
 void UIObject::Draw(GE::IGraphicsDeviceDx12* graphicsDevice)

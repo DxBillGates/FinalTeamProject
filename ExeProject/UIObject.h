@@ -25,8 +25,10 @@ public:
 	Object AddObject(GE::Math::Vector3 positon, GE::Math::Vector3 scale, GE::Color color, std::string textureName);
 	Object AddAnimaiotnObject(GE::Math::Vector3 positon, GE::Math::Vector3 scale, GE::Color color, std::string textureName,
 		GE::Math::Vector2 texSize, GE::Math::Vector2 clipSize, GE::Math::Vector2 pivotPos = {});
-	void Start();
-	void Update(float deltaTime);
+	void SampleSceneStart();
+	void DashModeStart();
+	void SampleSceneUpdate(float deltaTime);
+	void DashModeUpdate(float deltaTime);
 	void Draw(GE::IGraphicsDeviceDx12* graphicsDevice);
 	void OnGui();
 	void UnLoad();

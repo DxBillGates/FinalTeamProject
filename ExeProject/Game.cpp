@@ -218,7 +218,6 @@ bool Game::LoadContents()
 	nullTexture->Load("groundTex2.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "groundTex2");
 
-
 	nullTexture = new Texture();
 	nullTexture->Load("back.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "texture_back");
@@ -254,6 +253,10 @@ bool Game::LoadContents()
 	nullTexture = new Texture();
 	nullTexture->Load("se_info.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "se_info_tex");
+	
+	nullTexture = new Texture();
+	nullTexture->Load("take_info.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "take_info_tex");
 
 	auto* testScene = sceneManager.AddScene(new SampleScene("SampleScene", sceneManager.GetSceneInitializer()));
 	sceneManager.AddScene(new Clear("ClearScene", sceneManager.GetSceneInitializer()));

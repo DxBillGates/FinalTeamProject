@@ -69,7 +69,7 @@ float ScreenUIManager::SetLerp(std::string name, float lerpTime, float deltaTime
 		return 1.0f;
 	}
 }
-void ScreenUIManager::NormalModeStart()
+void ScreenUIManager::SampleSceneStart()
 {
 	winSize = GE::Window::GetWindowSize();
 	center = winSize / 2.0f;
@@ -105,7 +105,7 @@ void ScreenUIManager::NormalModeStart()
 	object["lockon_info"] = Set(GE::Math::Vector3(217, 600, 0.0f), GE::Math::Vector3(600, 64, 0) * 0.6f, GE::Color::White(), "lockon_info_tex");
 	object["dash_info"] = Set(GE::Math::Vector3(168, 670, 0.0f), GE::Math::Vector3(256, 64, 0) * 1.1f, GE::Color::White(), "control_info_1_tex", { 512,384 }, { 512, 128 });
 	object["dash_info"].pivotPos = 2;
-	object["go_tree"] = Set(GE::Math::Vector3(center.x, center.y - 150.f, 0.f), GE::Math::Vector3(256, 64, 0) * 0.6f, GE::Color::White(), "control_info_2_tex");
+	//object["go_tree"] = Set(GE::Math::Vector3(center.x, center.y - 150.f, 0.f), GE::Math::Vector3(256, 64, 0) * 0.6f, GE::Color::White(), "control_info_2_tex");
 	object["push_b"] = Set(GE::Math::Vector3(winSize.x - 300.f, winSize.y - 100.f, 0.f), GE::Math::Vector3(256, 64, 0) * 0.6f, GE::Color::White(), "push_b_tex");
 	object["push_b"].isDraw = true;
 	//遷移の値初期化
@@ -120,6 +120,11 @@ void ScreenUIManager::DashModeStart()
 	object["combo"] = Set(GE::Math::Vector3(1500, winSize.y / 2 - 220.0f, 0.0f), { 256,128,0 }, GE::Color::White(), "combo_tex");
 	object["comboNum"] = Set(GE::Math::Vector3(1300, winSize.y / 2 - 220.0f, 0.0f), { 128,128,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
 
+	object["take_info"] = Set(GE::Math::Vector3(217, 100, 0.0f), GE::Math::Vector3(400, 100, 0) * 0.6f, GE::Color::White(), "take_info_tex");
+	object["take_hnd"] = Set(GE::Math::Vector3(400, 100, 0.0f), { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
+	object["take_ten"] = Set(GE::Math::Vector3(500, 100, 0.0f), { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
+	object["take_one"] = Set(GE::Math::Vector3(600, 100, 0.0f), { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
+
 #pragma region タイムリミット
 	object["time_minutes"] = Set(GE::Math::Vector3(80, 950, 0.0f), { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
 	object["time_symbol"] = Set(GE::Math::Vector3(160, 950, 0.0f), { 50,100,0 }, GE::Color::White(), "texture_symbol", { 64,64 }, { 32,64 });
@@ -133,7 +138,7 @@ void ScreenUIManager::DashModeStart()
 		o.second.lerpCount = 0.0f;
 	}
 }
-void ScreenUIManager::NormalModeUpdate(float deltaTime)
+void ScreenUIManager::SampleSceneUpdate(float deltaTime)
 {
 	const float f = 144.0f / (1.0f / deltaTime);
 	const float addCount = 0.1f * f;
@@ -145,7 +150,6 @@ void ScreenUIManager::NormalModeUpdate(float deltaTime)
 	object["control_info_2"].isDraw = true;
 	object["lockon_info"].isDraw = false;
 	object["dash_info"].isDraw = false;
-	object["go_tree"].isDraw = false;
 
 	TimeLimitActive(f);
 	if (TimeLimit::GetInstance()->GetLimit())
@@ -188,10 +192,6 @@ void ScreenUIManager::NormalModeUpdate(float deltaTime)
 		object["time_symbol"].color = GE::Color::White();
 	}
 
-	if (PlayerComponent::isGoTree)
-	{
-		object["go_tree"].isDraw = true;
-	}
 	switch (PlayerComponent::statas)
 	{
 	case PlayerComponent::PlayerStatas::CRASH:
@@ -318,14 +318,36 @@ void ScreenUIManager::DashModeUpdate(float deltaTime)
 		object["combo"].transform.position = comboPos + vive;
 		object["comboNum"].transform.position = comboNumPos + vive;
 		object["comboNum"].pivotPos = PlayerComponent::combo;
-
-
 	}
 	else
 	{
 		object["combo"].isDraw = false;
 		object["comboNum"].isDraw = false;
 	}
+
+	object["take_info"].isDraw = true;
+	object["take_ten"].isDraw = true;
+	object["take_hnd"].isDraw = true;
+	if (PlayerComponent::takeEnemyCount < 10) { object["take_ten"].isDraw = false; }
+	if (PlayerComponent::takeEnemyCount < 100) { object["take_hnd"].isDraw = false; }
+	object["take_one"].isDraw = true;
+	object["take_one"].pivotPos = PlayerComponent::takeEnemyCount % 10;
+	object["take_ten"].pivotPos = (int)(PlayerComponent::takeEnemyCount / 10);
+	object["take_hnd"].pivotPos = (int)(PlayerComponent::takeEnemyCount / 100);
+
+	switch (PlayerComponent::statas)
+	{
+	case PlayerComponent::PlayerStatas::TITLE:
+		object["take_info"].isDraw = false;
+		object["take_one"].isDraw = false;
+
+		break;
+	case PlayerComponent::PlayerStatas::TITLE_MENU:
+		object["take_info"].isDraw = false;
+		object["take_one"].isDraw = false;
+		break;
+	}
+
 
 }
 

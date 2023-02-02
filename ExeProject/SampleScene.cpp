@@ -53,8 +53,8 @@ void SampleScene::Initialize()
 
 	gameObjectManager.Awake();
 	gameObjectManager.Start();
-	UIObject::GetInstance()->Start();
-	ScreenUIManager::GetInstance()->NormalModeStart();
+	UIObject::GetInstance()->SampleSceneStart();
+	ScreenUIManager::GetInstance()->SampleSceneStart();
 }
 
 void SampleScene::Update(float deltaTime)
@@ -75,8 +75,8 @@ void SampleScene::Update(float deltaTime)
 	Title::GetInstance()->Update(audioManager);
 	TimeLimit::GetInstance()->Update(audioManager);
 	//Collect::GetInstance()->Update(StartTree::collectCount, StartTree::goalCollect);
-	UIObject::GetInstance()->Update(deltaTime);
-	ScreenUIManager::GetInstance()->NormalModeUpdate(deltaTime);
+	UIObject::GetInstance()->SampleSceneUpdate(deltaTime);
+	ScreenUIManager::GetInstance()->SampleSceneUpdate(deltaTime);
 	//ƒNƒŠƒAˆÈ~ðŒ
 	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::D1)
 		|| StartTree::isCollect)
