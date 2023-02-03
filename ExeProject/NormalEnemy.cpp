@@ -59,16 +59,15 @@ void NormalEnemy::DrawShadow()
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
 	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
 
-	graphicsDevice->SetShader("DefaultMeshShader");
-
-	GE::Material material;
-	material.color = gameObject->GetColor();
+	graphicsDevice->SetShader("DefaultSkinMeshShader");
 
 	GE::Math::Matrix4x4 modelMatrix = transform->GetMatrix();
-	animator.SetAnimationData(graphicsDevice, modelMatrix);
+	GE::Material material;
+	material.color = GE::Color::White();
 
-	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
+	animator.SetAnimationData(graphicsDevice, modelMatrix);
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
+
 	graphicsDevice->DrawMesh(modelName);
 }
 
