@@ -254,19 +254,10 @@ GE::Math::Vector3 GE::Joycon::GetSensorFusion()
 {
 	// センサー・フュージョンに使用する定数
 	// f =  k * acc + (1 - k) * gyro
-	const float K = 0.05f;
+	const float K = 0.1f;
 
 	GE::Math::Vector3 result;
-	float phi = 0, theta = 0, psi = 0;
-	float phiA = std::atan2f(-accf.y, accf.z);
-	float thetaA = std::atan2f(accf.x, std::sqrtf(std::powf(accf.y, 2) + std::powf(accf.z, 2)));
-	float phiG = phi + (gyrof.x + std::sinf(phi) * std::tanf(theta) * gyrof.y + std::cosf(phi) * std::tanf(theta) * gyrof.z);
-	float thetaG = theta + (std::cosf(phi) * gyrof.y - std::sinf(phi) * gyrof.z);
-	float psiG = psi + (std::sinf(phi) / std::cosf(theta) * gyrof.y + std::cosf(phi) / std::cosf(theta) * gyrof.z);
-	phi = K * phiA + (1 - K) * phiG;
-	theta = K * thetaA + (1 - K) * thetaG;
-	psi = 1 * psiG;
-	result = { phi,theta,psi };
+	result = K * accf + (1 - K) * gyrof;
 	return result;
 }
 

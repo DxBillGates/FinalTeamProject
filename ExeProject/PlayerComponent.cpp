@@ -91,6 +91,8 @@ void PlayerComponent::Start()
 }
 void PlayerComponent::Update(float deltaTime)
 {
+	preQuat = quat;
+
 	frameRate = 1.0f / deltaTime;
 	const float f = 144.0f / frameRate;
 	isGoTree = false;
@@ -364,6 +366,7 @@ void PlayerComponent::OnGui()
 	ImGui::DragFloat3("TotalGyroVector", totalGyro.value, dragSpeed, -1, 1);
 	ImGui::InputFloat4("quat", quat.value);
 	ImGui::InputFloat3("accelerometer", accelerometer.value);
+	ImGui::InputFloat3("quatAngle", quat.EulerAngle().value);
 
 	GE::Math::Vector3 inputAxis = InputManager::GetInstance()->GetAxis();
 	ImGui::InputFloat3("inputAxis", inputAxis.value);
@@ -570,32 +573,48 @@ void PlayerComponent::KeyboardMoveControl(float deltaTime)
 	GE::Joycon* joycon = inputDevice->GetJoyconL();
 	if (joycon == nullptr)return;
 
-	float preJoyconAccDiff = GE::Math::Vector3::Dot(joycon->GetPreAccelerometer(), { 0,0,1 });
+	GE::Math::Vector3 gyroData = joycon->GetSensorFusion();
+	gyro = { (float)gyroData.y,(float)-gyroData.z,(float)-gyroData.x };
+
+	// コントローラーから姿勢を更新し続ける
+	quat *= GE::Math::Quaternion(gyro.Normalize(), GE::Math::ConvertToRadian(gyro.Length() * 1.f / 144.f));
+
 	float joyconAccDiff = joycon->GetDefaultAccelerometerDiff();
-	float preJoyconGyroLength = joycon->GetPreGyroscope().Length();
-	float joyconGyroLength = joycon->GetGyroscope().Length();
 	accelerometer = joycon->GetAccelerometer();
 
-	if (joyconAccDiff > 0.95f && joyconGyroLength < 20)
+	GE::Math::Vector3  preQuatAngle, quatAngle;
+	preQuatAngle = preQuat.EulerAngle();
+	quatAngle = quat.EulerAngle();
+
+	const float MAX_ANGLE = 5;
+
+	// ジョイコンが水平に持たれていてかつ、gyroから作成しているクォータニオンの姿勢が{0,0,0,1}に近づいた際に姿勢をもとに戻す
+	if (joyconAccDiff > 0.95f)
 	{
-		quat = { 0,0,0,1 };
+		quat.z = 0;
+
+		// x軸回転を補正
+		if (std::fabsf(preQuatAngle.x) > MAX_ANGLE)
+		{
+			if (quatAngle.x < MAX_ANGLE && quatAngle.x > -MAX_ANGLE)
+			{
+				quat.x = 0;
+			}
+		}
+		// y軸回転補正
+		if (std::fabsf(preQuatAngle.y) > MAX_ANGLE * 2)
+		{
+			if (quatAngle.y < MAX_ANGLE * 2 && quatAngle.y > -MAX_ANGLE * 2)
+			{
+				quat.y = 0;
+			}
+		}
 	}
 
 	if (joycon->GetTriggerButton(GE::JoyconButtonData::MINUS))
 	{
 		quat = { 0,0,0,1 };
 	}
-
-	GE::Math::Vector3 gyroData = joycon->GetSensorFusion();
-	gyro = { (float)gyroData.y,(float)-gyroData.z,(float)-gyroData.x };
-
-	if (accelerometer.Length() > 1.5f)
-	{
-		gyro = { 0,0,0 };
-	}
-
-	// コントローラーから姿勢を更新し続ける
-	quat *= GE::Math::Quaternion(gyro.Normalize(), GE::Math::ConvertToRadian(gyro.Length() * 1.f / 144.f));
 
 	if (InputManager::GetInstance()->GetCurrentInputDeviceState() != InputManager::InputDeviceState::JOYCON)return;
 	const float GYRO_OFFSET = 0.05f;
