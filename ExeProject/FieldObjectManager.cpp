@@ -3,6 +3,8 @@
 #include "FieldTree.h"
 #include "BirdChild.h"
 #include "PlayerComponent.h"
+#include "Clear.h"
+#include "Over.h"
 #include <GatesEngine/Header/GameFramework/Component/SphereCollider.h>
 #include <GatesEngine/Header/GameFramework/Component/MeshCollider.h>
 #include <GatesEngine/Header/GameFramework/Component/BoxCollider.h>
@@ -152,18 +154,20 @@ void FieldObjectManager::Start(GE::GameObjectManager* gameObjectManager)
 		tile = object;
 
 	}
-
-	//êó
+	if (!Clear::nowClear && !Over::nowOver)
 	{
-		for (int i = 0; i < bc.size(); ++i)
+		//êó
 		{
-			auto* object = gameObjectManager->AddGameObject(new GE::GameObject("birdChild", "BirdChild"));
-			auto* sampleComponent = object->AddComponent<BirdChild>();
-			object->GetTransform()->position = bc[i].pos;
-			object->GetTransform()->scale = bc[i].scale;
-			object->GetTransform()->rotation = GE::Math::Quaternion::Euler(bc[i].rot);
-			birdChild.push_back(object);
-			FieldObjectDebugTransform::GetInstance()->AddTarget(object);
+			for (int i = 0; i < bc.size(); ++i)
+			{
+				auto* object = gameObjectManager->AddGameObject(new GE::GameObject("birdChild", "BirdChild"));
+				auto* sampleComponent = object->AddComponent<BirdChild>();
+				object->GetTransform()->position = bc[i].pos;
+				object->GetTransform()->scale = bc[i].scale;
+				object->GetTransform()->rotation = GE::Math::Quaternion::Euler(bc[i].rot);
+				birdChild.push_back(object);
+				FieldObjectDebugTransform::GetInstance()->AddTarget(object);
+			}
 		}
 	}
 	AddBackModel(gameObjectManager, "back1");

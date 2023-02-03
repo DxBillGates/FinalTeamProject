@@ -148,6 +148,8 @@
       <Filter>ソースファイル</Filter>
     </ClCompile>
     <ClCompile Include="DashModeScene.cpp">
+		</ClCompile>
+    <ClCompile Include="OverChild.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -240,6 +242,8 @@
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
     <ClInclude Include="DashModeScene.h">
+    </ClInclude>
+    <ClInclude Include="OverChild.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
   </ItemGroup>

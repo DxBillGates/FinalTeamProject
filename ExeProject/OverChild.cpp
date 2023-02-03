@@ -1,51 +1,39 @@
-#include "ClearBird.h"
-#include "FieldObjectManager.h"
-#include <GatesEngine/Header/GameFramework/Component/DirectionalLight.h>
+#include "OverChild.h"
+#include <GatesEngine/Header/GameFramework/GameObject/GameObjectManager.h> 
 #include <GatesEngine/Header\GameFramework/GameSetting.h>
+#include <GatesEngine/Header/GameFramework/Component/DirectionalLight.h>
 
-void ClearBird::Awake()
+void OverChild::Awake()
 {
 }
 
-void ClearBird::Start()
+void OverChild::Start()
 {
-	//transform->position = FieldObjectManager::GetInstance()->StartPosition + GE::Math::Vector3(0, 250, 200);
-	transform->scale = { 10,10,10 };
-
-	animator = GE::SkinMeshManager::GetInstance()->Get("Bird");
+	animator = GE::SkinMeshManager::GetInstance()->Get("hina");
 	animator.Initialize();
-	animator.PlayAnimation(3, false);
-	count = 0;
-	fly = false;
+	animator.PlayAnimation(0, false);
+
+
+	gravity = -2.0f;
 }
 
-void ClearBird::Update(float deltaTime)
+void OverChild::Update(float deltaTime)
 {
-	if (startCount == count)
-	{
-		//”ò‚Ñ—§‚Â
-		animator.PlayAnimation(0, true);
-		fly = true;
-	}
-	count++;
+	animator.Update(deltaTime);
 
-
-	if (fly)
-	{
-
-		float LERP_VALUE = 0.002f * GE::GameSetting::Time::GetGameTime();
-		transform->position = GE::Math::Vector3::Lerp(transform->position, target, LERP_VALUE);
-		animator.Update(deltaTime);
-	}
+	//if (transform->position.y >= 200)
+	//{//‹ó’†
+	//	transform->position.y = transform->position.y + gravity;
+	//	transform->rotation *= GE::Math::Quaternion(GE::Math::Vector3(0, 1, 0), 0.2f * deltaTime * GE::GameSetting::Time::GetGameTime());
+	//}
+	//else
+	//{//’n–Ê
+	//	transform->rotation = GE::Math::Quaternion::Euler({ -90,0,0 });
+	//}
 }
 
-void ClearBird::Draw()
+void OverChild::Draw()
 {
-	if (transform->position.y >= target.y - 2000)
-	{
-		return;
-	}
-
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
 	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
 
@@ -54,6 +42,7 @@ void ClearBird::Draw()
 
 	GE::Material material;
 	material.color = GE::Color::White();
+
 	animator.SetAnimationData(graphicsDevice, modelMatrix);
 
 	//renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
@@ -64,6 +53,5 @@ void ClearBird::Draw()
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2,&material,sizeof(GE::Material)) });
 	renderQueue->AddSetShaderResource({ 17,graphicsDevice->GetLayerManager()->Get("shadowLayer")->GetDepthTexture()->GetSRVNumber() });
 
-
-	graphicsDevice->DrawMesh("Player");
+	graphicsDevice->DrawMesh("Hina");
 }

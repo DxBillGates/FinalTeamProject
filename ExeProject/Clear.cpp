@@ -98,6 +98,8 @@ void Clear::LateDraw()
 
 void Clear::Load()
 {
+	nowClear = true;
+
 	auto* Object = gameObjectManager.AddGameObject(new GE::GameObject("clear", "clear"));
 	//titleObject->SetDrawAxisEnabled(true);
 	GE::Math::Vector2 diffWindowSize = GE::Window::GetDiffWindowSize();

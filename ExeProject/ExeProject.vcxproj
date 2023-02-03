@@ -186,6 +186,7 @@
     <ClCompile Include="FieldTree.cpp" />
     <ClCompile Include="Option.cpp" />
     <ClCompile Include="Over.cpp" />
+    <ClCompile Include="OverChild.cpp" />
     <ClCompile Include="PlayerColectObject.cpp" />
     <ClCompile Include="PlayerComponent.cpp" />
     <ClCompile Include="SampleScene.cpp" />
@@ -219,6 +220,7 @@
     <ClInclude Include="FieldTree.h" />
     <ClInclude Include="Option.h" />
     <ClInclude Include="Over.h" />
+    <ClInclude Include="OverChild.h" />
     <ClInclude Include="PlayerColectObject.h" />
     <ClInclude Include="PlayerComponent.h" />
     <ClInclude Include="resource.h" />

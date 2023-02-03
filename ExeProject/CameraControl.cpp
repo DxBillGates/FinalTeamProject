@@ -1,6 +1,7 @@
 #include "CameraControl.h"
 #include "PlayerComponent.h"
-#include"Clear.h"
+#include "Clear.h"
+#include "Over.h"
 #include <GatesEngine/Header\GameFramework/GameSetting.h>
 #include <GatesEngine/Header/Util/Random.h           >
 #include"UIObject.h"
@@ -60,6 +61,24 @@ void CameraControl::Update(float deltaTime)
 		target = targetObject->GetTransform()->position;
 		current_cameraDistance = normal_cameraDistance;
 		newCameraPosition = { 2000,9000,-6000 };
+	}
+	else if (Over::nowOver)
+	{
+		//巣を映し終わったら
+		if (position.y < 9000)
+		{
+			//加速最大ですか
+			if (Over::CameraSpeed < 0.3f)
+			{
+				//だんだん加速
+				Over::CameraSpeed += 0.001f;
+			}
+		}
+		LERP_VALUE = Over::CameraSpeed * GE::GameSetting::Time::GetGameTime() * deltaTime;
+
+		target = targetObject->GetTransform()->position;
+		current_cameraDistance = normal_cameraDistance;
+		newCameraPosition = { -1800,500,-9107 };
 	}
 	else if (PlayerComponent::statas == PlayerComponent::PlayerStatas::TITLE || PlayerComponent::statas == PlayerComponent::PlayerStatas::TITLE_MENU)
 	{
@@ -137,6 +156,14 @@ void CameraControl::ShakeStart(GE::Math::Vector2 range, int flame)
 void CameraControl::SetClearCameraPosition()
 {
 	graphicsDevice->GetMainCamera()->SetPosition({ 2931, 9476, -7104 });
+}
+
+void CameraControl::SetOverCameraPosition()
+{
+	//カメラのスタート位置
+	//graphicsDevice->GetMainCamera()->SetPosition({ -1800,50,-9107 });
+	//graphicsDevice->GetMainCamera()->SetPosition({ -300,9472,-9107 });
+	graphicsDevice->GetMainCamera()->SetPosition({ -300,10072,-9107 });
 }
 
 //EaseIn関係がよくわからなかったから一時的に追加
