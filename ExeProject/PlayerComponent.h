@@ -15,6 +15,8 @@ public:
 	static bool dashMode;			//別シーン用
 	static int combo;				//別シーン用何コンボ？
 	static int takeEnemyCount;			//別シーン用 倒した合計数
+	static bool isJoyconUsing;
+
 private:
 	static GE::Math::Vector3 onTheTreePosition;	//木の上で体の高さ調整用
 	static GE::Math::Vector3 gravity;	//重力
@@ -91,6 +93,7 @@ public:
 	};
 	static LockOnState lockonState;
 	static PlayerStatas statas;				//Playerの状態
+
 	//RayCast用
 	GE::Math::Vector3 rayPos, rayDir;
 

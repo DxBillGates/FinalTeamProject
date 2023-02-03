@@ -34,6 +34,7 @@ int PlayerComponent::lockOnInterval = 250.0f;							//再度ロックオンできるまでの
 float PlayerComponent::comboInterval = 70.0f;
 bool PlayerComponent::isGoTree = false;
 bool PlayerComponent::dashMode = false;
+bool PlayerComponent::isJoyconUsing = false;
 int PlayerComponent::combo = 0;
 int PlayerComponent::takeEnemyCount = 0;
 
@@ -600,8 +601,9 @@ void PlayerComponent::KeyboardMoveControl(float deltaTime)
 
 	// コントローラーから姿勢を更新し続ける
 	quat *= GE::Math::Quaternion(gyro.Normalize(), GE::Math::ConvertToRadian(gyro.Length() * 1.f / 144.f));
-
+	isJoyconUsing = false;
 	if (InputManager::GetInstance()->GetCurrentInputDeviceState() != InputManager::InputDeviceState::JOYCON)return;
+	isJoyconUsing = true;
 	const float GYRO_OFFSET = 0.05f;
 	GE::Math::Vector3 quatVector = { quat.x,quat.y,quat.z, };
 
