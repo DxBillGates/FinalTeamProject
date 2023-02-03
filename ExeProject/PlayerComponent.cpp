@@ -332,7 +332,7 @@ void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 			takeEnemyCount++;
 			//パーティクル
 			crashParticle.Fire(transform->position, -transform->GetForward(), other->GetColor());
-			TimeLimit::GetInstance()->AddSeconds(combo / 1.5f);
+			TimeLimit::GetInstance()->AddSeconds(combo);
 			//コンボUIシェイク！
 			ScreenUIManager::GetInstance()->viveVelocity = { 80,80 };
 		}
