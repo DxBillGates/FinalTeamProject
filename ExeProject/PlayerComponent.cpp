@@ -18,6 +18,7 @@
 
 float PlayerComponent::frameRate;
 PlayerComponent::PlayerStatas PlayerComponent::statas;
+PlayerComponent::LockOnState PlayerComponent::lockonState;
 GE::Math::Vector3 PlayerComponent::onTheTreePosition = { 0,250,200 };	//木の上で体の高さ調整用
 int PlayerComponent::hitStopTime = 50;									// ヒットストップの長さ
 float PlayerComponent::pushStartTime = 20.0f;							//キーを押してから操作できるようになるまでのカウント
@@ -87,7 +88,7 @@ void PlayerComponent::Start()
 	comboCount = comboInterval;
 	combo = 0;
 	takeEnemyCount = 0;
-
+	lockonState = LockOnState::NONE;
 }
 void PlayerComponent::Update(float deltaTime)
 {
@@ -431,11 +432,13 @@ void PlayerComponent::Control(float deltaTime)
 				if (InputManager::GetInstance()->GetLockonButton())
 				{
 					isLockOnStart = true;
+					lockonState = LockOnState::SEARCH;
 					//最も近くて前方にいる敵をセット
 					SearchNearEnemy();
 				}
 				else
 				{
+					lockonState = LockOnState::NONE;
 					isLockOnStart = false;
 				}
 			}
@@ -483,6 +486,7 @@ void PlayerComponent::Control(float deltaTime)
 			lockOnDashDirection = lockOnEnemy.direction;
 		}
 		Dash(100.f, 20.f, deltaTime, lockOnDashDirection, loop);
+		lockonState = LockOnState::NONE;
 		break;
 	case PlayerComponent::PlayerStatas::GO_TREE:
 		if (stayLandLerpEasingCount < stayLandLerpTime)
@@ -651,6 +655,7 @@ void PlayerComponent::SearchNearEnemy(bool isForward)
 		lockOnEnemy.object = enemies[a];
 		//ロックオンしている敵を青くする
 		lockOnEnemy.object->SetColor(GE::Color::Blue());
+		lockonState = LockOnState::LOCKON_SLOW;
 	}
 }
 void PlayerComponent::LockOn()
@@ -683,7 +688,7 @@ void PlayerComponent::Dash(float dash_speed, float dash_time, float deltaTime, G
 	}
 	if (dashEasingCount < dash_time) { dashEasingCount += 1 * GE::GameSetting::Time::GetGameTime(); }
 	else {
-		statas = PlayerStatas::MOVE; dashEasingCount = 0.0f; animator.PlayAnimation(1, false); ;
+		statas = PlayerStatas::MOVE; dashEasingCount = 0.0f; animator.PlayAnimation(1, false);
 	}
 
 	body_direction = GE::Math::Quaternion::LookDirection(direction).EulerRadian();

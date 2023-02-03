@@ -47,7 +47,7 @@ void UIObject::SampleSceneStart()
 		AddAnimaiotnObject(FieldObjectManager::GetInstance()->StartPosition + GE::Math::Vector3(0, 600, 0), { 250 }, GE::Color(1, 1, 1, 1), "texture_Number", { 320,64 }, { 32,64 });
 	object["symbol"] = AddAnimaiotnObject({}, { 250 }, GE::Color(1, 1, 1, 1), "texture_symbol", { 64,64 }, { 32,64 }, { 1,0 });
 	object["colectMax"] = AddAnimaiotnObject({}, { 250 }, GE::Color(1, 1, 1, 1), "texture_Number", { 320,64 }, { 32,64 }, { 1,0 });
-	object["control_info"] = AddObject({}, { 512,1,384 }, GE::Color(1, 1, 1, 1), "control_info_1_tex");
+	object["control_info"] = AddObject({}, { 768,1,384 }, GE::Color(1, 1, 1, 1), "control_info_1_tex");
 
 	object["control_info"].isDraw = true;
 	object["colect"].isDraw = false;

@@ -82,6 +82,14 @@ public:
 		STAY_TREE,		//–Ø‚Å‘Ò‹@
 		OVER,			//
 	};
+	//UI‚Éî•ñ‚ğ“n‚·‚æ‚¤
+	enum class LockOnState
+	{
+		NONE,
+		SEARCH,
+		LOCKON_SLOW,
+	};
+	static LockOnState lockonState;
 	static PlayerStatas statas;				//Player‚Ìó‘Ô
 	//RayCast—p
 	GE::Math::Vector3 rayPos, rayDir;
