@@ -23,7 +23,14 @@ void NormalEnemy::Start()
 	GE::Utility::Printf("NormalEnemy Start()\n");
 	speed = 10;
 	angle = GE::RandomMaker::GetFloat(0.0f, 20.0f);//“G‚ÌŽn“®ˆÊ’u‚Ì’²®
-	gameObject->SetColor(GE::Color::Red());
+	if (PlayerComponent::dashMode)
+	{
+		gameObject->SetColor(GE::Color::Green());
+	}
+	else
+	{
+		gameObject->SetColor(GE::Color::Red());
+	}
 	animator = GE::SkinMeshManager::GetInstance()->Get("Dragonfly");
 	animator.Initialize();
 	animator.PlayAnimation(0, true);

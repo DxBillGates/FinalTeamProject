@@ -286,10 +286,13 @@ void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 		{
 			if (other->GetTag() == "ground" || other->GetTag() == "StartTree")
 			{
-				//各法線セット
-				Reflection(gameObject->GetHitNormal());
-				crashParticle.Fire(transform->position, gameObject->GetHitNormal(), other->GetColor());
-				return;
+				if (GE::Math::Vector3::Dot(transform->GetForward(), gameObject->GetHitNormal()) < 0.0)
+				{
+					//各法線セット
+					Reflection(gameObject->GetHitNormal());
+					crashParticle.Fire(transform->position, gameObject->GetHitNormal(), other->GetColor());
+					return;
+				}
 			}
 			else if (other->GetTag() == "tile")
 			{
@@ -738,7 +741,6 @@ void PlayerComponent::NormalDash(float dash_speed, float dash_time, float deltaT
 void PlayerComponent::Reflection(GE::Math::Vector3 normal, bool reflection)
 {
 	auto a = transform->GetForward();
-	printf("%.3f,%.3f,%.3f\n", a.x, a.y, a.z);
 	statas = PlayerStatas::CRASH;
 	audioManager->Use("hitWall")->Start();
 	if (!reflection)
@@ -750,7 +752,6 @@ void PlayerComponent::Reflection(GE::Math::Vector3 normal, bool reflection)
 		body_direction = GE::Math::Quaternion::LookDirection(normal).EulerRadian();
 	}
 	a = GE::Math::Vector3::Reflection(transform->GetForward(), normal, 2.0f);
-	printf("%.3f,%.3f,%.3f\n", a.x, a.y, a.z);
 
 	CameraControl::GetInstance()->ShakeStart({ 50,50 }, 30);
 	//ロックオン中ならロックオンをキャンセル
