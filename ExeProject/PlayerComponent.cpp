@@ -210,6 +210,7 @@ void PlayerComponent::Draw()
 
 	if (!isDraw)return;
 
+	graphicsDevice->SetLayer("effectLayer");
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
 	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
 

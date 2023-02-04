@@ -104,6 +104,7 @@ void FrogEnemy::Draw()
 {
 	if (statas == Statas::DEAD) { return; }
 
+	graphicsDevice->SetLayer("effectLayer");
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
 	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
 

@@ -126,7 +126,7 @@ void GE::GameObjectManager::Destroy()
 	destroyGameObjects.clear();
 }
 
-std::map<std::string, std::vector<GE::GameObject*>>* GE::GameObjectManager::GetManager()
+std::unordered_map<std::string, std::vector<GE::GameObject*>>* GE::GameObjectManager::GetManager()
 {
 	return &gameObjects;
 }

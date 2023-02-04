@@ -159,7 +159,7 @@ void GE::CollisionManager::AddTagCombination(const std::string& tag1, const std:
 	collisionTagCombination[tag1].push_back(tag2);
 }
 
-void GE::CollisionManager::SetGameObjectManager(std::map<std::string, std::vector<GameObject*>>* pManager)
+void GE::CollisionManager::SetGameObjectManager(std::unordered_map<std::string, std::vector<GameObject*>>* pManager)
 {
 	pGameObjects = pManager;
 }
