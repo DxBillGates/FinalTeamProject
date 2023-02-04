@@ -223,10 +223,6 @@ bool Game::LoadContents()
 	textureManager->Add(nullTexture, "texture_back");
 
 	nullTexture = new Texture();
-	nullTexture->Load("gyro_shake_tex.png", device, shaderResourceHeap);
-	textureManager->Add(nullTexture, "gyro_shake_tex");
-
-	nullTexture = new Texture();
 	nullTexture->Load("control_info_1.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "control_info_1_tex");
 
@@ -257,6 +253,30 @@ bool Game::LoadContents()
 	nullTexture = new Texture();
 	nullTexture->Load("take_info.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "take_info_tex");
+
+	nullTexture = new Texture();
+	nullTexture->Load("control_info_1_keyboard.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "control_info_keyboard_tex");
+
+	nullTexture = new Texture();
+	nullTexture->Load("push_space.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "push_space_tex");
+
+	nullTexture = new Texture();
+	nullTexture->Load("search_info.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "search_info_tex");
+
+	nullTexture = new Texture();
+	nullTexture->Load("is_lockon_info.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "is_lockon_info_tex");
+
+	nullTexture = new Texture();
+	nullTexture->Load("lockon_info_keyboard.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "lockon_info_keyboard_tex");
+	
+	nullTexture = new Texture();
+	nullTexture->Load("crash_info_keyboard.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "crash_info_keyboard_tex");
 
 	auto* testScene = sceneManager.AddScene(new SampleScene("SampleScene", sceneManager.GetSceneInitializer()));
 	sceneManager.AddScene(new Clear("ClearScene", sceneManager.GetSceneInitializer()));

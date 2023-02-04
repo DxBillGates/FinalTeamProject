@@ -18,6 +18,7 @@
 
 float PlayerComponent::frameRate;
 PlayerComponent::PlayerStatas PlayerComponent::statas;
+PlayerComponent::LockOnState PlayerComponent::lockonState;
 GE::Math::Vector3 PlayerComponent::onTheTreePosition = { 0,250,200 };	//木の上で体の高さ調整用
 int PlayerComponent::hitStopTime = 50;									// ヒットストップの長さ
 float PlayerComponent::pushStartTime = 20.0f;							//キーを押してから操作できるようになるまでのカウント
@@ -33,6 +34,7 @@ int PlayerComponent::lockOnInterval = 250.0f;							//再度ロックオンできるまでの
 float PlayerComponent::comboInterval = 70.0f;
 bool PlayerComponent::isGoTree = false;
 bool PlayerComponent::dashMode = false;
+bool PlayerComponent::isJoyconUsing = false;
 int PlayerComponent::combo = 0;
 int PlayerComponent::takeEnemyCount = 0;
 
@@ -87,7 +89,7 @@ void PlayerComponent::Start()
 	comboCount = comboInterval;
 	combo = 0;
 	takeEnemyCount = 0;
-
+	lockonState = LockOnState::NONE;
 }
 void PlayerComponent::Update(float deltaTime)
 {
@@ -434,11 +436,13 @@ void PlayerComponent::Control(float deltaTime)
 				if (InputManager::GetInstance()->GetLockonButton())
 				{
 					isLockOnStart = true;
+					lockonState = LockOnState::SEARCH;
 					//最も近くて前方にいる敵をセット
 					SearchNearEnemy();
 				}
 				else
 				{
+					lockonState = LockOnState::NONE;
 					isLockOnStart = false;
 				}
 			}
@@ -486,6 +490,7 @@ void PlayerComponent::Control(float deltaTime)
 			lockOnDashDirection = lockOnEnemy.direction;
 		}
 		Dash(100.f, 20.f, deltaTime, lockOnDashDirection, loop);
+		lockonState = LockOnState::NONE;
 		break;
 	case PlayerComponent::PlayerStatas::GO_TREE:
 		if (stayLandLerpEasingCount < stayLandLerpTime)
@@ -616,7 +621,9 @@ void PlayerComponent::KeyboardMoveControl(float deltaTime)
 		quat = { 0,0,0,1 };
 	}
 
+	isJoyconUsing = false;
 	if (InputManager::GetInstance()->GetCurrentInputDeviceState() != InputManager::InputDeviceState::JOYCON)return;
+	isJoyconUsing = true;
 	const float GYRO_OFFSET = 0.05f;
 	GE::Math::Vector3 quatVector = { quat.x,quat.y,quat.z, };
 
@@ -670,6 +677,7 @@ void PlayerComponent::SearchNearEnemy(bool isForward)
 		lockOnEnemy.object = enemies[a];
 		//ロックオンしている敵を青くする
 		lockOnEnemy.object->SetColor(GE::Color::Blue());
+		lockonState = LockOnState::LOCKON_SLOW;
 	}
 }
 void PlayerComponent::LockOn()

@@ -102,12 +102,19 @@ void ScreenUIManager::SampleSceneStart()
 #pragma endregion
 
 	object["crash"] = Set(GE::Math::Vector3(center.x, center.y - 150.f, 0.f), { 400,100,0 }, GE::Color::White(), "crash_info_tex");
+	object["crash_keyboard"] = Set(GE::Math::Vector3(center.x, center.y - 150.f, 0.f), { 400,70,0 }, GE::Color::White(), "crash_info_keyboard_tex");
 	object["lockon_info"] = Set(GE::Math::Vector3(217, 600, 0.0f), GE::Math::Vector3(600, 64, 0) * 0.6f, GE::Color::White(), "lockon_info_tex");
-	object["dash_info"] = Set(GE::Math::Vector3(168, 670, 0.0f), GE::Math::Vector3(256, 64, 0) * 1.1f, GE::Color::White(), "control_info_1_tex", { 512,384 }, { 512, 128 });
+	object["lockon_info_keyboard"] = Set(GE::Math::Vector3(217 + 21, 600, 0.0f), GE::Math::Vector3(664, 64, 0) * 0.6f, GE::Color::White(), "lockon_info_keyboard_tex");
+	object["dash_info"] = Set(GE::Math::Vector3(248, 670, 0.0f), GE::Math::Vector3(384, 64, 0) * 1.1f, GE::Color::White(), "control_info_1_tex", { 768,384 }, { 768, 128 });
 	object["dash_info"].pivotPos = 2;
-	//object["go_tree"] = Set(GE::Math::Vector3(center.x, center.y - 150.f, 0.f), GE::Math::Vector3(256, 64, 0) * 0.6f, GE::Color::White(), "control_info_2_tex");
 	object["push_b"] = Set(GE::Math::Vector3(winSize.x - 300.f, winSize.y - 100.f, 0.f), GE::Math::Vector3(256, 64, 0) * 0.6f, GE::Color::White(), "push_b_tex");
-	object["push_b"].isDraw = true;
+	object["is_lockon_info"] = Set(GE::Math::Vector3(center.x, center.y - 150.f, 0.f), GE::Math::Vector3(400, 70, 0), GE::Color::White(), "is_lockon_info_tex");
+	object["search_info"] = Set(GE::Math::Vector3(center.x, center.y - 150.f, 0.f), GE::Math::Vector3(384, 128, 0) * 0.6f, GE::Color::White(), "search_info_tex");
+
+	object["dash_info_keyboard"] = Set(GE::Math::Vector3(188, 670, 0.0f), GE::Math::Vector3(256, 64, 0) * 1.1f, GE::Color::White(), "control_info_keyboard_tex", { 512,384 }, { 512, 128 });
+	object["dash_info_keyboard"].pivotPos = 2;
+	object["push_space"] = Set(GE::Math::Vector3(winSize.x - 300.f, winSize.y - 100.f, 0.f), GE::Math::Vector3(400, 70, 0) * 0.57f, GE::Color::White(), "push_space_tex");
+
 	//‘JˆÚ‚Ì’l‰Šú‰»
 	for (auto o : object)
 	{
@@ -142,14 +149,23 @@ void ScreenUIManager::SampleSceneUpdate(float deltaTime)
 {
 	const float f = 144.0f / (1.0f / deltaTime);
 	const float addCount = 0.1f * f;
+	GE::Math::Vector3 vive = Vivlate(f);
+
 	//Title
 	TitleMenuActive(false);
 
 	object["crash"].isDraw = false;
-	object["gyro_shake"].isDraw = false;
+	object["crash_keyboard"].isDraw = false;
 	object["control_info_2"].isDraw = true;
 	object["lockon_info"].isDraw = false;
+	object["lockon_info_keyboard"].isDraw = false;
 	object["dash_info"].isDraw = false;
+	object["dash_info_keyboard"].isDraw = false;
+	object["is_lockon_info"].isDraw = false;
+	object["search_info"].isDraw = false;
+	object["push_b"].isDraw = false;
+	object["push_space"].isDraw = false;
+
 
 	TimeLimitActive(f);
 	if (TimeLimit::GetInstance()->GetLimit())
@@ -195,10 +211,22 @@ void ScreenUIManager::SampleSceneUpdate(float deltaTime)
 	switch (PlayerComponent::statas)
 	{
 	case PlayerComponent::PlayerStatas::CRASH:
-		object["crash"].isDraw = true;
+		if (PlayerComponent::isJoyconUsing) {
+			object["crash"].isDraw = true;
+			object["crash"].transform.scale = GE::Math::Vector3(600, 64, 0) + GE::Math::Vector3(sin(object["crash"].lerpCount), sin(object["crash"].lerpCount) / 6.4f, 0) * 50;
+			object["crash"].lerpCount += 0.05f * f;
+		}
+		else
+		{
+			object["crash_keyboard"].transform.scale = GE::Math::Vector3(400, 70, 0) + GE::Math::Vector3(sin(object["crash_keyboard"].lerpCount), sin(object["crash_keyboard"].lerpCount) / 7.0f, 0) * 50;
+			object["crash_keyboard"].isDraw = true;
+			object["crash_keyboard"].lerpCount += 0.05f * f;
+		}
 		break;
 	case PlayerComponent::PlayerStatas::TITLE:
 		object["title_name"].isDraw = true;
+		if (PlayerComponent::isJoyconUsing) { object["push_b"].isDraw = true; }
+		else { object["push_space"].isDraw = true; }
 
 		break;
 	case PlayerComponent::PlayerStatas::TITLE_MENU:
@@ -208,19 +236,41 @@ void ScreenUIManager::SampleSceneUpdate(float deltaTime)
 		object["title_start"].transform.position = GE::Math::Vector3::Lerp(GE::Math::Vector3(winSize.x + 1000, center.y, 0.0f), GE::Math::Vector3(winSize.x - 300, center.y, 0.0f), SetLerp("title_start", 5.0f, addCount));
 		object["title_option"].transform.position = GE::Math::Vector3::Lerp(GE::Math::Vector3(winSize.x + 1000, center.y + 100, 0.0f), GE::Math::Vector3(winSize.x - 300, center.y + 100, 0.0f), SetLerp("title_option", 6.0f, addCount));
 		object["title_exit"].transform.position = GE::Math::Vector3::Lerp(GE::Math::Vector3(winSize.x + 1000, center.y + 200, 0.0f), GE::Math::Vector3(winSize.x - 300, center.y + 200, 0.0f), SetLerp("title_exit", 7.0f, addCount));
+		if (PlayerComponent::isJoyconUsing) { object["push_b"].isDraw = true; }
+		else { object["push_space"].isDraw = true; }
+
 		break;
 	case PlayerComponent::PlayerStatas::STAY_TREE:
 		object["title_name"].isDraw = false;
-		object["push_b"].isDraw = false;
 
 		break;
 	case PlayerComponent::PlayerStatas::LOCKON_SHOOT:
+		object["is_lockon_info"].isDraw = true;
+		object["is_lockon_info"].transform.position = GE::Math::Vector3(center.x, center.y - 150.f, 0.f) + vive;
 
 		break;
 	case PlayerComponent::PlayerStatas::MOVE:
+		if (PlayerComponent::isJoyconUsing) {
+			object["lockon_info"].isDraw = true;
+		}
+		else
+		{
+			object["lockon_info_keyboard"].isDraw = true;
+		}
+		if (PlayerComponent::isJoyconUsing) { object["dash_info"].isDraw = true; }
+		else { object["dash_info_keyboard"].isDraw = true; }
 
-		object["lockon_info"].isDraw = true;
-		object["dash_info"].isDraw = true;
+		switch (PlayerComponent::lockonState)
+		{
+		case PlayerComponent::LockOnState::SEARCH:
+			object["search_info"].isDraw = true;
+			break;
+		case PlayerComponent::LockOnState::LOCKON_SLOW:
+			object["is_lockon_info"].isDraw = true;
+			object["is_lockon_info"].transform.position = GE::Math::Vector3(center.x, center.y - 150.f, 0.f) + vive;
+			viveVelocity = { 20,20 };
+			break;
+		}
 
 		break;
 	}
