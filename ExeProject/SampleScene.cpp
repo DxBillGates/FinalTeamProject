@@ -101,8 +101,7 @@ void SampleScene::Update(float deltaTime)
 		changeSceneInfo.initNextSceneFlag = true;
 	}
 
-	if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::LCONTROL) &&
-		inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::L))
+	if (Title::GetInstance()->GetSelect(Title::States::endless))
 	{
 		changeSceneInfo.flag = true;
 		changeSceneInfo.name = "DashModeScene";

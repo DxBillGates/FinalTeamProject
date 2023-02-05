@@ -44,6 +44,7 @@ void ScreenUIManager::TitleMenuActive(bool isActive)
 {
 	object["title_start"].isDraw = isActive;
 	object["title_option"].isDraw = isActive;
+	object["title_endless"].isDraw = isActive;
 	object["title_exit"].isDraw = isActive;
 }
 
@@ -89,8 +90,9 @@ void ScreenUIManager::SampleSceneStart()
 
 #pragma region タイトル
 	object["title_start"] = Set(GE::Math::Vector3(winSize.x - 300, center.y, 0.0f), { 300,100,0 }, GE::Color::White(), "texture_start");
-	object["title_option"] = Set(GE::Math::Vector3(winSize.x - 300, center.y + 100, 0.0f), { 300,100,0 }, GE::Color::White(), "texture_option");
-	object["title_exit"] = Set(GE::Math::Vector3(winSize.x - 300, center.y + 200, 0.0f), { 300,100,0 }, GE::Color::White(), "texture_exit");
+	object["title_endless"] = Set(GE::Math::Vector3(winSize.x - 300, center.y + 100, 0.0f), { 300,100,0 }, GE::Color::White(), "endless_tex");
+	object["title_option"] = Set(GE::Math::Vector3(winSize.x - 300, center.y + 200, 0.0f), { 300,100,0 }, GE::Color::White(), "texture_option");
+	object["title_exit"] = Set(GE::Math::Vector3(winSize.x - 300, center.y + 300, 0.0f), { 300,100,0 }, GE::Color::White(), "texture_exit");
 	object["title_name"] = Set(GE::Math::Vector3(1500, winSize.y / 2 - 220.0f, 0.0f), { 1319 / 2.0f,642 / 2.0f,0 }, GE::Color::White(), "texture_title");
 #pragma endregion
 
@@ -234,8 +236,9 @@ void ScreenUIManager::SampleSceneUpdate(float deltaTime)
 		TitleMenuActive(true);
 		//横からフェードイン
 		object["title_start"].transform.position = GE::Math::Vector3::Lerp(GE::Math::Vector3(winSize.x + 1000, center.y, 0.0f), GE::Math::Vector3(winSize.x - 300, center.y, 0.0f), SetLerp("title_start", 5.0f, addCount));
-		object["title_option"].transform.position = GE::Math::Vector3::Lerp(GE::Math::Vector3(winSize.x + 1000, center.y + 100, 0.0f), GE::Math::Vector3(winSize.x - 300, center.y + 100, 0.0f), SetLerp("title_option", 6.0f, addCount));
-		object["title_exit"].transform.position = GE::Math::Vector3::Lerp(GE::Math::Vector3(winSize.x + 1000, center.y + 200, 0.0f), GE::Math::Vector3(winSize.x - 300, center.y + 200, 0.0f), SetLerp("title_exit", 7.0f, addCount));
+		object["title_endless"].transform.position = GE::Math::Vector3::Lerp(GE::Math::Vector3(winSize.x + 1000, center.y + 100, 0.0f), GE::Math::Vector3(winSize.x - 300, center.y + 100, 0.0f), SetLerp("title_endless", 6.0f, addCount));
+		object["title_option"].transform.position = GE::Math::Vector3::Lerp(GE::Math::Vector3(winSize.x + 1000, center.y + 200, 0.0f), GE::Math::Vector3(winSize.x - 300, center.y + 200, 0.0f), SetLerp("title_option", 7.0f, addCount));
+		object["title_exit"].transform.position = GE::Math::Vector3::Lerp(GE::Math::Vector3(winSize.x + 1000, center.y + 300, 0.0f), GE::Math::Vector3(winSize.x - 300, center.y + 300, 0.0f), SetLerp("title_exit", 8.0f, addCount));
 		if (PlayerComponent::isJoyconUsing) { object["push_b"].isDraw = true; }
 		else { object["push_space"].isDraw = true; }
 
@@ -304,6 +307,7 @@ void ScreenUIManager::SampleSceneUpdate(float deltaTime)
 			//タイトルメニューの遷移初期化
 			object["title_start"].lerpCount = 0.f;
 			object["title_option"].lerpCount = 0.f;
+			object["title_endless"].lerpCount = 0.f;
 			object["title_exit"].lerpCount = 0.f;
 			object["title_name"].lerpCount = 0.f;
 
@@ -331,6 +335,7 @@ void ScreenUIManager::SampleSceneUpdate(float deltaTime)
 	{
 		object["title_start"].color = GE::Color::White();
 		object["title_option"].color = GE::Color::White();
+		object["title_endless"].color = GE::Color::White();
 		object["title_exit"].color = GE::Color::White();
 
 		switch (Title::GetInstance()->states)
@@ -340,6 +345,9 @@ void ScreenUIManager::SampleSceneUpdate(float deltaTime)
 			break;
 		case Title::States::option:
 			object["title_option"].color = GE::Color::Red();
+			break;
+		case Title::States::endless:
+			object["title_endless"].color = GE::Color::Red();
 			break;
 		case Title::States::exit:
 			object["title_exit"].color = GE::Color::Red();

@@ -277,6 +277,10 @@ bool Game::LoadContents()
 	nullTexture = new Texture();
 	nullTexture->Load("crash_info_keyboard.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "crash_info_keyboard_tex");
+	
+	nullTexture = new Texture();
+	nullTexture->Load("endless.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "endless_tex");
 
 	auto* testScene = sceneManager.AddScene(new SampleScene("SampleScene", sceneManager.GetSceneInitializer()));
 	sceneManager.AddScene(new Clear("ClearScene", sceneManager.GetSceneInitializer()));
