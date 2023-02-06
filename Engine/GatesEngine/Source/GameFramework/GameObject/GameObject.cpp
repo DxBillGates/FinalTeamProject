@@ -82,6 +82,7 @@ void GE::GameObject::DrawShadow()
 void GE::GameObject::Draw()
 {
 	graphicsDevice->SetCurrentRenderQueue();
+	graphicsDevice->SetLayer("resultLayer");
 
 	for (auto& component : components)
 	{
@@ -142,6 +143,7 @@ void GE::GameObject::OnDestroy()
 	{
 		component->OnDestroy();
 	}
+	delete this;
 }
 
 void GE::GameObject::Destroy()

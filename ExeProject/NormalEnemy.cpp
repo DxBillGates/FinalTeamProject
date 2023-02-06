@@ -82,6 +82,7 @@ void NormalEnemy::Draw()
 {
 	if (statas != Statas::ALIVE) { return; }
 
+	graphicsDevice->SetLayer("effectLayer");
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
 	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
 

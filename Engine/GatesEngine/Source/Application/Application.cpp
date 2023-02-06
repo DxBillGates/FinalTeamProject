@@ -327,9 +327,17 @@ bool GE::Application::LoadContents()
 
 	RenderTexture* resultRenderTexture = new RenderTexture();
 	DepthTexture* resultDepthTexture = new DepthTexture();
-	resultRenderTexture->Create(device, shaderResourceHeap, mainWindow.GetWindowSize(), Color::Blue());
+	resultRenderTexture->Create(device, shaderResourceHeap, mainWindow.GetWindowSize(), Color::Black());
 	resultDepthTexture->Create(device, shaderResourceHeap, mainWindow.GetWindowSize());
 	layerManager->Add(new Layer(resultRenderTexture, resultDepthTexture), "resultLayer");
+
+	RenderTexture* effectRenderTexture = new RenderTexture();
+	//DepthTexture* effectDepthTexture = new DepthTexture();
+	effectRenderTexture->Create(device, shaderResourceHeap, mainWindow.GetWindowSize(), Color::Black());
+	//effectDepthTexture->Create(device, shaderResourceHeap, mainWindow.GetWindowSize());
+	Layer* effectLayer = new Layer(effectRenderTexture, resultDepthTexture);
+	effectLayer->SetDontDeleteTextureFlag(false, true);
+	layerManager->Add(effectLayer, "effectLayer");
 
 	RenderTexture* shadowRenderTexture = new RenderTexture();
 	DepthTexture* shadowDepthTexture = new DepthTexture();

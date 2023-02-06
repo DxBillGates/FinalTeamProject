@@ -47,7 +47,7 @@ void BirdEnemy::Update(float deltaTime)
 void BirdEnemy::Draw()
 {
 	if (statas == Statas::DEAD) { return; }
-
+	graphicsDevice->SetLayer("effectLayer");
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
 	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
 

@@ -3,7 +3,7 @@
 #include "..\..\GUI\Hierarchy.h"
 #include "..\..\GUI\Inspector.h"
 #include <vector>
-#include <map>
+#include <unordered_map>
 
 namespace GE
 {
@@ -11,12 +11,13 @@ namespace GE
 	{
 	private:
 		// key : É^ÉO
-		std::map<std::string, std::vector<GameObject*>> gameObjects;
+		std::unordered_map<std::string, std::vector<GameObject*>> managedTagGameObjects;
+		std::vector<GameObject*> gameObjects;
 
 		GUI::Hierarchy hierarchyGui;
 		GUI::Inspector inspectorGui;
 
-		std::map<std::string, std::vector<GameObject*>> destroyGameObjects;
+		int destroyGameObjectCount;
 	private:
 		void Destroy();
 	public:
@@ -29,7 +30,7 @@ namespace GE
 		void Draw();
 		void LateDraw();
 
-		std::map<std::string, std::vector<GameObject*>>* GetManager();
+		std::unordered_map<std::string, std::vector<GameObject*>>* GetManager();
 		GameObject* AddGameObject(GameObject* newGameObject);
 		GameObject* FindGameObject(const std::string& name);
 		GameObject* FindGameObjectWithTag(const std::string& name, const std::string& tag);

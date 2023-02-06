@@ -2,7 +2,7 @@
 #include "ICollider.h"
 
 #include <string>
-#include <map>
+#include <unordered_map>
 #include <vector>
 
 namespace GE
@@ -10,14 +10,14 @@ namespace GE
 	class CollisionManager
 	{
 	private:
-		std::map<std::string, std::vector<std::string>> collisionTagCombination;
-		std::map<std::string, std::vector<GameObject*>>* pGameObjects;
+		std::unordered_map<std::string, std::vector<std::string>> collisionTagCombination;
+		std::unordered_map<std::string, std::vector<GameObject*>>* pGameObjects;
 	private:
 		void CollisionCheck(std::vector<GameObject*>* firstTagGameObjects, std::vector<GameObject*>* secondTagGameObjects);
 		static Math::Vector3 CheckClosestPoint(const Math::Vector3& point, const Triangle& triangle);
 	public:
 		void AddTagCombination(const std::string& tag1, const std::string& tag2);
-		void SetGameObjectManager(std::map<std::string, std::vector<GameObject*>>* pManager);
+		void SetGameObjectManager(std::unordered_map<std::string, std::vector<GameObject*>>* pManager);
 
 		void Update();
 
