@@ -11,12 +11,13 @@ namespace GE
 	{
 	private:
 		// key : É^ÉO
-		std::unordered_map<std::string, std::vector<GameObject*>> gameObjects;
+		std::unordered_map<std::string, std::vector<GameObject*>> managedTagGameObjects;
+		std::vector<GameObject*> gameObjects;
 
 		GUI::Hierarchy hierarchyGui;
 		GUI::Inspector inspectorGui;
 
-		std::unordered_map<std::string, std::vector<GameObject*>> destroyGameObjects;
+		int destroyGameObjectCount;
 	private:
 		void Destroy();
 	public:

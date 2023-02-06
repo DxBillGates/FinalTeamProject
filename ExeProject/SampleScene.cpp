@@ -165,6 +165,10 @@ void SampleScene::LateDraw()
 
 void SampleScene::Load()
 {
+	FieldObjectDebugTransform::GetInstance()->SetInputDevice(inputDevice);
+	FieldObjectDebugTransform::GetInstance()->SetGraphicsDevice(graphicsDevice);
+	FieldObjectManager::GetInstance()->LoadPosition("Resources/tree.txt");
+	FieldObjectManager::GetInstance()->Start(&gameObjectManager);
 	{
 		auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject("Player", "player"));
 		auto* sampleComponent = testObject->AddComponent<PlayerComponent>();
@@ -196,10 +200,7 @@ void SampleScene::Load()
 
 	EnemyManager::GetInstance()->LoadPosition("Resources/enemies.txt");
 	EnemyManager::GetInstance()->Start(&gameObjectManager);
-	FieldObjectDebugTransform::GetInstance()->SetInputDevice(inputDevice);
-	FieldObjectDebugTransform::GetInstance()->SetGraphicsDevice(graphicsDevice);
-	FieldObjectManager::GetInstance()->LoadPosition("Resources/tree.txt");
-	FieldObjectManager::GetInstance()->Start(&gameObjectManager);
+
 	/*FieldObjectManager::GetInstance()->SetGroundMesh(groundModel);
 	FieldObjectManager::GetInstance()->SetStartTreeMesh(startTreeModel);*/
 	TimeLimit::GetInstance()->TimeSet = { 3,0 };
