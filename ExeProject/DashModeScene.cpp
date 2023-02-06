@@ -152,6 +152,9 @@ void DashModeScene::LateDraw()
 
 void DashModeScene::Load()
 {
+	PlayerComponent::dashMode = true;
+	FieldObjectManager::GetInstance()->LoadPosition("Resources/tree.txt");
+	FieldObjectManager::GetInstance()->Start(&gameObjectManager);
 	{
 		auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject("Player", "player"));
 		auto* sampleComponent = testObject->AddComponent<PlayerComponent>();
@@ -160,12 +163,8 @@ void DashModeScene::Load()
 		playerCollider->SetCenter({ 0,0,0 });
 		playerCollider->SetSize({ 20 });
 	}
-	PlayerComponent::dashMode = true;
-
 	EnemyManager::GetInstance()->LoadPosition("Resources/dashModeEnemies.txt");
 	EnemyManager::GetInstance()->Start(&gameObjectManager, true);
-	FieldObjectManager::GetInstance()->LoadPosition("Resources/tree.txt");
-	FieldObjectManager::GetInstance()->Start(&gameObjectManager);
 	TimeLimit::GetInstance()->TimeSet = { 0,10 };
 	TimeLimit::GetInstance()->Start(&gameObjectManager);
 

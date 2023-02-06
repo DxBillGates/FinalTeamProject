@@ -147,9 +147,10 @@
     <ClCompile Include="VolumetricCloud.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
-    <ClCompile Include="DashModeScene.cpp">
-		</ClCompile>
     <ClCompile Include="OverChild.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="DashModeScene.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -241,9 +242,10 @@
     <ClInclude Include="VolumetricCloud.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
-    <ClInclude Include="DashModeScene.h">
-    </ClInclude>
     <ClInclude Include="OverChild.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="DashModeScene.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
   </ItemGroup>
