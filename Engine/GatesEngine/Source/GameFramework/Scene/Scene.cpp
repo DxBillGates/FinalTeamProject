@@ -19,6 +19,8 @@ GE::Scene::Scene(const std::string& sceneName)
 	, blurThreshold(0)
 {
 	collisionManager.SetGameObjectManager(gameObjectManager.GetManager());
+	changeSceneInfo.sceneTransitionFadein.SetMaxTimeProperty(1);
+	changeSceneInfo.sceneTransitionFadeout.SetMaxTimeProperty(1);
 }
 
 GE::Scene::Scene(const std::string& sceneName, const SceneInitializer& initializer)

@@ -42,7 +42,7 @@ void GE::SceneManager::Update(float deltaTime)
 	if (!changeSceneInfo.flag)return;
 	if (changeSceneInfo.flag && beforeChangeSceneFlag == false)
 	{
-		changeSceneInfo.sceneTransitionFadeout.SetMaxTimeProperty(1);
+		//changeSceneInfo.sceneTransitionFadeout.SetMaxTimeProperty(1);
 		changeSceneInfo.sceneTransitionFadeout.SetFlag(true);
 	}
 	if (changeSceneInfo.sceneTransitionFadeout.GetOverTimeTrigger())
