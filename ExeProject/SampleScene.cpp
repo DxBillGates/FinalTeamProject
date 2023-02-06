@@ -57,7 +57,7 @@ void SampleScene::Initialize()
 	ScreenUIManager::GetInstance()->SampleSceneStart();
 
 	changeSceneInfo.sceneTransitionFadein.SetMaxTimeProperty(2);
-	changeSceneInfo.sceneTransitionFadeout.SetMaxTimeProperty(0.5f);
+	changeSceneInfo.sceneTransitionFadeout.SetMaxTimeProperty(0.2f);
 }
 
 void SampleScene::Update(float deltaTime)
