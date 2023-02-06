@@ -55,6 +55,7 @@ void SampleScene::Initialize()
 	gameObjectManager.Start();
 	UIObject::GetInstance()->SampleSceneStart();
 	ScreenUIManager::GetInstance()->SampleSceneStart();
+	ScreenUIManager::GetInstance()->SetAudioManager(audioManager);
 
 	changeSceneInfo.sceneTransitionFadein.SetMaxTimeProperty(2);
 	changeSceneInfo.sceneTransitionFadeout.SetMaxTimeProperty(0.2f);

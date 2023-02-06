@@ -153,10 +153,14 @@ bool Game::LoadContents()
 		auto* audio = audioManager.AddAudio(new GE::Audio(audioData, "hine1"));
 		audio->SetVolume(0.2f);
 	}
-	//Œø‰Ê‰¹hine
+	//Œø‰Ê‰¹click
 	{
 		auto* audioData = audioManager.AddAudioData(new GE::AudioData("Resources/Audio/click.wav"), "click");
 		auto* audio = audioManager.AddAudio(new GE::Audio(audioData, "click"));
+		audio->SetVolume(0.4f);
+		audio = audioManager.AddAudio(new GE::Audio(audioData, "click"));
+		audio->SetVolume(0.4f);
+		audio = audioManager.AddAudio(new GE::Audio(audioData, "click"));
 		audio->SetVolume(0.4f);
 	}
 
@@ -284,6 +288,10 @@ bool Game::LoadContents()
 	nullTexture = new Texture();
 	nullTexture->Load("crash_info_keyboard.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "crash_info_keyboard_tex");
+	
+	nullTexture = new Texture();
+	nullTexture->Load("keyboard_info.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "keyboard_info_tex");
 	
 	nullTexture = new Texture();
 	nullTexture->Load("endless.png", device, shaderResourceHeap);

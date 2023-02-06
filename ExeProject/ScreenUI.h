@@ -1,5 +1,6 @@
 #pragma once
 #include <GatesEngine/Header/GameFramework/Component/Component.h>
+#include <GatesEngine/Header/Audio/AudioManager.h>
 
 
 class ScreenUIManager
@@ -16,9 +17,12 @@ public:
 		GE::Math::Vector2 clipSize = { 1 };
 
 		float lerpCount = 0.0f;
+		bool isLerp;
 	};
 	GE::Math::Vector2 viveVelocity;
 private:
+	GE::AudioManager* audioManager;
+
 	struct  LoadObj
 	{
 		GE::Math::Vector3 pos;
@@ -63,5 +67,6 @@ private:
 	void TitleMenuActive(bool isActive);
 	//オプションメニューを描画するか
 	void OptionMenuActive(bool isActive);
-
+public:
+	void SetAudioManager(GE::AudioManager* a);
 };

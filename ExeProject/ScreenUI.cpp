@@ -58,15 +58,25 @@ void ScreenUIManager::OptionMenuActive(bool isActive)
 	object["option_right"].isDraw = isActive;
 	object["option_left"].isDraw = isActive;
 }
+void ScreenUIManager::SetAudioManager(GE::AudioManager* a)
+{
+	audioManager = a;
+}
 float ScreenUIManager::SetLerp(std::string name, float lerpTime, float deltaTime)
 {
 	if (object[name].lerpCount < lerpTime)
 	{
 		object[name].lerpCount += deltaTime;
+		object[name].isLerp = true;
 		return object[name].lerpCount / lerpTime;
 	}
 	else
 	{
+		if (object[name].isLerp)
+		{
+			audioManager->Use("click")->Start();
+		}
+		object[name].isLerp = false;
 		return 1.0f;
 	}
 }
@@ -102,7 +112,6 @@ void ScreenUIManager::SampleSceneStart()
 	object["time_tenSeconds"] = Set(GE::Math::Vector3(240, 950, 0.0f), { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
 	object["time_oneSeconds"] = Set(GE::Math::Vector3(340, 950, 0.0f), { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
 #pragma endregion
-
 	object["crash"] = Set(GE::Math::Vector3(center.x, center.y - 150.f, 0.f), { 400,100,0 }, GE::Color::White(), "crash_info_tex");
 	object["crash_keyboard"] = Set(GE::Math::Vector3(center.x, center.y - 150.f, 0.f), { 400,70,0 }, GE::Color::White(), "crash_info_keyboard_tex");
 	object["lockon_info"] = Set(GE::Math::Vector3(217, 600, 0.0f), GE::Math::Vector3(600, 64, 0) * 0.6f, GE::Color::White(), "lockon_info_tex");
@@ -141,6 +150,8 @@ void ScreenUIManager::DashModeStart()
 	object["time_oneSeconds"] = Set(GE::Math::Vector3(340, 950, 0.0f), { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
 #pragma endregion
 
+	object["keyboard_info"] = Set(GE::Math::Vector3(winSize.x - 300, center.y + 100, 0.0f), GE::Math::Vector3(386, 64, 0), GE::Color::White(), "keyboard_info_tex");
+
 	//‘JˆÚ‚Ì’l‰Šú‰»
 	for (auto o : object)
 	{
@@ -152,7 +163,6 @@ void ScreenUIManager::SampleSceneUpdate(float deltaTime)
 	const float f = 144.0f / (1.0f / deltaTime);
 	const float addCount = 0.1f * f;
 	GE::Math::Vector3 vive = Vivlate(f);
-
 	//Title
 	TitleMenuActive(false);
 
@@ -168,11 +178,9 @@ void ScreenUIManager::SampleSceneUpdate(float deltaTime)
 	object["push_b"].isDraw = false;
 	object["push_space"].isDraw = false;
 
-
 	TimeLimitActive(f);
 	if (TimeLimit::GetInstance()->GetLimit())
 	{
-
 		object["time_minutes"].color = GE::Color::Red();
 		object["time_minutes"].transform.scale += TimeLimit::GetInstance()->GetTScale();
 		if (object["time_minutes"].transform.scale.x < 100)
@@ -298,7 +306,7 @@ void ScreenUIManager::SampleSceneUpdate(float deltaTime)
 		object["se_info"].transform.position = GE::Math::Vector3::Lerp(GE::Math::Vector3(winSize.x + 700, center.y + 100, 0.0f), GE::Math::Vector3(winSize.x - 605, center.y + 100, 0.0f), SetLerp("se_num", 6.0f, addCount));
 
 		if (Option::select == Option::Select::SE_VOL) { object["se_num"].color = GE::Color::Red(); }
-		object["option_back"].transform.position = GE::Math::Vector3::Lerp(GE::Math::Vector3(winSize.x + 1000, center.y + 200, 0.0f), GE::Math::Vector3(winSize.x - 300, center.y + 200, 0.0f), SetLerp("option_back", 7.0f, addCount));
+		object["option_back"].transform.position = GE::Math::Vector3::Lerp(GE::Math::Vector3(winSize.x + 1000, center.y + 200, 0.0f), GE::Math::Vector3(winSize.x - 300, center.y + 200, 0.0f), SetLerp("option_back", 5.0f, addCount));
 		if (Option::select == Option::Select::Back)
 		{
 			object["option_back"].color = GE::Color::Red();
@@ -368,6 +376,7 @@ void ScreenUIManager::DashModeUpdate(float deltaTime)
 	GE::Math::Vector3 comboNumPos = GE::Math::Vector3(1300, winSize.y / 2 - 220.0f, 0.0f);
 
 	TimeLimitActive(f);
+	object["keyboard_info"].isDraw = false;
 
 	if (PlayerComponent::combo != 0)
 	{
@@ -398,6 +407,9 @@ void ScreenUIManager::DashModeUpdate(float deltaTime)
 	case PlayerComponent::PlayerStatas::TITLE:
 		object["take_info"].isDraw = false;
 		object["take_one"].isDraw = false;
+		object["keyboard_info"].isDraw = true;
+		viveVelocity = { 20,20 };
+		object["keyboard_info"].transform.position = GE::Math::Vector3(winSize.x - 300, center.y + 100, 0.0f) + Vivlate(f);
 
 		break;
 	case PlayerComponent::PlayerStatas::TITLE_MENU:
