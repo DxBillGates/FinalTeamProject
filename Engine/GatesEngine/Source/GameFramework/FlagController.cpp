@@ -25,7 +25,8 @@ void GE::FlagController::Update(float deltaTime)
 	if (!flag)return;
 
 	preElapsedTime = elapsedTime;
-	float addValue = deltaTime / PROPERTY_MAX_TIME;
+
+	float addValue = deltaTime * 1.0f / PROPERTY_MAX_TIME;
 	elapsedTime += addValue;
 }
 
