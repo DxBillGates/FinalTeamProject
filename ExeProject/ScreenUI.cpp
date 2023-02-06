@@ -242,11 +242,14 @@ void ScreenUIManager::SampleSceneUpdate(float deltaTime)
 	case PlayerComponent::PlayerStatas::TITLE_MENU:
 		//タイトル描画
 		TitleMenuActive(true);
-		//横からフェードイン
-		object["title_start"].transform.position = GE::Math::Vector3::Lerp(GE::Math::Vector3(winSize.x + 1000, center.y, 0.0f), GE::Math::Vector3(winSize.x - 300, center.y, 0.0f), SetLerp("title_start", 5.0f, addCount));
-		object["title_endless"].transform.position = GE::Math::Vector3::Lerp(GE::Math::Vector3(winSize.x + 1000, center.y + 100, 0.0f), GE::Math::Vector3(winSize.x - 300, center.y + 100, 0.0f), SetLerp("title_endless", 6.0f, addCount));
-		object["title_option"].transform.position = GE::Math::Vector3::Lerp(GE::Math::Vector3(winSize.x + 1000, center.y + 200, 0.0f), GE::Math::Vector3(winSize.x - 300, center.y + 200, 0.0f), SetLerp("title_option", 7.0f, addCount));
-		object["title_exit"].transform.position = GE::Math::Vector3::Lerp(GE::Math::Vector3(winSize.x + 1000, center.y + 300, 0.0f), GE::Math::Vector3(winSize.x - 300, center.y + 300, 0.0f), SetLerp("title_exit", 8.0f, addCount));
+		if (!Title::GetInstance()->GetSelect(Title::States::option))
+		{
+			//横からフェードイン
+			object["title_start"].transform.position = GE::Math::Vector3::Lerp(GE::Math::Vector3(winSize.x + 1000, center.y, 0.0f), GE::Math::Vector3(winSize.x - 300, center.y, 0.0f), SetLerp("title_start", 5.0f, addCount));
+			object["title_endless"].transform.position = GE::Math::Vector3::Lerp(GE::Math::Vector3(winSize.x + 1000, center.y + 100, 0.0f), GE::Math::Vector3(winSize.x - 300, center.y + 100, 0.0f), SetLerp("title_endless", 6.0f, addCount));
+			object["title_option"].transform.position = GE::Math::Vector3::Lerp(GE::Math::Vector3(winSize.x + 1000, center.y + 200, 0.0f), GE::Math::Vector3(winSize.x - 300, center.y + 200, 0.0f), SetLerp("title_option", 7.0f, addCount));
+			object["title_exit"].transform.position = GE::Math::Vector3::Lerp(GE::Math::Vector3(winSize.x + 1000, center.y + 300, 0.0f), GE::Math::Vector3(winSize.x - 300, center.y + 300, 0.0f), SetLerp("title_exit", 8.0f, addCount));
+		}
 		if (PlayerComponent::isJoyconUsing) { object["push_b"].isDraw = true; }
 		else { object["push_space"].isDraw = true; }
 
@@ -318,7 +321,6 @@ void ScreenUIManager::SampleSceneUpdate(float deltaTime)
 			object["title_endless"].lerpCount = 0.f;
 			object["title_exit"].lerpCount = 0.f;
 			object["title_name"].lerpCount = 0.f;
-
 		}
 		else
 		{

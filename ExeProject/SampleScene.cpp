@@ -63,8 +63,12 @@ void SampleScene::Initialize()
 
 void SampleScene::Update(float deltaTime)
 {
-	audioManager->Get("testBGM", 0)->Start();
-
+		audioManager->Get("natsunoyama1", 0)->Start();
+	if (PlayerComponent::statas != PlayerComponent::PlayerStatas::TITLE && PlayerComponent::statas != PlayerComponent::PlayerStatas::TITLE_MENU)
+	{
+		audioManager->Get("testBGM", 0)->Start();
+		audioManager->Get("natsunoyama1", 0)->SetVolume(0.1f);
+	}
 
 	GE::Math::Vector3 directionalLightAngle = { directionalLight->GetAngle().x,directionalLight->GetAngle().y,0 };
 	directionalLightAngle.x += GE::GameSetting::Time::GetDeltaTime();
