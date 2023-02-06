@@ -151,8 +151,8 @@ void SampleScene::Draw()
 	graphicsDevice->SetLayer("resultLayer");
 	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
 	directionalLight->SetDirectionalLightInfo();
-	gameObjectManager.Draw();
 	FieldObjectManager::GetInstance()->OtherDraw();
+	gameObjectManager.Draw();
 	FieldObjectDebugTransform::GetInstance()->Draw();
 	UIObject::GetInstance()->Draw(graphicsDevice);
 }

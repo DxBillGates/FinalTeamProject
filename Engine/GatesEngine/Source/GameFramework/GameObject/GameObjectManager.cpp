@@ -98,7 +98,7 @@ void GE::GameObjectManager::Destroy()
 	auto removeIfResult = std::remove_if(gameObjects.begin(), gameObjects.end(), [](GameObject* object)
 		{
 			bool isDestroy = object->IsDestroy();
-			object->OnDestroy();
+			if (isDestroy)object->OnDestroy();
 			return isDestroy;
 		});
 	gameObjects.erase(removeIfResult, gameObjects.end());
@@ -196,7 +196,6 @@ void GE::GameObjectManager::DestroyGameObjects()
 	for (auto it = gameObjects.begin(); it != gameObjects.end();)
 	{
 		(*it)->OnDestroy();
-		delete *it;
 		it = gameObjects.erase(it);
 	}
 

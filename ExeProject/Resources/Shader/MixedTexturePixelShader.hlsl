@@ -39,8 +39,9 @@ float4 main(DefaultSpriteVSOutput input) : SV_TARGET
 	float4 effectLayerColor = effectLayerTexture.Sample(clampLinearSampler, input.uv);
 	float effectLayerDepth = effectLayerDepthTexture.Sample(clampLinearSampler, input.uv);
 
-
-	resultColor.rgb = defaultLayerDepth > effectLayerDepth ? effectLayerColor : defaultLayerColor;
+	resultColor = length(effectLayerColor.rgb) != 0 ? effectLayerColor : defaultLayerColor;
+	//resultColor += defaultLayerColor + effectLayerColor;
+	//resultColor.rgb = defaultLayerDepth > effectLayerDepth ? effectLayerColor : defaultLayerColor;
 
 	blur.rgb += blurLayerTexture1.Sample(clampLinearSampler, input.uv);
 	blur.rgb += blurLayerTexture2.Sample(clampLinearSampler, input.uv);
@@ -57,7 +58,8 @@ float4 main(DefaultSpriteVSOutput input) : SV_TARGET
 	float4 nearColor = dofLayerTexture1.Sample(clampLinearSampler, input.uv);
 	float4 farColor  = dofLayerTexture2.Sample(clampLinearSampler,input.uv);
 	float4 dof = (1 - near) * pintColor + near * ((1 - far) * nearColor + far * farColor);
+	resultColor = length(effectLayerColor.rgb) != 0 ? effectLayerColor : dof;
 
-	return /*dof + */blur + resultColor;
+	return blur + resultColor/* + dof*/;
 	return float4((resultColor.rgb + blur.rgb),1);
 }

@@ -143,6 +143,7 @@ void GE::GameObject::OnDestroy()
 	{
 		component->OnDestroy();
 	}
+	delete this;
 }
 
 void GE::GameObject::Destroy()

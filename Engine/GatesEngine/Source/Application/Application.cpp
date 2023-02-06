@@ -332,11 +332,11 @@ bool GE::Application::LoadContents()
 	layerManager->Add(new Layer(resultRenderTexture, resultDepthTexture), "resultLayer");
 
 	RenderTexture* effectRenderTexture = new RenderTexture();
-	DepthTexture* effectDepthTexture = new DepthTexture();
+	//DepthTexture* effectDepthTexture = new DepthTexture();
 	effectRenderTexture->Create(device, shaderResourceHeap, mainWindow.GetWindowSize(), Color::Black());
-	effectDepthTexture->Create(device, shaderResourceHeap, mainWindow.GetWindowSize());
-	Layer* effectLayer = new Layer(effectRenderTexture, effectDepthTexture);
-	//effectLayer->SetDontDeleteTextureFlag(false, true);
+	//effectDepthTexture->Create(device, shaderResourceHeap, mainWindow.GetWindowSize());
+	Layer* effectLayer = new Layer(effectRenderTexture, resultDepthTexture);
+	effectLayer->SetDontDeleteTextureFlag(false, true);
 	layerManager->Add(effectLayer, "effectLayer");
 
 	RenderTexture* shadowRenderTexture = new RenderTexture();
