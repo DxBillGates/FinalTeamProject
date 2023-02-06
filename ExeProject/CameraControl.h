@@ -25,6 +25,8 @@ private:
 	//カメラのブレ用
 	float count;
 
+	GE::Math::Vector3 dashModeLerp;//エンドレスに切り替えた時のカメラ遷移
+
 public:
 	static CameraControl* GetInstance();
 

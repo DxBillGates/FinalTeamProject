@@ -1,5 +1,6 @@
 #include "CameraControl.h"
 #include "PlayerComponent.h"
+#include "Title.h"
 #include "Clear.h"
 #include "Over.h"
 #include <GatesEngine/Header\GameFramework/GameSetting.h>
@@ -27,12 +28,31 @@ void CameraControl::Initialize()
 
 	range = {};
 	cameraShake = {};
+	dashModeLerp = {};
 
-	graphicsDevice->GetMainCamera()->SetPosition({ 37750,600,15000 });
+	if (PlayerComponent::dashMode)
+	{
+		graphicsDevice->GetMainCamera()->SetPosition({ 10000,4600,-60000 });
+	}
+	else
+	{
+		graphicsDevice->GetMainCamera()->SetPosition({ 37750,600,15000 });
+	}
 }
 
 void CameraControl::Update(float deltaTime)
 {
+	if (PlayerComponent::dashMode)
+	{
+		dashModeLerp = {};
+	}
+	else
+	{
+		if (Title::GetInstance()->GetSelect(Title::States::endless))
+		{
+			dashModeLerp += targetObject->GetTransform()->GetRight() * 1000;
+		}
+	}
 	if (PlayerComponent::statas == PlayerComponent::PlayerStatas::DEBUG)return;
 	float LERP_VALUE = 0.01f * GE::GameSetting::Time::GetGameTime() * deltaTime;
 	UIObject::GetInstance()->cameraPosition = position;
@@ -87,12 +107,12 @@ void CameraControl::Update(float deltaTime)
 		count += 0.01f * deltaTime;
 
 		//’Ž‹“_
-		target = targetObject->GetTransform()->position + targetObject->GetTransform()->GetRight() * 2000 + wind;
+		target = targetObject->GetTransform()->position + targetObject->GetTransform()->GetRight() * 2000 + wind + dashModeLerp;
 
 		newCameraPosition = target
 			- GE::Math::Vector3(targetObject->GetTransform()->GetForward().x * current_cameraDistance,
 				-300,
-				targetObject->GetTransform()->GetForward().z * current_cameraDistance);
+				targetObject->GetTransform()->GetForward().z * current_cameraDistance) + dashModeLerp;
 
 
 		direction = GE::Math::Vector3(target - position).Normalize();

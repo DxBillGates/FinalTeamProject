@@ -21,6 +21,7 @@ Game::Game()
 Game::Game(const GE::WindowData& windowData, const GE::Math::Vector2& resolution)
 	: Application(windowData, resolution)
 {
+
 }
 
 Game::Game(const GE::Math::Vector2& size, const GE::Math::Vector2& resolution, const std::string& title, GE::WindowMode mode)
@@ -151,6 +152,12 @@ bool Game::LoadContents()
 		auto* audioData = audioManager.AddAudioData(new GE::AudioData("Resources/Audio/hine.wav"), "hine1");
 		auto* audio = audioManager.AddAudio(new GE::Audio(audioData, "hine1"));
 		audio->SetVolume(0.2f);
+	}
+	//Œø‰Ê‰¹hine
+	{
+		auto* audioData = audioManager.AddAudioData(new GE::AudioData("Resources/Audio/click.wav"), "click");
+		auto* audio = audioManager.AddAudio(new GE::Audio(audioData, "click"));
+		audio->SetVolume(0.4f);
 	}
 
 	auto* textureManager = graphicsDevice.GetTextureManager();

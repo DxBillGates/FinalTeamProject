@@ -70,6 +70,8 @@ private:
 	GE::Math::Vector3 body_direction;				//体の向き計算用
 
 	GE::Math::Vector3 currentPosition;//巣に着陸するときのラープ用
+
+
 public:
 	enum class PlayerStatas
 	{
