@@ -82,6 +82,7 @@ void DashModeScene::Update(float deltaTime)
 		changeSceneInfo.name = "SampleScene";
 		changeSceneInfo.flag = true;
 		changeSceneInfo.initNextSceneFlag = true;
+		PlayerComponent::dashMode = false;
 	}
 
 	GE::Math::Matrix4x4 viewPort, proj, view;
@@ -107,7 +108,7 @@ void DashModeScene::Update(float deltaTime)
 	playerScreenPosition /= 2;
 	blurUV = { playerScreenPosition.x,playerScreenPosition.y };
 	blurSampling = 16;
-	blurThreshold = 0.3f;
+	blurThreshold = 0.1f;
 }
 
 void DashModeScene::Draw()

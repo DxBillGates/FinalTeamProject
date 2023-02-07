@@ -59,6 +59,8 @@ void SampleScene::Initialize()
 
 	changeSceneInfo.sceneTransitionFadein.SetMaxTimeProperty(2);
 	changeSceneInfo.sceneTransitionFadeout.SetMaxTimeProperty(0.2f);
+	audioManager->Get("natsunoyama1", 0)->SetVolume(0.4f);
+
 }
 
 void SampleScene::Update(float deltaTime)
@@ -123,7 +125,18 @@ void SampleScene::Update(float deltaTime)
 		EnemyManager::GetInstance()->SaveCurrentPosition("Resources/enemies.txt");
 		FieldObjectManager::GetInstance()->SaveCurrentPosition("Resources/tree.txt");
 	}
-
+	if (PlayerComponent::statas == PlayerComponent::PlayerStatas::TITLE_MENU)
+	{
+		if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::UP)
+			|| inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::W)
+			|| inputDevice->GetJoyconL()->GetTriggerButton(GE::JoyconButtonData::UP)
+			|| inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::DOWN)
+			|| inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::S)
+			|| inputDevice->GetJoyconL()->GetTriggerButton(GE::JoyconButtonData::DOWN))
+		{
+			audioManager->Use("click")->Start();
+		}
+	}
 	FieldObjectManager::GetInstance()->OtherUpdate();
 	FieldObjectDebugTransform::GetInstance()->Update();
 
