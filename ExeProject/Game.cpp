@@ -303,12 +303,6 @@ bool Game::LoadContents()
 	nullTexture->Load("endless.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "endless_tex");
 
-	auto* testScene = sceneManager.AddScene(new SampleScene("SampleScene", sceneManager.GetSceneInitializer()));
-	sceneManager.AddScene(new Clear("ClearScene", sceneManager.GetSceneInitializer()));
-	sceneManager.AddScene(new Over("OverScene", sceneManager.GetSceneInitializer()));
-	sceneManager.AddScene(new DashModeScene("DashModeScene", sceneManager.GetSceneInitializer()));
-	sceneManager.ChangeScene("SampleScene");
-
 	nullTexture = new Texture();
 	nullTexture->Load("Enemy_MiniMap.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "Enemy_MiniMap");
@@ -328,6 +322,16 @@ bool Game::LoadContents()
 	nullTexture = new Texture();
 	nullTexture->Load("combo_tex.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "combo_tex");
+	
+	nullTexture = new Texture();
+	nullTexture->Load("kurai.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "kurai_tex");
+
+	auto* testScene = sceneManager.AddScene(new SampleScene("SampleScene", sceneManager.GetSceneInitializer()));
+	sceneManager.AddScene(new Clear("ClearScene", sceneManager.GetSceneInitializer()));
+	sceneManager.AddScene(new Over("OverScene", sceneManager.GetSceneInitializer()));
+	sceneManager.AddScene(new DashModeScene("DashModeScene", sceneManager.GetSceneInitializer()));
+	sceneManager.ChangeScene("SampleScene");
 
 	return true;
 }

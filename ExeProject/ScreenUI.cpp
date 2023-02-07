@@ -135,8 +135,8 @@ void ScreenUIManager::SampleSceneStart()
 
 void ScreenUIManager::DashModeStart()
 {
-	object["combo"] = Set(GE::Math::Vector3(1500, winSize.y / 2 - 220.0f, 0.0f), { 256,128,0 }, GE::Color::White(), "combo_tex");
-	object["comboNum"] = Set(GE::Math::Vector3(1300, winSize.y / 2 - 220.0f, 0.0f), { 128,128,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
+	object["combo"] = Set(GE::Math::Vector3(1500, center.y - 220.0f, 0.0f), { 256,128,0 }, GE::Color::White(), "combo_tex");
+	object["comboNum"] = Set(GE::Math::Vector3(1300, center.y - 220.0f, 0.0f), { 128,128,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
 
 	object["take_info"] = Set(GE::Math::Vector3(217, 100, 0.0f), GE::Math::Vector3(400, 100, 0) * 0.6f, GE::Color::White(), "take_info_tex");
 	object["take_hnd"] = Set(GE::Math::Vector3(400, 100, 0.0f), { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
@@ -151,6 +151,23 @@ void ScreenUIManager::DashModeStart()
 #pragma endregion
 
 	object["keyboard_info"] = Set(GE::Math::Vector3(winSize.x - 300, center.y + 100, 0.0f), GE::Math::Vector3(386, 64, 0), GE::Color::White(), "keyboard_info_tex");
+
+	GE::Math::Vector3 scrPos = { 400,0,0 };
+	GE::Math::Vector3 kuraiPos = { 100,0,0 };
+	object["1st"] = Set(GE::Math::Vector3(center.x, center.y, 0.0f), { 100,100,0 }, { 0.8f,0.8f,0.0f,1.0f }, "texture_Number", { 320,64 }, { 32,64 });
+	object["1st"].pivotPos = 1;
+	object["1st_kurai"] = Set(object["1st"].transform.position + kuraiPos, { 100,100,0 }, { 0.8f,0.8f,0.0f,1.0f }, "kurai_tex");
+	object["1st_score"] = Set(object["1st"].transform.position + scrPos, { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
+
+	object["2nd"] = Set(GE::Math::Vector3(center.x, center.y + 100, 0.0f), { 100,100,0 }, { 0.8f,0.8f ,0.8f ,1.0f }, "texture_Number", { 320,64 }, { 32,64 });
+	object["2nd"].pivotPos = 2;
+	object["2nd_kurai"] = Set(object["2nd"].transform.position + kuraiPos, { 100,100,0 }, { 0.8f,0.8f,0.8f,1.0f }, "kurai_tex");
+	object["2nd_score"] = Set(object["2nd"].transform.position + scrPos, { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
+
+	object["3rd"] = Set(GE::Math::Vector3(center.x, center.y + 200, 0.0f), { 100,100,0 }, { 0.5f,0.2f,0.2f,1.0f }, "texture_Number", { 320,64 }, { 32,64 });
+	object["3rd"].pivotPos = 3;
+	object["3rd_kurai"] = Set(object["3rd"].transform.position + kuraiPos, { 100,100,0 }, { 0.5f,0.2f,0.2f,1.0f }, "kurai_tex");
+	object["3rd_score"] = Set(object["3rd"].transform.position + scrPos, { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
 
 	//ëJà⁄ÇÃílèâä˙âª
 	for (auto o : object)
@@ -393,6 +410,15 @@ void ScreenUIManager::DashModeUpdate(float deltaTime)
 		object["combo"].isDraw = false;
 		object["comboNum"].isDraw = false;
 	}
+	object["1st"].isDraw = false;
+	object["1st_score"].isDraw = false;
+	object["1st_kurai"].isDraw = false;
+	object["2nd"].isDraw = false;
+	object["2nd_score"].isDraw = false;
+	object["2nd_kurai"].isDraw = false;
+	object["3rd"].isDraw = false;
+	object["3rd_score"].isDraw = false;
+	object["3rd_kurai"].isDraw = false;
 
 	object["take_info"].isDraw = true;
 	object["take_ten"].isDraw = true;
@@ -417,6 +443,17 @@ void ScreenUIManager::DashModeUpdate(float deltaTime)
 	case PlayerComponent::PlayerStatas::TITLE_MENU:
 		object["take_info"].isDraw = false;
 		object["take_one"].isDraw = false;
+		break;
+	case PlayerComponent::PlayerStatas::OVER:
+		object["1st"].isDraw = true;
+		object["1st_score"].isDraw = true;
+		object["1st_kurai"].isDraw = true;
+		object["2nd"].isDraw = true;
+		object["2nd_score"].isDraw = true;
+		object["2nd_kurai"].isDraw = true;
+		object["3rd"].isDraw = true;
+		object["3rd_score"].isDraw = true;
+		object["3rd_kurai"].isDraw = true;
 		break;
 	}
 

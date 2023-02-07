@@ -153,6 +153,9 @@
     <ClCompile Include="DashModeScene.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Ranking.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BirdEnemy.h">
@@ -246,6 +249,9 @@
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
     <ClInclude Include="DashModeScene.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Ranking.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
   </ItemGroup>

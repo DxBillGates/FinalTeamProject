@@ -75,8 +75,8 @@ void DashModeScene::Update(float deltaTime)
 		}
 	}
 
-	if (PlayerComponent::statas == PlayerComponent::PlayerStatas::OVER
-		|| enemyDead
+	if (//PlayerComponent::statas == PlayerComponent::PlayerStatas::OVER||
+		enemyDead
 		|| TimeLimit::GetInstance()->GetTimeOver())
 	{
 		changeSceneInfo.name = "SampleScene";
