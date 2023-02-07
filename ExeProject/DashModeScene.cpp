@@ -137,10 +137,10 @@ void DashModeScene::Draw()
 	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
 	directionalLight->SetDirectionalLightInfo();
 
+	FieldObjectManager::GetInstance()->OtherDraw();
 	gameObjectManager.Draw();
 	FieldObjectDebugTransform::GetInstance()->Draw();
 	UIObject::GetInstance()->Draw(graphicsDevice);
-	FieldObjectManager::GetInstance()->OtherDraw();
 
 }
 
