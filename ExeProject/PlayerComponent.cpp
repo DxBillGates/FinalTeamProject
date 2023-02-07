@@ -101,7 +101,7 @@ void PlayerComponent::Update(float deltaTime)
 
 	crashParticle.Update(f);
 
-	InputManager::GetInstance()->Update();
+	InputManager::GetInstance()->Update(deltaTime);
 	const auto& cameraInfo = graphicsDevice->GetMainCamera()->GetCameraInfo();
 	GE::Math::GetScreenToRay(center, &rayPos, &rayDir, cameraInfo.viewMatrix, cameraInfo.projMatrix, GE::Math::Matrix4x4::GetViewportMatrix(GE::Window::GetWindowSize()));
 
@@ -404,8 +404,7 @@ void PlayerComponent::Control(float deltaTime)
 	case PlayerComponent::PlayerStatas::TITLE:
 
 		transform->position = FieldObjectManager::GetInstance()->StartPosition + onTheTreePosition;
-		if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE)
-			|| inputDevice->GetJoyconR()->GetTriggerButton(GE::JoyconButtonData::B))
+		if (InputManager::GetInstance()->GetActionButton())
 		{
 			statas = PlayerStatas::TITLE_MENU;
 			Title::GetInstance()->isActive = true;

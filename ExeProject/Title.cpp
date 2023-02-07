@@ -1,5 +1,6 @@
 #include <GatesEngine/Header/Util/Utility.h          >
 #include <GatesEngine/Header/Graphics\Window.h       >
+#include "InputManager.h"
 
 #include "Title.h"
 #include"PlayerComponent.h"
@@ -46,17 +47,14 @@ void Title::Select()
 	}
 
 	int a;
+	auto inputManager = InputManager::GetInstance();
 	//上下選択(スタート,オプション、exit
-	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::UP)
-		|| inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::W)
-		|| inputDevice->GetJoyconL()->GetTriggerButton(GE::JoyconButtonData::UP))
+	if (inputManager->GetTriggerDirection().y >= 1)
 	{
 		a = ((int)states + ((int)States::serectNum - 1)) % (int)States::serectNum;
 		states = (Title::States)a;
 	}
-	else if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::DOWN)
-		|| inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::S)
-		|| inputDevice->GetJoyconL()->GetTriggerButton(GE::JoyconButtonData::DOWN))
+	else if (inputManager->GetTriggerDirection().y <= -1)
 	{
 		a = ((int)states + 1) % (int)States::serectNum;
 		states = (Title::States)a;
@@ -81,8 +79,7 @@ void Title::Select()
 	//}
 
 	//決定
-	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE)
-		|| inputDevice->GetJoyconR()->GetTriggerButton(GE::JoyconButtonData::B))
+	if (inputManager->GetActionButton())
 	{
 		switch (states)
 		{

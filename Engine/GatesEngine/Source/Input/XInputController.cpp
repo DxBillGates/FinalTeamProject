@@ -103,7 +103,6 @@ bool GE::XInputController::CheckHitButtonTrigger(XInputControllerButton button)
 	{
 		if (ctrlState.Gamepad.bLeftTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD)
 		{
-			oldKey[14].flag = true;
 			return true;
 		}
 	}
@@ -111,7 +110,6 @@ bool GE::XInputController::CheckHitButtonTrigger(XInputControllerButton button)
 	{
 		if (ctrlState.Gamepad.bRightTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD)
 		{
-			oldKey[15].flag = true;
 			return true;
 		}
 	}
@@ -124,7 +122,6 @@ bool GE::XInputController::CheckHitButtonTrigger(XInputControllerButton button)
 
 		if (ctrlState.Gamepad.wButtons & (int)button)
 		{
-			oldKey[i].flag = true;
 			return true;
 		}
 	}

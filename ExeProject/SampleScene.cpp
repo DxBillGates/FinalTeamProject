@@ -21,6 +21,7 @@
 #include <GatesEngine/External/DirectXTex/DirectXTex.h>
 #include "VolumetricCloud.h"
 #include "PlayerColectObject.h"
+#include "InputManager.h"
 
 SampleScene::SampleScene()
 	: SampleScene("SampleScene")
@@ -127,12 +128,7 @@ void SampleScene::Update(float deltaTime)
 	}
 	if (PlayerComponent::statas == PlayerComponent::PlayerStatas::TITLE_MENU)
 	{
-		if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::UP)
-			|| inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::W)
-			|| inputDevice->GetJoyconL()->GetTriggerButton(GE::JoyconButtonData::UP)
-			|| inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::DOWN)
-			|| inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::S)
-			|| inputDevice->GetJoyconL()->GetTriggerButton(GE::JoyconButtonData::DOWN))
+		if (InputManager::GetInstance()->GetTriggerDirection().y != 0)
 		{
 			audioManager->Use("click")->Start();
 		}

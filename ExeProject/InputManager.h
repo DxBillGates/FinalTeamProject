@@ -1,6 +1,8 @@
 #pragma once
 #include <GatesEngine/Header/Input/InputDevice.h>
 #include <GatesEngine/Header/Util/Math/Math.h>
+#include <GatesEngine/Header/Graphics/IGraphicsDeviceDx12.h>
+#include <GatesEngine/Header/GameFramework/FlagController.h>
 
 class InputManager
 {
@@ -30,11 +32,13 @@ private:
 
 	InputDeviceState currentInputDeviceState;
 
+	GE::FlagController isChangedInputDeviceFlagController;
+
 public:
 	static InputManager* GetInstance();
 
 	void Initialize();
-	void Update();
+	void Update(float deltaTime);
 
 	/// <summary>
 	/// 
@@ -60,6 +64,8 @@ public:
 	/// <returns></returns>
 	Vector3 GetDirection();
 
+	Vector3 GetTriggerDirection();
+
 	/// <summary>
 	/// キーボードのSPACE / XコントローラーのA / ジョイコンのB or 加速度センサー
 	/// </summary>
@@ -77,6 +83,8 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	InputDeviceState GetCurrentInputDeviceState();
+
+	void Draw(GE::IGraphicsDeviceDx12* graphicsDevice);
 private:
 	InputManager();
 	InputManager(const InputManager&) = delete;
