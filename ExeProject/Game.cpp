@@ -674,18 +674,15 @@ bool Game::Draw()
 	renderQueue->AddSetShaderResource({ 18,graphicsDevice.GetLayerManager()->Get("shadowLayer")->GetDepthTexture()->GetSRVNumber() });
 	graphicsDevice.DrawMesh("2DPlane");
 
-	YamadaPostEffect();
-
 	graphicsDevice.SetShaderResourceDescriptorHeap();
 	graphicsDevice.SetCurrentRenderQueue(false);
-#ifdef _DEBUG
-	graphicsDevice.SetLayer("finalPostEffectLayer");
-#else
-	graphicsDevice.SetDefaultRenderTarget();
-#endif // _DEBUG
+
+	graphicsDevice.SetLayer("MainLayer");
 	sceneManager.LateDraw();
 	InputManager::GetInstance()->Draw(&graphicsDevice);
 	graphicsDevice.ExecuteRenderQueue();
+
+	YamadaPostEffect();
 
 #ifdef _DEBUG
 	//graphicsDevice.SetLayer("MainLayer");
