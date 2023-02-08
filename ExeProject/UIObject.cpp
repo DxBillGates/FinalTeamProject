@@ -6,6 +6,7 @@
 #include"UIObject.h"
 #include"FieldObjectManager.h"
 #include"PlayerComponent.h"
+#include "InputManager.h"
 
 UIObject* UIObject::GetInstance()
 {
@@ -49,7 +50,9 @@ void UIObject::SampleSceneStart()
 	object["colectMax"] = AddAnimaiotnObject({}, { 250 }, GE::Color(1, 1, 1, 1), "texture_Number", { 320,64 }, { 32,64 }, { 1,0 });
 	object["control_info"] = AddObject({}, { 768,1,384 }, GE::Color(1, 1, 1, 1), "control_info_1_tex");
 	object["control_info_keyboard"] = AddObject({}, { 512,1,384 }, GE::Color(1, 1, 1, 1), "control_info_keyboard_tex");
+	object["control_info_xctrl"] = AddObject({}, { 512,1,384 }, GE::Color(1, 1, 1, 1), "control_info_xctrl_tex");
 
+	object["control_info_xctrl"].isDraw = true;
 	object["control_info_keyboard"].isDraw = true;
 	object["control_info"].isDraw = true;
 	object["colect"].isDraw = false;
@@ -88,6 +91,11 @@ void UIObject::SampleSceneUpdate(float deltaTime)
 	object["control_info"].isDraw = false;
 	object["control_info_keyboard"].transform.position = object["colectMax"].transform.position + infoPos + GE::Math::Vector3(0, -310, 0);
 	object["control_info_keyboard"].isDraw = false;
+	object["control_info_xctrl"].transform.position = object["colectMax"].transform.position + infoPos + GE::Math::Vector3(0, -310, 0);
+	object["control_info_xctrl"].isDraw = false;
+
+	auto inputManager = InputManager::GetInstance();
+	auto inputDeviceState = inputManager->GetCurrentInputDeviceState();
 
 	switch (PlayerComponent::statas)
 	{
@@ -96,14 +104,19 @@ void UIObject::SampleSceneUpdate(float deltaTime)
 	case PlayerComponent::PlayerStatas::TITLE_MENU:
 		break;
 	case PlayerComponent::PlayerStatas::STAY_TREE:
-		if (PlayerComponent::isJoyconUsing)
+		if (inputDeviceState == InputManager::InputDeviceState::JOYCON)
 		{
 			object["control_info"].isDraw = true;	//ê‡ñæUI
 		}
-		else
+		else if (inputDeviceState == InputManager::InputDeviceState::KEYBOARD)
 		{
 			object["control_info_keyboard"].isDraw = true;	//ê‡ñæUI
 		}
+		else if (inputDeviceState == InputManager::InputDeviceState::XCTRL)
+		{
+			object["control_info_xctrl"].isDraw = true;	//ê‡ñæUI
+		}
+
 		object["colect"].isDraw = true;
 		object["symbol"].isDraw = true;
 		object["colectMax"].isDraw = true;

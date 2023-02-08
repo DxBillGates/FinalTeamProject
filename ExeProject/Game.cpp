@@ -350,6 +350,24 @@ bool Game::LoadContents()
 	nullTexture->Load("joycon.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "joycon_tex");
 
+	nullTexture = new Texture();
+	nullTexture->Load("control_info_1_xctrl.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "control_info_xctrl_tex");
+
+	nullTexture = new Texture();
+	nullTexture->Load("crash_info_xctrl.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "clash_info_xctrl_tex");
+
+	nullTexture = new Texture();
+	nullTexture->Load("lockon_info_xctrl.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "lockon_info_xctrl_tex");
+
+	nullTexture = new Texture();
+	nullTexture->Load("push_a.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "push_a_tex");
+
+	
+
 	return true;
 }
 
