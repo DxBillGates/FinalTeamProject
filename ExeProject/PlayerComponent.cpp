@@ -15,6 +15,7 @@
 #include "TimeLimit.h"
 #include "PlayerColectObject.h"
 #include "ScreenUI.h"
+#include "Ranking.h"
 
 float PlayerComponent::frameRate;
 PlayerComponent::PlayerStatas PlayerComponent::statas;
@@ -279,6 +280,8 @@ void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 				crashParticle.Fire(transform->position, gameObject->GetHitNormal(), other->GetColor());
 				statas = PlayerStatas::OVER;
 				dashMode = false;
+				//スコアセット
+				Ranking::GetInstance()->SetRanking(takeEnemyCount);
 				return;
 
 			}
@@ -542,7 +545,8 @@ void PlayerComponent::Control(float deltaTime)
 			}
 		}
 		break;
-	default:
+	case PlayerComponent::PlayerStatas::OVER:
+
 		break;
 	}
 	if (statas != PlayerStatas::TITLE && statas != PlayerStatas::CRASH)

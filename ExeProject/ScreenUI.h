@@ -67,6 +67,8 @@ private:
 	void TitleMenuActive(bool isActive);
 	//オプションメニューを描画するか
 	void OptionMenuActive(bool isActive);
+	//リザルトを描画するか
+	void ResultActive(bool isActive);
 public:
 	void SetAudioManager(GE::AudioManager* a);
 };

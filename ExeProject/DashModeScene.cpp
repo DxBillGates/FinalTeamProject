@@ -13,6 +13,7 @@
 #include"FieldObjectManager.h"
 #include"EnemyManager.h"
 #include"TimeLimit.h"
+#include"Ranking.h"
 #include <GatesEngine/External/DirectXTex/DirectXTex.h>
 #include "PlayerColectObject.h"
 #include <GatesEngine/External/imgui/imgui.h>
@@ -43,6 +44,7 @@ void DashModeScene::Initialize()
 	//directionalLight->GetAngle() = { 10,190 };
 	ScreenUIManager::GetInstance()->DashModeStart();
 	UIObject::GetInstance()->DashModeStart();
+	Ranking::GetInstance()->Start();
 }
 
 void DashModeScene::Update(float deltaTime)
@@ -57,7 +59,6 @@ void DashModeScene::Update(float deltaTime)
 		inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::S))
 	{
 		EnemyManager::GetInstance()->SaveCurrentPosition("Resources/dashModeEnemies.txt");
-		//FieldObjectManager::GetInstance()->SaveCurrentPosition("Resources/tree.txt");
 	}
 
 	FieldObjectManager::GetInstance()->OtherUpdate();
@@ -75,7 +76,7 @@ void DashModeScene::Update(float deltaTime)
 		}
 	}
 
-	if (//PlayerComponent::statas == PlayerComponent::PlayerStatas::OVER||
+	if ((PlayerComponent::statas == PlayerComponent::PlayerStatas::OVER && inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE)) ||
 		enemyDead
 		|| TimeLimit::GetInstance()->GetTimeOver())
 	{

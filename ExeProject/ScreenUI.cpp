@@ -10,6 +10,7 @@
 #include"Option.h"
 #include"Title.h"
 #include"TimeLimit.h"
+#include"Ranking.h"
 
 ScreenUIManager* ScreenUIManager::GetInstance()
 {
@@ -57,6 +58,25 @@ void ScreenUIManager::OptionMenuActive(bool isActive)
 	object["option_back"].isDraw = isActive;
 	object["option_right"].isDraw = isActive;
 	object["option_left"].isDraw = isActive;
+}
+void ScreenUIManager::ResultActive(bool isActive)
+{
+	object["1st"].isDraw = isActive;
+	object["1st_score_one"].isDraw = isActive;
+	object["1st_score_ten"].isDraw = isActive;
+	object["1st_score_hnd"].isDraw = isActive;
+	object["1st_kurai"].isDraw = isActive;
+	object["2nd"].isDraw = isActive;
+	object["2nd_score_one"].isDraw = isActive;
+	object["2nd_score_ten"].isDraw = isActive;
+	object["2nd_score_hnd"].isDraw = isActive;
+	object["2nd_kurai"].isDraw = isActive;
+	object["3rd"].isDraw = isActive;
+	object["3rd_score_one"].isDraw = isActive;
+	object["3rd_score_ten"].isDraw = isActive;
+	object["3rd_score_hnd"].isDraw = isActive;
+	object["3rd_kurai"].isDraw = isActive;
+
 }
 void ScreenUIManager::SetAudioManager(GE::AudioManager* a)
 {
@@ -152,22 +172,28 @@ void ScreenUIManager::DashModeStart()
 
 	object["keyboard_info"] = Set(GE::Math::Vector3(winSize.x - 300, center.y + 100, 0.0f), GE::Math::Vector3(386, 64, 0), GE::Color::White(), "keyboard_info_tex");
 
-	GE::Math::Vector3 scrPos = { 400,0,0 };
+	GE::Math::Vector3 scrPos = { 600,0,0 };
 	GE::Math::Vector3 kuraiPos = { 100,0,0 };
 	object["1st"] = Set(GE::Math::Vector3(center.x, center.y, 0.0f), { 100,100,0 }, { 0.8f,0.8f,0.0f,1.0f }, "texture_Number", { 320,64 }, { 32,64 });
 	object["1st"].pivotPos = 1;
 	object["1st_kurai"] = Set(object["1st"].transform.position + kuraiPos, { 100,100,0 }, { 0.8f,0.8f,0.0f,1.0f }, "kurai_tex");
-	object["1st_score"] = Set(object["1st"].transform.position + scrPos, { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
+	object["1st_score_one"] = Set(object["1st"].transform.position + scrPos, { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
+	object["1st_score_ten"] = Set(object["1st"].transform.position + scrPos / 1.2f, { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
+	object["1st_score_hnd"] = Set(object["1st"].transform.position + scrPos / 1.5f, { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
 
 	object["2nd"] = Set(GE::Math::Vector3(center.x, center.y + 100, 0.0f), { 100,100,0 }, { 0.8f,0.8f ,0.8f ,1.0f }, "texture_Number", { 320,64 }, { 32,64 });
 	object["2nd"].pivotPos = 2;
 	object["2nd_kurai"] = Set(object["2nd"].transform.position + kuraiPos, { 100,100,0 }, { 0.8f,0.8f,0.8f,1.0f }, "kurai_tex");
-	object["2nd_score"] = Set(object["2nd"].transform.position + scrPos, { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
+	object["2nd_score_one"] = Set(object["2nd"].transform.position + scrPos, { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
+	object["2nd_score_ten"] = Set(object["2nd"].transform.position + scrPos / 1.2f, { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
+	object["2nd_score_hnd"] = Set(object["2nd"].transform.position + scrPos / 1.5f, { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
 
 	object["3rd"] = Set(GE::Math::Vector3(center.x, center.y + 200, 0.0f), { 100,100,0 }, { 0.5f,0.2f,0.2f,1.0f }, "texture_Number", { 320,64 }, { 32,64 });
 	object["3rd"].pivotPos = 3;
 	object["3rd_kurai"] = Set(object["3rd"].transform.position + kuraiPos, { 100,100,0 }, { 0.5f,0.2f,0.2f,1.0f }, "kurai_tex");
-	object["3rd_score"] = Set(object["3rd"].transform.position + scrPos, { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
+	object["3rd_score_one"] = Set(object["3rd"].transform.position + scrPos, { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
+	object["3rd_score_ten"] = Set(object["3rd"].transform.position + scrPos / 1.2f, { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
+	object["3rd_score_hnd"] = Set(object["3rd"].transform.position + scrPos / 1.5f, { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
 
 	//‘JˆÚ‚Ì’l‰Šú‰»
 	for (auto o : object)
@@ -410,16 +436,7 @@ void ScreenUIManager::DashModeUpdate(float deltaTime)
 		object["combo"].isDraw = false;
 		object["comboNum"].isDraw = false;
 	}
-	object["1st"].isDraw = false;
-	object["1st_score"].isDraw = false;
-	object["1st_kurai"].isDraw = false;
-	object["2nd"].isDraw = false;
-	object["2nd_score"].isDraw = false;
-	object["2nd_kurai"].isDraw = false;
-	object["3rd"].isDraw = false;
-	object["3rd_score"].isDraw = false;
-	object["3rd_kurai"].isDraw = false;
-
+	ResultActive(false);
 	object["take_info"].isDraw = true;
 	object["take_ten"].isDraw = true;
 	object["take_hnd"].isDraw = true;
@@ -445,15 +462,16 @@ void ScreenUIManager::DashModeUpdate(float deltaTime)
 		object["take_one"].isDraw = false;
 		break;
 	case PlayerComponent::PlayerStatas::OVER:
-		object["1st"].isDraw = true;
-		object["1st_score"].isDraw = true;
-		object["1st_kurai"].isDraw = true;
-		object["2nd"].isDraw = true;
-		object["2nd_score"].isDraw = true;
-		object["2nd_kurai"].isDraw = true;
-		object["3rd"].isDraw = true;
-		object["3rd_score"].isDraw = true;
-		object["3rd_kurai"].isDraw = true;
+		ResultActive(true);
+		object["1st_score_one"].pivotPos = Ranking::GetInstance()->score[0] % 10;
+		object["1st_score_ten"].pivotPos = (int)(Ranking::GetInstance()->score[0] / 10);
+		object["1st_score_hnd"].pivotPos = (int)(Ranking::GetInstance()->score[0] / 100);
+		object["2nd_score_one"].pivotPos = Ranking::GetInstance()->score[1];
+		object["2nd_score_ten"].pivotPos = (int)(Ranking::GetInstance()->score[1] / 10);
+		object["2nd_score_hnd"].pivotPos = (int)(Ranking::GetInstance()->score[1] / 100);
+		object["3rd_score_one"].pivotPos = Ranking::GetInstance()->score[2];
+		object["3rd_score_ten"].pivotPos = (int)(Ranking::GetInstance()->score[2] / 10);
+		object["3rd_score_hnd"].pivotPos = (int)(Ranking::GetInstance()->score[2] / 100);
 		break;
 	}
 
