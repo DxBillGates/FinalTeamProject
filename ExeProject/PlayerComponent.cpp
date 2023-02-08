@@ -531,6 +531,8 @@ void PlayerComponent::Control(float deltaTime)
 			PlayerColectObject::GetInstance()->ClearObject();
 			//’…—¤
 			statas = PlayerStatas::STAY_TREE;
+			//—‚ª‚È‚­
+			audioManager->Use("hine1")->Start();
 		}
 		break;
 	case PlayerComponent::PlayerStatas::STAY_TREE:

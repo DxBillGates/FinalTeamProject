@@ -331,6 +331,10 @@ bool Game::LoadContents()
 	nullTexture = new Texture();
 	nullTexture->Load("ranking_info.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "ranking_info_tex");
+	
+	nullTexture = new Texture();
+	nullTexture->Load("title_dashmode.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "title_dashmode_tex");
 
 	auto* testScene = sceneManager.AddScene(new SampleScene("SampleScene", sceneManager.GetSceneInitializer()));
 	sceneManager.AddScene(new Clear("ClearScene", sceneManager.GetSceneInitializer()));

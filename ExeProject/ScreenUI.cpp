@@ -121,11 +121,11 @@ void ScreenUIManager::SampleSceneStart()
 #pragma endregion
 
 #pragma region タイトル
+	object["title_name"] = Set(GE::Math::Vector3(1500, winSize.y / 2 - 220.0f, 0.0f), { 1319 / 2.0f,642 / 2.0f,0 }, GE::Color::White(), "texture_title");
 	object["title_start"] = Set(GE::Math::Vector3(winSize.x - 300, center.y, 0.0f), { 300,100,0 }, GE::Color::White(), "texture_start");
 	object["title_endless"] = Set(GE::Math::Vector3(winSize.x - 300, center.y + 100, 0.0f), { 300,100,0 }, GE::Color::White(), "endless_tex");
 	object["title_option"] = Set(GE::Math::Vector3(winSize.x - 300, center.y + 200, 0.0f), { 300,100,0 }, GE::Color::White(), "texture_option");
 	object["title_exit"] = Set(GE::Math::Vector3(winSize.x - 300, center.y + 300, 0.0f), { 300,100,0 }, GE::Color::White(), "texture_exit");
-	object["title_name"] = Set(GE::Math::Vector3(1500, winSize.y / 2 - 220.0f, 0.0f), { 1319 / 2.0f,642 / 2.0f,0 }, GE::Color::White(), "texture_title");
 #pragma endregion
 
 #pragma region タイムリミット
@@ -179,31 +179,35 @@ void ScreenUIManager::DashModeStart()
 #pragma endregion
 
 	object["keyboard_info"] = Set(GE::Math::Vector3(winSize.x - 300, center.y + 100, 0.0f), GE::Math::Vector3(386, 64, 0), GE::Color::White(), "keyboard_info_tex");
+#pragma region ランキング
 
 	GE::Math::Vector3 scrPos = { 600,0,0 };
 	GE::Math::Vector3 kuraiPos = { 100,0,0 };
 	object["ranking_info"] = Set(GE::Math::Vector3(center.x, center.y / 2.0f, 0.0f), { 256,64,0 }, GE::Color::White(), "ranking_info_tex");
 
-	object["1st"] = Set(GE::Math::Vector3(center.x, center.y, 0.0f), { 100,100,0 }, { 0.8f,0.8f,0.0f,1.0f }, "texture_Number", { 320,64 }, { 32,64 });
+	object["1st"] = Set(GE::Math::Vector3(center.x / 1.5f, center.y, 0.0f), { 100,100,0 }, { 0.8f,0.8f,0.0f,1.0f }, "texture_Number", { 320,64 }, { 32,64 });
 	object["1st"].pivotPos = 1;
 	object["1st_kurai"] = Set(object["1st"].transform.position + kuraiPos, { 100,100,0 }, { 0.8f,0.8f,0.0f,1.0f }, "kurai_tex");
 	object["1st_score_one"] = Set(object["1st"].transform.position + scrPos, { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
 	object["1st_score_ten"] = Set(object["1st"].transform.position + scrPos / 1.2f, { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
 	object["1st_score_hnd"] = Set(object["1st"].transform.position + scrPos / 1.5f, { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
 
-	object["2nd"] = Set(GE::Math::Vector3(center.x, center.y + 100, 0.0f), { 100,100,0 }, { 0.8f,0.8f ,0.8f ,1.0f }, "texture_Number", { 320,64 }, { 32,64 });
+	object["2nd"] = Set(GE::Math::Vector3(center.x / 1.5f, center.y + 100, 0.0f), { 100,100,0 }, { 0.8f,0.8f ,0.8f ,1.0f }, "texture_Number", { 320,64 }, { 32,64 });
 	object["2nd"].pivotPos = 2;
 	object["2nd_kurai"] = Set(object["2nd"].transform.position + kuraiPos, { 100,100,0 }, { 0.8f,0.8f,0.8f,1.0f }, "kurai_tex");
 	object["2nd_score_one"] = Set(object["2nd"].transform.position + scrPos, { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
 	object["2nd_score_ten"] = Set(object["2nd"].transform.position + scrPos / 1.2f, { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
 	object["2nd_score_hnd"] = Set(object["2nd"].transform.position + scrPos / 1.5f, { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
 
-	object["3rd"] = Set(GE::Math::Vector3(center.x, center.y + 200, 0.0f), { 100,100,0 }, { 0.5f,0.2f,0.2f,1.0f }, "texture_Number", { 320,64 }, { 32,64 });
+	object["3rd"] = Set(GE::Math::Vector3(center.x / 1.5f, center.y + 200, 0.0f), { 100,100,0 }, { 0.5f,0.2f,0.2f,1.0f }, "texture_Number", { 320,64 }, { 32,64 });
 	object["3rd"].pivotPos = 3;
 	object["3rd_kurai"] = Set(object["3rd"].transform.position + kuraiPos, { 100,100,0 }, { 0.5f,0.2f,0.2f,1.0f }, "kurai_tex");
 	object["3rd_score_one"] = Set(object["3rd"].transform.position + scrPos, { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
 	object["3rd_score_ten"] = Set(object["3rd"].transform.position + scrPos / 1.2f, { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
 	object["3rd_score_hnd"] = Set(object["3rd"].transform.position + scrPos / 1.5f, { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
+#pragma endregion
+
+	object["title_name"] = Set(GE::Math::Vector3(1500, winSize.y / 2 - 220.0f, 0.0f), { 1319 / 2.0f,642 / 2.0f,0 }, GE::Color::White(), "title_dashmode_tex");
 
 	//遷移の値初期化
 	for (auto o : object)
@@ -452,6 +456,7 @@ void ScreenUIManager::DashModeUpdate(float deltaTime)
 	GE::Math::Vector3 comboNumPos = GE::Math::Vector3(1300, winSize.y / 2 - 220.0f, 0.0f);
 	TimeLimitActive(f);
 	object["keyboard_info"].isDraw = false;
+	object["title_name"].isDraw = false;
 
 	if (PlayerComponent::combo != 0)
 	{
@@ -460,7 +465,7 @@ void ScreenUIManager::DashModeUpdate(float deltaTime)
 		object["combo"].transform.position = comboPos + vive;
 		object["comboNum"].transform.position = comboNumPos + vive;
 		object["comboNum"].pivotPos = PlayerComponent::combo;
-		
+
 		object["combo"].color = GE::Color::White();
 		object["comboNum"].color = GE::Color::White();
 		//コンボ時のカラー
@@ -500,6 +505,8 @@ void ScreenUIManager::DashModeUpdate(float deltaTime)
 	switch (PlayerComponent::statas)
 	{
 	case PlayerComponent::PlayerStatas::TITLE:
+		object["title_name"].isDraw = true;
+
 		object["take_info"].isDraw = false;
 		object["take_one"].isDraw = false;
 		object["keyboard_info"].isDraw = true;
@@ -529,8 +536,6 @@ void ScreenUIManager::DashModeUpdate(float deltaTime)
 		object["time_oneSeconds"].isDraw = false;
 		break;
 	}
-
-
 }
 
 void ScreenUIManager::TimeLimitActive(float deltaTime)
