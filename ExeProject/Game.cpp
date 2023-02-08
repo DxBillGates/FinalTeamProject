@@ -613,12 +613,12 @@ bool Game::Draw()
 	graphicsDevice.ExecuteRenderQueue();
 	graphicsDevice.ExecuteCommands();
 
-	//graphicsDevice.SetCurrentRenderQueue(false);
-	//graphicsDevice.SetLayer("defaultLayer");
-	//graphicsDevice.SetShaderResourceDescriptorHeap();
-	//sceneManager.LateDraw();
-	//graphicsDevice.ExecuteRenderQueue();
-	//graphicsDevice.ExecuteCommands();
+	graphicsDevice.SetCurrentRenderQueue(false);
+	graphicsDevice.SetLayer("defaultLayer");
+	graphicsDevice.SetShaderResourceDescriptorHeap();
+	sceneManager.LateDraw();
+	graphicsDevice.ExecuteRenderQueue();
+	graphicsDevice.ExecuteCommands();
 
 	// ƒuƒ‰[‚µ‚½Œ‹‰Ê‚ðŒ³‰æ‘œ‚É‡¬
 	graphicsDevice.SetCurrentRenderQueue(true);
@@ -672,16 +672,16 @@ bool Game::Draw()
 
 	YamadaPostEffect();
 
-	graphicsDevice.SetShaderResourceDescriptorHeap();
-	graphicsDevice.SetCurrentRenderQueue(false);
-#ifdef _DEBUG
-	graphicsDevice.SetLayer("finalPostEffectLayer");
-#else
-	graphicsDevice.SetDefaultRenderTarget();
-#endif // _DEBUG
-	sceneManager.LateDraw();
-	InputManager::GetInstance()->Draw(&graphicsDevice);
-	graphicsDevice.ExecuteRenderQueue();
+//	graphicsDevice.SetShaderResourceDescriptorHeap();
+//	graphicsDevice.SetCurrentRenderQueue(false);
+//#ifdef _DEBUG
+//	graphicsDevice.SetLayer("finalPostEffectLayer");
+//#else
+//	graphicsDevice.SetDefaultRenderTarget();
+//#endif // _DEBUG
+//	sceneManager.LateDraw();
+//	InputManager::GetInstance()->Draw(&graphicsDevice);
+//	graphicsDevice.ExecuteRenderQueue();
 
 #ifdef _DEBUG
 	//graphicsDevice.SetLayer("MainLayer");
