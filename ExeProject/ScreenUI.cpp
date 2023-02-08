@@ -61,6 +61,7 @@ void ScreenUIManager::OptionMenuActive(bool isActive)
 }
 void ScreenUIManager::ResultActive(bool isActive)
 {
+	object["ranking_info"].isDraw = isActive;
 	object["1st"].isDraw = isActive;
 	object["1st_score_one"].isDraw = isActive;
 	object["1st_score_ten"].isDraw = isActive;
@@ -174,6 +175,8 @@ void ScreenUIManager::DashModeStart()
 
 	GE::Math::Vector3 scrPos = { 600,0,0 };
 	GE::Math::Vector3 kuraiPos = { 100,0,0 };
+	object["ranking_info"] = Set(GE::Math::Vector3(center.x, center.y / 2.0f, 0.0f), { 256,64,0 }, GE::Color::White(), "ranking_info_tex");
+
 	object["1st"] = Set(GE::Math::Vector3(center.x, center.y, 0.0f), { 100,100,0 }, { 0.8f,0.8f,0.0f,1.0f }, "texture_Number", { 320,64 }, { 32,64 });
 	object["1st"].pivotPos = 1;
 	object["1st_kurai"] = Set(object["1st"].transform.position + kuraiPos, { 100,100,0 }, { 0.8f,0.8f,0.0f,1.0f }, "kurai_tex");
@@ -419,7 +422,6 @@ void ScreenUIManager::DashModeUpdate(float deltaTime)
 	GE::Math::Vector3 vive = Vivlate(f);
 	GE::Math::Vector3 comboPos = GE::Math::Vector3(1500, winSize.y / 2 - 220.0f, 0.0f);
 	GE::Math::Vector3 comboNumPos = GE::Math::Vector3(1300, winSize.y / 2 - 220.0f, 0.0f);
-
 	TimeLimitActive(f);
 	object["keyboard_info"].isDraw = false;
 
@@ -472,6 +474,11 @@ void ScreenUIManager::DashModeUpdate(float deltaTime)
 		object["3rd_score_one"].pivotPos = Ranking::GetInstance()->score[2];
 		object["3rd_score_ten"].pivotPos = (int)(Ranking::GetInstance()->score[2] / 10);
 		object["3rd_score_hnd"].pivotPos = (int)(Ranking::GetInstance()->score[2] / 100);
+
+		object["time_minutes"].isDraw = false;
+		object["time_symbol"].isDraw = false;
+		object["time_tenSeconds"].isDraw = false;
+		object["time_oneSeconds"].isDraw = false;
 		break;
 	}
 

@@ -327,6 +327,10 @@ bool Game::LoadContents()
 	nullTexture = new Texture();
 	nullTexture->Load("kurai.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "kurai_tex");
+	
+	nullTexture = new Texture();
+	nullTexture->Load("ranking_info.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "ranking_info_tex");
 
 	auto* testScene = sceneManager.AddScene(new SampleScene("SampleScene", sceneManager.GetSceneInitializer()));
 	sceneManager.AddScene(new Clear("ClearScene", sceneManager.GetSceneInitializer()));

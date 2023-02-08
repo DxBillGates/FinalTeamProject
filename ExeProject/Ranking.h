@@ -12,6 +12,10 @@ public:
 	void Start();
 	void Update(float deltaTime);
 	void SetRanking(int currentScore);
+	//ファイルに保存されている座標取得
+	void LoadRanking(const std::string& filename);
+	//現在の座標をファイルに保存
+	void SaveRanking(const std::string& filename);
 	void UnLoad();
 private:
 	Ranking() = default;

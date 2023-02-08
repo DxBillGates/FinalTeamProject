@@ -447,5 +447,6 @@
     <Text Include="Resources\enemies.txt" />
     <Text Include="Resources\tree.txt" />
     <Text Include="Resources\dashModeEnemies.txt" />
+    <Text Include="Resources\dashmode_score.txt" />
   </ItemGroup>
 </Project>

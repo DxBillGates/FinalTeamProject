@@ -14,6 +14,7 @@
 #include"EnemyManager.h"
 #include"TimeLimit.h"
 #include"Ranking.h"
+#include"InputManager.h"
 #include <GatesEngine/External/DirectXTex/DirectXTex.h>
 #include "PlayerColectObject.h"
 #include <GatesEngine/External/imgui/imgui.h>
@@ -76,7 +77,7 @@ void DashModeScene::Update(float deltaTime)
 		}
 	}
 
-	if ((PlayerComponent::statas == PlayerComponent::PlayerStatas::OVER && inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE)) ||
+	if ((PlayerComponent::statas == PlayerComponent::PlayerStatas::OVER && InputManager::GetInstance()->GetActionButton()) ||
 		enemyDead
 		|| TimeLimit::GetInstance()->GetTimeOver())
 	{

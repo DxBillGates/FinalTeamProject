@@ -31,7 +31,7 @@ void MiniMapViewer::Update(float deltaTime)
 
 void MiniMapViewer::LateDraw()
 {
-	if (PlayerComponent::statas == PlayerComponent::PlayerStatas::TITLE || PlayerComponent::statas == PlayerComponent::PlayerStatas::TITLE_MENU)return;
+	if (PlayerComponent::statas == PlayerComponent::PlayerStatas::TITLE || PlayerComponent::statas == PlayerComponent::PlayerStatas::TITLE_MENU || PlayerComponent::statas == PlayerComponent::PlayerStatas::OVER)return;
 
 	miniMap.Draw();
 }
