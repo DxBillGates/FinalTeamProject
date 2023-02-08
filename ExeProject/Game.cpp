@@ -12,6 +12,7 @@
 #include "PlayerComponent.h"
 #include "Option.h"
 #include "Title.h"
+#include "InputManager.h"
 
 Game::Game()
 	: Application()
@@ -333,6 +334,18 @@ bool Game::LoadContents()
 	sceneManager.AddScene(new DashModeScene("DashModeScene", sceneManager.GetSceneInitializer()));
 	sceneManager.ChangeScene("SampleScene");
 
+	nullTexture = new Texture();
+	nullTexture->Load("keyboard.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "keyboard_tex");
+
+	nullTexture = new Texture();
+	nullTexture->Load("xinput.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "xinput_tex");
+
+	nullTexture = new Texture();
+	nullTexture->Load("joycon.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "joycon_tex");
+
 	return true;
 }
 
@@ -645,6 +658,7 @@ bool Game::Draw()
 	graphicsDevice.SetDefaultRenderTarget();
 #endif // _DEBUG
 	sceneManager.LateDraw();
+	InputManager::GetInstance()->Draw(&graphicsDevice);
 	graphicsDevice.ExecuteRenderQueue();
 
 #ifdef _DEBUG

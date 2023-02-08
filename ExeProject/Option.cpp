@@ -4,6 +4,7 @@
 #include <GatesEngine/Header/Util/Utility.h          >
 #include <GatesEngine/Header/Graphics\Window.h       >
 #include<GatesEngine/Header/Graphics/Texture.h>
+#include "InputManager.h"
 
 int OptionData::BGM_vol = 1;
 int OptionData::SE_vol = 3;
@@ -19,27 +20,22 @@ void Option::Awake(GE::GameObjectManager* gameObjectManager)
 
 void Option::KeySelect()
 {
+	auto inputManager = InputManager::GetInstance();
 	int a;
 	//•ÏX€–Ú‘I‘ð
-	if (GE::InputDevice::GetInstance()->GetKeyboard()->CheckPressTrigger(GE::Keys::UP)
-		|| GE::InputDevice::GetInstance()->GetKeyboard()->CheckPressTrigger(GE::Keys::W)
-		|| GE::InputDevice::GetInstance()->GetJoyconL()->GetTriggerButton(GE::JoyconButtonData::UP))
+	if (inputManager->GetTriggerDirection().y >= 1)
 	{
 		a = ((int)select + ((int)Select::SelectNum - 1)) % (int)Select::SelectNum;
 		select = (Select)a;
 	}
-	else if (GE::InputDevice::GetInstance()->GetKeyboard()->CheckPressTrigger(GE::Keys::DOWN)
-		|| GE::InputDevice::GetInstance()->GetKeyboard()->CheckPressTrigger(GE::Keys::S)
-		|| GE::InputDevice::GetInstance()->GetJoyconL()->GetTriggerButton(GE::JoyconButtonData::DOWN))
+	else if (inputManager->GetTriggerDirection().y <= -1)
 	{
 		a = ((int)select + 1) % (int)Select::SelectNum;
 		select = (Select)a;
 	}
 
 	//“à—e
-	if (GE::InputDevice::GetInstance()->GetKeyboard()->CheckPressTrigger(GE::Keys::LEFT)
-		|| GE::InputDevice::GetInstance()->GetKeyboard()->CheckPressTrigger(GE::Keys::A)
-		|| GE::InputDevice::GetInstance()->GetJoyconL()->GetTriggerButton(GE::JoyconButtonData::LEFT))
+	if (inputManager->GetTriggerDirection().x <= -1)
 	{
 		if (select == Select::BGM_VOL)
 		{
@@ -58,9 +54,7 @@ void Option::KeySelect()
 			}
 		}
 	}
-	else if (GE::InputDevice::GetInstance()->GetKeyboard()->CheckPressTrigger(GE::Keys::RIGHT)
-		|| GE::InputDevice::GetInstance()->GetKeyboard()->CheckPressTrigger(GE::Keys::D)
-		|| GE::InputDevice::GetInstance()->GetJoyconL()->GetTriggerButton(GE::JoyconButtonData::LEFT))
+	else if (inputManager->GetTriggerDirection().x >= 1)
 	{
 		if (select == Select::BGM_VOL)
 		{
@@ -85,10 +79,10 @@ void Option::KeySelect()
 
 void Option::Back()
 {
+	auto inputManager = InputManager::GetInstance();
 	if (select == Select::Back)
 	{
-		if (GE::InputDevice::GetInstance()->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE)
-			|| GE::InputDevice::GetInstance()->GetJoyconR()->GetTriggerButton(GE::JoyconButtonData::B))
+		if (inputManager->GetActionButton())
 
 		{
 			Title::GetInstance()->Back();

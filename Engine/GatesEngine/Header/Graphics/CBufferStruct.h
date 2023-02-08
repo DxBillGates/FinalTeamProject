@@ -33,7 +33,7 @@ namespace GE
 	{
 		Math::Vector4 ambient = { 0.25f };
 		Math::Vector4 diffuse = { 1 };
-		Math::Vector4 specular = { 50 };
+		Math::Vector4 specular = { 10 };
 		Color color = { 1 };
 	};
 
