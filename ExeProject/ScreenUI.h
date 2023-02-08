@@ -45,6 +45,7 @@ public:
 	void DashModeUpdate(float deltaTime);
 	void DrawSprite(GE::IGraphicsDeviceDx12* graphicsDevice);
 	void TimeLimitActive(float deltaTime);
+	void TimeLimitAddEffect();
 	GE::Math::Vector3 Vivlate(float deltaTime);
 	//ファイルに保存されている座標取得
 	void LoadPosition(const std::string& filename);

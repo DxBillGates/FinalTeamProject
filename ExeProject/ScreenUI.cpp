@@ -455,9 +455,21 @@ void ScreenUIManager::DashModeUpdate(float deltaTime)
 	GE::Math::Vector3 comboPos = GE::Math::Vector3(1500, winSize.y / 2 - 220.0f, 0.0f);
 	GE::Math::Vector3 comboNumPos = GE::Math::Vector3(1300, winSize.y / 2 - 220.0f, 0.0f);
 	TimeLimitActive(f);
+#pragma region éûä‘â¡éZÇÃââèo
+
+
+	object["time_tenSeconds"].transform.scale = GE::Math::Vector3(100, 100, 0) + GE::Math::Vector3(sin(object["time_tenSeconds"].lerpCount) * 30.f);
+	object["time_oneSeconds"].transform.scale = GE::Math::Vector3(100, 100, 0) + GE::Math::Vector3(sin(object["time_tenSeconds"].lerpCount) * 30.f);
+
+	object["time_tenSeconds"].lerpCount < 3.14f ? object["time_tenSeconds"].lerpCount += 0.1f * f : 0;
+	float col = GE::Math::Lerp(0.f, 1.f, object["time_tenSeconds"].lerpCount / 3.14f);
+	object["time_oneSeconds"].color = { col,1.f,col,1.f };
+	object["time_tenSeconds"].color = { col,1.f,col,1.f };
+
 	object["keyboard_info"].isDraw = false;
 	object["title_name"].isDraw = false;
 
+#pragma endregion
 	if (PlayerComponent::combo != 0)
 	{
 		object["combo"].isDraw = true;
@@ -566,6 +578,12 @@ void ScreenUIManager::TimeLimitActive(float deltaTime)
 		object["time_oneSeconds"].isDraw = false;
 		break;
 	}
+}
+void ScreenUIManager::TimeLimitAddEffect()
+{
+	object["time_oneSeconds"].lerpCount = 0.f;
+	object["time_tenSeconds"].lerpCount = 0.f;
+
 }
 void ScreenUIManager::DrawSprite(GE::IGraphicsDeviceDx12* graphicsDevice)
 {
