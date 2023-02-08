@@ -46,6 +46,8 @@ void DashModeScene::Initialize()
 	ScreenUIManager::GetInstance()->DashModeStart();
 	UIObject::GetInstance()->DashModeStart();
 	Ranking::GetInstance()->Start();
+
+	audioManager->Get("natsunoyama1", 0)->Stop();
 }
 
 void DashModeScene::Update(float deltaTime)
