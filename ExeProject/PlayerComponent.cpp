@@ -91,6 +91,15 @@ void PlayerComponent::Start()
 	combo = 0;
 	takeEnemyCount = 0;
 	lockonState = LockOnState::NONE;
+
+	if (dashMode)
+	{
+		hitStopTime = 20;
+	}
+	else
+	{
+		hitStopTime = 50;
+	}
 }
 void PlayerComponent::Update(float deltaTime)
 {
@@ -322,36 +331,42 @@ void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 	//GE::Utility::Printf("PlayerComponent OnCollisionEnter\n");
 	if (other->GetTag() == "enemy" || other->GetTag() == "frog")
 	{
-		if (!dashMode)
+		if (other->GetComponent<Enemy>()->statas == Enemy::Statas::ALIVE)
 		{
-
-			if (other == lockOnEnemy.object)
+			if (!dashMode)
 			{
-				lockOnEnemy.object = nullptr;
-				if (lockOnDashDirection.y < 0)
-					lockOnDashDirection = { transform->GetForward().x,-transform->GetForward().y ,transform->GetForward().z };
-			}
-			//収集物 +1
-			colectCount < colectMax ? colectCount++ : 0;
-			PlayerColectObject::GetInstance()->AddObject("model" + other->GetComponent<Enemy>()->modelName);
-		}
-		else
-		{
-			//コンボ加算と初期化
-			comboCount = 0.0f;
-			combo++;
-			takeEnemyCount++;
-			//パーティクル
-			crashParticle.Fire(transform->position, -transform->GetForward(), other->GetColor());
-			TimeLimit::GetInstance()->AddSeconds(combo);
-			//コンボUIシェイク！
-			ScreenUIManager::GetInstance()->viveVelocity = { 80,80 };
-		}
-		if (combo > 3) { audioManager->Use("jag")->Start(); }
-		else { audioManager->Use("catch2")->Start(); }
 
-		hitStopCount = 0.0f;
-		CameraControl::GetInstance()->ShakeStart({ 50,50 }, 30);
+				if (other == lockOnEnemy.object)
+				{
+					lockOnEnemy.object = nullptr;
+					if (lockOnDashDirection.y < 0)
+						lockOnDashDirection = { transform->GetForward().x,-transform->GetForward().y ,transform->GetForward().z };
+				}
+				//収集物 +1
+				colectCount < colectMax ? colectCount++ : 0;
+				PlayerColectObject::GetInstance()->AddObject("model" + other->GetComponent<Enemy>()->modelName);
+			}
+			else
+			{
+				//コンボ加算と初期化
+				comboCount = 0.0f;
+				combo++;
+				takeEnemyCount++;
+				//パーティクル
+				crashParticle.Fire(transform->position, -transform->GetForward(), other->GetColor());
+				if (TimeLimit::GetInstance()->GetTenSeconds() < 3)
+				{
+					TimeLimit::GetInstance()->AddSeconds(combo);
+				}
+				//コンボUIシェイク！
+				ScreenUIManager::GetInstance()->viveVelocity = { 80,80 };
+			}
+			if (combo > 3) { audioManager->Use("jag")->Start(); }
+			else { audioManager->Use("catch2")->Start(); }
+
+			hitStopCount = 0.0f;
+			CameraControl::GetInstance()->ShakeStart({ 30,30 }, 30);
+		}
 	}
 }
 

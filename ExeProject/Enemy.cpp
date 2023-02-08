@@ -16,7 +16,7 @@ void Enemy::Awake()
 
 void Enemy::Start()
 {
-	restInterval = 500.f;
+	restInterval = 2500.f;
 	restCount = restInterval;
 }
 

@@ -460,6 +460,26 @@ void ScreenUIManager::DashModeUpdate(float deltaTime)
 		object["combo"].transform.position = comboPos + vive;
 		object["comboNum"].transform.position = comboNumPos + vive;
 		object["comboNum"].pivotPos = PlayerComponent::combo;
+		
+		object["combo"].color = GE::Color::White();
+		object["comboNum"].color = GE::Color::White();
+		//コンボ時のカラー
+		switch (PlayerComponent::combo)
+		{
+		case 4:
+			object["combo"].color = { 0.8f,0.8f,0.0f,1.0f };
+			object["comboNum"].color = { 0.8f,0.8f,0.0f,1.0f };
+			break;
+		case 5:
+			object["combo"].color = { 1.f,0.5f,0.0f,1.0f };
+			object["comboNum"].color = { 1.f,0.5f,0.0f,1.0f };
+			break;
+		case 6:
+			object["combo"].color = GE::Color::Red();
+			object["comboNum"].color = GE::Color::Red();
+			break;
+		}
+
 	}
 	else
 	{
