@@ -8,6 +8,7 @@
 #include "OverChild.h"
 #include "StartTree.h"
 #include "FieldObject.h"
+#include "InputManager.h"
 
 bool Over::nowOver = false;
 float Over::CameraSpeed = 0.07f;
@@ -53,8 +54,7 @@ void Over::Update(float deltaTime)
 
 	gameObjectManager.Update(deltaTime);
 
-	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE)
-		|| inputDevice->GetJoyconR()->GetTriggerButton(GE::JoyconButtonData::B))
+	if (InputManager::GetInstance()->GetActionButton())
 	{
 		nowOver = false;
 		changeSceneInfo.name = "SampleScene";

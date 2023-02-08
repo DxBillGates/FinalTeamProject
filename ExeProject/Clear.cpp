@@ -9,6 +9,7 @@
 #include "ClearBird.h"
 #include"StartTree.h"
 #include"CameraControl.h"
+#include "InputManager.h"
 
 bool Clear::nowClear = false;
 
@@ -51,8 +52,7 @@ void Clear::Update(float deltaTime)
 
 	gameObjectManager.Update(deltaTime);
 
-	if (inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::SPACE)
-		|| inputDevice->GetJoyconR()->GetTriggerButton(GE::JoyconButtonData::B))
+	if (InputManager::GetInstance()->GetActionButton())
 	{
 		nowClear = false;
 		changeSceneInfo.name = "SampleScene";
