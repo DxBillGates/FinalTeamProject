@@ -1,5 +1,5 @@
-no1 6
-no2 1
-no3 0
+no1 10
+no2 6
+no3 1
 no4 0
 no5 0

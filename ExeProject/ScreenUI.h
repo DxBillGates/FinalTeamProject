@@ -33,6 +33,7 @@ private:
 		GE::Color col;
 	};
 	std::map<std::string, SpriteInfo> object;
+	std::map < std::string, GE::Math::Vector3 > pickup;
 
 	float a = 0.f;
 	GE::Math::Vector3 scrPos;

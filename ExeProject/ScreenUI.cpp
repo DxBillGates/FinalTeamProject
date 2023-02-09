@@ -311,10 +311,10 @@ void ScreenUIManager::SampleSceneUpdate(float deltaTime)
 		if (!Title::GetInstance()->GetSelect(Title::States::option))
 		{
 			//横からフェードイン
-			object["title_start"].transform.position = GE::Math::Vector3::Lerp(GE::Math::Vector3(winSize.x + 1000, center.y, 0.0f), GE::Math::Vector3(winSize.x - 300, center.y, 0.0f), SetLerp("title_start", 5.0f, addCount));
-			object["title_endless"].transform.position = GE::Math::Vector3::Lerp(GE::Math::Vector3(winSize.x + 1000, center.y + 100, 0.0f), GE::Math::Vector3(winSize.x - 300, center.y + 100, 0.0f), SetLerp("title_endless", 6.0f, addCount));
-			object["title_option"].transform.position = GE::Math::Vector3::Lerp(GE::Math::Vector3(winSize.x + 1000, center.y + 200, 0.0f), GE::Math::Vector3(winSize.x - 300, center.y + 200, 0.0f), SetLerp("title_option", 7.0f, addCount));
-			object["title_exit"].transform.position = GE::Math::Vector3::Lerp(GE::Math::Vector3(winSize.x + 1000, center.y + 300, 0.0f), GE::Math::Vector3(winSize.x - 300, center.y + 300, 0.0f), SetLerp("title_exit", 8.0f, addCount));
+			object["title_start"].transform.position = GE::Math::Vector3::Lerp(GE::Math::Vector3(winSize.x + 1000, center.y, 0.0f), GE::Math::Vector3(winSize.x - 300, center.y, 0.0f) + pickup["title_start"], SetLerp("title_start", 5.0f, addCount));
+			object["title_endless"].transform.position = GE::Math::Vector3::Lerp(GE::Math::Vector3(winSize.x + 1000, center.y + 100, 0.0f), GE::Math::Vector3(winSize.x - 300, center.y + 100, 0.0f) + pickup["title_endless"], SetLerp("title_endless", 6.0f, addCount));
+			object["title_option"].transform.position = GE::Math::Vector3::Lerp(GE::Math::Vector3(winSize.x + 1000, center.y + 200, 0.0f), GE::Math::Vector3(winSize.x - 300, center.y + 200, 0.0f) + pickup["title_option"], SetLerp("title_option", 7.0f, addCount));
+			object["title_exit"].transform.position = GE::Math::Vector3::Lerp(GE::Math::Vector3(winSize.x + 1000, center.y + 300, 0.0f), GE::Math::Vector3(winSize.x - 300, center.y + 300, 0.0f) + pickup["title_exit"], SetLerp("title_exit", 8.0f, addCount));
 		}
 		if (inputDeviceState == InputManager::InputDeviceState::JOYCON) { object["push_b"].isDraw = true; }
 		else if (inputDeviceState == InputManager::InputDeviceState::KEYBOARD) { object["push_space"].isDraw = true; }
@@ -367,6 +367,7 @@ void ScreenUIManager::SampleSceneUpdate(float deltaTime)
 	{
 		TitleMenuActive(false);
 		OptionMenuActive(true);
+
 		object["option_right"].transform.position.x = GE::Math::Lerp(winSize.x + 1000, winSize.x - 200, SetLerp("bgm_num", 5.0f, addCount));
 		object["option_left"].transform.position.x = GE::Math::Lerp(winSize.x + 1000, winSize.x - 450, SetLerp("bgm_num", 5.0f, addCount));
 
@@ -375,17 +376,23 @@ void ScreenUIManager::SampleSceneUpdate(float deltaTime)
 		object["bgm_num"].transform.position = GE::Math::Vector3::Lerp(GE::Math::Vector3(winSize.x + 1000, center.y, 0.0f), GE::Math::Vector3(winSize.x - 300, center.y, 0.0f), SetLerp("bgm_num", 5.0f, addCount));
 		object["bgm_info"].transform.position = GE::Math::Vector3::Lerp(GE::Math::Vector3(winSize.x + 700, center.y, 0.0f), GE::Math::Vector3(winSize.x - 600, center.y, 0.0f), SetLerp("bgm_num", 5.0f, addCount));
 
-		if (Option::select == Option::Select::BGM_VOL) { object["bgm_num"].color = GE::Color::Red(); }
+		if (Option::select == Option::Select::BGM_VOL) {
+			object["bgm_num"].color = GE::Color::Red();
+
+		}
 		object["se_num"].pivotPos.x = OptionData::SE_vol;
 		object["se_num"].color = GE::Color::White();
 		object["se_num"].transform.position = GE::Math::Vector3::Lerp(GE::Math::Vector3(winSize.x + 1000, center.y + 100, 0.0f), GE::Math::Vector3(winSize.x - 305, center.y + 100, 0.0f), SetLerp("se_num", 6.0f, addCount));
 		object["se_info"].transform.position = GE::Math::Vector3::Lerp(GE::Math::Vector3(winSize.x + 700, center.y + 100, 0.0f), GE::Math::Vector3(winSize.x - 605, center.y + 100, 0.0f), SetLerp("se_num", 6.0f, addCount));
 
-		if (Option::select == Option::Select::SE_VOL) { object["se_num"].color = GE::Color::Red(); }
+		if (Option::select == Option::Select::SE_VOL) {
+			object["se_num"].color = GE::Color::Red();
+		}
 		object["option_back"].transform.position = GE::Math::Vector3::Lerp(GE::Math::Vector3(winSize.x + 1000, center.y + 200, 0.0f), GE::Math::Vector3(winSize.x - 300, center.y + 200, 0.0f), SetLerp("option_back", 5.0f, addCount));
 		if (Option::select == Option::Select::Back)
 		{
 			object["option_back"].color = GE::Color::Red();
+
 			object["option_right"].isDraw = false;
 			object["option_left"].isDraw = false;
 			//タイトルメニューの遷移初期化
@@ -420,20 +427,29 @@ void ScreenUIManager::SampleSceneUpdate(float deltaTime)
 		object["title_option"].color = GE::Color::White();
 		object["title_endless"].color = GE::Color::White();
 		object["title_exit"].color = GE::Color::White();
+		pickup["title_start"] = { 0,0,0 };
+		pickup["title_option"] = { 0,0,0 };
+		pickup["title_endless"] = { 0,0,0 };
+		pickup["title_exit"] = { 0,0,0 };
+
 
 		switch (Title::GetInstance()->states)
 		{
 		case Title::States::start:
 			object["title_start"].color = GE::Color::Red();
+			pickup["title_start"] = { -50,0,0 };
 			break;
 		case Title::States::option:
 			object["title_option"].color = GE::Color::Red();
+			pickup["title_option"] = { -50,0,0 };
 			break;
 		case Title::States::endless:
 			object["title_endless"].color = GE::Color::Red();
+			pickup["title_endless"] = { -50,0,0 };
 			break;
 		case Title::States::exit:
 			object["title_exit"].color = GE::Color::Red();
+			pickup["title_exit"] = { -50,0,0 };
 			break;
 		default:
 			break;
