@@ -59,17 +59,20 @@ void SampleScene::Initialize()
 
 	changeSceneInfo.sceneTransitionFadein.SetMaxTimeProperty(2);
 	changeSceneInfo.sceneTransitionFadeout.SetMaxTimeProperty(0.2f);
-	audioManager->Use("natsunoyama1")->SetVolume(0.4f);
+
+	audioManager->Get("natsunoyama1", 0)->SetVolume(0.4f);
+	audioManager->Get("natsunoyama1", 0)->Reset();
+	audioManager->Get("testBGM", 0)->Reset();
 
 }
 
 void SampleScene::Update(float deltaTime)
 {
-		audioManager->Use("natsunoyama1")->Start();
+	audioManager->Get("natsunoyama1", 0)->Start();
 	if (PlayerComponent::statas != PlayerComponent::PlayerStatas::TITLE && PlayerComponent::statas != PlayerComponent::PlayerStatas::TITLE_MENU)
 	{
-		audioManager->Use("testBGM")->Start();
-		audioManager->Use("natsunoyama1")->SetVolume(0.1f);
+		audioManager->Get("testBGM", 0)->Start();
+		audioManager->Get("natsunoyama1", 0)->SetVolume(0.1f);
 	}
 
 	GE::Math::Vector3 directionalLightAngle = { directionalLight->GetAngle().x,directionalLight->GetAngle().y,0 };
@@ -240,7 +243,7 @@ void SampleScene::Load()
 
 void SampleScene::UnLoad()
 {
-	audioManager->Use("testBGM")->Stop();
+	audioManager->Get("testBGM", 0)->Stop();
 
 	Title::GetInstance()->ClearGameObject();
 	EnemyManager::GetInstance()->UnLoad();

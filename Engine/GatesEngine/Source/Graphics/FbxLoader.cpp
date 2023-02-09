@@ -333,7 +333,7 @@ GE::Mesh* GE::FbxLoader::Load(const std::string& modelName, IGraphicsDeviceDx12*
 			ConvertMatrixFromFbxMatrix(startMatrix, fbxStartMatrix);
 			bone.animationMatrixes[i].push_back(startMatrix);
 
-			const int MAX_ANIMATION = 16;
+			const int MAX_ANIMATION = 32;
 			FbxTime timePerAnimationDatas = endTime / MAX_ANIMATION;
 			FbxTime comparisonTime = 0;
 			for (int j = 1; j < MAX_ANIMATION - 1; ++j,comparisonTime += timePerAnimationDatas)

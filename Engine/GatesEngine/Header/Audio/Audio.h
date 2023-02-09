@@ -22,6 +22,7 @@ namespace GE
 		void CreateVoice();
 		void Start();
 		void Stop();
+		void Reset();
 		bool GetIsStart();
 		bool GetIsPlay();
 		bool GetIsEnd();

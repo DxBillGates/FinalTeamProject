@@ -53,6 +53,12 @@ void GE::Audio::Stop()
 	}
 }
 
+void GE::Audio::Reset()
+{
+	Stop();
+	sourceVoice->FlushSourceBuffers();
+}
+
 bool GE::Audio::GetIsStart()
 {
 	return isStart;

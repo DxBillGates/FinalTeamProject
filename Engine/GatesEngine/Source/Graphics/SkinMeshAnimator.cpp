@@ -134,7 +134,7 @@ void GE::SkinMeshAnimator::Update(float deltaTime)
 		auto centerTime = (endTime - startTime) / 2;
 		int currentTimeIndex = 0;
 
-		const int MAX_ANIMATION = 16;
+		const int MAX_ANIMATION = 32;
 		FbxTime timePerAnimationDatas = endTime / MAX_ANIMATION;
 		FbxTime comparisonTime = 0;
 
