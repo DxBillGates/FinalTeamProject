@@ -69,7 +69,7 @@ InputManager::Vector3 InputManager::GetAxis(int ctrlAxisIndex, InputCtrlAxisStat
 		break;
 	case InputManager::InputDeviceState::XCTRL:
 		stick = ctrlAxisIndex == 0 ? xctrl->GetLStick() : xctrl->GetRStick();
-		result = { stick.x,stick.y,0 };
+		result = { stick.x * 1.3f,stick.y * 1.3f,0 };
 		break;
 	case InputManager::InputDeviceState::JOYCON:
 		stick = ctrlAxisIndex == 0 ? GE::Math::Vector2(joyconL->GetStick().x, joyconL->GetStick().y)
@@ -231,7 +231,7 @@ void InputManager::Draw(GE::IGraphicsDeviceDx12* graphicsDevice)
 
 	GE::Math::Matrix4x4 modelMatrix = GE::Math::Matrix4x4::Scale({ scale });
 	auto windowSize = GE::Window::GetWindowSize();
-	float yPos = GE::Math::Lerp(windowSize.y / 3, windowSize.y / 4,isChangedInputDeviceFlagController.GetTime());
+	float yPos = GE::Math::Lerp(windowSize.y / 3, windowSize.y / 4, isChangedInputDeviceFlagController.GetTime());
 	modelMatrix *= GE::Math::Matrix4x4::Translate({ windowSize.x / 2,yPos,0 });
 
 	// âÊëúÇÃêFïœÇ¶ÇΩÇËÇ∑ÇÈÇÊÇ§
