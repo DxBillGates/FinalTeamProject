@@ -431,16 +431,39 @@ bool Game::Initialize()
 
 	sceneManager.GetCurrentScene()->IsChangeScene().sceneTransitionFadein.SetFlag(true);
 	sceneColor = 0;
+	resultBlurFlagControler.Initialize();
 	return true;
 }
 
 bool Game::Update()
 {
+	beforeState = PlayerComponent::statas;
 	GE::GUIManager::StartFrame();
 	Application::Update();
+	currentState = PlayerComponent::statas;
+
+	if (beforeState != PlayerComponent::PlayerStatas::OVER && currentState == PlayerComponent::PlayerStatas::OVER)
+	{
+		resultBlurFlagControler.Initialize();
+		resultBlurFlagControler.SetFlag(true);
+		resultBlurFlagControler.SetMaxTimeProperty(1);
+	}
+
+	if (resultBlurFlagControler.GetOverTimeTrigger())
+	{
+		resultBlurFlagControler.Initialize();
+		resultBlurFlagControler.SetTime(1);
+	}
+
+	resultBlurFlagControler.Update(timer.GetElapsedTime());
 
 	GE::Scene* currentScene = sceneManager.GetCurrentScene();
 	GE::ChangeSceneInfo sceneInfo = currentScene->IsChangeScene();
+
+	if (currentScene->GetSceneName() == "SampleScene")
+	{
+		resultBlurFlagControler.Initialize();
+	}
 
 	if (sceneInfo.sceneTransitionFadein.GetFlag())
 	{
@@ -457,6 +480,7 @@ bool Game::Update()
 #endif // _DEBUG
 
 	audioManager.Get("testBGM", 0)->SetVolume(sceneColor * OptionData::BGM_vol / 10.f);
+
 
 	if (Title::GetInstance()->isExit == true)return false;
 	return true;
@@ -697,11 +721,40 @@ bool Game::Draw()
 	renderQueue->AddSetShaderResource({ 17,graphicsDevice.GetLayerManager()->Get("resultLayer")->GetDepthTexture()->GetSRVNumber() });
 	renderQueue->AddSetShaderResource({ 18,graphicsDevice.GetLayerManager()->Get("shadowLayer")->GetDepthTexture()->GetSRVNumber() });
 	graphicsDevice.DrawMesh("2DPlane");
+	graphicsDevice.ExecuteRenderQueue();
+	graphicsDevice.ExecuteCommands();
+
+	for (int i = 0; i < 2; ++i)
+	{
+		graphicsDevice.SetShaderResourceDescriptorHeap();
+		graphicsDevice.ClearLayer("FinalBlurLayer_" + std::to_string(i));
+		graphicsDevice.SetLayer("FinalBlurLayer_" + std::to_string(i));
+		graphicsDevice.SetShader("GaussBlurShader");
+
+		renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
+		renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
+		renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2, &material, sizeof(GE::Material)) });
+		renderQueue->AddSetConstantBufferInfo({ 5,cbufferAllocater->BindAndAttachData(5,&gaussFilterData[i],sizeof(GE::Math::GaussFilterData)) });
+
+		if (i == 0)
+		{
+			renderQueue->AddSetShaderResource({ 16,graphicsDevice.GetLayerManager()->Get("MainLayer")->GetRenderTexture()->GetSRVNumber() });
+		}
+		else
+		{
+			renderQueue->AddSetShaderResource({ 16,graphicsDevice.GetLayerManager()->Get("FinalBlurLayer_" + std::to_string(i - 1))->GetRenderTexture()->GetSRVNumber() });
+		}
+
+		graphicsDevice.DrawMesh("2DPlane");
+		graphicsDevice.ExecuteRenderQueue();
+		graphicsDevice.ExecuteCommands();
+	}
+
+	YamadaPostEffect2();
 
 	graphicsDevice.SetShaderResourceDescriptorHeap();
 	graphicsDevice.SetCurrentRenderQueue(false);
-
-	graphicsDevice.SetLayer("MainLayer");
+	graphicsDevice.SetLayer("finalPostEffectLayer");
 	sceneManager.LateDraw();
 	InputManager::GetInstance()->Draw(&graphicsDevice);
 	graphicsDevice.ExecuteRenderQueue();
@@ -721,7 +774,7 @@ bool Game::Draw()
 	ImVec2 texSize = ImGui::GetWindowSize();
 	texSize.x -= 20;
 	texSize.y -= 25;
-	ImGui::Image((ImTextureID)graphicsDevice.GetLayerManager()->Get("finalPostEffectLayer")->GetRenderTexture()->GetGPUHandle().ptr,texSize);
+	ImGui::Image((ImTextureID)graphicsDevice.GetLayerManager()->Get("resultLayer")->GetRenderTexture()->GetGPUHandle().ptr,texSize);
 	ImGui::End();
 #endif // _DEBUG
 
@@ -732,6 +785,56 @@ bool Game::Draw()
 }
 
 void Game::YamadaPostEffect()
+{
+#pragma region いじらんといて～
+	auto windowSize = GE::Window::GetWindowSize();
+	GE::Math::Matrix4x4 modelMatrix = GE::Math::Matrix4x4::Scale({ windowSize.x,windowSize.y,0 });
+	windowSize.x /= 2;
+	windowSize.y /= 2;
+	modelMatrix *= GE::Math::Matrix4x4::Translate({ windowSize.x,windowSize.y,0 });
+	GE::Material material;
+	material.color = { sceneColor,sceneColor ,sceneColor ,1 };
+
+	GE::CameraInfo cameraInfo;
+	cameraInfo = graphicsDevice.GetMainCamera()->GetCameraInfo();
+	cameraInfo.viewMatrix = GE::Math::Matrix4x4::GetViewMatrixLookTo({ 0,0,0 }, { 0,0,1 }, { 0,1,0 });
+	cameraInfo.projMatrix = GE::Math::Matrix4x4::GetOrthographMatrix(GE::Window::GetWindowSize());
+
+	GE::TextureAnimationInfo textureAnimationInfo;
+	textureAnimationInfo.clipSize = { 1,1 };
+	textureAnimationInfo.textureSize = { 1,1 };
+
+	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice.GetCBufferAllocater();
+	graphicsDevice.SetCurrentRenderQueue(true);
+	GE::RenderQueue* renderQueue = graphicsDevice.GetRenderQueue();
+	graphicsDevice.SetShaderResourceDescriptorHeap();
+
+#ifdef _DEBUG
+	graphicsDevice.SetLayer("resultLayer");
+#else
+	graphicsDevice.SetDefaultRenderTarget();
+#endif // _DEBUG
+	graphicsDevice.SetShader("SpriteTextureForPosteffectShader");
+	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
+	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
+	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2, &material, sizeof(GE::Material)) });
+	renderQueue->AddSetConstantBufferInfo({ 4,cbufferAllocater->BindAndAttachData(4,&textureAnimationInfo,sizeof(GE::TextureAnimationInfo)) });
+	renderQueue->AddSetShaderResource({ 16,graphicsDevice.GetLayerManager()->Get("finalPostEffectLayer")->GetRenderTexture()->GetSRVNumber() });
+	renderQueue->AddSetShaderResource({ 17,graphicsDevice.GetLayerManager()->Get("finalPostEffectLayer")->GetRenderTexture()->GetSRVNumber() });
+#pragma endregion
+
+	//// 5 ~ 13まで自由にシェーダーに構造体遅れる
+	//renderQueue->AddSetConstantBufferInfo({ 5,cbufferAllocater->BindAndAttachData(5, &lerpValue, sizeof(float)) });
+	////// 17 ~ 31まで自由にテクスチャセットできる
+	//renderQueue->AddSetShaderResource({ 17,graphicsDevice.GetLayerManager()->Get("FinalBlurLayer_1")->GetDepthTexture()->GetSRVNumber()});
+
+	graphicsDevice.DrawMesh("2DPlane");
+
+	graphicsDevice.ExecuteRenderQueue();
+	graphicsDevice.ExecuteCommands();
+}
+
+void Game::YamadaPostEffect2()
 {
 #pragma region いじらんといて～
 	auto windowSize = GE::Window::GetWindowSize();
@@ -756,11 +859,7 @@ void Game::YamadaPostEffect()
 	GE::RenderQueue* renderQueue = graphicsDevice.GetRenderQueue();
 	graphicsDevice.SetShaderResourceDescriptorHeap();
 
-#ifdef _DEBUG
 	graphicsDevice.SetLayer("finalPostEffectLayer");
-#else
-	graphicsDevice.SetDefaultRenderTarget();
-#endif // _DEBUG
 	graphicsDevice.SetShader("SpriteTextureForPosteffectShader");
 	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
 	renderQueue->AddSetConstantBufferInfo({ 1,cbufferAllocater->BindAndAttachData(1, &cameraInfo, sizeof(GE::CameraInfo)) });
@@ -769,10 +868,13 @@ void Game::YamadaPostEffect()
 	renderQueue->AddSetShaderResource({ 16,graphicsDevice.GetLayerManager()->Get("MainLayer")->GetRenderTexture()->GetSRVNumber() });
 #pragma endregion
 
-	//// 5 ~ 13まで自由にシェーダーに構造体遅れる
-	//renderQueue->AddSetConstantBufferInfo({ **,cbufferAllocater->BindAndAttachData(**, &***, sizeof(***)) });
+	float lerpValue = 0;
+	lerpValue = resultBlurFlagControler.GetTime();
+
+	// 5 ~ 13まで自由にシェーダーに構造体遅れる
+	renderQueue->AddSetConstantBufferInfo({ 5,cbufferAllocater->BindAndAttachData(5, &lerpValue, sizeof(float)) });
 	//// 17 ~ 31まで自由にテクスチャセットできる
-	//renderQueue->AddSetShaderResource({ **,graphicsDevice.GetLayerManager()->Get("***")->GetDepthTexture()->GetSRVNumber()});
+	renderQueue->AddSetShaderResource({ 17,graphicsDevice.GetLayerManager()->Get("FinalBlurLayer_1")->GetRenderTexture()->GetSRVNumber() });
 
 	graphicsDevice.DrawMesh("2DPlane");
 

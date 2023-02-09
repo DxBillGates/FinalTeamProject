@@ -185,7 +185,7 @@ bool GE::Application::LoadContents()
 	mesh = new Mesh();
 	mesh->Create(device, cmdList, modelDataTorus);
 	meshManager->Add(mesh, "Torus");
-	
+
 	// texture load
 	auto* textureManager = graphicsDevice.GetTextureManager();
 	Texture* nullTexture = new Texture();
@@ -268,7 +268,7 @@ bool GE::Application::LoadContents()
 	GraphicsPipeline* dafaultMeshWithTexturePipeline = new GraphicsPipeline({ &defaultMeshVertexShader,nullptr,nullptr,nullptr,&defaultMeshWithTexturePixelShader });
 	dafaultMeshWithTexturePipeline->Create(device, { GraphicsPipelineInputLayout::POSITION,GraphicsPipelineInputLayout::UV ,GraphicsPipelineInputLayout::NORMAL }, cbv5srv1RootSignature, pipelineInfo);
 	graphicsPipelineManager->Add(dafaultMeshWithTexturePipeline, "DefaultMeshWithTextureShader");
-	
+
 	//山田が追加ァアッ!
 	pipelineInfo.topologyType = GraphicsPipelinePrimitiveTopolotyType::TRIANGLE;
 	GraphicsPipeline* dafaultMeshWithTextureAndADSCompositiongPipeline = new GraphicsPipeline({ &defaultMeshVertexShader,nullptr,nullptr,nullptr,&defaultMeshWithTextureAndAdsCompositiongPixelShader });
@@ -345,7 +345,7 @@ bool GE::Application::LoadContents()
 	RenderTexture* shadowRenderTexture = new RenderTexture();
 	DepthTexture* shadowDepthTexture = new DepthTexture();
 	shadowRenderTexture->Create(device, shaderResourceHeap, Math::Vector2(2048), Color::Black());
-	shadowDepthTexture->Create(device, shaderResourceHeap,  Math::Vector2(2048));
+	shadowDepthTexture->Create(device, shaderResourceHeap, Math::Vector2(2048));
 	layerManager->Add(new Layer(shadowRenderTexture, shadowDepthTexture), "shadowLayer");
 
 	RenderTexture* brightnessRenderTexture = new RenderTexture();
@@ -387,6 +387,14 @@ bool GE::Application::LoadContents()
 	RenderTexture* finalPostEffectRenderTexture = new RenderTexture();
 	finalPostEffectRenderTexture->Create(device, shaderResourceHeap, mainWindow.GetWindowSize(), Color::Black());
 	layerManager->Add(new Layer(finalPostEffectRenderTexture, nullptr), "finalPostEffectLayer");
+
+	for (int i = 0; i < 2; ++i)
+	{
+		RenderTexture* finalBlurRenderTexture = new RenderTexture();
+		finalBlurRenderTexture->Create(device, shaderResourceHeap, mainWindow.GetWindowSize() / 2, Color::Black());
+
+		layerManager->Add(new Layer(finalBlurRenderTexture, nullptr), "FinalBlurLayer_" + std::to_string(i));
+	}
 
 	return true;
 }
