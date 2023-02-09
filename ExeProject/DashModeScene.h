@@ -3,12 +3,13 @@
 #include <GatesEngine/Header/GameFramework/Collision/ICollider.h>
 #include <GatesEngine/Header/GameFramework/Component/Component.h>
 #include <GatesEngine/Header/GameFramework/Component/DirectionalLight.h>
-
+#include <GatesEngine/Header/GameFramework/FlagController.h>
 
 class DashModeScene :public GE::Scene
 {
 private:
 	GE::DirectionalLight* directionalLight;
+	GE::FlagController comboFlagControler;
 public:
 	DashModeScene();
 	DashModeScene(const std::string& sceneName);

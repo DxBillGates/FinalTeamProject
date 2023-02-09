@@ -49,10 +49,14 @@ void DashModeScene::Initialize()
 
 	audioManager->Get("natsunoyama1", 0)->Stop();
 	audioManager->Get("BGM2", 0)->Reset();
+
+	comboFlagControler.Initialize();
 }
 
 void DashModeScene::Update(float deltaTime)
 {
+	int beforeCombo = PlayerComponent::combo;
+
 	audioManager->Get("BGM2", 0)->Start();
 
 	gameObjectManager.Update(deltaTime);
@@ -114,6 +118,25 @@ void DashModeScene::Update(float deltaTime)
 	blurUV = { playerScreenPosition.x,playerScreenPosition.y };
 	blurSampling = 16;
 	blurThreshold = 0.0001f;
+
+	if (comboFlagControler.GetFlag())
+	{
+		blurThreshold = GE::Math::Lerp(1, 0.0001f, comboFlagControler.GetTime());
+	}
+
+	if (comboFlagControler.GetOverTimeTrigger())
+	{
+		comboFlagControler.Initialize();
+	}
+
+	comboFlagControler.Update(deltaTime);
+	int currentCombo = PlayerComponent::combo;
+	if (currentCombo > beforeCombo)
+	{
+		comboFlagControler.Initialize();
+		comboFlagControler.SetFlag(true);
+		comboFlagControler.SetMaxTimeProperty(0.5f);
+	}
 }
 
 void DashModeScene::Draw()
