@@ -62,6 +62,8 @@ void DashModeScene::Update(float deltaTime)
 	gameObjectManager.Update(deltaTime);
 	collisionManager.Update();
 
+	int currentCombo = PlayerComponent::combo;
+
 	// LCtr + S で敵の位置保存
 	if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::LCONTROL) &&
 		inputDevice->GetKeyboard()->CheckPressTrigger(GE::Keys::S))
@@ -119,9 +121,11 @@ void DashModeScene::Update(float deltaTime)
 	blurSampling = 16;
 	blurThreshold = 0.0001f;
 
+	// コンボしたときのブラーフラグ管理系
 	if (comboFlagControler.GetFlag())
 	{
-		blurThreshold = GE::Math::Lerp(1, 0.0001f, comboFlagControler.GetTime());
+		float start = currentCombo > 3 ? 1 : 0.25f;
+		blurThreshold = GE::Math::Lerp(start, 0.0001f, comboFlagControler.GetTime());
 	}
 
 	if (comboFlagControler.GetOverTimeTrigger())
@@ -130,12 +134,15 @@ void DashModeScene::Update(float deltaTime)
 	}
 
 	comboFlagControler.Update(deltaTime);
-	int currentCombo = PlayerComponent::combo;
+
+	// コンボが更新されたタイミングでコンボを管理しているやつをオンにする
 	if (currentCombo > beforeCombo)
 	{
 		comboFlagControler.Initialize();
 		comboFlagControler.SetFlag(true);
-		comboFlagControler.SetMaxTimeProperty(0.5f);
+
+		float setTime = currentCombo > 3 ? 3 : 0.5f;
+		comboFlagControler.SetMaxTimeProperty(setTime);
 	}
 }
 
