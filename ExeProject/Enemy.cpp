@@ -32,7 +32,6 @@ void Enemy::Update(float deltaTime)
 			if (restCount < restInterval)
 			{
 				restCount += f * GE::GameSetting::Time::GetGameTime();
-				printf("%f", restCount);
 			}
 			else
 			{

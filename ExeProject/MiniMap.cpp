@@ -1,4 +1,5 @@
 #include "MiniMap.h"
+#include "Enemy.h"
 #include <GatesEngine/Header/Graphics/Window.h>
 
 void MiniMap::Draw2D(const Draw2DInfo& drawInfo, GE::ITexture* texture)
@@ -24,7 +25,7 @@ void MiniMap::Draw2D(const Draw2DInfo& drawInfo, GE::ITexture* texture)
 
 	GE::TextureAnimationInfo textureAnimationInfo;
 	textureAnimationInfo.clipSize = { 1 };
-	textureAnimationInfo.textureSize = {1,1};
+	textureAnimationInfo.textureSize = { 1,1 };
 	textureAnimationInfo.pivot = { 0 };
 
 	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(GE::Math::Matrix4x4)) });
@@ -50,11 +51,11 @@ void MiniMap::Draw2D(const Draw2DInfo& drawInfo, const GE::Math::Vector2& mapOff
 	GE::Math::Vector2 pos = drawInfo.pos;
 	float distance = GE::Math::Vector2::Distance(mapOffset, pos);
 	float maxDistance = maxPos.x - mapOffset.x;
-	float distanceLerp = GE::Math::Lerp(0.5,1,1 - distance / maxDistance);
+	float distanceLerp = GE::Math::Lerp(0.5, 1, 1 - distance / maxDistance);
 
-	GE::Math::Vector3 scale = GE::Math::Vector3(drawInfo.size.x * diffWindowSize.x,drawInfo.size.y * diffWindowSize.y,1) * distanceLerp;
+	GE::Math::Vector3 scale = GE::Math::Vector3(drawInfo.size.x * diffWindowSize.x, drawInfo.size.y * diffWindowSize.y, 1) * distanceLerp;
 	GE::Math::Matrix4x4 modelMatrix = GE::Math::Matrix4x4::Scale(scale);
-	
+
 	modelMatrix *= GE::Math::Matrix4x4::RotationZ(-angle);
 	modelMatrix *= GE::Math::Matrix4x4::Translate({ pos.x - mapOffset.x,pos.y - mapOffset.y,0 });
 	modelMatrix *= GE::Math::Matrix4x4::RotationZ(angle);
@@ -130,49 +131,56 @@ void MiniMap::Draw()
 	// “G•`‰æ
 	for (auto& enemy : (*gameObjectsManager)["enemy"])
 	{
-		GE::Math::Vector3 enemyPosition = enemy->GetTransform()->position - drawPlayerPositionOffset;
-		GE::Math::Vector2 drawEnemyPosition = GE::Math::Vector2(enemyPosition.x, -enemyPosition.z) / DIVIDE + MINIMAP_OFFSET;
-
-		GE::Math::Vector3 minPos = { MINIMAP_OFFSET.x + -MINIMAP_SIZE / 2 + DRAW_ENEMY_SIZE / 2,MINIMAP_OFFSET.y + -MINIMAP_SIZE / 2 + DRAW_ENEMY_SIZE / 2,0 };
-		GE::Math::Vector3 maxPos = { MINIMAP_OFFSET.x + MINIMAP_SIZE / 2 - DRAW_ENEMY_SIZE / 2,MINIMAP_OFFSET.y + MINIMAP_SIZE / 2 - DRAW_ENEMY_SIZE / 2,0 };
-
-		GE::Math::Vector3 fixedDrawPosition = GE::Math::Vector3::Min(minPos, GE::Math::Vector3::Max(maxPos, { drawEnemyPosition.x,drawEnemyPosition.y,0 }));
-
-		drawInfo = { { fixedDrawPosition.x,fixedDrawPosition.y }, DRAW_ENEMY_SIZE, DRAW_ENEMY_COLOR};
-
-		GE::ITexture* texture = nullptr;
-		if (enemy->GetName() == "Enemy")
+		if (enemy->GetComponent<Enemy>()->statas == Enemy::Statas::ALIVE)
 		{
-			texture = pGraphicsDevice->GetTextureManager()->Get("Enemy_MiniMap");
-		}
-		else if (enemy->GetName() == "BirdEnemy")
-		{
-			texture = pGraphicsDevice->GetTextureManager()->Get("Enemy_MiniMap");
-		}
+			GE::Math::Vector3 enemyPosition = enemy->GetTransform()->position - drawPlayerPositionOffset;
+			GE::Math::Vector2 drawEnemyPosition = GE::Math::Vector2(enemyPosition.x, -enemyPosition.z) / DIVIDE + MINIMAP_OFFSET;
 
-		Draw2D(drawInfo, MINIMAP_OFFSET,minPos,maxPos, texture);
+			GE::Math::Vector3 minPos = { MINIMAP_OFFSET.x + -MINIMAP_SIZE / 2 + DRAW_ENEMY_SIZE / 2,MINIMAP_OFFSET.y + -MINIMAP_SIZE / 2 + DRAW_ENEMY_SIZE / 2,0 };
+			GE::Math::Vector3 maxPos = { MINIMAP_OFFSET.x + MINIMAP_SIZE / 2 - DRAW_ENEMY_SIZE / 2,MINIMAP_OFFSET.y + MINIMAP_SIZE / 2 - DRAW_ENEMY_SIZE / 2,0 };
+
+			GE::Math::Vector3 fixedDrawPosition = GE::Math::Vector3::Min(minPos, GE::Math::Vector3::Max(maxPos, { drawEnemyPosition.x,drawEnemyPosition.y,0 }));
+
+			drawInfo = { { fixedDrawPosition.x,fixedDrawPosition.y }, DRAW_ENEMY_SIZE, DRAW_ENEMY_COLOR };
+
+			GE::ITexture* texture = nullptr;
+			if (enemy->GetName() == "Enemy")
+			{
+				texture = pGraphicsDevice->GetTextureManager()->Get("Enemy_MiniMap");
+			}
+			else if (enemy->GetName() == "BirdEnemy")
+			{
+				texture = pGraphicsDevice->GetTextureManager()->Get("Enemy_MiniMap");
+			}
+
+			Draw2D(drawInfo, MINIMAP_OFFSET, minPos, maxPos, texture);
+		}
 	}
 
 	// “G•`‰æ
 	for (auto& enemy : (*gameObjectsManager)["frog"])
 	{
-		GE::Math::Vector3 enemyPosition = enemy->GetTransform()->position - drawPlayerPositionOffset;
-		GE::Math::Vector2 drawEnemyPosition = GE::Math::Vector2(enemyPosition.x, -enemyPosition.z) / DIVIDE + MINIMAP_OFFSET;
-
-		GE::Math::Vector3 minPos = { MINIMAP_OFFSET.x + -MINIMAP_SIZE / 2 + DRAW_ENEMY_SIZE / 2,MINIMAP_OFFSET.y + -MINIMAP_SIZE / 2 + DRAW_ENEMY_SIZE / 2,0 };
-		GE::Math::Vector3 maxPos = { MINIMAP_OFFSET.x + MINIMAP_SIZE / 2 - DRAW_ENEMY_SIZE / 2,MINIMAP_OFFSET.y + MINIMAP_SIZE / 2 - DRAW_ENEMY_SIZE / 2,0 };
-
-		GE::Math::Vector3 fixedDrawPosition = GE::Math::Vector3::Min(minPos, GE::Math::Vector3::Max(maxPos, { drawEnemyPosition.x,drawEnemyPosition.y,0 }));
-
-		drawInfo = { { fixedDrawPosition.x,fixedDrawPosition.y }, DRAW_ENEMY_SIZE, DRAW_ENEMY_COLOR };
-
-		GE::ITexture* texture = nullptr;
-		if (enemy->GetName() == "FrogEnemy")
+		if (enemy->GetComponent<Enemy>()->statas == Enemy::Statas::ALIVE)
 		{
-			texture = pGraphicsDevice->GetTextureManager()->Get("Enemy2_MiniMap");
-		}
 
-		Draw2D(drawInfo, MINIMAP_OFFSET, minPos, maxPos, texture);
+			GE::Math::Vector3 enemyPosition = enemy->GetTransform()->position - drawPlayerPositionOffset;
+			GE::Math::Vector2 drawEnemyPosition = GE::Math::Vector2(enemyPosition.x, -enemyPosition.z) / DIVIDE + MINIMAP_OFFSET;
+
+			GE::Math::Vector3 minPos = { MINIMAP_OFFSET.x + -MINIMAP_SIZE / 2 + DRAW_ENEMY_SIZE / 2,MINIMAP_OFFSET.y + -MINIMAP_SIZE / 2 + DRAW_ENEMY_SIZE / 2,0 };
+			GE::Math::Vector3 maxPos = { MINIMAP_OFFSET.x + MINIMAP_SIZE / 2 - DRAW_ENEMY_SIZE / 2,MINIMAP_OFFSET.y + MINIMAP_SIZE / 2 - DRAW_ENEMY_SIZE / 2,0 };
+
+			GE::Math::Vector3 fixedDrawPosition = GE::Math::Vector3::Min(minPos, GE::Math::Vector3::Max(maxPos, { drawEnemyPosition.x,drawEnemyPosition.y,0 }));
+
+			drawInfo = { { fixedDrawPosition.x,fixedDrawPosition.y }, DRAW_ENEMY_SIZE, DRAW_ENEMY_COLOR };
+
+			GE::ITexture* texture = nullptr;
+			if (enemy->GetName() == "FrogEnemy")
+			{
+				texture = pGraphicsDevice->GetTextureManager()->Get("Enemy2_MiniMap");
+			}
+
+			Draw2D(drawInfo, MINIMAP_OFFSET, minPos, maxPos, texture);
+		}
 	}
 
 	// ƒvƒŒƒCƒ„[•`‰æ

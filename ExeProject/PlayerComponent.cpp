@@ -534,6 +534,8 @@ void PlayerComponent::Control(float deltaTime)
 			statas = PlayerStatas::STAY_TREE;
 			//—‚ª‚È‚­
 			audioManager->Use("hine1")->Start();
+			audioManager->Use("coin3")->Start();
+
 		}
 		break;
 	case PlayerComponent::PlayerStatas::STAY_TREE:

@@ -45,6 +45,8 @@ void Over::Initialize()
 
 	FieldObjectManager::GetInstance()->LoadPosition("Resources/tree.txt");
 	CameraControl::GetInstance()->SetOverCameraPosition();
+
+	audioManager->Use("gameover")->Start();
 }
 
 void Over::Update(float deltaTime)
@@ -60,6 +62,7 @@ void Over::Update(float deltaTime)
 		changeSceneInfo.name = "SampleScene";
 		changeSceneInfo.flag = true;
 		changeSceneInfo.initNextSceneFlag = true;
+		audioManager->Use("gameover")->Stop();
 	}
 }
 

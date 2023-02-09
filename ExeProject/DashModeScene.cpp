@@ -47,12 +47,12 @@ void DashModeScene::Initialize()
 	UIObject::GetInstance()->DashModeStart();
 	Ranking::GetInstance()->Start();
 
-	audioManager->Get("natsunoyama1", 0)->Stop();
+	audioManager->Use("natsunoyama1")->Stop();
 }
 
 void DashModeScene::Update(float deltaTime)
 {
-	audioManager->Get("BGM2", 0)->Start();
+	audioManager->Use("BGM2")->Start();
 
 	gameObjectManager.Update(deltaTime);
 	collisionManager.Update();
@@ -197,7 +197,7 @@ void DashModeScene::Load()
 
 void DashModeScene::UnLoad()
 {
-	audioManager->Get("BGM2", 0)->Stop();
+	audioManager->Use("BGM2")->Stop();
 	EnemyManager::GetInstance()->UnLoad();
 	FieldObjectManager::GetInstance()->UnLoad();
 	FieldObjectDebugTransform::GetInstance()->UnLoad();

@@ -168,7 +168,19 @@ bool Game::LoadContents()
 	{
 		auto* audioData = audioManager.AddAudioData(new GE::AudioData("Resources/Audio/natsunoyama1.wav"), "natsunoyama1");
 		auto* audio = audioManager.AddAudio(new GE::Audio(audioData, "natsunoyama1"));
-		audio->SetVolume(0.4f);;
+		audio->SetVolume(0.4f);
+	}
+	//gameover
+	{
+		auto* audioData = audioManager.AddAudioData(new GE::AudioData("Resources/Audio/gameover.wav"), "gameover");
+		auto* audio = audioManager.AddAudio(new GE::Audio(audioData, "gameover"));
+		audio->SetVolume(0.3f);
+	}
+	//gameover
+	{
+		auto* audioData = audioManager.AddAudioData(new GE::AudioData("Resources/Audio/coin3.wav"), "coin3");
+		auto* audio = audioManager.AddAudio(new GE::Audio(audioData, "coin3"));
+		audio->SetVolume(0.2f);
 	}
 
 	auto* textureManager = graphicsDevice.GetTextureManager();
