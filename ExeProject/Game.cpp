@@ -793,7 +793,7 @@ void Game::YamadaPostEffect()
 	windowSize.y /= 2;
 	modelMatrix *= GE::Math::Matrix4x4::Translate({ windowSize.x,windowSize.y,0 });
 	GE::Material material;
-	material.color = GE::Color::White();
+	material.color = { sceneColor,sceneColor ,sceneColor ,1 };
 
 	GE::CameraInfo cameraInfo;
 	cameraInfo = graphicsDevice.GetMainCamera()->GetCameraInfo();
@@ -820,6 +820,7 @@ void Game::YamadaPostEffect()
 	renderQueue->AddSetConstantBufferInfo({ 2,cbufferAllocater->BindAndAttachData(2, &material, sizeof(GE::Material)) });
 	renderQueue->AddSetConstantBufferInfo({ 4,cbufferAllocater->BindAndAttachData(4,&textureAnimationInfo,sizeof(GE::TextureAnimationInfo)) });
 	renderQueue->AddSetShaderResource({ 16,graphicsDevice.GetLayerManager()->Get("finalPostEffectLayer")->GetRenderTexture()->GetSRVNumber() });
+	renderQueue->AddSetShaderResource({ 17,graphicsDevice.GetLayerManager()->Get("finalPostEffectLayer")->GetRenderTexture()->GetSRVNumber() });
 #pragma endregion
 
 	//// 5 ~ 13まで自由にシェーダーに構造体遅れる
