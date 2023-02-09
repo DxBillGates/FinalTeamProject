@@ -227,7 +227,7 @@ void InputManager::Draw(GE::IGraphicsDeviceDx12* graphicsDevice)
 		break;
 	}
 
-	scale /= 5;
+	scale /= 3;
 
 	GE::Math::Matrix4x4 modelMatrix = GE::Math::Matrix4x4::Scale({ scale });
 	auto windowSize = GE::Window::GetWindowSize();

@@ -143,6 +143,7 @@ void DashModeScene::Update(float deltaTime)
 
 		float setTime = currentCombo > 3 ? 3 : 0.5f;
 		comboFlagControler.SetMaxTimeProperty(setTime);
+		inputDevice->GetXCtrler()->Vibration(1, 1);
 	}
 }
 

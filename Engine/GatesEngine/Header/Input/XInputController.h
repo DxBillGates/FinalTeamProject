@@ -1,6 +1,7 @@
 #pragma once
 #include "XInputControllerButton.h"
 #include "..\..\Header\Util\Math\Vector2.h"
+#include "..\GameFramework\FlagController.h"
 #include <Windows.h>
 #include <Xinput.h>
 
@@ -19,6 +20,9 @@ namespace GE
 		int mIndex;
 		XINPUT_STATE ctrlState;
 		CheckButton oldKey[16];
+
+		FlagController vibrationFlagControler;
+		float vibrationPower;
 	public:
 		XInputController(); //中身で勝手にコントローラーの番号を決めて生成
 		~XInputController();
@@ -33,5 +37,6 @@ namespace GE
 		float GetLStickY();
 		Math::Vector2 GetRStick();
 		Math::Vector2 GetLStick();
+		void Vibration(float sec,float power = 1);
 	};
 }
