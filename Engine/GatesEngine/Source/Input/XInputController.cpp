@@ -68,6 +68,15 @@ void GE::XInputController::Update()
 	else oldKey[14].flag = false;
 	if (ctrlState.Gamepad.bRightTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD)oldKey[15].flag = true;
 	else oldKey[15].flag = false;
+
+	if (vibrationFlagControler.GetOverTimeTrigger())
+	{
+		vibrationFlagControler.Initialize();
+		XINPUT_VIBRATION vibration = {};
+		XInputSetState(mIndex, &vibration);
+	}
+	vibrationFlagControler.Update(0.016f);
+
 	//このフレーム内でのコントローラーの状態を取得
 	DWORD result = XInputGetState(mIndex, &ctrlState);
 }
@@ -156,4 +165,17 @@ GE::Math::Vector2 GE::XInputController::GetRStick()
 GE::Math::Vector2 GE::XInputController::GetLStick()
 {
 	return Math::Vector2(GetLStickX(), GetLStickY());
+}
+
+void GE::XInputController::Vibration(float sec, float power)
+{
+	vibrationFlagControler.Initialize();
+	vibrationFlagControler.SetFlag(true);
+	vibrationFlagControler.SetMaxTimeProperty(sec);
+	vibrationPower = power;
+
+	XINPUT_VIBRATION vibration = {};
+	vibration.wLeftMotorSpeed = (WORD)(65535.0f / vibrationPower);
+	vibration.wRightMotorSpeed = (WORD)(65535.0f / vibrationPower);
+	XInputSetState(mIndex, &vibration);
 }
