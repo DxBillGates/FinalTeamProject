@@ -44,6 +44,7 @@ void Clear::Initialize()
 
 	FieldObjectManager::GetInstance()->LoadPosition("Resources/tree.txt");
 
+	audioManager->Use("gameclear")->Reset();
 	audioManager->Use("gameclear")->Start();
 }
 

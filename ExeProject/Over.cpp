@@ -46,6 +46,7 @@ void Over::Initialize()
 	FieldObjectManager::GetInstance()->LoadPosition("Resources/tree.txt");
 	CameraControl::GetInstance()->SetOverCameraPosition();
 
+	audioManager->Use("gameover")->Reset();
 	audioManager->Use("gameover")->Start();
 }
 

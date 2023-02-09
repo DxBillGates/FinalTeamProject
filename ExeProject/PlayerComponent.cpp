@@ -436,7 +436,7 @@ void PlayerComponent::Control(float deltaTime)
 			if (Title::GetInstance()->GetSelect(Title::States::start))
 			{
 				statas = PlayerStatas::STAY_TREE;
-				Title::GetInstance()->states = Title::States::serectNum;
+				//Title::GetInstance()->states = Title::States::serectNum;
 			}
 		}
 		else
