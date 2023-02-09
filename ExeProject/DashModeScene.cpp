@@ -94,9 +94,12 @@ void DashModeScene::Update(float deltaTime)
 		changeSceneInfo.initNextSceneFlag = true;
 		PlayerComponent::dashMode = false;
 	}
-	if (TimeLimit::GetInstance()->GetTimeOver())
+	if (TimeLimit::GetInstance()->GetTimeOver() && PlayerComponent::statas != PlayerComponent::PlayerStatas::OVER)
 	{
 		PlayerComponent::statas = PlayerComponent::PlayerStatas::OVER;
+		//スコアセット
+		Ranking::GetInstance()->SetRanking(PlayerComponent::takeEnemyCount);
+
 	}
 	GE::Math::Matrix4x4 viewPort, proj, view;
 	auto pos = ImGui::GetWindowPos();
