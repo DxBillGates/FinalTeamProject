@@ -480,6 +480,10 @@ void ScreenUIManager::DashModeUpdate(float deltaTime)
 	object["keyboard_info"].isDraw = false;
 	object["title_name"].isDraw = false;
 
+	object["time_minutes"].transform.position;
+	object["time_symbol"].transform.position;
+	object["time_tenSeconds"].transform.position;
+	object["time_oneSeconds"].transform.position;
 #pragma endregion
 	if (PlayerComponent::combo != 0)
 	{
@@ -534,6 +538,7 @@ void ScreenUIManager::DashModeUpdate(float deltaTime)
 		object["take_one"].isDraw = false;
 		object["keyboard_info"].isDraw = true;
 		viveVelocity = { 20,20 };
+		object["title_name"].transform.position = GE::Math::Vector3(1500, winSize.y / 2 - 220.0f, 0.0f) - Vivlate(f) / 2.f;
 		object["keyboard_info"].transform.position = GE::Math::Vector3(winSize.x - 300, center.y + 100, 0.0f) + Vivlate(f);
 
 		break;
