@@ -69,16 +69,11 @@ void GE::XInputController::Update()
 	if (ctrlState.Gamepad.bRightTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD)oldKey[15].flag = true;
 	else oldKey[15].flag = false;
 
-	if (vibrationFlagControler.GetFlag())
-	{
-		XINPUT_VIBRATION vibration = {};
-		vibration.wLeftMotorSpeed = (WORD)(65535.0f / vibrationPower);
-		vibration.wRightMotorSpeed = (WORD)(65535.0f / vibrationPower);
-		XInputSetState(mIndex, &vibration);
-	}
 	if (vibrationFlagControler.GetOverTimeTrigger())
 	{
 		vibrationFlagControler.Initialize();
+		XINPUT_VIBRATION vibration = {};
+		XInputSetState(mIndex, &vibration);
 	}
 	vibrationFlagControler.Update(0.016f);
 
@@ -178,4 +173,9 @@ void GE::XInputController::Vibration(float sec, float power)
 	vibrationFlagControler.SetFlag(true);
 	vibrationFlagControler.SetMaxTimeProperty(sec);
 	vibrationPower = power;
+
+	XINPUT_VIBRATION vibration = {};
+	vibration.wLeftMotorSpeed = (WORD)(65535.0f / vibrationPower);
+	vibration.wRightMotorSpeed = (WORD)(65535.0f / vibrationPower);
+	XInputSetState(mIndex, &vibration);
 }

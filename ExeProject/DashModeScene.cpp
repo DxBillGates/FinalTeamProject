@@ -124,8 +124,7 @@ void DashModeScene::Update(float deltaTime)
 	// コンボしたときのブラーフラグ管理系
 	if (comboFlagControler.GetFlag())
 	{
-		float start = currentCombo > 3 ? 1 : 0.25f;
-		blurThreshold = GE::Math::Lerp(start, 0.0001f, comboFlagControler.GetTime());
+		blurThreshold = GE::Math::Lerp(1, 0.0001f, comboFlagControler.GetTime());
 	}
 
 	if (comboFlagControler.GetOverTimeTrigger())
@@ -141,9 +140,9 @@ void DashModeScene::Update(float deltaTime)
 		comboFlagControler.Initialize();
 		comboFlagControler.SetFlag(true);
 
-		float setTime = currentCombo > 3 ? 3 : 0.5f;
+		float setTime = currentCombo > 3 ? 2 : 0.5f;
 		comboFlagControler.SetMaxTimeProperty(setTime);
-		inputDevice->GetXCtrler()->Vibration(1, 1);
+		inputDevice->GetXCtrler()->Vibration(0.5f, 1);
 	}
 }
 
