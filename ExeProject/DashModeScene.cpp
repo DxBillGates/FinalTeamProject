@@ -87,15 +87,17 @@ void DashModeScene::Update(float deltaTime)
 	}
 
 	if ((PlayerComponent::statas == PlayerComponent::PlayerStatas::OVER && InputManager::GetInstance()->GetActionButton()) ||
-		enemyDead
-		|| TimeLimit::GetInstance()->GetTimeOver())
+		enemyDead)
 	{
 		changeSceneInfo.name = "SampleScene";
 		changeSceneInfo.flag = true;
 		changeSceneInfo.initNextSceneFlag = true;
 		PlayerComponent::dashMode = false;
 	}
-
+	if (TimeLimit::GetInstance()->GetTimeOver())
+	{
+		PlayerComponent::statas = PlayerComponent::PlayerStatas::OVER;
+	}
 	GE::Math::Matrix4x4 viewPort, proj, view;
 	auto pos = ImGui::GetWindowPos();
 	auto size = ImGui::GetWindowSize();
