@@ -18,7 +18,7 @@ void Title::Awake(GE::GameObjectManager* gameObjectManager, GE::IGraphicsDeviceD
 	inputDevice = GE::InputDevice::GetInstance();
 
 	//‘I‘ğ€–Ú
-	states = States::start;
+	states = states;
 	stage = Stage::stage1;
 
 	alpha = 0.0f;

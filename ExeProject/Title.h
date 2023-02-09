@@ -36,7 +36,7 @@ public:
 		stageNum,
 	};
 
-	States states;
+	States states = States::start;
 	Stage stage;
 	bool isActive;
 	float alpha = 0.0f;
