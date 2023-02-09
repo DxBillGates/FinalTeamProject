@@ -47,7 +47,7 @@ void InputManager::Update(float deltaTime)
 	{
 		isChangedInputDeviceFlagController.SetFlag(true);
 		isChangedInputDeviceFlagController.SetTime(0);
-		isChangedInputDeviceFlagController.SetMaxTimeProperty(3);
+		isChangedInputDeviceFlagController.SetMaxTimeProperty(2);
 	}
 
 	isChangedInputDeviceFlagController.Update(deltaTime);
@@ -211,14 +211,32 @@ void InputManager::Draw(GE::IGraphicsDeviceDx12* graphicsDevice)
 	// テクスチャ描画用のシェーダーをセット
 	graphicsDevice->SetShader("DefaultSpriteWithTextureShader");
 
-	GE::Math::Matrix4x4 modelMatrix = GE::Math::Matrix4x4::Scale({ 500 });
+	GE::Math::Vector3 scale = 1;
+	switch (currentInputDeviceState)
+	{
+	case InputManager::InputDeviceState::KEYBOARD:
+		scale = { 856,315,1 };
+		break;
+	case InputManager::InputDeviceState::XCTRL:
+		scale = { 697,415,1 };
+		break;
+	case InputManager::InputDeviceState::JOYCON:
+		scale = { 618,571,1 };
+		break;
+	default:
+		break;
+	}
+
+	scale /= 5;
+
+	GE::Math::Matrix4x4 modelMatrix = GE::Math::Matrix4x4::Scale({ scale });
 	auto windowSize = GE::Window::GetWindowSize();
 	float yPos = GE::Math::Lerp(windowSize.y / 3, windowSize.y / 4,isChangedInputDeviceFlagController.GetTime());
 	modelMatrix *= GE::Math::Matrix4x4::Translate({ windowSize.x / 2,yPos,0 });
 
 	// 画像の色変えたりするよう
 	GE::Material material;
-	material.color = { 1,1,1,1 - isChangedInputDeviceFlagController.GetTime() };
+	material.color = { 1,1,1,GE::Math::Easing::EaseInExpo(1 - isChangedInputDeviceFlagController.GetTime()) };
 
 	// 2d用のカメラ情報 基本的に買えなくてok
 	GE::CameraInfo cameraInfo;
@@ -244,7 +262,7 @@ void InputManager::Draw(GE::IGraphicsDeviceDx12* graphicsDevice)
 	switch (currentInputDeviceState)
 	{
 	case InputManager::InputDeviceState::KEYBOARD:
-		renderQueue->AddSetShaderResource({ 5,graphicsDevice->GetTextureManager()->Get("keyboard_tex")->GetSRVNumber()});
+		renderQueue->AddSetShaderResource({ 5,graphicsDevice->GetTextureManager()->Get("keyboard_tex")->GetSRVNumber() });
 		break;
 	case InputManager::InputDeviceState::XCTRL:
 		renderQueue->AddSetShaderResource({ 5,graphicsDevice->GetTextureManager()->Get("xinput_tex")->GetSRVNumber() });

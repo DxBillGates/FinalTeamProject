@@ -284,9 +284,12 @@ bool GE::Application::LoadContents()
 	// default sprite with texture shader
 	pipelineInfo.topologyType = GraphicsPipelinePrimitiveTopolotyType::TRIANGLE;
 	pipelineInfo.isUseDepthClip = false;
+	pipelineInfo.isUseAlphaToCoverage = false;
 	GraphicsPipeline* dafaultSpriteWithTexturePipeline = new GraphicsPipeline({ &defaultSpriteWithTextureVertexShader,nullptr,nullptr,nullptr,&defaultSpriteWithTexturePixelShader });
 	dafaultSpriteWithTexturePipeline->Create(device, { GraphicsPipelineInputLayout::POSITION,GraphicsPipelineInputLayout::UV }, cbv5srv1RootSignature, pipelineInfo);
 	graphicsPipelineManager->Add(dafaultSpriteWithTexturePipeline, "DefaultSpriteWithTextureShader");
+	pipelineInfo = GraphicsPipelineInfo();
+	pipelineInfo.isUseDepthClip = false;
 	GraphicsPipeline* spriteTextureForPosteffectPipeline = new GraphicsPipeline({ &defaultSpriteWithTextureVertexShader,nullptr,nullptr,nullptr,&spriteTextureForPosteffectPixelShader });
 	spriteTextureForPosteffectPipeline->Create(device, { GraphicsPipelineInputLayout::POSITION,GraphicsPipelineInputLayout::UV }, testRootSignature, pipelineInfo);
 	graphicsPipelineManager->Add(spriteTextureForPosteffectPipeline, "SpriteTextureForPosteffectShader");
