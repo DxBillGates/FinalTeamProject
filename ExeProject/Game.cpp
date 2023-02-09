@@ -681,6 +681,7 @@ bool Game::Draw()
 	sceneManager.LateDraw();
 	InputManager::GetInstance()->Draw(&graphicsDevice);
 	graphicsDevice.ExecuteRenderQueue();
+	graphicsDevice.ExecuteCommands();
 
 	YamadaPostEffect();
 

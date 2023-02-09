@@ -48,6 +48,7 @@ void DashModeScene::Initialize()
 	Ranking::GetInstance()->Start();
 
 	audioManager->Get("natsunoyama1", 0)->Stop();
+	audioManager->Get("BGM2", 0)->Reset();
 }
 
 void DashModeScene::Update(float deltaTime)
