@@ -182,6 +182,18 @@ bool Game::LoadContents()
 		auto* audio = audioManager.AddAudio(new GE::Audio(audioData, "coin3"));
 		audio->SetVolume(0.2f);
 	}
+	//gameclear
+	{
+		auto* audioData = audioManager.AddAudioData(new GE::AudioData("Resources/Audio/gameclear.wav"), "gameclear");
+		auto* audio = audioManager.AddAudio(new GE::Audio(audioData, "gameclear"));
+		audio->SetVolume(0.2f);
+	}
+	////rank_in
+	//{
+	//	auto* audioData = audioManager.AddAudioData(new GE::AudioData("Resources/Audio/rank_in.wav"), "rank_in");
+	//	auto* audio = audioManager.AddAudio(new GE::Audio(audioData, "rank_in"));
+	//	audio->SetVolume(0.5f);
+	//}
 
 	auto* textureManager = graphicsDevice.GetTextureManager();
 	Texture* nullTexture = new Texture();

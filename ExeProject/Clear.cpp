@@ -19,7 +19,7 @@ Clear::Clear()
 }
 
 Clear::Clear(const std::string& sceneName)
-	:Scene(sceneName)
+	: Scene(sceneName)
 {
 }
 
@@ -43,6 +43,8 @@ void Clear::Initialize()
 	CameraControl::GetInstance()->SetClearCameraPosition();
 
 	FieldObjectManager::GetInstance()->LoadPosition("Resources/tree.txt");
+
+	audioManager->Use("gameclear")->Start();
 }
 
 void Clear::Update(float deltaTime)
@@ -136,6 +138,9 @@ void Clear::UnLoad()
 	// gameObjects‚ðíœ‚·‚é
 	FieldObjectManager::GetInstance()->UnLoad();
 	Scene::UnLoad();
+
+	audioManager->Use("gameclear")->Stop();
+
 }
 
 void ClearTex::Awake()

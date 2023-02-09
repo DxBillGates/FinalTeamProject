@@ -80,6 +80,16 @@ void ScreenUIManager::ResultActive(bool isActive)
 	object["3rd_kurai"].isDraw = isActive;
 
 }
+void ScreenUIManager::AddRanking(std::string number, int num, GE::Color color)
+{
+	object[number] = Set(GE::Math::Vector3(center.x / 1.5f, center.y + (100 * (num - 1)), 0.0f), { 100,100,0 }, color, "texture_Number", { 320,64 }, { 32,64 });
+	object[number].pivotPos = num;
+	object[number + "_kurai"] = Set(object[number].transform.position + kuraiPos, { 100,100,0 }, color, "kurai_tex");
+	object[number + "_score_one"] = Set(object[number].transform.position + scrPos, { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
+	object[number + "_score_ten"] = Set(object[number].transform.position + scrPos / 1.2f, { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
+	object[number + "_score_hnd"] = Set(object[number].transform.position + scrPos / 1.5f, { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
+
+}
 void ScreenUIManager::SetAudioManager(GE::AudioManager* a)
 {
 	audioManager = a;
@@ -163,6 +173,9 @@ void ScreenUIManager::SampleSceneStart()
 
 void ScreenUIManager::DashModeStart()
 {
+	scrPos = { 600,0,0 };
+	kuraiPos = { 100,0,0 };
+
 	object["combo"] = Set(GE::Math::Vector3(1500, center.y - 220.0f, 0.0f), { 256,128,0 }, GE::Color::White(), "combo_tex");
 	object["comboNum"] = Set(GE::Math::Vector3(1300, center.y - 220.0f, 0.0f), { 128,128,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
 
@@ -181,30 +194,12 @@ void ScreenUIManager::DashModeStart()
 	object["keyboard_info"] = Set(GE::Math::Vector3(winSize.x - 300, center.y + 100, 0.0f), GE::Math::Vector3(386, 64, 0), GE::Color::White(), "keyboard_info_tex");
 #pragma region ƒ‰ƒ“ƒLƒ“ƒO
 
-	GE::Math::Vector3 scrPos = { 600,0,0 };
-	GE::Math::Vector3 kuraiPos = { 100,0,0 };
 	object["ranking_info"] = Set(GE::Math::Vector3(center.x, center.y / 2.0f, 0.0f), { 256,64,0 }, GE::Color::White(), "ranking_info_tex");
 
-	object["1st"] = Set(GE::Math::Vector3(center.x / 1.5f, center.y, 0.0f), { 100,100,0 }, { 0.8f,0.8f,0.0f,1.0f }, "texture_Number", { 320,64 }, { 32,64 });
-	object["1st"].pivotPos = 1;
-	object["1st_kurai"] = Set(object["1st"].transform.position + kuraiPos, { 100,100,0 }, { 0.8f,0.8f,0.0f,1.0f }, "kurai_tex");
-	object["1st_score_one"] = Set(object["1st"].transform.position + scrPos, { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
-	object["1st_score_ten"] = Set(object["1st"].transform.position + scrPos / 1.2f, { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
-	object["1st_score_hnd"] = Set(object["1st"].transform.position + scrPos / 1.5f, { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
+	AddRanking("1st", 1, { 0.8f,0.8f,0.0f,1.0f });
+	AddRanking("2nd", 2, { 0.8f,0.8f ,0.8f ,1.0f });
+	AddRanking("3rd", 3, { 0.5f,0.2f,0.2f,1.0f });
 
-	object["2nd"] = Set(GE::Math::Vector3(center.x / 1.5f, center.y + 100, 0.0f), { 100,100,0 }, { 0.8f,0.8f ,0.8f ,1.0f }, "texture_Number", { 320,64 }, { 32,64 });
-	object["2nd"].pivotPos = 2;
-	object["2nd_kurai"] = Set(object["2nd"].transform.position + kuraiPos, { 100,100,0 }, { 0.8f,0.8f,0.8f,1.0f }, "kurai_tex");
-	object["2nd_score_one"] = Set(object["2nd"].transform.position + scrPos, { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
-	object["2nd_score_ten"] = Set(object["2nd"].transform.position + scrPos / 1.2f, { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
-	object["2nd_score_hnd"] = Set(object["2nd"].transform.position + scrPos / 1.5f, { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
-
-	object["3rd"] = Set(GE::Math::Vector3(center.x / 1.5f, center.y + 200, 0.0f), { 100,100,0 }, { 0.5f,0.2f,0.2f,1.0f }, "texture_Number", { 320,64 }, { 32,64 });
-	object["3rd"].pivotPos = 3;
-	object["3rd_kurai"] = Set(object["3rd"].transform.position + kuraiPos, { 100,100,0 }, { 0.5f,0.2f,0.2f,1.0f }, "kurai_tex");
-	object["3rd_score_one"] = Set(object["3rd"].transform.position + scrPos, { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
-	object["3rd_score_ten"] = Set(object["3rd"].transform.position + scrPos / 1.2f, { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
-	object["3rd_score_hnd"] = Set(object["3rd"].transform.position + scrPos / 1.5f, { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
 #pragma endregion
 
 	object["title_name"] = Set(GE::Math::Vector3(1500, winSize.y / 2 - 220.0f, 0.0f), { 1319 / 2.0f,642 / 2.0f,0 }, GE::Color::White(), "title_dashmode_tex");
@@ -532,6 +527,7 @@ void ScreenUIManager::DashModeUpdate(float deltaTime)
 		break;
 	case PlayerComponent::PlayerStatas::OVER:
 		ResultActive(true);
+		viveVelocity = { 20,20 };
 		object["1st_score_one"].pivotPos = Ranking::GetInstance()->score[0] % 10;
 		object["1st_score_ten"].pivotPos = (int)(Ranking::GetInstance()->score[0] / 10);
 		object["1st_score_hnd"].pivotPos = (int)(Ranking::GetInstance()->score[0] / 100);
@@ -541,7 +537,44 @@ void ScreenUIManager::DashModeUpdate(float deltaTime)
 		object["3rd_score_one"].pivotPos = Ranking::GetInstance()->score[2];
 		object["3rd_score_ten"].pivotPos = (int)(Ranking::GetInstance()->score[2] / 10);
 		object["3rd_score_hnd"].pivotPos = (int)(Ranking::GetInstance()->score[2] / 100);
+		object["1st_score_one"].color = GE::Color::White();
+		object["1st_score_ten"].color = GE::Color::White();
+		object["1st_score_hnd"].color = GE::Color::White();
+		object["2nd_score_one"].color = GE::Color::White();
+		object["2nd_score_ten"].color = GE::Color::White();
+		object["2nd_score_hnd"].color = GE::Color::White();
+		object["3rd_score_one"].color = GE::Color::White();
+		object["3rd_score_ten"].color = GE::Color::White();
+		object["3rd_score_hnd"].color = GE::Color::White();
 
+		if (Ranking::GetInstance()->isRankin[0])
+		{
+			object["1st_score_one"].transform.position = object["1st"].transform.position + scrPos + vive;
+			object["1st_score_ten"].transform.position = object["1st"].transform.position + scrPos / 1.2f + vive;
+			object["1st_score_hnd"].transform.position = object["1st"].transform.position + scrPos / 1.5f + vive;
+			object["1st_score_one"].color = GE::Color::Red();
+			object["1st_score_ten"].color = GE::Color::Red();
+			object["1st_score_hnd"].color = GE::Color::Red();
+
+		}
+		else if (Ranking::GetInstance()->isRankin[1])
+		{
+			object["2nd_score_one"].transform.position = object["2nd"].transform.position + scrPos + vive;
+			object["2nd_score_ten"].transform.position = object["2nd"].transform.position + scrPos / 1.2f + vive;
+			object["2nd_score_hnd"].transform.position = object["2nd"].transform.position + scrPos / 1.5f + vive;
+			object["2nd_score_one"].color = GE::Color::Red();
+			object["2nd_score_ten"].color = GE::Color::Red();
+			object["2nd_score_hnd"].color = GE::Color::Red();
+		}
+		else if (Ranking::GetInstance()->isRankin[2])
+		{
+			object["3rd_score_one"].transform.position = object["3rd"].transform.position + scrPos + vive;
+			object["3rd_score_ten"].transform.position = object["3rd"].transform.position + scrPos / 1.2f + vive;
+			object["3rd_score_hnd"].transform.position = object["3rd"].transform.position + scrPos / 1.5f + vive;
+			object["3rd_score_one"].color = GE::Color::Red();
+			object["3rd_score_ten"].color = GE::Color::Red();
+			object["3rd_score_hnd"].color = GE::Color::Red();
+		}
 		object["time_minutes"].isDraw = false;
 		object["time_symbol"].isDraw = false;
 		object["time_tenSeconds"].isDraw = false;

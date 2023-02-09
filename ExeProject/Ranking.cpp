@@ -14,7 +14,10 @@ void Ranking::Start()
 {
 	currentScore = 0;
 	score.resize(5);
+	isRankin.resize(5);
 	LoadRanking("Resources/dashmode_score.txt");
+
+	for (auto r : isRankin) { r = false; }
 }
 
 void Ranking::SetRanking(int currentScore)
@@ -25,6 +28,7 @@ void Ranking::SetRanking(int currentScore)
 		if (score[i] < this->currentScore)
 		{
 			score.insert(score.begin() + i, this->currentScore);
+			isRankin[i] = true;
 			score.pop_back();
 			SaveRanking("Resources/dashmode_score.txt");
 			return;

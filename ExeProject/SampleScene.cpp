@@ -58,7 +58,7 @@ void SampleScene::Initialize()
 	ScreenUIManager::GetInstance()->SetAudioManager(audioManager);
 
 	changeSceneInfo.sceneTransitionFadein.SetMaxTimeProperty(2);
-	changeSceneInfo.sceneTransitionFadeout.SetMaxTimeProperty(0.2f);
+	changeSceneInfo.sceneTransitionFadeout.SetMaxTimeProperty(1.0f);
 
 	audioManager->Get("natsunoyama1", 0)->SetVolume(0.4f);
 	audioManager->Get("natsunoyama1", 0)->Reset();
@@ -116,6 +116,7 @@ void SampleScene::Update(float deltaTime)
 
 	if (Title::GetInstance()->GetSelect(Title::States::endless))
 	{
+		changeSceneInfo.sceneTransitionFadeout.SetMaxTimeProperty(0.2f);
 		changeSceneInfo.flag = true;
 		changeSceneInfo.name = "DashModeScene";
 		changeSceneInfo.initNextSceneFlag = true;

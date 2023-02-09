@@ -20,6 +20,8 @@ public:
 		bool isLerp;
 	};
 	GE::Math::Vector2 viveVelocity;
+
+
 private:
 	GE::AudioManager* audioManager;
 
@@ -33,6 +35,8 @@ private:
 	std::map<std::string, SpriteInfo> object;
 
 	float a = 0.f;
+	GE::Math::Vector3 scrPos;
+	GE::Math::Vector3 kuraiPos;
 
 	GE::Math::Vector2 winSize;
 	GE::Math::Vector2 center;
@@ -70,6 +74,8 @@ private:
 	void OptionMenuActive(bool isActive);
 	//ƒŠƒUƒ‹ƒg‚ð•`‰æ‚·‚é‚©
 	void ResultActive(bool isActive);
+
+	void AddRanking(std::string number, int num, GE::Color color = GE::Color::White());
 public:
 	void SetAudioManager(GE::AudioManager* a);
 };

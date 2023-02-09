@@ -292,7 +292,6 @@ void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 				//スコアセット
 				Ranking::GetInstance()->SetRanking(takeEnemyCount);
 				return;
-
 			}
 		}
 		else
@@ -361,6 +360,7 @@ void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 				//コンボUIシェイク！
 				ScreenUIManager::GetInstance()->viveVelocity = { 80,80 };
 				ScreenUIManager::GetInstance()->TimeLimitAddEffect();
+
 			}
 			if (combo > 3) { audioManager->Use("jag")->Start(); }
 			else { audioManager->Use("catch2")->Start(); }

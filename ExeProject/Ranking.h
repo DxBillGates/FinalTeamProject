@@ -7,6 +7,7 @@ class Ranking
 public:
 	int currentScore;
 	std::vector<int> score;
+	std::vector<bool> isRankin;
 public:
 	static Ranking* GetInstance();
 	void Start();
