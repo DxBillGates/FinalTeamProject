@@ -136,13 +136,13 @@ void PlayerComponent::Update(float deltaTime)
 	//ƒQ[ƒ€ƒ‚[ƒh•Ê‚Ì‘¬‚³İ’è
 	if (dashMode)
 	{
-		normal_speed = 100.0f;
+		normal_speed = 80.0f;
 	}
 	else
 	{
 		normal_speed = 20.0f;
 	}
-	current_speed = normal_speed;
+	current_speed = normal_speed + takeEnemyCount;
 
 	//‘€ì
 	Control(f);
