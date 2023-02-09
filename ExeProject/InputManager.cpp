@@ -134,10 +134,10 @@ GE::Math::Vector3 InputManager::GetTriggerDirection()
 	switch (currentInputDeviceState)
 	{
 	case InputManager::InputDeviceState::KEYBOARD:
-		if (keyboard->CheckPressTrigger(GE::Keys::UP))result.y += 1;
-		if (keyboard->CheckPressTrigger(GE::Keys::LEFT))result.x += -1;
-		if (keyboard->CheckPressTrigger(GE::Keys::DOWN))result.y += -1;
-		if (keyboard->CheckPressTrigger(GE::Keys::RIGHT))result.x += 1;
+		if (keyboard->CheckPressTrigger(GE::Keys::W) || keyboard->CheckPressTrigger(GE::Keys::UP))result.y += 1;
+		if (keyboard->CheckPressTrigger(GE::Keys::A) || keyboard->CheckPressTrigger(GE::Keys::LEFT))result.x += -1;
+		if (keyboard->CheckPressTrigger(GE::Keys::S) || keyboard->CheckPressTrigger(GE::Keys::DOWN))result.y += -1;
+		if (keyboard->CheckPressTrigger(GE::Keys::D) || keyboard->CheckPressTrigger(GE::Keys::RIGHT))result.x += 1;
 		break;
 	case InputManager::InputDeviceState::XCTRL:
 		if (xctrl->CheckHitButtonTrigger(GE::XInputControllerButton::XINPUT_UP))result.y += 1;
