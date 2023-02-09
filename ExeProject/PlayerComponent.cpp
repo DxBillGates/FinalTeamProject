@@ -116,7 +116,7 @@ void PlayerComponent::Update(float deltaTime)
 	GE::Math::GetScreenToRay(center, &rayPos, &rayDir, cameraInfo.viewMatrix, cameraInfo.projMatrix, GE::Math::Matrix4x4::GetViewportMatrix(GE::Window::GetWindowSize()));
 
 	//ヒットストップのカウント
-	if (!InputManager::GetInstance()->GetLockonButton())
+	if (!InputManager::GetInstance()->GetLockonButton() || dashMode)
 	{
 		if (hitStopCount < hitStopTime)
 		{
