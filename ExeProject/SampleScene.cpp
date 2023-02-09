@@ -11,7 +11,6 @@
 #include"StartTree.h"
 #include"TimeLimit.h"
 #include"MiniMapViewer.h"
-#include"Collect.h"
 #include"UIObject.h"
 
 #include <GatesEngine/Header/GameFramework/Component/DirectionalLight.h>
@@ -196,17 +195,17 @@ void SampleScene::Load()
 	}
 	PlayerComponent::dashMode = false;
 
-	{
-		auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject("test2", "testTag"));
-		testObject->GetTransform()->position = { 1300,0,0 };
-		testObject->SetDrawAxisEnabled(true);
-		auto* sampleCollider = testObject->AddComponent<GE::BoxCollider>();
-		//auto* sampleComponent = testObject->AddComponent<GE::SampleComponent>();
-		sampleCollider->SetCenter({ 0,0,0 });
-		sampleCollider->SetSize({ 2 });
-		sampleCollider->SetType(GE::ColliderType::OBB);
-		col2 = sampleCollider;
-	}
+	//{
+	//	auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject("test2", "testTag"));
+	//	testObject->GetTransform()->position = { 1300,0,0 };
+	//	testObject->SetDrawAxisEnabled(true);
+	//	auto* sampleCollider = testObject->AddComponent<GE::BoxCollider>();
+	//	//auto* sampleComponent = testObject->AddComponent<GE::SampleComponent>();
+	//	sampleCollider->SetCenter({ 0,0,0 });
+	//	sampleCollider->SetSize({ 2 });
+	//	sampleCollider->SetType(GE::ColliderType::OBB);
+	//	col2 = sampleCollider;
+	//}
 
 	{
 		auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject("miniMap", "miniMap"));
@@ -221,7 +220,6 @@ void SampleScene::Load()
 	FieldObjectManager::GetInstance()->SetStartTreeMesh(startTreeModel);*/
 	TimeLimit::GetInstance()->TimeSet = { 3,0 };
 	TimeLimit::GetInstance()->Start(&gameObjectManager);
-	//Collect::GetInstance()->Start(&gameObjectManager);
 
 	collisionManager.AddTagCombination("player", "enemy");
 	collisionManager.AddTagCombination("player", "frog");

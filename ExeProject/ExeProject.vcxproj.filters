@@ -108,9 +108,6 @@
     <ClCompile Include="Over.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Collect.cpp">
-      <Filter>ソースファイル</Filter>
-    </ClCompile>
     <ClCompile Include="FieldObject.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
@@ -204,9 +201,6 @@
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
     <ClInclude Include="Over.h">
-      <Filter>ヘッダーファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Collect.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
     <ClInclude Include="FieldObject.h">
