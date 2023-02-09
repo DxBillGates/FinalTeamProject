@@ -103,6 +103,9 @@ void Option::Update(GE::AudioManager* audioManager)
 		float set = OptionData::BGM_vol / 10.0f;
 		//•ÏX€–Ú
 		audioManager->Get("testBGM", 0)->SetVolume(set);
+		audioManager->Get("gameover", 0)->SetVolume(set);
+		audioManager->Get("gameclear", 0)->SetVolume(set);
+		audioManager->Get("BGM2", 0)->SetVolume(set);
 		bgmChange = false;
 	}
 	if (seChange)
@@ -117,6 +120,12 @@ void Option::Update(GE::AudioManager* audioManager)
 		audioManager->Get("catch2", 2)->SetVolume(set);
 		audioManager->Get("flapping1", 0)->SetVolume(set);
 		audioManager->Get("flapping1", 1)->SetVolume(set);
+		audioManager->Get("click", 0)->SetVolume(set);
+		audioManager->Get("click", 1)->SetVolume(set);
+		audioManager->Get("click", 2)->SetVolume(set);
+		audioManager->Get("hine1", 0)->SetVolume(set);
+		audioManager->Get("jag", 0)->SetVolume(set);
+
 		seChange = false;
 	}
 }
