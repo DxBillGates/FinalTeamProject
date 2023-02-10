@@ -282,6 +282,22 @@ bool Game::LoadContents()
 	nullTexture->Load("endless.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "endless_tex");
 
+	nullTexture = new Texture();
+	nullTexture->Load("dash2.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "dash_tex");
+
+	nullTexture = new Texture();
+	nullTexture->Load("dash1.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "dash1_tex");
+
+	nullTexture = new Texture();
+	nullTexture->Load("movedown1.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "movedown1_tex");
+
+	nullTexture = new Texture();
+	nullTexture->Load("movedown2.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "movedown2_tex");
+
 	auto* testScene = sceneManager.AddScene(new SampleScene("SampleScene", sceneManager.GetSceneInitializer()));
 	sceneManager.AddScene(new Clear("ClearScene", sceneManager.GetSceneInitializer()));
 	sceneManager.AddScene(new Over("OverScene", sceneManager.GetSceneInitializer()));

@@ -49,6 +49,7 @@ void UIObject::SampleSceneStart()
 	object["colectMax"] = AddAnimaiotnObject({}, { 250 }, GE::Color(1, 1, 1, 1), "texture_Number", { 320,64 }, { 32,64 }, { 1,0 });
 	object["control_info"] = AddObject({}, { 768,1,384 }, GE::Color(1, 1, 1, 1), "control_info_1_tex");
 	object["control_info_keyboard"] = AddObject({}, { 512,1,384 }, GE::Color(1, 1, 1, 1), "control_info_keyboard_tex");
+	object["dash"] = AddAnimaiotnObject({}, { 636,1,344 }, GE::Color(1, 1, 1, 1), "dash_tex", { 636,344 }, { 318,344 }, { 0,0 });
 
 	object["control_info_keyboard"].isDraw = true;
 	object["control_info"].isDraw = true;
@@ -56,6 +57,7 @@ void UIObject::SampleSceneStart()
 	object["symbol"].isDraw = false;
 	object["colectMax"].isDraw = false;
 	object["chick"].isDraw = false;
+	object["dash"].isDraw = true;
 
 }
 
@@ -88,6 +90,8 @@ void UIObject::SampleSceneUpdate(float deltaTime)
 	object["control_info"].isDraw = false;
 	object["control_info_keyboard"].transform.position = object["colectMax"].transform.position + infoPos + GE::Math::Vector3(0, -310, 0);
 	object["control_info_keyboard"].isDraw = false;
+	object["dash"].transform.position = object["colectMax"].transform.position + infoPos + GE::Math::Vector3(0, -310, 0);
+	object["dash"].isDraw = false;
 
 	switch (PlayerComponent::statas)
 	{
@@ -99,10 +103,12 @@ void UIObject::SampleSceneUpdate(float deltaTime)
 		if (PlayerComponent::isJoyconUsing)
 		{
 			object["control_info"].isDraw = true;	//ê‡ñæUI
+			/*object["dash"].isDraw = true;*/
 		}
 		else
 		{
 			object["control_info_keyboard"].isDraw = true;	//ê‡ñæUI
+			object["dash"].isDraw = true;
 		}
 		object["colect"].isDraw = true;
 		object["symbol"].isDraw = true;
