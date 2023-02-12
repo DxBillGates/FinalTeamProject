@@ -116,14 +116,16 @@ void PlayerComponent::Update(float deltaTime)
 	GE::Math::GetScreenToRay(center, &rayPos, &rayDir, cameraInfo.viewMatrix, cameraInfo.projMatrix, GE::Math::Matrix4x4::GetViewportMatrix(GE::Window::GetWindowSize()));
 
 	//ヒットストップのカウント
-	if (!InputManager::GetInstance()->GetLockonButton() || dashMode)
+	if (hitStopCount < hitStopTime)
 	{
-		if (hitStopCount < hitStopTime)
-		{
-			GE::GameSetting::Time::SetGameTime(0.01);
-			hitStopCount += f;
-		}
-		else { GE::GameSetting::Time::SetGameTime(1.0); }
+		GE::GameSetting::Time::SetGameTime(0.01);
+		hitStopCount += f;
+	}
+	else { GE::GameSetting::Time::SetGameTime(1.0); }
+	if (lockonState == LockOnState::LOCKON_SLOW)
+	{
+		//スロー
+		GE::GameSetting::Time::SetGameTime(0.2);
 	}
 	if (comboCount < comboInterval)
 	{
@@ -451,8 +453,10 @@ void PlayerComponent::Control(float deltaTime)
 		transform->position += transform->GetForward() * current_speed * deltaTime * GE::GameSetting::Time::GetGameTime() - gravity;
 		if (!dashMode)
 		{
+
 			//Key押したらPlayerState::DASHに変わる
-			if (InputManager::GetInstance()->GetActionButton()) { statas = PlayerStatas::DASH; }
+			if (InputManager::GetInstance()->GetActionButton() && !look) { statas = PlayerStatas::DASH; }
+			look = false;
 			if (lockOnIntervalCount >= lockOnInterval)
 			{
 				if (InputManager::GetInstance()->GetLockonButton())
@@ -473,7 +477,6 @@ void PlayerComponent::Control(float deltaTime)
 				lockOnIntervalCount += deltaTime;
 				isLockOnStart = false;
 			}
-
 			//ロックオンして攻撃
 			LockOn();
 		}
@@ -668,7 +671,6 @@ void PlayerComponent::SearchNearEnemy(bool isForward)
 	std::vector<GE::GameObject*> enemies = EnemyManager::GetInstance()->GetAllEnemies();
 	float result = 100000;
 	int a = 0;
-	bool look = false;
 	float whichLockOnLength;
 	//サーチする距離をセット
 	if (!isForward) { whichLockOnLength = lockOnLength; }
@@ -698,8 +700,6 @@ void PlayerComponent::SearchNearEnemy(bool isForward)
 	}
 	if (look)
 	{
-		//スロー
-		GE::GameSetting::Time::SetGameTime(0.2);
 		//最も近い敵
 		lockOnEnemy.object = enemies[a];
 		//ロックオンしている敵を青くする

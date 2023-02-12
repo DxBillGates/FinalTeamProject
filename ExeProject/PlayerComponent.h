@@ -50,6 +50,8 @@ private:
 	float comboCount;				//別シーン用
 
 	int statasChangeCount;			//インプットが次のPlayerStatasでも動かないように1フレーム繰越すよう
+
+	bool look;// ロックオンしてスローの状態
 	struct LockOnEnemy
 	{
 		GE::GameObject* object = nullptr;
