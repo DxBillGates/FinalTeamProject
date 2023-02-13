@@ -7,12 +7,14 @@
 #include <GatesEngine/Header/Graphics/MeshCreater.h>
 #include <GatesEngine/Header/Graphics/Mesh.h>
 #include <GatesEngine/Header/GameFramework/Component/DirectionalLight.h>
+#include "ScreenUI3DSpace.h"
 
 class SampleScene : public GE::Scene
 {
 private:
 	GE::ICollider* col1, * col2;
 	GE::DirectionalLight* directionalLight;
+	ScreenUI3DSpace testScreenUI3DSpace;
 public:
 	SampleScene();
 	SampleScene(const std::string& sceneName);

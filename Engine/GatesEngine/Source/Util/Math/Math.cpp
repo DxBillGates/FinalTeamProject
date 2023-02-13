@@ -27,6 +27,11 @@ float GE::Math::Clamp(float x, float min, float max)
 	return result;
 }
 
+int GE::Math::GetSign(float value)
+{
+	return value >= 0 ? 1 : -1;
+}
+
 float GE::Math::GaussFilter(const GE::Math::Vector2& pos, float value)
 {
 	return std::expf(-(pos.x * pos.x + pos.y * pos.y) / (2.0f * value * value));

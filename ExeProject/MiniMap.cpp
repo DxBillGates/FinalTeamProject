@@ -116,6 +116,7 @@ void MiniMap::Draw()
 	const GE::Color DRAW_PLAYER_COLOR = GE::Color::White();
 	const float DRAW_ENEMY_SIZE = 24;
 	const GE::Color DRAW_ENEMY_COLOR = GE::Color::White();
+	const float DRAW_NEST_SIZE = 64;
 
 	const GE::Math::Vector2 MINIMAP_OFFSET = { 1746,842 };
 	const float MINIMAP_SIZE = 320;
@@ -128,6 +129,9 @@ void MiniMap::Draw()
 	auto gameObjectsManager = pGameObjectManager->GetManager();
 	GE::Math::Vector3 drawPlayerPositionOffset = (*gameObjectsManager)["player"][0]->GetTransform()->position;
 
+	GE::Math::Vector3 enemyMinPos = { MINIMAP_OFFSET.x + -MINIMAP_SIZE / 2 + DRAW_ENEMY_SIZE / 2,MINIMAP_OFFSET.y + -MINIMAP_SIZE / 2 + DRAW_ENEMY_SIZE / 2,0 };
+	GE::Math::Vector3 enemyMaxPos = { MINIMAP_OFFSET.x + MINIMAP_SIZE / 2 - DRAW_ENEMY_SIZE / 2,MINIMAP_OFFSET.y + MINIMAP_SIZE / 2 - DRAW_ENEMY_SIZE / 2,0 };
+
 	// ìGï`âÊ
 	for (auto& enemy : (*gameObjectsManager)["enemy"])
 	{
@@ -136,10 +140,7 @@ void MiniMap::Draw()
 			GE::Math::Vector3 enemyPosition = enemy->GetTransform()->position - drawPlayerPositionOffset;
 			GE::Math::Vector2 drawEnemyPosition = GE::Math::Vector2(enemyPosition.x, -enemyPosition.z) / DIVIDE + MINIMAP_OFFSET;
 
-			GE::Math::Vector3 minPos = { MINIMAP_OFFSET.x + -MINIMAP_SIZE / 2 + DRAW_ENEMY_SIZE / 2,MINIMAP_OFFSET.y + -MINIMAP_SIZE / 2 + DRAW_ENEMY_SIZE / 2,0 };
-			GE::Math::Vector3 maxPos = { MINIMAP_OFFSET.x + MINIMAP_SIZE / 2 - DRAW_ENEMY_SIZE / 2,MINIMAP_OFFSET.y + MINIMAP_SIZE / 2 - DRAW_ENEMY_SIZE / 2,0 };
-
-			GE::Math::Vector3 fixedDrawPosition = GE::Math::Vector3::Min(minPos, GE::Math::Vector3::Max(maxPos, { drawEnemyPosition.x,drawEnemyPosition.y,0 }));
+			GE::Math::Vector3 fixedDrawPosition = GE::Math::Vector3::Min(enemyMinPos, GE::Math::Vector3::Max(enemyMaxPos, { drawEnemyPosition.x,drawEnemyPosition.y,0 }));
 
 			drawInfo = { { fixedDrawPosition.x,fixedDrawPosition.y }, DRAW_ENEMY_SIZE, DRAW_ENEMY_COLOR };
 
@@ -153,7 +154,7 @@ void MiniMap::Draw()
 				texture = pGraphicsDevice->GetTextureManager()->Get("Enemy_MiniMap");
 			}
 
-			Draw2D(drawInfo, MINIMAP_OFFSET, minPos, maxPos, texture);
+			Draw2D(drawInfo, MINIMAP_OFFSET, enemyMinPos, enemyMaxPos, texture);
 		}
 	}
 
@@ -162,14 +163,10 @@ void MiniMap::Draw()
 	{
 		if (enemy->GetComponent<Enemy>()->statas == Enemy::Statas::ALIVE)
 		{
-
 			GE::Math::Vector3 enemyPosition = enemy->GetTransform()->position - drawPlayerPositionOffset;
 			GE::Math::Vector2 drawEnemyPosition = GE::Math::Vector2(enemyPosition.x, -enemyPosition.z) / DIVIDE + MINIMAP_OFFSET;
 
-			GE::Math::Vector3 minPos = { MINIMAP_OFFSET.x + -MINIMAP_SIZE / 2 + DRAW_ENEMY_SIZE / 2,MINIMAP_OFFSET.y + -MINIMAP_SIZE / 2 + DRAW_ENEMY_SIZE / 2,0 };
-			GE::Math::Vector3 maxPos = { MINIMAP_OFFSET.x + MINIMAP_SIZE / 2 - DRAW_ENEMY_SIZE / 2,MINIMAP_OFFSET.y + MINIMAP_SIZE / 2 - DRAW_ENEMY_SIZE / 2,0 };
-
-			GE::Math::Vector3 fixedDrawPosition = GE::Math::Vector3::Min(minPos, GE::Math::Vector3::Max(maxPos, { drawEnemyPosition.x,drawEnemyPosition.y,0 }));
+			GE::Math::Vector3 fixedDrawPosition = GE::Math::Vector3::Min(enemyMinPos, GE::Math::Vector3::Max(enemyMaxPos, { drawEnemyPosition.x,drawEnemyPosition.y,0 }));
 
 			drawInfo = { { fixedDrawPosition.x,fixedDrawPosition.y }, DRAW_ENEMY_SIZE, DRAW_ENEMY_COLOR };
 
@@ -179,9 +176,18 @@ void MiniMap::Draw()
 				texture = pGraphicsDevice->GetTextureManager()->Get("Enemy2_MiniMap");
 			}
 
-			Draw2D(drawInfo, MINIMAP_OFFSET, minPos, maxPos, texture);
+			Draw2D(drawInfo, MINIMAP_OFFSET, enemyMinPos, enemyMaxPos, texture);
 		}
 	}
+
+	auto nestPosition = (*gameObjectsManager)["nest"][0]->GetTransform()->position - drawPlayerPositionOffset;
+	auto drawNestPosition = GE::Math::Vector2(nestPosition.x, -nestPosition.z) / DIVIDE + MINIMAP_OFFSET;
+	GE::Math::Vector3 nestMinPos = { MINIMAP_OFFSET.x + -MINIMAP_SIZE / 2 + DRAW_NEST_SIZE / 2,MINIMAP_OFFSET.y + -MINIMAP_SIZE / 2 + DRAW_NEST_SIZE / 2,0 };
+	GE::Math::Vector3 nestMaxPos = { MINIMAP_OFFSET.x + MINIMAP_SIZE / 2 - DRAW_NEST_SIZE / 2,MINIMAP_OFFSET.y + MINIMAP_SIZE / 2 - DRAW_NEST_SIZE / 2,0 };
+	GE::Math::Vector3 fixedDrawPosition = GE::Math::Vector3::Min(enemyMinPos, GE::Math::Vector3::Max(enemyMaxPos, { drawNestPosition.x,drawNestPosition.y,0 }));
+	GE::ITexture* texture = pGraphicsDevice->GetTextureManager()->Get("texture_Chick");
+	drawInfo = { { fixedDrawPosition.x,fixedDrawPosition.y }, DRAW_NEST_SIZE, DRAW_ENEMY_COLOR };
+	Draw2D(drawInfo, MINIMAP_OFFSET, nestMinPos, nestMaxPos, texture);
 
 	// ÉvÉåÉCÉÑÅ[ï`âÊ
 	drawInfo = { MINIMAP_OFFSET, DRAW_PLAYER_SIZE, DRAW_PLAYER_COLOR };

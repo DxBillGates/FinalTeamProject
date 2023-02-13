@@ -45,6 +45,13 @@ namespace GE
 		/// <returns></returns>
 		float Clamp(float x, float min, float max);
 
+		/// <summary>
+		/// valueの符号を返す
+		/// </summary>
+		/// <param name="value">確認したい値</param>
+		/// <returns>符号1 or -1</returns>
+		int GetSign(float value);
+
 		// ガウシアンフィルタの重みを計算する関数
 		float GaussFilter(const GE::Math::Vector2& pos, float value);
 		// 参照ピクセルへの情報とガウシアンフィルタの重みを計算してセットする関数

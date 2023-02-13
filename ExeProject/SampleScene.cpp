@@ -21,6 +21,7 @@
 #include "VolumetricCloud.h"
 #include "PlayerColectObject.h"
 #include "InputManager.h"
+#include <GatesEngine/External/imgui/imgui.h>
 
 SampleScene::SampleScene()
 	: SampleScene("SampleScene")
@@ -63,6 +64,10 @@ void SampleScene::Initialize()
 	audioManager->Get("natsunoyama1", 0)->SetVolume(0.4f);
 	audioManager->Get("natsunoyama1", 0)->Reset();
 	audioManager->Get("testBGM", 0)->Reset();
+
+	ScreenUI3DSpace::SetGraphicsDevice(graphicsDevice);
+	testScreenUI3DSpace.Start();
+	testScreenUI3DSpace.SetScale(100);
 
 }
 
@@ -141,6 +146,9 @@ void SampleScene::Update(float deltaTime)
 	FieldObjectDebugTransform::GetInstance()->Update();
 
 	blurThreshold = GE::Math::Lerp(0, 0.5f, (PlayerComponent::current_speed - 20) / 100.0f);
+
+	testScreenUI3DSpace.SetWorldPosition(gameObjectManager.FindGameObjectWithTag("nest", "nest")->GetTransform()->position);
+	testScreenUI3DSpace.Update();
 }
 
 void SampleScene::Draw()
@@ -181,6 +189,7 @@ void SampleScene::LateDraw()
 {
 	gameObjectManager.LateDraw();
 	ScreenUIManager::GetInstance()->DrawSprite(graphicsDevice);
+	testScreenUI3DSpace.Draw();
 }
 
 void SampleScene::Load()

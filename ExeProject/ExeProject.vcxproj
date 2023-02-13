@@ -191,6 +191,7 @@
     <ClCompile Include="Ranking.cpp" />
     <ClCompile Include="SampleScene.cpp" />
     <ClCompile Include="ScreenUI.cpp" />
+    <ClCompile Include="ScreenUI3DSpace.cpp" />
     <ClCompile Include="StartTree.cpp" />
     <ClCompile Include="TimeLimit.cpp" />
     <ClCompile Include="Title.cpp" />
@@ -226,6 +227,7 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="SampleScene.h" />
     <ClInclude Include="ScreenUI.h" />
+    <ClInclude Include="ScreenUI3DSpace.h" />
     <ClInclude Include="StartTree.h" />
     <ClInclude Include="TimeLimit.h" />
     <ClInclude Include="Title.h" />
