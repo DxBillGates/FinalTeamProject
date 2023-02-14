@@ -4,6 +4,7 @@
 #include <GatesEngine/Header/Graphics/SkinMeshAnimator.h>
 #include <GatesEngine/Header/Audio/AudioManager.h>
 #include"CrashParticle.h"
+#include "NestScreenIndicator.h"
 
 class PlayerComponent : public GE::Component
 {
@@ -17,6 +18,7 @@ public:
 	static int takeEnemyCount;			//別シーン用 倒した合計数
 	static bool isJoyconUsing;
 	static bool isFirstReturn;		// 巣にまだ一度も戻っていないか
+	static bool isBeforeChick;
 	static bool isChick;			// 巣にまだ一度も戻っていない状態かつ餌を保持しているか
 private:
 	static GE::Math::Vector3 onTheTreePosition;	//木の上で体の高さ調整用
@@ -75,6 +77,8 @@ private:
 	GE::Math::Vector3 currentPosition;//巣に着陸するときのラープ用
 
 	int normalSceneKillCount;
+
+	NestScreenIndicator* nestIndicator;
 public:
 	enum class PlayerStatas
 	{
@@ -155,4 +159,5 @@ private:
 public:
 	GE::Math::Vector3 GetDirection();
 	void SetAudioManager(GE::AudioManager* a);
+	void SetIndicator(NestScreenIndicator* indicator);
 };

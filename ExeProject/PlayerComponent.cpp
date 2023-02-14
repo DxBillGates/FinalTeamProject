@@ -39,6 +39,7 @@ bool PlayerComponent::isJoyconUsing = false;
 int PlayerComponent::combo = 0;
 int PlayerComponent::takeEnemyCount = 0;
 bool PlayerComponent::isFirstReturn = true;
+bool PlayerComponent::isBeforeChick = false;
 bool PlayerComponent::isChick = false;
 
 PlayerComponent::PlayerComponent()
@@ -104,11 +105,15 @@ void PlayerComponent::Start()
 	}
 
 	isFirstReturn = true;
+	isBeforeChick = false;
 	isChick = false;
 	normalSceneKillCount = 0;
+	CameraControl::GetInstance()->SetTargetObject(gameObject);
 }
 void PlayerComponent::Update(float deltaTime)
 {
+	isBeforeChick = isChick;
+	isChick = isFirstReturn && colectCount > 0;
 	preQuat = quat;
 
 	frameRate = 1.0f / deltaTime;
@@ -128,6 +133,9 @@ void PlayerComponent::Update(float deltaTime)
 		hitStopCount += f;
 	}
 	else { GE::GameSetting::Time::SetGameTime(1.0); }
+
+	if (nestIndicator)nestIndicator->Update(deltaTime);
+
 	if (lockonState == LockOnState::LOCKON_SLOW)
 	{
 		//スロー
@@ -154,7 +162,6 @@ void PlayerComponent::Update(float deltaTime)
 
 	//操作
 	Control(f);
-	CameraControl::GetInstance()->SetTargetObject(gameObject);
 	//収集物
 	PlayerColectObject::GetInstance()->Update(f);
 	//カメラコントロールの更新
@@ -200,8 +207,6 @@ void PlayerComponent::Update(float deltaTime)
 	}
 
 	animator.Update(deltaTime);
-
-	isChick = isFirstReturn && colectCount > 0;
 }
 
 void PlayerComponent::DrawShadow()
@@ -810,4 +815,9 @@ GE::Math::Vector3 PlayerComponent::GetDirection()
 void PlayerComponent::SetAudioManager(GE::AudioManager* a)
 {
 	audioManager = a;
+}
+
+void PlayerComponent::SetIndicator(NestScreenIndicator* indicator)
+{
+	nestIndicator = indicator;
 }

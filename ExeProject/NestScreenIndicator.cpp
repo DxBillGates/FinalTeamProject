@@ -1,5 +1,7 @@
 #include "NestScreenIndicator.h"
 #include "PlayerComponent.h"
+#include "CameraControl.h"
+#include <GatesEngine/Header/GameFramework/GameSetting.h>
 
 void NestScreenIndicator::SetShader()
 {
@@ -33,6 +35,12 @@ void NestScreenIndicator::Start()
 	scale = { 50 };
 	tempScale = scale;
 	addScale = 0;
+
+	player = gameObjectManager->FindGameObjectWithTag("Player", "player");
+	nest = gameObjectManager->FindGameObjectWithTag("nest", "nest");
+
+	isFirstSetCameraDirection = false;
+	isSetCameraDirection = false;
 }
 
 void NestScreenIndicator::Update(float deltaTime)
@@ -40,6 +48,23 @@ void NestScreenIndicator::Update(float deltaTime)
 	if (PlayerComponent::isChick == false)return;
 
 	ScreenUI3DSpace::Update(deltaTime);
+
+	if (PlayerComponent::isBeforeChick == false && PlayerComponent::isChick == true && isFirstSetCameraDirection == false)
+	{
+		isFirstSetCameraDirection = true;
+		isSetCameraDirection = true;
+	}
+
+	if (isSetCameraDirection)
+	{
+		CameraControl::GetInstance()->SetTargetObject(nest);
+		GE::GameSetting::Time::SetGameTime(0.01f);
+	}
+	else
+	{
+		CameraControl::GetInstance()->SetTargetObject(player);
+		GE::GameSetting::Time::SetGameTime(1.0f);
+	}
 
 	// uiの拡縮用フラグ更新
 	if (waveIntervalFlagContrller.GetOverTimeTrigger())
@@ -57,6 +82,7 @@ void NestScreenIndicator::Update(float deltaTime)
 		waveFlagController.SetTime(0);
 		waveFlagController.SetFlag(false);
 		addScale = 0;
+		isSetCameraDirection = false;
 	}
 
 	addScale = GE::Math::Vector3(50) * std::sinf(waveFlagController.GetTime() * GE::Math::PI);
@@ -72,6 +98,11 @@ void NestScreenIndicator::Draw()
 
 	scale = tempScale + addScale;
 	ScreenUI3DSpace::Draw();
+}
+
+void NestScreenIndicator::SetGameObjectManager(GE::GameObjectManager* setManager)
+{
+	gameObjectManager = setManager;
 }
 
 void NestScreenIndicator::SetAudioManager(GE::AudioManager* setManager)

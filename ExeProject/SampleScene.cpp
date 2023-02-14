@@ -66,8 +66,9 @@ void SampleScene::Initialize()
 	audioManager->Get("testBGM", 0)->Reset();
 
 	ScreenUI3DSpace::SetGraphicsDevice(graphicsDevice);
-	nestIndicator.Start();
 	nestIndicator.SetAudioManager(audioManager);
+	nestIndicator.SetGameObjectManager(&gameObjectManager);
+	nestIndicator.Start();
 }
 
 void SampleScene::Update(float deltaTime)
@@ -147,7 +148,7 @@ void SampleScene::Update(float deltaTime)
 	blurThreshold = GE::Math::Lerp(0, 0.5f, (PlayerComponent::current_speed - 20) / 100.0f);
 
 	nestIndicator.SetWorldPosition(gameObjectManager.FindGameObjectWithTag("nest", "nest")->GetTransform()->position);
-	nestIndicator.Update(deltaTime);
+	//nestIndicator.Update(deltaTime);
 }
 
 void SampleScene::Draw()
@@ -200,6 +201,7 @@ void SampleScene::Load()
 	{
 		auto* testObject = gameObjectManager.AddGameObject(new GE::GameObject("Player", "player"));
 		auto* sampleComponent = testObject->AddComponent<PlayerComponent>();
+		sampleComponent->SetIndicator(&nestIndicator);
 		testObject->GetComponent<PlayerComponent>()->SetAudioManager(audioManager);
 		auto* playerCollider = testObject->AddComponent < GE::SphereCollider >();
 		playerCollider->SetCenter({ 0,0,0 });
