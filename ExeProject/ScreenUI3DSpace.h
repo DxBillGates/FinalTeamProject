@@ -36,7 +36,7 @@ public:
 	/// <summary>
 	/// CalclateScreenPos‚¾‚¯Às‚·‚é
 	/// </summary>
-	virtual void Update();
+	virtual void Update(float deltaTime);
 	/// <summary>
 	/// •`‰æŠÖŒW‚Ì‰¼‘zŠÖ”‚ğ‚·‚×‚ÄÀs
 	/// </summary>

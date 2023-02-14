@@ -16,7 +16,8 @@ public:
 	static int combo;				//別シーン用何コンボ？
 	static int takeEnemyCount;			//別シーン用 倒した合計数
 	static bool isJoyconUsing;
-
+	static bool isFirstReturn;		// 巣にまだ一度も戻っていないか
+	static bool isChick;			// 巣にまだ一度も戻っていない状態かつ餌を保持しているか
 private:
 	static GE::Math::Vector3 onTheTreePosition;	//木の上で体の高さ調整用
 	static GE::Math::Vector3 gravity;	//重力
@@ -73,7 +74,7 @@ private:
 
 	GE::Math::Vector3 currentPosition;//巣に着陸するときのラープ用
 
-
+	int normalSceneKillCount;
 public:
 	enum class PlayerStatas
 	{

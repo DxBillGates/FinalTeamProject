@@ -38,6 +38,8 @@ bool PlayerComponent::dashMode = false;
 bool PlayerComponent::isJoyconUsing = false;
 int PlayerComponent::combo = 0;
 int PlayerComponent::takeEnemyCount = 0;
+bool PlayerComponent::isFirstReturn = true;
+bool PlayerComponent::isChick = false;
 
 PlayerComponent::PlayerComponent()
 	: inputDevice(nullptr)
@@ -100,6 +102,10 @@ void PlayerComponent::Start()
 	{
 		hitStopTime = 50;
 	}
+
+	isFirstReturn = true;
+	isChick = false;
+	normalSceneKillCount = 0;
 }
 void PlayerComponent::Update(float deltaTime)
 {
@@ -194,6 +200,8 @@ void PlayerComponent::Update(float deltaTime)
 	}
 
 	animator.Update(deltaTime);
+
+	isChick = isFirstReturn && colectCount > 0;
 }
 
 void PlayerComponent::DrawShadow()
@@ -273,6 +281,8 @@ void PlayerComponent::OnCollision(GE::GameObject* other)
 				current_speed = normal_speed;
 				currentPosition = transform->position;
 				statas = PlayerStatas::GO_TREE;
+
+				if (isFirstReturn)isFirstReturn = false;
 			}
 		}
 	}
@@ -405,6 +415,7 @@ void PlayerComponent::OnGui()
 	ImGui::Text("%.3f", accelerometer.Length());
 	ImGui::Text("%.3f", joycon->GetDefaultAccelerometerDiff());
 	ImGui::Text("%.3f", joycon->GetGyroscope().Length());
+	ImGui::Checkbox("isFirstKill", &isChick);
 }
 void PlayerComponent::Control(float deltaTime)
 {

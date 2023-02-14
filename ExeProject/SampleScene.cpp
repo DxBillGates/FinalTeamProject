@@ -66,9 +66,8 @@ void SampleScene::Initialize()
 	audioManager->Get("testBGM", 0)->Reset();
 
 	ScreenUI3DSpace::SetGraphicsDevice(graphicsDevice);
-	testScreenUI3DSpace.Start();
-	testScreenUI3DSpace.SetScale(100);
-
+	nestIndicator.Start();
+	nestIndicator.SetAudioManager(audioManager);
 }
 
 void SampleScene::Update(float deltaTime)
@@ -147,8 +146,8 @@ void SampleScene::Update(float deltaTime)
 
 	blurThreshold = GE::Math::Lerp(0, 0.5f, (PlayerComponent::current_speed - 20) / 100.0f);
 
-	testScreenUI3DSpace.SetWorldPosition(gameObjectManager.FindGameObjectWithTag("nest", "nest")->GetTransform()->position);
-	testScreenUI3DSpace.Update();
+	nestIndicator.SetWorldPosition(gameObjectManager.FindGameObjectWithTag("nest", "nest")->GetTransform()->position);
+	nestIndicator.Update(deltaTime);
 }
 
 void SampleScene::Draw()
@@ -189,7 +188,7 @@ void SampleScene::LateDraw()
 {
 	gameObjectManager.LateDraw();
 	ScreenUIManager::GetInstance()->DrawSprite(graphicsDevice);
-	testScreenUI3DSpace.Draw();
+	nestIndicator.Draw();
 }
 
 void SampleScene::Load()

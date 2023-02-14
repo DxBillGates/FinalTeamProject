@@ -2,7 +2,6 @@
 #include <GatesEngine/Header/Graphics/ICBufferAllocater.h>
 #include <GatesEngine/Header/Graphics/Window.h>
 #include <GatesEngine/Header/Util/Math/Math.h>
-#include <GatesEngine/External/imgui/imgui.h>
 #include <cmath>
 
 GE::IGraphicsDeviceDx12* ScreenUI3DSpace::graphicsDevice = nullptr;
@@ -133,7 +132,7 @@ void ScreenUI3DSpace::Start()
 	color = { 1 };
 }
 
-void ScreenUI3DSpace::Update()
+void ScreenUI3DSpace::Update(float deltaTime)
 {
 	CalclateScreenPos();
 }

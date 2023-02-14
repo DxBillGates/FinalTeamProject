@@ -156,6 +156,9 @@
     <ClCompile Include="ScreenUI3DSpace.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
+    <ClCompile Include="NestScreenIndicator.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BirdEnemy.h">
@@ -252,6 +255,9 @@
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
     <ClInclude Include="ScreenUI3DSpace.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="NestScreenIndicator.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
   </ItemGroup>

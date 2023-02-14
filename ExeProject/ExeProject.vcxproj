@@ -181,6 +181,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MiniMap.cpp" />
     <ClCompile Include="MiniMapViewer.cpp" />
+    <ClCompile Include="NestScreenIndicator.cpp" />
     <ClCompile Include="NormalEnemy.cpp" />
     <ClCompile Include="FieldTree.cpp" />
     <ClCompile Include="Option.cpp" />
@@ -216,6 +217,7 @@
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="MiniMap.h" />
     <ClInclude Include="MiniMapViewer.h" />
+    <ClInclude Include="NestScreenIndicator.h" />
     <ClInclude Include="NormalEnemy.h" />
     <ClInclude Include="FieldTree.h" />
     <ClInclude Include="Option.h" />
