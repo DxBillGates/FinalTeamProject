@@ -20,6 +20,7 @@ public:
 	static bool isFirstReturn;		// 巣にまだ一度も戻っていないか
 	static bool isBeforeChick;
 	static bool isChick;			// 巣にまだ一度も戻っていない状態かつ餌を保持しているか
+	static int colectCount;				//取集物を何個集めたか
 private:
 	static GE::Math::Vector3 onTheTreePosition;	//木の上で体の高さ調整用
 	static GE::Math::Vector3 gravity;	//重力
@@ -46,7 +47,6 @@ private:
 
 	float dashEasingCount;			//スピード遷移のカウント
 	float stayLandLerpEasingCount;	//着陸する遷移カウント
-	int colectCount;				//取集物を何個集めたか
 	float hitStopCount;				//ヒットストップカウント用
 	float startCouunt;				//開始時のカウント
 	int lockOnIntervalCount;		//ロックオンのインターバルのカウント
@@ -152,7 +152,7 @@ private:
 
 	void NormalDash(float dash_speed, float dash_time, float deltaTime);
 
-	void Reflection(GE::Math::Vector3 normal, bool reflection = false);
+	void Reflection(GE::Math::Vector3 normal, bool colectFallen, bool reflection = false);
 	//EaseIn関係がよくわからなかったから一時的に追加
 	const float easeIn(const float start, const float end, float time);
 

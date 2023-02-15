@@ -1,6 +1,8 @@
 #include <GatesEngine/Header/Util/Utility.h>
 #include <GatesEngine/Header/Util/Random.h>
 #include <GatesEngine/Header/Graphics\Window.h>
+#include <GatesEngine/Header\GameFramework/GameSetting.h>
+
 #include<fstream>
 #include<sstream>
 #include<cassert>
@@ -157,6 +159,7 @@ void ScreenUIManager::SampleSceneStart()
 	object["is_lockon_info"] = Set(GE::Math::Vector3(center.x, center.y - 150.f, 0.f), GE::Math::Vector3(400, 70, 0), GE::Color::White(), "is_lockon_info_tex");
 	object["search_info"] = Set(GE::Math::Vector3(center.x, center.y - 150.f, 0.f), GE::Math::Vector3(384, 128, 0) * 0.6f, GE::Color::White(), "search_info_tex");
 
+	object["go_nest_info"] = Set(GE::Math::Vector3(188, 530, 0.0f), GE::Math::Vector3(256, 64, 0) * 1.1f, GE::Color::White(), "go_nest_info_tex");
 	object["dash_info_keyboard"] = Set(GE::Math::Vector3(188, 670, 0.0f), GE::Math::Vector3(256, 64, 0) * 1.1f, GE::Color::White(), "control_info_keyboard_tex", { 512,384 }, { 512, 128 });
 	object["dash_info_keyboard"].pivotPos = 2;
 	object["push_space"] = Set(GE::Math::Vector3(winSize.x - 300.f, winSize.y - 100.f, 0.f), GE::Math::Vector3(400, 70, 0) * 0.57f, GE::Color::White(), "push_space_tex");
@@ -236,6 +239,13 @@ void ScreenUIManager::SampleSceneUpdate(float deltaTime)
 	object["lockon_info_xctrl"].isDraw = false;
 	object["push_a"].isDraw = false;
 	object["dash_info_xctrl"].isDraw = false;
+	object["go_nest_info"].isDraw = false;
+	if (PlayerComponent::colectCount != 0)
+	{
+		object["go_nest_info"].isDraw = true;
+		object["go_nest_info"].transform.position = GE::Math::Vector3::Lerp(GE::Math::Vector3(center.x, center.y - 150.f, 0.f), GE::Math::Vector3(190, 530, 0.0f), SetLerp("go_nest_info", 144, f * GE::GameSetting::Time::GetGameTime()));
+	}
+
 
 	TimeLimitActive(f);
 	if (TimeLimit::GetInstance()->GetLimit())
@@ -334,6 +344,7 @@ void ScreenUIManager::SampleSceneUpdate(float deltaTime)
 
 		break;
 	case PlayerComponent::PlayerStatas::MOVE:
+
 		if (inputDeviceState == InputManager::InputDeviceState::JOYCON) {
 			object["lockon_info"].isDraw = true;
 		}
@@ -356,13 +367,19 @@ void ScreenUIManager::SampleSceneUpdate(float deltaTime)
 			object["search_info"].isDraw = true;
 			break;
 		case PlayerComponent::LockOnState::LOCKON_SLOW:
+
 			object["is_lockon_info"].isDraw = true;
 			object["is_lockon_info"].transform.position = GE::Math::Vector3(center.x, center.y - 150.f, 0.f) + vive;
 			viveVelocity = { 20,20 };
+
 			break;
 		}
 
 		break;
+	}
+	if (NestScreenIndicator::isSetCameraDirection)
+	{
+		object["is_lockon_info"].isDraw = false;
 	}
 #pragma region ƒIƒvƒVƒ‡ƒ“’†
 	OptionMenuActive(false);
@@ -467,7 +484,7 @@ void ScreenUIManager::SampleSceneUpdate(float deltaTime)
 	float yPosition = 900;
 	yPosition -= TimeLimit::GetInstance()->GetAddSecondFlagController()->GetTime() * 50;
 
-	auto UpdateAddTimeObject = [](SpriteInfo& sprite,bool drawFlag,float alphaValue,float position)
+	auto UpdateAddTimeObject = [](SpriteInfo& sprite, bool drawFlag, float alphaValue, float position)
 	{
 		sprite.isDraw = drawFlag;
 		sprite.transform.position.y = position;

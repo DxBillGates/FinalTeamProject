@@ -398,6 +398,14 @@ bool Game::LoadContents()
 	nullTexture->Load("plus.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "plus_tex");
 
+	nullTexture = new Texture();
+	nullTexture->Load("go_nest_info.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "go_nest_info_tex");
+
+	nullTexture = new Texture();
+	nullTexture->Load("lockon_release_info.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "lockon_release_info_tex");
+
 	return true;
 }
 

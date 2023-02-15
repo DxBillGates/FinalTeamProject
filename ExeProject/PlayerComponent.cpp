@@ -32,11 +32,12 @@ float PlayerComponent::worldRadius = 76000.0f;							//端この壁までの長さ
 float PlayerComponent::lockOnLength = 10000.0f;							//ロックオンできる距離
 float PlayerComponent::moreTimesLockOnLength = 10000.0f;				//連続で二回目以降の敵をロックオンできる距離
 int PlayerComponent::lockOnInterval = 250.0f;							//再度ロックオンできるまでのインターバル
-float PlayerComponent::comboInterval = 70.0f;
+float PlayerComponent::comboInterval = 200.0f;
 bool PlayerComponent::isGoTree = false;
 bool PlayerComponent::dashMode = false;
 bool PlayerComponent::isJoyconUsing = false;
 int PlayerComponent::combo = 0;
+int PlayerComponent::colectCount;
 int PlayerComponent::takeEnemyCount = 0;
 bool PlayerComponent::isFirstReturn = true;
 bool PlayerComponent::isBeforeChick = false;
@@ -152,7 +153,7 @@ void PlayerComponent::Update(float deltaTime)
 	//ゲームモード別の速さ設定
 	if (dashMode)
 	{
-		normal_speed = 80.0f;
+		normal_speed = 50.0f;
 	}
 	else
 	{
@@ -302,7 +303,7 @@ void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 			if (other->GetTag() == "ground" || other->GetTag() == "StartTree" || other->GetTag() == "tile" || other->GetTag() == "fieldtree")
 			{
 				//各法線セット
-				Reflection(gameObject->GetHitNormal());
+				Reflection(gameObject->GetHitNormal(), false);
 				crashParticle.Fire(transform->position, gameObject->GetHitNormal(), other->GetColor());
 				statas = PlayerStatas::OVER;
 				dashMode = false;
@@ -318,7 +319,7 @@ void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 				if (GE::Math::Vector3::Dot(transform->GetForward(), gameObject->GetHitNormal()) < 0.0)
 				{
 					//各法線セット
-					Reflection(gameObject->GetHitNormal());
+					Reflection(gameObject->GetHitNormal(), true);
 					crashParticle.Fire(transform->position, gameObject->GetHitNormal(), other->GetColor());
 					return;
 				}
@@ -328,7 +329,7 @@ void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 				if (statas != PlayerStatas::LOCKON_SHOOT)
 				{
 					//各法線セット
-					Reflection(GE::Math::Vector3(0, 1, 0));
+					Reflection(GE::Math::Vector3(0, 1, 0), true);
 					crashParticle.Fire(transform->position, GE::Math::Vector3(0, 1, 0), other->GetColor());
 					return;
 				}
@@ -338,7 +339,7 @@ void PlayerComponent::OnCollisionEnter(GE::GameObject* other)
 				GE::Math::Vector3 dir = transform->position - other->GetTransform()->position;
 				dir = dir.Normalize();
 				GE::Math::Vector3 hitNormal = GE::Math::Vector3(dir.x, 0, dir.z);
-				Reflection(hitNormal);
+				Reflection(hitNormal, true);
 				crashParticle.Fire(transform->position, GE::Math::Vector3(0, 1, 0), other->GetColor());
 			}
 		}
@@ -433,7 +434,7 @@ void PlayerComponent::Control(float deltaTime)
 
 	if (worldRadius < distance)
 	{
-		Reflection(-GE::Math::Vector3(transform->position - FieldObjectManager::StartPosition).Normalize(), true);
+		Reflection(-GE::Math::Vector3(transform->position - FieldObjectManager::StartPosition).Normalize(), false, true);
 	}
 	bool loop = false;
 	switch (statas)
@@ -778,7 +779,7 @@ void PlayerComponent::NormalDash(float dash_speed, float dash_time, float deltaT
 
 	transform->position += transform->GetForward() * current_speed * deltaTime * GE::GameSetting::Time::GetGameTime();
 }
-void PlayerComponent::Reflection(GE::Math::Vector3 normal, bool reflection)
+void PlayerComponent::Reflection(GE::Math::Vector3 normal, bool colectFallen, bool reflection)
 {
 	auto a = transform->GetForward();
 	statas = PlayerStatas::CRASH;
@@ -796,10 +797,12 @@ void PlayerComponent::Reflection(GE::Math::Vector3 normal, bool reflection)
 	CameraControl::GetInstance()->ShakeStart({ 50,50 }, 30);
 	//ロックオン中ならロックオンをキャンセル
 	isLockOn = false; dashEasingCount = 0.0f; lockOnEnemy.object = nullptr;
-
-	//収集物落下
-	PlayerColectObject::GetInstance()->SetFallen(normal);
-	colectCount > 0 ? colectCount-- : 1;
+	if (colectFallen)
+	{
+		//収集物落下
+		PlayerColectObject::GetInstance()->SetFallen(normal);
+		colectCount > 0 ? colectCount-- : 1;
+	}
 }
 //EaseIn関係がよくわからなかったから一時的に追加
 const float PlayerComponent::easeIn(const float start, const float end, float time)

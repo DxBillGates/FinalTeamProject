@@ -6,6 +6,8 @@
 
 class NestScreenIndicator : public ScreenUI3DSpace
 {
+public:
+	static bool isSetCameraDirection;
 private:
 	GE::Math::Vector3 addScale;
 	GE::Math::Vector3 tempScale;
@@ -20,7 +22,6 @@ private:
 	GE::GameObject* nest;
 
 	bool isFirstSetCameraDirection;
-	bool isSetCameraDirection;
 private:
 	void SetShader()override;
 	void SetShaderResource()override;

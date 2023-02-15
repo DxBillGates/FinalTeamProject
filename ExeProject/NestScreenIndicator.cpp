@@ -3,6 +3,8 @@
 #include "CameraControl.h"
 #include <GatesEngine/Header/GameFramework/GameSetting.h>
 
+bool NestScreenIndicator::isSetCameraDirection;
+
 void NestScreenIndicator::SetShader()
 {
 	graphicsDevice->SetShader("DefaultSpriteWithTextureShader");
@@ -18,7 +20,7 @@ void NestScreenIndicator::SetShaderResource()
 	textureAnimationInfo.textureSize = { 1,1 };
 	textureAnimationInfo.pivot = { 0 };
 	renderQueue->AddSetConstantBufferInfo({ 4,cbufferAllocater->BindAndAttachData(4,&textureAnimationInfo,sizeof(GE::TextureAnimationInfo)) });
-	renderQueue->AddSetShaderResource({ 5,graphicsDevice->GetTextureManager()->Get("texture_Chick")->GetSRVNumber()});
+	renderQueue->AddSetShaderResource({ 5,graphicsDevice->GetTextureManager()->Get("texture_Chick")->GetSRVNumber() });
 }
 
 void NestScreenIndicator::Start()
