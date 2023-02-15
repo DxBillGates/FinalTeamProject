@@ -143,6 +143,9 @@ void ScreenUIManager::SampleSceneStart()
 	object["time_symbol"] = Set(GE::Math::Vector3(160, 950, 0.0f), { 50,100,0 }, GE::Color::White(), "texture_symbol", { 64,64 }, { 32,64 });
 	object["time_tenSeconds"] = Set(GE::Math::Vector3(240, 950, 0.0f), { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
 	object["time_oneSeconds"] = Set(GE::Math::Vector3(340, 950, 0.0f), { 100,100,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
+	object["addTime_plus"] = Set(GE::Math::Vector3(370, 900, 0.0f), { 25,25,0 }, GE::Color::White(), "plus_tex", { 1 }, { 1 });
+	object["addTime_tenSecond"] = Set(GE::Math::Vector3(410, 900, 0.0f), { 50,50,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
+	object["addTime_oneSecond"] = Set(GE::Math::Vector3(460, 900, 0.0f), { 50,50,0 }, GE::Color::White(), "texture_Number", { 320,64 }, { 32,64 });
 #pragma endregion
 	object["crash"] = Set(GE::Math::Vector3(center.x, center.y - 150.f, 0.f), { 400,100,0 }, GE::Color::White(), "crash_info_tex");
 	object["crash_keyboard"] = Set(GE::Math::Vector3(center.x, center.y - 150.f, 0.f), { 400,70,0 }, GE::Color::White(), "crash_info_keyboard_tex");
@@ -457,6 +460,29 @@ void ScreenUIManager::SampleSceneUpdate(float deltaTime)
 	}
 #pragma endregion
 
+#pragma region addTimeŒn
+	float alpha = 1 - TimeLimit::GetInstance()->GetAddSecondFlagController()->GetTime();
+	alpha = GE::Math::Easing::EaseOutExpo(alpha);
+	bool isDraw = TimeLimit::GetInstance()->GetAddSecondFlagController()->GetFlag();
+	float yPosition = 900;
+	yPosition -= TimeLimit::GetInstance()->GetAddSecondFlagController()->GetTime() * 50;
+
+	auto UpdateAddTimeObject = [](SpriteInfo& sprite,bool drawFlag,float alphaValue,float position)
+	{
+		sprite.isDraw = drawFlag;
+		sprite.transform.position.y = position;
+		sprite.color.a = alphaValue;
+		float col = 1 - alphaValue;
+		sprite.color = { col,1,col,alphaValue };
+	};
+
+	UpdateAddTimeObject(object["addTime_plus"], isDraw, alpha, yPosition);
+	UpdateAddTimeObject(object["addTime_tenSecond"], isDraw, alpha, yPosition);
+	UpdateAddTimeObject(object["addTime_oneSecond"], isDraw, alpha, yPosition);
+
+	object["addTime_tenSecond"].pivotPos = TimeLimit::GetInstance()->GetBeforeAddSecond() / 10;
+	object["addTime_oneSecond"].pivotPos = TimeLimit::GetInstance()->GetBeforeAddSecond() % 10;
+#pragma endregion
 }
 void ScreenUIManager::DashModeUpdate(float deltaTime)
 {

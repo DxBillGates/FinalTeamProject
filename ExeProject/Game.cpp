@@ -394,7 +394,9 @@ bool Game::LoadContents()
 	nullTexture->Load("push_a.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "push_a_tex");
 
-	
+	nullTexture = new Texture();
+	nullTexture->Load("plus.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "plus_tex");
 
 	return true;
 }

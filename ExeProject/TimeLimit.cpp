@@ -25,6 +25,8 @@ void TimeLimit::Start(GE::GameObjectManager* gameObjectManager)
 	range = 0.5f;
 	tScale = {};
 	interval = 0;
+	addSecondFlag.Initialize();
+	addSecondFlag.SetMaxTimeProperty(2);
 }
 
 void TimeLimit::Update(GE::AudioManager* audioManager)
@@ -68,10 +70,30 @@ void TimeLimit::Update(GE::AudioManager* audioManager)
 		limit = false;
 	}
 
+	if (addSecondFlag.GetOverTimeTrigger())
+	{
+		addSecondFlag.SetFlag(false);
+		addSecondFlag.SetTime(0);
+	}
+
 	time -= GE::GameSetting::Time::GetDeltaTime();
+	addSecondFlag.Update(GE::GameSetting::Time::GetDeltaTime());
 }
 
 void TimeLimit::AddSeconds(const int& seconds)
 {
 	time += seconds;
+	beforeAddSecondValue = seconds;
+	addSecondFlag.SetFlag(true);
+	addSecondFlag.SetTime(0);
+}
+
+GE::FlagController* TimeLimit::GetAddSecondFlagController()
+{
+	return &addSecondFlag;
+}
+
+const int TimeLimit::GetBeforeAddSecond()
+{
+	return beforeAddSecondValue;
 }

@@ -3,6 +3,7 @@
 #include <GatesEngine/Header/GameFramework/GameObject/GameObjectManager.h> 
 #include <GatesEngine/Header/GameFramework/GameObject/GameObject.h> 
 #include<GatesEngine/Header/Audio/AudioManager.h>
+#include <GatesEngine/Header/GameFramework/FlagController.h>
 
 class TimeLimit 
 {
@@ -19,7 +20,8 @@ private:
 	float range = 0.5f;//大きくなる範囲
 	GE::Math::Vector3 tScale = {};//描画サイズの変更変数
 	int interval = 0;//SEの鳴る間隔変数
-
+	GE::FlagController addSecondFlag;
+	int beforeAddSecondValue;
 public:
 	std::string tag;
 	//Xが分単位、Yが秒単位
@@ -38,6 +40,8 @@ public:
 	const bool& GetLimit() { return limit; }//タイムオーバー前の演出のゲット関数
 	const bool& GetTimeOver() { return timeOver; }//タイムオーバーフラグのゲット関数
 	const GE::Math::Vector3& GetTScale() { return tScale; }//描画サイズのゲット関数
+	GE::FlagController* GetAddSecondFlagController();
+	const int GetBeforeAddSecond();
 
 	//テクスチャ生成
 	void Create(const std::string& gui_tag, const std::string& tex_tag, GE::GameObjectManager* gameObjectManager, float posX, float scaleX, int timeNum);
