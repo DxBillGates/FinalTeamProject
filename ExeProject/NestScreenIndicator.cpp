@@ -55,16 +55,7 @@ void NestScreenIndicator::Update(float deltaTime)
 		isSetCameraDirection = true;
 	}
 
-	if (isSetCameraDirection)
-	{
-		CameraControl::GetInstance()->SetTargetObject(nest);
-		GE::GameSetting::Time::SetGameTime(0.01f);
-	}
-	else
-	{
-		CameraControl::GetInstance()->SetTargetObject(player);
-		GE::GameSetting::Time::SetGameTime(1.0f);
-	}
+	bool isBeforeSetCameraDirection = isSetCameraDirection;
 
 	// uiの拡縮用フラグ更新
 	if (waveIntervalFlagContrller.GetOverTimeTrigger())
@@ -83,6 +74,18 @@ void NestScreenIndicator::Update(float deltaTime)
 		waveFlagController.SetFlag(false);
 		addScale = 0;
 		isSetCameraDirection = false;
+	}
+
+	if (isSetCameraDirection)
+	{
+		CameraControl::GetInstance()->SetTargetObject(nest);
+		GE::GameSetting::Time::SetGameTime(0.01f);
+	}
+
+	if (isBeforeSetCameraDirection == true && isSetCameraDirection == false)
+	{
+		CameraControl::GetInstance()->SetTargetObject(player);
+		GE::GameSetting::Time::SetGameTime(1.0f);
 	}
 
 	addScale = GE::Math::Vector3(50) * std::sinf(waveFlagController.GetTime() * GE::Math::PI);
