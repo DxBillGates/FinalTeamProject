@@ -209,7 +209,7 @@ void DashModeScene::Load()
 	}
 	EnemyManager::GetInstance()->LoadPosition("Resources/dashModeEnemies.txt");
 	EnemyManager::GetInstance()->Start(&gameObjectManager, true);
-	TimeLimit::GetInstance()->TimeSet = { 0,10 };
+	TimeLimit::GetInstance()->TimeSet = { 0,20 };
 	TimeLimit::GetInstance()->Start(&gameObjectManager);
 
 	collisionManager.AddTagCombination("player", "enemy");
