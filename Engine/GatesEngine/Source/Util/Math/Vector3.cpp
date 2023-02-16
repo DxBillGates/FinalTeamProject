@@ -71,6 +71,19 @@ GE::Math::Vector3 GE::Math::Vector3::Max(const Vector3& v1, const Vector3& v2)
 	return result;
 }
 
+GE::Math::Vector3 GE::Math::Vector3::Clamp(const Vector3& minVector, const Vector3& maxVector, const Vector3& comparison)
+{
+	return GE::Math::Vector3::Min(minVector, GE::Math::Vector3::Max(comparison, maxVector));
+}
+
+bool GE::Math::Vector3::IsClamped(const Vector3& minVector, const Vector3& maxVector, const Vector3& comparison)
+{
+	if (comparison.x < minVector.x || comparison.x > maxVector.x)return true;
+	if (comparison.y < minVector.y || comparison.y > maxVector.y)return true;
+	if (comparison.z < minVector.z || comparison.z > maxVector.z)return true;
+	return false;
+}
+
 GE::Math::Vector3 GE::Math::Vector3::Min(const Vector3& v1, const Vector3& v2)
 {
 	Vector3 result;

@@ -406,6 +406,10 @@ bool Game::LoadContents()
 	nullTexture->Load("lockon_release_info.png", device, shaderResourceHeap);
 	textureManager->Add(nullTexture, "lockon_release_info_tex");
 
+	nullTexture = new Texture();
+	nullTexture->Load("indicatorArrow.png", device, shaderResourceHeap);
+	textureManager->Add(nullTexture, "texture_indicatorArrow");
+
 	return true;
 }
 

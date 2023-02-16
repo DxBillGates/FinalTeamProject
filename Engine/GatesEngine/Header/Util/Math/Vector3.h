@@ -95,6 +95,12 @@ namespace GE
 			/// <returns>ベクトル</returns>
 			static Vector3 Max(const Vector3& v1, const Vector3& v2);
 
+			// comparison が min maxを超えているか比較し超えてるなら修正した値を返す
+			static Vector3 Clamp(const Vector3& minVector, const Vector3& maxVector, const Vector3& comparison);
+
+			// min maxの範囲に収まっているか
+			static bool IsClamped(const Vector3& minVector, const Vector3& maxVector, const Vector3& comparison);
+
 			/// <summary>
 			/// std::min()の3次元ベクトル版
 			/// </summary>

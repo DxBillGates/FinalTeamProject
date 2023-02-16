@@ -13,6 +13,7 @@ protected:
 	GE::Math::Vector3 calclatedScreenPos;
 	GE::Color color;
 	static GE::IGraphicsDeviceDx12* graphicsDevice;
+	bool isOffScreen;
 private:
 	void FixedCalclatedScreenPos();
 protected:

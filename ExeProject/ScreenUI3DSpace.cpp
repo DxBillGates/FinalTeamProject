@@ -3,6 +3,7 @@
 #include <GatesEngine/Header/Graphics/Window.h>
 #include <GatesEngine/Header/Util/Math/Math.h>
 #include <cmath>
+#include <GatesEngine/External/imgui/imgui.h>
 
 GE::IGraphicsDeviceDx12* ScreenUI3DSpace::graphicsDevice = nullptr;
 
@@ -18,6 +19,7 @@ void ScreenUI3DSpace::FixedCalclatedScreenPos()
 	windowSize = GE::Window::GetWindowSize();
 	GE::Math::Vector3 windowSize3D = { windowSize.x,windowSize.y ,0 };
 	GE::Math::Vector3 halfScale = scale / 2;
+	halfScale.z = 0;
 
 	// x、y座標ともにスクリーン中心基準で反転してしまうため修正する
 	if (GE::Math::Vector3::Dot(cameraDir, targetDir.Normalize()) < 0)
@@ -29,8 +31,20 @@ void ScreenUI3DSpace::FixedCalclatedScreenPos()
 		else calclatedScreenPos.y = halfScale.x;
 	}
 
+	// 補正前の位置を保存
+	GE::Math::Vector3 beforeFixedPosition = calclatedScreenPos;
+	beforeFixedPosition.z = 0;
+
 	// 画面外に表示されてしまう計算結果を修正
-	calclatedScreenPos = GE::Math::Vector3::Min({ halfScale.x,halfScale.y,0 }, GE::Math::Vector3::Max(calclatedScreenPos, windowSize3D - halfScale));
+	const float DISTANCE_MAX_RATE = 0.8f;
+	GE::Math::Vector3 maxWindowSize = GE::Math::Vector3(windowSize3D.x * DISTANCE_MAX_RATE,windowSize3D.y * DISTANCE_MAX_RATE, 0);
+	GE::Math::Vector3 minPos = GE::Math::Vector3(halfScale.x, halfScale.y, 0);
+	minPos += windowSize3D * (1 - DISTANCE_MAX_RATE);
+	minPos.z = 0;
+	calclatedScreenPos = GE::Math::Vector3::Min(minPos, GE::Math::Vector3::Max(calclatedScreenPos, maxWindowSize - halfScale));
+
+	// 補正されたかをチェック
+	isOffScreen = GE::Math::Vector3::IsClamped(minPos, maxWindowSize - halfScale, beforeFixedPosition);
 }
 
 void ScreenUI3DSpace::CalclateScreenPos()
@@ -112,6 +126,7 @@ ScreenUI3DSpace::ScreenUI3DSpace()
 	, scale({ 1 })
 	, calclatedScreenPos({ 0 })
 	, color(GE::Color::White())
+	, isOffScreen(false)
 {
 }
 
@@ -130,6 +145,7 @@ void ScreenUI3DSpace::Start()
 	scale = { 1 };
 	calclatedScreenPos = { 0 };
 	color = { 1 };
+	isOffScreen = false;
 }
 
 void ScreenUI3DSpace::Update(float deltaTime)

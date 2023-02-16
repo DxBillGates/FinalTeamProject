@@ -2,6 +2,7 @@
 #include "PlayerComponent.h"
 #include "CameraControl.h"
 #include <GatesEngine/Header/GameFramework/GameSetting.h>
+#include <GatesEngine/Header/Graphics/Window.h>
 
 bool NestScreenIndicator::isSetCameraDirection;
 
@@ -103,6 +104,37 @@ void NestScreenIndicator::Draw()
 
 	scale = tempScale + addScale;
 	ScreenUI3DSpace::Draw();
+
+	// –îˆó‚ð•`‰æ
+	if (isOffScreen == false)return;
+	graphicsDevice->SetShader("DefaultSpriteWithTextureShader");
+	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
+	graphicsDevice->SetCurrentRenderQueue(false);
+	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
+	GE::TextureAnimationInfo textureAnimationInfo;
+	textureAnimationInfo.clipSize = { 1 };
+	textureAnimationInfo.textureSize = { 1,1 };
+	textureAnimationInfo.pivot = { 0 };
+	renderQueue->AddSetConstantBufferInfo({ 4,cbufferAllocater->BindAndAttachData(4,&textureAnimationInfo,sizeof(GE::TextureAnimationInfo)) });
+	renderQueue->AddSetShaderResource({ 5,graphicsDevice->GetTextureManager()->Get("texture_indicatorArrow")->GetSRVNumber() });
+
+	GE::Math::Matrix4x4 modelMatrix;
+	GE::Math::Vector2 diffWindowSize = GE::Window::GetDiffWindowSize();
+	GE::Math::Vector3 temp = scale / 2;
+	temp.x *= diffWindowSize.x;
+	temp.y *= diffWindowSize.y;
+	modelMatrix = GE::Math::Matrix4x4::Scale(temp);
+	GE::Math::Vector2 windowSize;
+	windowSize = GE::Window::GetWindowSize();
+	GE::Math::Vector3 windowSize3D = { windowSize.x,windowSize.y ,0 };
+	GE::Math::Vector3 offscreenVector = calclatedScreenPos - windowSize3D / 2;
+	temp = calclatedScreenPos + offscreenVector.Normalize() * (temp.x + 10);
+	temp.x *= diffWindowSize.x;
+	temp.y *= diffWindowSize.y;
+	modelMatrix *= GE::Math::Matrix4x4::RotationZ(std::atan2f(offscreenVector.y,offscreenVector.x));
+	modelMatrix *= GE::Math::Matrix4x4::Translate(temp);
+	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(modelMatrix)) });
+	DrawPlane();
 }
 
 void NestScreenIndicator::SetGameObjectManager(GE::GameObjectManager* setManager)
