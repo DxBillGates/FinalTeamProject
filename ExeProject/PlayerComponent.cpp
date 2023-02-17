@@ -42,6 +42,7 @@ int PlayerComponent::takeEnemyCount = 0;
 bool PlayerComponent::isFirstReturn = true;
 bool PlayerComponent::isBeforeChick = false;
 bool PlayerComponent::isChick = false;
+bool PlayerComponent::islockonEnd = false;
 
 PlayerComponent::PlayerComponent()
 	: inputDevice(nullptr)
@@ -161,7 +162,10 @@ void PlayerComponent::Update(float deltaTime)
 	current_speed = normal_speed + takeEnemyCount;
 
 	//カメラコントロールの更新
-	if (nestIndicator->IsResetCameraFlag())GE::GameSetting::Time::SetGameTime(0.01f);
+	if (nestIndicator)
+	{
+		if (nestIndicator->IsResetCameraFlag())GE::GameSetting::Time::SetGameTime(0.01f);
+	}
 	CameraControl::GetInstance()->Update(f);
 
 	if (nestIndicator)nestIndicator->Update(deltaTime);
@@ -739,6 +743,7 @@ void PlayerComponent::LockOn()
 
 void PlayerComponent::Dash(float dash_speed, float dash_time, float deltaTime, GE::Math::Vector3 direction, bool loop)
 {
+	islockonEnd = false;
 	//FlyAnimation
 	if (dashEasingCount == 0.0f) {
 		animator.PlayAnimation(0, false);
@@ -753,10 +758,11 @@ void PlayerComponent::Dash(float dash_speed, float dash_time, float deltaTime, G
 	else
 	{
 		current_speed = easeIn(dash_speed, normal_speed, dashEasingCount / dash_time);
+		islockonEnd = true;
 	}
 	if (dashEasingCount < dash_time) { dashEasingCount += 1 * GE::GameSetting::Time::GetGameTime(); }
 	else {
-		statas = PlayerStatas::MOVE; dashEasingCount = 0.0f; animator.PlayAnimation(1, false); ;
+		statas = PlayerStatas::MOVE; dashEasingCount = 0.0f; animator.PlayAnimation(1, false);
 	}
 
 	body_direction = GE::Math::Quaternion::LookDirection(direction).EulerRadian();
