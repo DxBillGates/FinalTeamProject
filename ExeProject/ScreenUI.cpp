@@ -170,6 +170,8 @@ void ScreenUIManager::SampleSceneStart()
 	object["dash_info_xctrl"] = Set(GE::Math::Vector3(188, 670, 0.0f), GE::Math::Vector3(256, 64, 0) * 1.1f, GE::Color::White(), "control_info_xctrl_tex", { 512,384 }, { 512, 128 });
 	object["dash_info_xctrl"].pivotPos = 2;
 
+	object["lockon_release_info"] = Set({ center.x + 500.f,center.y,0.0f }, GE::Math::Vector3(450, 60, 0) * 0.8f, GE::Color::White(), "lockon_release_info_tex");
+
 	//‘JˆÚ‚Ì’l‰Šú‰»
 	for (auto o : object)
 	{
@@ -240,12 +242,7 @@ void ScreenUIManager::SampleSceneUpdate(float deltaTime)
 	object["push_a"].isDraw = false;
 	object["dash_info_xctrl"].isDraw = false;
 	object["go_nest_info"].isDraw = false;
-	if (PlayerComponent::colectCount != 0)
-	{
-		object["go_nest_info"].isDraw = true;
-		object["go_nest_info"].transform.position = GE::Math::Vector3::Lerp(GE::Math::Vector3(center.x, center.y - 150.f, 0.f), GE::Math::Vector3(190, 530, 0.0f), SetLerp("go_nest_info", 144, f * GE::GameSetting::Time::GetGameTime()));
-	}
-
+	object["lockon_release_info"].isDraw = false;
 
 	TimeLimitActive(f);
 	if (TimeLimit::GetInstance()->GetLimit())
@@ -341,9 +338,19 @@ void ScreenUIManager::SampleSceneUpdate(float deltaTime)
 	case PlayerComponent::PlayerStatas::LOCKON_SHOOT:
 		object["is_lockon_info"].isDraw = true;
 		object["is_lockon_info"].transform.position = GE::Math::Vector3(center.x, center.y - 150.f, 0.f) + vive;
+		if (PlayerComponent::colectCount != 0)
+		{
+			object["go_nest_info"].isDraw = true;
+			object["go_nest_info"].transform.position = GE::Math::Vector3::Lerp(GE::Math::Vector3(center.x, center.y - 150.f, 0.f), GE::Math::Vector3(190, 530, 0.0f), SetLerp("go_nest_info", 144, f * GE::GameSetting::Time::GetGameTime()));
+		}
 
 		break;
 	case PlayerComponent::PlayerStatas::MOVE:
+		if (PlayerComponent::colectCount != 0)
+		{
+			object["go_nest_info"].isDraw = true;
+			object["go_nest_info"].transform.position = GE::Math::Vector3::Lerp(GE::Math::Vector3(center.x, center.y - 150.f, 0.f), GE::Math::Vector3(190, 530, 0.0f), SetLerp("go_nest_info", 144, f * GE::GameSetting::Time::GetGameTime()));
+		}
 
 		if (inputDeviceState == InputManager::InputDeviceState::JOYCON) {
 			object["lockon_info"].isDraw = true;
@@ -370,6 +377,8 @@ void ScreenUIManager::SampleSceneUpdate(float deltaTime)
 			object["is_lockon_info"].isDraw = true;
 			object["is_lockon_info"].transform.position = GE::Math::Vector3(center.x, center.y - 150.f, 0.f) + vive;
 			viveVelocity = { 20,20 };
+			object["lockon_release_info"].isDraw = true;
+
 			break;
 		}
 
