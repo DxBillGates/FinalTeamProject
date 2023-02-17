@@ -51,8 +51,6 @@ void NestScreenIndicator::Start()
 
 void NestScreenIndicator::Update(float deltaTime)
 {
-	GE::GameSetting::Time::SetGameTime(1);
-
 	if (PlayerComponent::isChick == false)return;
 
 	ScreenUI3DSpace::Update(deltaTime);
@@ -128,7 +126,6 @@ void NestScreenIndicator::Update(float deltaTime)
 		returnCameraFlagController.SetFlag(true);
 		CameraControl::GetInstance()->SetTargetObject(player);
 		GE::GameSetting::Time::SetGameTime(0.01f);
-		isSetCameraDirection = false;
 	}
 
 	auto beforeReturnCameraFlag = returnCameraFlagController.GetFlag();
@@ -138,16 +135,18 @@ void NestScreenIndicator::Update(float deltaTime)
 		auto camera = dynamic_cast<GE::Camera3DDebug*>(graphicsDevice->GetMainCamera());
 		float returnElapsedTime = returnCameraFlagController.GetTime();
 		if (returnElapsedTime > 1)returnElapsedTime = 1;
-		returnElapsedTime = GE::Math::Easing::EaseOutExpo(returnElapsedTime);
-		camera->SetPosition(GE::Math::Vector3::Lerp(currentCameraPosition, player->GetTransform()->position - player->GetTransform()->GetForward() * 3000, returnElapsedTime));
-		camera->SetDirection(GE::Math::Vector3::Lerp(currentCameraDirection, player->GetTransform()->GetForward(), returnElapsedTime).Normalize());
+		float easingValue = GE::Math::Easing::EaseOutExpo(returnElapsedTime);
+		camera->SetPosition(GE::Math::Vector3::Lerp(currentCameraPosition, player->GetTransform()->position - player->GetTransform()->GetForward() * 3000, easingValue));
+		easingValue = GE::Math::Easing::EaseOutCirc(returnElapsedTime);
+		camera->SetDirection(GE::Math::Vector3::Lerp(currentCameraDirection, player->GetTransform()->GetForward(), easingValue).Normalize());
 		GE::GameSetting::Time::SetGameTime(0.01f);
 	}
 
 	if (returnCameraFlagController.GetOverTimeTrigger())
 	{
 		returnCameraFlagController.SetFlag(false);
-		returnCameraFlagController.SetTime(1);
+		returnCameraFlagController.SetTime(0);
+		GE::GameSetting::Time::SetGameTime(1);
 	}
 
 	addScale = GE::Math::Vector3(50) * std::sinf(waveFlagController.GetTime() * GE::Math::PI);
@@ -205,4 +204,9 @@ void NestScreenIndicator::SetGameObjectManager(GE::GameObjectManager* setManager
 void NestScreenIndicator::SetAudioManager(GE::AudioManager* setManager)
 {
 	audioManager = setManager;
+}
+
+bool NestScreenIndicator::IsResetCameraFlag()
+{
+	return returnCameraFlagController.GetFlag() || isSetCameraDirection;
 }

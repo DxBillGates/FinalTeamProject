@@ -134,7 +134,7 @@ void PlayerComponent::Update(float deltaTime)
 		GE::GameSetting::Time::SetGameTime(0.01);
 		hitStopCount += f;
 	}
-	else { resetGameTime = true; }
+	else { GE::GameSetting::Time::SetGameTime(1.f); }
 
 	if (lockonState == LockOnState::LOCKON_SLOW)
 	{
@@ -160,14 +160,15 @@ void PlayerComponent::Update(float deltaTime)
 	}
 	current_speed = normal_speed + takeEnemyCount;
 
+	//カメラコントロールの更新
+	if (nestIndicator->IsResetCameraFlag())GE::GameSetting::Time::SetGameTime(0.01f);
+	CameraControl::GetInstance()->Update(f);
+
+	if (nestIndicator)nestIndicator->Update(deltaTime);
 	//操作
 	Control(f);
 	//収集物
 	PlayerColectObject::GetInstance()->Update(f);
-	//カメラコントロールの更新
-	CameraControl::GetInstance()->Update(f);
-	
-	if (nestIndicator)nestIndicator->Update(deltaTime);
 
 	if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::LCONTROL) || inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::RCONTROL))
 	{

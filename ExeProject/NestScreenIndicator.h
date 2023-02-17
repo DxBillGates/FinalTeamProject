@@ -37,4 +37,5 @@ public:
 	void Draw() override;
 	void SetGameObjectManager(GE::GameObjectManager* setManager);
 	void SetAudioManager(GE::AudioManager* setManager);
+	bool IsResetCameraFlag();
 };
