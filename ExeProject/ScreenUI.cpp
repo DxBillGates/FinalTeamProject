@@ -367,20 +367,19 @@ void ScreenUIManager::SampleSceneUpdate(float deltaTime)
 			object["search_info"].isDraw = true;
 			break;
 		case PlayerComponent::LockOnState::LOCKON_SLOW:
-
 			object["is_lockon_info"].isDraw = true;
 			object["is_lockon_info"].transform.position = GE::Math::Vector3(center.x, center.y - 150.f, 0.f) + vive;
 			viveVelocity = { 20,20 };
-
 			break;
 		}
 
 		break;
 	}
-	if (NestScreenIndicator::isSetCameraDirection)
+	if (NestScreenIndicator::isSetCameraDirection || PlayerComponent::islockonEnd)
 	{
 		object["is_lockon_info"].isDraw = false;
 	}
+
 #pragma region ƒIƒvƒVƒ‡ƒ“’†
 	OptionMenuActive(false);
 	if (Title::GetInstance()->GetSelect(Title::States::option))
