@@ -3,6 +3,7 @@
 #include "CameraControl.h"
 #include <GatesEngine/Header/GameFramework/GameSetting.h>
 #include <GatesEngine/Header/Graphics/Window.h>
+#include <GatesEngine/External/imgui/imgui.h>
 
 bool NestScreenIndicator::isSetCameraDirection;
 
@@ -34,6 +35,8 @@ void NestScreenIndicator::Start()
 	waveIntervalFlagContrller.SetFlag(true);
 	waveIntervalFlagContrller.SetTime(2.9f);
 	waveIntervalFlagContrller.SetMaxTimeProperty(3);
+	returnCameraFlagController.Initialize();
+	returnCameraFlagController.SetMaxTimeProperty(1);
 
 	scale = { 50 };
 	tempScale = scale;
@@ -48,17 +51,19 @@ void NestScreenIndicator::Start()
 
 void NestScreenIndicator::Update(float deltaTime)
 {
+	GE::GameSetting::Time::SetGameTime(1);
+
 	if (PlayerComponent::isChick == false)return;
 
 	ScreenUI3DSpace::Update(deltaTime);
 
+	bool isBeforeSetCameraDirection = isSetCameraDirection;
 	if (PlayerComponent::isBeforeChick == false && PlayerComponent::isChick == true && isFirstSetCameraDirection == false)
 	{
 		isFirstSetCameraDirection = true;
 		isSetCameraDirection = true;
 	}
 
-	bool isBeforeSetCameraDirection = isSetCameraDirection;
 
 	// uiの拡縮用フラグ更新
 	if (waveIntervalFlagContrller.GetOverTimeTrigger())
@@ -83,17 +88,72 @@ void NestScreenIndicator::Update(float deltaTime)
 	{
 		CameraControl::GetInstance()->SetTargetObject(nest);
 		GE::GameSetting::Time::SetGameTime(0.01f);
+
+		// このときのカメラの情報を保存
+		if (isBeforeSetCameraDirection == false)
+		{
+			const auto& cameraInfo = graphicsDevice->GetMainCamera()->GetCameraInfo();
+			beforeCameraDirection =
+			{
+				cameraInfo.cameraDir.x,
+				cameraInfo.cameraDir.y,
+				cameraInfo.cameraDir.z
+			};
+			beforeCameraPosition =
+			{
+				cameraInfo.cameraPos.x,
+				cameraInfo.cameraPos.y,
+				cameraInfo.cameraPos.z
+			};
+		}
 	}
 
 	if (isBeforeSetCameraDirection == true && isSetCameraDirection == false)
 	{
+		// ターゲット切り替え前にもう一度カメラの情報を保存
+		const auto& cameraInfo = graphicsDevice->GetMainCamera()->GetCameraInfo();
+		currentCameraDirection =
+		{
+			cameraInfo.cameraDir.x,
+			cameraInfo.cameraDir.y,
+			cameraInfo.cameraDir.z
+		};
+		currentCameraPosition =
+		{
+			cameraInfo.cameraPos.x,
+			cameraInfo.cameraPos.y,
+			cameraInfo.cameraPos.z
+		};
+		returnCameraFlagController.SetTime(0);
+		returnCameraFlagController.SetFlag(true);
 		CameraControl::GetInstance()->SetTargetObject(player);
-		GE::GameSetting::Time::SetGameTime(1.0f);
+		GE::GameSetting::Time::SetGameTime(0.01f);
+		isSetCameraDirection = false;
+	}
+
+	auto beforeReturnCameraFlag = returnCameraFlagController.GetFlag();
+
+	if (returnCameraFlagController.GetFlag() == true)
+	{
+		auto camera = dynamic_cast<GE::Camera3DDebug*>(graphicsDevice->GetMainCamera());
+		float returnElapsedTime = returnCameraFlagController.GetTime();
+		if (returnElapsedTime > 1)returnElapsedTime = 1;
+		returnElapsedTime = GE::Math::Easing::EaseOutExpo(returnElapsedTime);
+		camera->SetPosition(GE::Math::Vector3::Lerp(currentCameraPosition, player->GetTransform()->position - player->GetTransform()->GetForward() * 3000, returnElapsedTime));
+		camera->SetDirection(GE::Math::Vector3::Lerp(currentCameraDirection, player->GetTransform()->GetForward(), returnElapsedTime).Normalize());
+		GE::GameSetting::Time::SetGameTime(0.01f);
+	}
+
+	if (returnCameraFlagController.GetOverTimeTrigger())
+	{
+		returnCameraFlagController.SetFlag(false);
+		returnCameraFlagController.SetTime(1);
 	}
 
 	addScale = GE::Math::Vector3(50) * std::sinf(waveFlagController.GetTime() * GE::Math::PI);
 	scale += addScale;
 
+	returnCameraFlagController.Update(deltaTime);
 	waveIntervalFlagContrller.Update(deltaTime);
 	waveFlagController.Update(deltaTime);
 }
@@ -131,7 +191,7 @@ void NestScreenIndicator::Draw()
 	temp = calclatedScreenPos + offscreenVector.Normalize() * (temp.x + 10);
 	temp.x *= diffWindowSize.x;
 	temp.y *= diffWindowSize.y;
-	modelMatrix *= GE::Math::Matrix4x4::RotationZ(std::atan2f(offscreenVector.y,offscreenVector.x));
+	modelMatrix *= GE::Math::Matrix4x4::RotationZ(std::atan2f(offscreenVector.y, offscreenVector.x));
 	modelMatrix *= GE::Math::Matrix4x4::Translate(temp);
 	renderQueue->AddSetConstantBufferInfo({ 0,cbufferAllocater->BindAndAttachData(0, &modelMatrix, sizeof(modelMatrix)) });
 	DrawPlane();

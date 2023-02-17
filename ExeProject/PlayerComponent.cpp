@@ -127,15 +127,14 @@ void PlayerComponent::Update(float deltaTime)
 	const auto& cameraInfo = graphicsDevice->GetMainCamera()->GetCameraInfo();
 	GE::Math::GetScreenToRay(center, &rayPos, &rayDir, cameraInfo.viewMatrix, cameraInfo.projMatrix, GE::Math::Matrix4x4::GetViewportMatrix(GE::Window::GetWindowSize()));
 
+	bool resetGameTime = false;
 	//ヒットストップのカウント
 	if (hitStopCount < hitStopTime)
 	{
 		GE::GameSetting::Time::SetGameTime(0.01);
 		hitStopCount += f;
 	}
-	else { GE::GameSetting::Time::SetGameTime(1.0); }
-
-	if (nestIndicator)nestIndicator->Update(deltaTime);
+	else { resetGameTime = true; }
 
 	if (lockonState == LockOnState::LOCKON_SLOW)
 	{
@@ -167,6 +166,8 @@ void PlayerComponent::Update(float deltaTime)
 	PlayerColectObject::GetInstance()->Update(f);
 	//カメラコントロールの更新
 	CameraControl::GetInstance()->Update(f);
+	
+	if (nestIndicator)nestIndicator->Update(deltaTime);
 
 	if (inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::LCONTROL) || inputDevice->GetKeyboard()->CheckHitKey(GE::Keys::RCONTROL))
 	{

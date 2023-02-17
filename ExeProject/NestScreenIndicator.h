@@ -22,6 +22,12 @@ private:
 	GE::GameObject* nest;
 
 	bool isFirstSetCameraDirection;
+
+	GE::FlagController returnCameraFlagController;
+	GE::Math::Vector3 beforeCameraPosition;
+	GE::Math::Vector3 beforeCameraDirection;
+	GE::Math::Vector3 currentCameraPosition;
+	GE::Math::Vector3 currentCameraDirection;
 private:
 	void SetShader()override;
 	void SetShaderResource()override;

@@ -410,8 +410,8 @@ bool GE::Application::Initialize()
 
 bool GE::Application::Update()
 {
-	mainCamera->Update();
 	sceneManager.Update(timer.GetElapsedTime());
+	mainCamera->Update();
 	return true;
 }
 
