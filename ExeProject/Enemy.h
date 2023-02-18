@@ -16,6 +16,7 @@ public:
 	std::string modelName = "Sphere";
 	float restInterval;
 	float restCount;
+	GE::Math::Vector3 startPosition;
 protected:
 	float speed = 0.0f;
 	GE::Math::Vector3 bodyDirection = {};

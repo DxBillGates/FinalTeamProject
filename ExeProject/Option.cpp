@@ -7,7 +7,7 @@
 #include "InputManager.h"
 
 int OptionData::BGM_vol = 1;
-int OptionData::SE_vol = 3;
+int OptionData::SE_vol = 1;
 int Option::Max_vol = 5;
 Option::Select Option::select;
 

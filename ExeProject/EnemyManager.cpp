@@ -18,6 +18,7 @@ void EnemyManager::Start(GE::GameObjectManager* gameObjectManager, bool dashMode
 	{
 		auto* enemy = gameObjectManager->AddGameObject(new GE::GameObject("Enemy", "enemy"));
 		auto* sampleComponent = enemy->AddComponent<NormalEnemy>();
+		enemy->GetComponent<Enemy>()->startPosition = ne[i].pos;
 		enemy->GetTransform()->position = ne[i].pos;
 		enemy->GetTransform()->scale = ne[i].scale;
 		auto* normalEnemyCollider = enemy->AddComponent<GE::SphereCollider>();
@@ -41,6 +42,7 @@ void EnemyManager::Start(GE::GameObjectManager* gameObjectManager, bool dashMode
 	{
 		auto* fEnemy = gameObjectManager->AddGameObject(new GE::GameObject("FrogEnemy", "frog"));
 		auto* fComponent = fEnemy->AddComponent<FrogEnemy>();
+		fEnemy->GetComponent<Enemy>()->startPosition = fe[i].pos;
 		fEnemy->GetTransform()->position = fe[i].pos;
 		fEnemy->GetTransform()->scale = fe[i].scale;
 		auto* flogEnemyCollider = fEnemy->AddComponent<GE::SphereCollider>();

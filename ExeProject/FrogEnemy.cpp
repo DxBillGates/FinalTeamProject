@@ -43,6 +43,10 @@ void FrogEnemy::Start()
 
 void FrogEnemy::Update(float deltaTime)
 {
+	Enemy::Update(deltaTime);
+
+	if (statas != Statas::ALIVE) { return; }
+
 	const float frameRate = 1.0f / deltaTime;
 	const float f = 144.0f / frameRate;
 
@@ -83,7 +87,7 @@ void FrogEnemy::Update(float deltaTime)
 
 void FrogEnemy::DrawShadow()
 {
-	if (statas == Statas::DEAD) { return; }
+	if (statas != Statas::ALIVE) { return; }
 
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();
 	GE::RenderQueue* renderQueue = graphicsDevice->GetRenderQueue();
@@ -102,7 +106,7 @@ void FrogEnemy::DrawShadow()
 
 void FrogEnemy::Draw()
 {
-	if (statas == Statas::DEAD) { return; }
+	if (statas != Statas::ALIVE) { return; }
 
 	graphicsDevice->SetLayer("effectLayer");
 	GE::ICBufferAllocater* cbufferAllocater = graphicsDevice->GetCBufferAllocater();

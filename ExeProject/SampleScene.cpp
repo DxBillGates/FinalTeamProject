@@ -61,7 +61,7 @@ void SampleScene::Initialize()
 	changeSceneInfo.sceneTransitionFadein.SetMaxTimeProperty(2);
 	changeSceneInfo.sceneTransitionFadeout.SetMaxTimeProperty(1.0f);
 
-	audioManager->Get("natsunoyama1", 0)->SetVolume(0.4f);
+	audioManager->Get("natsunoyama1", 0)->SetVolume(0.2f);
 	audioManager->Get("natsunoyama1", 0)->Reset();
 	audioManager->Get("testBGM", 0)->Reset();
 

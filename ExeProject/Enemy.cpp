@@ -24,10 +24,9 @@ void Enemy::Update(float deltaTime)
 {
 	const float f = 144.0f / (1.0f / deltaTime);
 
-	if (PlayerComponent::dashMode)
+	if (statas == Statas::REST)
 	{
-
-		if (statas == Statas::REST)
+		if (PlayerComponent::dashMode)
 		{
 			if (restCount < restInterval)
 			{
@@ -36,6 +35,14 @@ void Enemy::Update(float deltaTime)
 			else
 			{
 				statas = Statas::ALIVE;
+			}
+		}
+		else
+		{
+			if (PlayerComponent::statas == PlayerComponent::PlayerStatas::STAY_TREE)
+			{
+				statas = Statas::ALIVE;
+				transform->position = startPosition;
 			}
 		}
 	}
@@ -65,16 +72,8 @@ void Enemy::OnCollisionEnter(GE::GameObject* other)
 	{
 		if (other->GetTag() == "player")
 		{
-			if (PlayerComponent::dashMode)
-			{
-				statas = Statas::REST;
-				restCount = 0.0f;
-			}
-			else
-			{
-				statas = Statas::DEAD;
-				gameObject->Destroy();
-			}
+			statas = Statas::REST;
+			restCount = 0.0f;
 		}
 	}
 }

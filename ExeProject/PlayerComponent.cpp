@@ -159,7 +159,7 @@ void PlayerComponent::Update(float deltaTime)
 	{
 		normal_speed = 20.0f;
 	}
-	current_speed = normal_speed + takeEnemyCount;
+	current_speed = normal_speed + takeEnemyCount * 2;
 
 	//カメラコントロールの更新
 	if (nestIndicator)
@@ -527,7 +527,7 @@ void PlayerComponent::Control(float deltaTime)
 		lockOnIntervalCount = 0;
 		if (lockOnEnemy.object != nullptr)
 		{
-			if (lockOnEnemy.object->GetComponent<Enemy>()->statas != Enemy::Statas::DEAD)
+			if (lockOnEnemy.object->GetComponent<Enemy>()->statas == Enemy::Statas::ALIVE)
 			{
 				lockOnEnemy.direction = GE::Math::Vector3(lockOnEnemy.object->GetTransform()->position + GE::Math::Vector3(0, 100, 0) - transform->position).Normalize();
 				loop = true;
@@ -706,7 +706,7 @@ void PlayerComponent::SearchNearEnemy(bool isForward)
 		//色初期化
 		enemies[i]->SetColor(GE::Color::Red());
 		//生きているか＆前側にいる中で最も近い敵&&LockOnLengthより近い距離か
-		if (enemies[i]->GetComponent<Enemy>()->statas != Enemy::Statas::DEAD
+		if (enemies[i]->GetComponent<Enemy>()->statas == Enemy::Statas::ALIVE
 			&& distance < whichLockOnLength)
 		{
 			//引数をTrueにすると前にいるか関係なくロックオンする()
@@ -733,7 +733,7 @@ void PlayerComponent::SearchNearEnemy(bool isForward)
 void PlayerComponent::LockOn()
 {
 	if (lockOnEnemy.object != nullptr
-		&& lockOnEnemy.object->GetComponent<Enemy>()->statas != Enemy::Statas::DEAD)
+		&& lockOnEnemy.object->GetComponent<Enemy>()->statas == Enemy::Statas::ALIVE)
 	{
 		//Key押したらLockOn準備
 		if (isLockOnStart) { isLockOn = true; }

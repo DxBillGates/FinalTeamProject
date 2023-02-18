@@ -164,11 +164,11 @@ bool Game::LoadContents()
 		audio = audioManager.AddAudio(new GE::Audio(audioData, "click"));
 		audio->SetVolume(0.4f);
 	}
-	//Œø‰Ê‰¹click
+	//Œø‰Ê‰¹natsunoyama1
 	{
 		auto* audioData = audioManager.AddAudioData(new GE::AudioData("Resources/Audio/natsunoyama1.wav"), "natsunoyama1");
 		auto* audio = audioManager.AddAudio(new GE::Audio(audioData, "natsunoyama1"));
-		audio->SetVolume(0.4f);
+		audio->SetVolume(0.2f);
 	}
 	//gameover
 	{
