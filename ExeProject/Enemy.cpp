@@ -34,7 +34,7 @@ void Enemy::Update(float deltaTime)
 			}
 			else
 			{
-				statas = Statas::ALIVE;
+				//statas = Statas::ALIVE;
 			}
 		}
 		else

@@ -35,7 +35,7 @@ void EnemyManager::Start(GE::GameObjectManager* gameObjectManager, bool dashMode
 		auto* bComponent = bEnemy->AddComponent<BirdEnemy>();
 		auto* birdEnemyCollider = bEnemy->AddComponent<GE::SphereCollider>();
 		birdEnemyCollider->SetCenter({ 0,0,0 });
-		birdEnemyCollider->SetSize({ 2 });
+		birdEnemyCollider->SetSize({ 3 });
 		birdEnemies.push_back(bEnemy);
 	}
 	for (int i = 0; i < fe.size(); ++i)
@@ -46,8 +46,8 @@ void EnemyManager::Start(GE::GameObjectManager* gameObjectManager, bool dashMode
 		fEnemy->GetTransform()->position = fe[i].pos;
 		fEnemy->GetTransform()->scale = fe[i].scale;
 		auto* flogEnemyCollider = fEnemy->AddComponent<GE::SphereCollider>();
-		flogEnemyCollider->SetCenter({ 0,40,0 });
-		flogEnemyCollider->SetSize({ 80 });
+		flogEnemyCollider->SetCenter({ 0,50,0 });
+		flogEnemyCollider->SetSize({ 100 });
 		frogEnemies.push_back(fEnemy);
 		FieldObjectDebugTransform::GetInstance()->AddTarget(fEnemy, { 100,100,100 });
 	}

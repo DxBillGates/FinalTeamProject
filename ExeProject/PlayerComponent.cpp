@@ -703,8 +703,10 @@ void PlayerComponent::SearchNearEnemy(bool isForward)
 	{
 		float distance = abs(GE::Math::Vector3::Distance(transform->position, enemies[i]->GetTransform()->position));
 		GE::Math::Vector3 enemyDirection = enemies[i]->GetTransform()->position - transform->position;
-		//色初期化
+		//オブジェクト初期化
 		enemies[i]->SetColor(GE::Color::Red());
+		lockOnEnemy.object = nullptr;
+
 		//生きているか＆前側にいる中で最も近い敵&&LockOnLengthより近い距離か
 		if (enemies[i]->GetComponent<Enemy>()->statas == Enemy::Statas::ALIVE
 			&& distance < whichLockOnLength)
