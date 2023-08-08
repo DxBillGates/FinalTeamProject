@@ -699,15 +699,15 @@ bool Game::Draw()
 		float pad;
 		GE::Math::Vector3 boundMax;
 		float pad2;
-		float samplingValue = 8;
+		float samplingValue = 0.001f;
 		float threshold = 0;
 		GE::Math::Vector2 center = { 0.5f };
 	};
 
 	static RayInfo rayInfo;
 	rayInfo.center = sceneManager.GetCurrentScene()->GetBlurUV();
-	rayInfo.threshold = sceneManager.GetCurrentScene()->GetBlurThreshold();
-	rayInfo.samplingValue = sceneManager.GetCurrentScene()->GetBlurSampling();
+	//rayInfo.threshold = sceneManager.GetCurrentScene()->GetBlurThreshold();
+	//rayInfo.samplingValue = sceneManager.GetCurrentScene()->GetBlurSampling();
 #ifdef _DEBUG
 	//static GE::Math::Vector3 pos = { 0,0,0 };
 	//static GE::Math::Vector3 scale = 2000;
@@ -717,8 +717,8 @@ bool Game::Draw()
 	//rayInfo.boundMax = pos + scale / 2;
 	//ImGui::Text("color : %.3f", sceneColor);
 	ImGui::Begin("Debug");
-	ImGui::DragFloat("SamplingValue", &rayInfo.samplingValue, 1, 1, 16);
-	ImGui::DragFloat("Threshold", &rayInfo.threshold, 0.01f, 0, 1);
+	ImGui::DragFloat("SamplingValue", &rayInfo.samplingValue, 0.01f, 0, 1);
+	ImGui::DragFloat("Threshold", &rayInfo.threshold, 0.01f, 0, 100);
 	ImGui::DragFloat2("uv", rayInfo.center.value, 0.01f, 0, 1);
 	ImGui::End();
 
